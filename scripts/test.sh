@@ -13,6 +13,8 @@ test_rust() {
 
   cargo check
   cargo test
+
+  cargo run --example main
 }
 
 main() {

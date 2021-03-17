@@ -1,13 +1,26 @@
-pub fn magic() -> i32 {
-    4
+#[proc_macro_attribute]
+pub fn embed_files_as_modules(
+    _attribute: proc_macro::TokenStream,
+    raw_input: proc_macro::TokenStream,
+) -> proc_macro::TokenStream {
+    let input = syn::parse(raw_input).unwrap();
+    generate(&input)
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+fn generate(input: &syn::DeriveInput) -> proc_macro::TokenStream {
+    let raw_output = quote::quote! {
+        #input
 
-    #[test]
-    fn it_works() {
-        assert_eq!(magic(), 4);
-    }
+        pub mod resources {
+            use super::Resource;
+
+            pub fn credits() -> Resource {
+                Resource {
+                    get: include_str!("resources/credits.md"),
+                }
+            }
+        }
+    };
+
+    raw_output.into()
 }
