@@ -7,4 +7,9 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 2
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
       - run: scripts/test.sh
