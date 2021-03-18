@@ -14,9 +14,37 @@ fn generate(input: &syn::DeriveInput) -> proc_macro::TokenStream {
         pub mod resources {
             use super::Resource;
 
+            pub mod configuration {
+                use super::Resource;
+
+                pub const MENU_JSON: Resource = Resource {
+                    get: include_str!("resources/configuration/menu.json"),
+                };
+
+                pub const TRANSLATIONS_CSV: Resource = Resource {
+                    get: include_str!("resources/configuration/translations.csv"),
+                };
+            }
+
             pub const CREDITS_MD: Resource = Resource {
                 get: include_str!("resources/credits.md"),
             };
+
+            pub mod world {
+                use super::Resource;
+
+                pub mod levels {
+                    use super::Resource;
+
+                    pub const TUTORIAL_JSON: Resource = Resource {
+                        get: include_str!("resources/world/levels/tutorial.json"),
+                    };
+                }
+
+                pub const PHYSICAL_CONSTANTS_JSON: Resource = Resource {
+                    get: include_str!("resources/world/physical_constants.json"),
+                };
+            }
         }
     };
 
