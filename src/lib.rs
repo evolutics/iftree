@@ -14,7 +14,7 @@ fn generate(input: &syn::DeriveInput) -> proc_macro::TokenStream {
         pub mod resources {
             use super::Resource;
 
-            pub const CREDITS: Resource = Resource {
+            pub const CREDITS_MD: Resource = Resource {
                 get: include_str!("resources/credits.md"),
             };
         }
