@@ -4,5 +4,5 @@ pub struct Resource {
 }
 
 pub fn main() {
-    assert_eq!(resources::credits().get, "Foo Bar\n");
+    assert_eq!(resources::CREDITS.get, "Foo Bar\n");
 }
