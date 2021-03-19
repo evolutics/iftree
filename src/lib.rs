@@ -3,11 +3,11 @@ use syn::parse;
 #[proc_macro_attribute]
 pub fn embed_files_as_modules(
     _attribute: proc_macro::TokenStream,
-    raw_input: proc_macro::TokenStream,
+    raw_item: proc_macro::TokenStream,
 ) -> proc_macro::TokenStream {
-    let raw_input_clone = raw_input.clone();
-    let input = syn::parse_macro_input!(raw_input);
-    generate(raw_input_clone, &input)
+    let raw_item_clone = raw_item.clone();
+    let item = syn::parse_macro_input!(raw_item);
+    generate(raw_item_clone, &item)
 }
 
 struct TypeAlias {
@@ -15,25 +15,25 @@ struct TypeAlias {
 }
 
 impl parse::Parse for TypeAlias {
-    fn parse(input: parse::ParseStream) -> syn::Result<Self> {
-        input.call(syn::Attribute::parse_outer)?;
-        input.parse::<syn::Visibility>()?;
-        input.parse::<syn::Token![type]>()?;
-        let identifier = input.parse::<syn::Ident>()?;
-        input.parse::<syn::Token![=]>()?;
-        input.parse::<syn::Type>()?;
-        input.parse::<syn::Token![;]>()?;
+    fn parse(item: parse::ParseStream) -> syn::Result<Self> {
+        item.call(syn::Attribute::parse_outer)?;
+        item.parse::<syn::Visibility>()?;
+        item.parse::<syn::Token![type]>()?;
+        let identifier = item.parse::<syn::Ident>()?;
+        item.parse::<syn::Token![=]>()?;
+        item.parse::<syn::Type>()?;
+        item.parse::<syn::Token![;]>()?;
 
         Ok(TypeAlias { identifier })
     }
 }
 
-fn generate(raw_input: proc_macro::TokenStream, input: &TypeAlias) -> proc_macro::TokenStream {
-    let raw_input = proc_macro2::TokenStream::from(raw_input);
-    let resource_type = &input.identifier;
+fn generate(raw_item: proc_macro::TokenStream, item: &TypeAlias) -> proc_macro::TokenStream {
+    let raw_item = proc_macro2::TokenStream::from(raw_item);
+    let resource_type = &item.identifier;
 
     let raw_output = quote::quote! {
-        #raw_input
+        #raw_item
 
         pub mod resources {
             use super::#resource_type;
