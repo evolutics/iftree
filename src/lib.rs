@@ -5,9 +5,9 @@ pub fn embed_files_as_modules(
     _attribute: proc_macro::TokenStream,
     raw_input: proc_macro::TokenStream,
 ) -> proc_macro::TokenStream {
-    let raw_input = proc_macro2::TokenStream::from(raw_input);
-    let input = syn::parse2(raw_input.clone()).unwrap();
-    generate(raw_input, &input)
+    let raw_input_clone = raw_input.clone();
+    let input = syn::parse_macro_input!(raw_input);
+    generate(raw_input_clone, &input)
 }
 
 struct TypeAlias {
@@ -28,7 +28,8 @@ impl parse::Parse for TypeAlias {
     }
 }
 
-fn generate(raw_input: proc_macro2::TokenStream, input: &TypeAlias) -> proc_macro::TokenStream {
+fn generate(raw_input: proc_macro::TokenStream, input: &TypeAlias) -> proc_macro::TokenStream {
+    let raw_input = proc_macro2::TokenStream::from(raw_input);
     let resource_type = &input.identifier;
 
     let raw_output = quote::quote! {
