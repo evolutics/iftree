@@ -3,11 +3,11 @@ use syn::parse;
 #[proc_macro_attribute]
 pub fn embed_files_as_modules(
     _attribute: proc_macro::TokenStream,
-    raw_item: proc_macro::TokenStream,
+    item: proc_macro::TokenStream,
 ) -> proc_macro::TokenStream {
-    let raw_item_clone = raw_item.clone();
-    let item = syn::parse_macro_input!(raw_item);
-    generate(raw_item_clone, &item)
+    let item_clone = item.clone();
+    let resource = syn::parse_macro_input!(item);
+    generate(item_clone, &resource)
 }
 
 struct TypeAlias {
@@ -28,12 +28,12 @@ impl parse::Parse for TypeAlias {
     }
 }
 
-fn generate(raw_item: proc_macro::TokenStream, item: &TypeAlias) -> proc_macro::TokenStream {
-    let raw_item = proc_macro2::TokenStream::from(raw_item);
-    let resource_type = &item.identifier;
+fn generate(item: proc_macro::TokenStream, resource: &TypeAlias) -> proc_macro::TokenStream {
+    let item = proc_macro2::TokenStream::from(item);
+    let resource_type = &resource.identifier;
 
-    let raw_output = quote::quote! {
-        #raw_item
+    let output = quote::quote! {
+        #item
 
         pub mod resources {
             use super::#resource_type;
@@ -66,5 +66,5 @@ fn generate(raw_item: proc_macro::TokenStream, item: &TypeAlias) -> proc_macro::
         }
     };
 
-    raw_output.into()
+    output.into()
 }
