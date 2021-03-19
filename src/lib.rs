@@ -8,40 +8,42 @@ pub fn embed_files_as_modules(
 }
 
 fn generate(input: &syn::DeriveInput) -> proc_macro::TokenStream {
+    let resource_type = &input.ident;
+
     let raw_output = quote::quote! {
         #input
 
         pub mod resources {
-            use super::Resource;
+            use super::#resource_type;
 
             pub mod configuration {
-                use super::Resource;
+                use super::#resource_type;
 
-                pub const MENU_JSON: Resource = Resource {
+                pub const MENU_JSON: #resource_type = #resource_type {
                     get: include_str!("resources/configuration/menu.json"),
                 };
 
-                pub const TRANSLATIONS_CSV: Resource = Resource {
+                pub const TRANSLATIONS_CSV: #resource_type = #resource_type {
                     get: include_str!("resources/configuration/translations.csv"),
                 };
             }
 
-            pub const CREDITS_MD: Resource = Resource {
+            pub const CREDITS_MD: #resource_type = #resource_type {
                 get: include_str!("resources/credits.md"),
             };
 
             pub mod world {
-                use super::Resource;
+                use super::#resource_type;
 
                 pub mod levels {
-                    use super::Resource;
+                    use super::#resource_type;
 
-                    pub const TUTORIAL_JSON: Resource = Resource {
+                    pub const TUTORIAL_JSON: #resource_type = #resource_type {
                         get: include_str!("resources/world/levels/tutorial.json"),
                     };
                 }
 
-                pub const PHYSICAL_CONSTANTS_JSON: Resource = Resource {
+                pub const PHYSICAL_CONSTANTS_JSON: #resource_type = #resource_type {
                     get: include_str!("resources/world/physical_constants.json"),
                 };
             }
