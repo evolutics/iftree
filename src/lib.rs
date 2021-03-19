@@ -5,10 +5,15 @@ pub fn embed_files_as_modules(
     _attribute: proc_macro::TokenStream,
     item: proc_macro::TokenStream,
 ) -> proc_macro::TokenStream {
-    let item_clone = item.clone();
-    let resource = syn::parse_macro_input!(item);
-    generate(item_clone, &resource)
+    process(Input { _attribute, item })
 }
+
+struct Input {
+    _attribute: proc_macro::TokenStream,
+    item: proc_macro::TokenStream,
+}
+
+type Output = proc_macro::TokenStream;
 
 struct TypeAlias {
     identifier: syn::Ident,
@@ -28,7 +33,14 @@ impl parse::Parse for TypeAlias {
     }
 }
 
-fn generate(item: proc_macro::TokenStream, resource: &TypeAlias) -> proc_macro::TokenStream {
+fn process(input: Input) -> Output {
+    let item = input.item;
+    let item_clone = item.clone();
+    let resource = syn::parse_macro_input!(item);
+    generate(item_clone, &resource)
+}
+
+fn generate(item: proc_macro::TokenStream, resource: &TypeAlias) -> Output {
     let item = proc_macro2::TokenStream::from(item);
     let resource_type = &resource.identifier;
 
