@@ -1,4 +1,5 @@
 use std::collections;
+use std::path;
 
 pub struct Input {
     pub _attribute: proc_macro::TokenStream,
@@ -19,6 +20,6 @@ pub struct FileIndex {
 pub type FileForest = collections::BTreeMap<String, FileTree>;
 
 pub enum FileTree {
-    File { platform_path: String },
+    File { platform_path: path::PathBuf },
     Folder(FileForest),
 }

@@ -1,4 +1,5 @@
 use crate::model;
+use std::path;
 
 pub fn main(file_index: model::FileIndex) -> proc_macro2::TokenStream {
     print_forest(&file_index.resource_type, &file_index.files)
@@ -25,9 +26,14 @@ fn print_tree(resource_type: &str, name: &str, tree: &model::FileTree) -> proc_m
     }
 }
 
-fn print_file(resource_type: &str, name: &str, platform_path: &str) -> proc_macro2::TokenStream {
+fn print_file(
+    resource_type: &str,
+    name: &str,
+    platform_path: &path::PathBuf,
+) -> proc_macro2::TokenStream {
     let name = identifier(name);
     let resource_type = identifier(resource_type);
+    let platform_path = platform_path.to_string_lossy();
     quote::quote! {
         pub const #name: #resource_type = include_str!(#platform_path);
     }
@@ -77,13 +83,13 @@ mod tests {
         files.insert(
             "MENU_JSON".to_owned(),
             model::FileTree::File {
-                platform_path: "menu.json".to_owned(),
+                platform_path: path::PathBuf::from("menu.json"),
             },
         );
         files.insert(
             "TRANSLATIONS_CSV".to_owned(),
             model::FileTree::File {
-                platform_path: "translations.csv".to_owned(),
+                platform_path: path::PathBuf::from("translations.csv"),
             },
         );
 
@@ -108,7 +114,7 @@ mod tests {
         levels.insert(
             "TUTORIAL_JSON".to_owned(),
             model::FileTree::File {
-                platform_path: "world/levels/tutorial.json".to_owned(),
+                platform_path: path::PathBuf::from("world/levels/tutorial.json"),
             },
         );
         let mut world = model::FileForest::new();
@@ -116,14 +122,14 @@ mod tests {
         world.insert(
             "PHYSICAL_CONSTANTS_JSON".to_owned(),
             model::FileTree::File {
-                platform_path: "world/physical_constants.json".to_owned(),
+                platform_path: path::PathBuf::from("world/physical_constants.json"),
             },
         );
         let mut files = model::FileForest::new();
         files.insert(
             "CREDITS_MD".to_owned(),
             model::FileTree::File {
-                platform_path: "credits.md".to_owned(),
+                platform_path: path::PathBuf::from("credits.md"),
             },
         );
         files.insert("world".to_owned(), model::FileTree::Folder(world));
