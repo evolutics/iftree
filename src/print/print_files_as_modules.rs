@@ -1,5 +1,4 @@
 use crate::model;
-use std::path;
 
 pub fn main(file_index: model::FileIndex) -> proc_macro2::TokenStream {
     print_forest(&file_index.resource_type, &file_index.files)
@@ -21,15 +20,15 @@ fn print_forest(resource_type: &str, forest: &model::FileForest) -> proc_macro2:
 
 fn print_tree(resource_type: &str, name: &str, tree: &model::FileTree) -> proc_macro2::TokenStream {
     match tree {
-        model::FileTree::File { path } => print_file(resource_type, name, &path),
+        model::FileTree::File(file) => print_file(resource_type, name, file),
         model::FileTree::Folder(forest) => print_folder(resource_type, name, forest),
     }
 }
 
-fn print_file(resource_type: &str, name: &str, path: &path::PathBuf) -> proc_macro2::TokenStream {
+fn print_file(resource_type: &str, name: &str, file: &model::File) -> proc_macro2::TokenStream {
     let name = identifier(name);
     let resource_type = identifier(resource_type);
-    let path = path.to_string_lossy();
+    let path = file.path.to_string_lossy();
     quote::quote! {
         pub const #name: #resource_type = include_str!(#path);
     }
@@ -57,6 +56,7 @@ fn print_folder(
 mod tests {
     use super::*;
     use crate::model;
+    use std::path;
 
     #[test]
     fn prints_empty_set() {
@@ -78,15 +78,15 @@ mod tests {
         let mut files = model::FileForest::new();
         files.insert(
             "MENU_JSON".to_owned(),
-            model::FileTree::File {
+            model::FileTree::File(model::File {
                 path: path::PathBuf::from("menu.json"),
-            },
+            }),
         );
         files.insert(
             "TRANSLATIONS_CSV".to_owned(),
-            model::FileTree::File {
+            model::FileTree::File(model::File {
                 path: path::PathBuf::from("translations.csv"),
-            },
+            }),
         );
 
         let actual = main(model::FileIndex {
@@ -109,24 +109,24 @@ mod tests {
         let mut levels = model::FileForest::new();
         levels.insert(
             "TUTORIAL_JSON".to_owned(),
-            model::FileTree::File {
+            model::FileTree::File(model::File {
                 path: path::PathBuf::from("world/levels/tutorial.json"),
-            },
+            }),
         );
         let mut world = model::FileForest::new();
         world.insert("levels".to_owned(), model::FileTree::Folder(levels));
         world.insert(
             "PHYSICAL_CONSTANTS_JSON".to_owned(),
-            model::FileTree::File {
+            model::FileTree::File(model::File {
                 path: path::PathBuf::from("world/physical_constants.json"),
-            },
+            }),
         );
         let mut files = model::FileForest::new();
         files.insert(
             "CREDITS_MD".to_owned(),
-            model::FileTree::File {
+            model::FileTree::File(model::File {
                 path: path::PathBuf::from("credits.md"),
-            },
+            }),
         );
         files.insert("world".to_owned(), model::FileTree::Folder(world));
 
