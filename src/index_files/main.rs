@@ -10,19 +10,19 @@ pub fn main(resource_type: model::TypeAlias) -> model::FileIndex {
 
 fn example_files() -> model::FileForest {
     let menu_json = model::FileTree::File {
-        platform_path: path::PathBuf::from("resources/configuration/menu.json"),
+        path: path::PathBuf::from("resources/configuration/menu.json"),
     };
     let translations_csv = model::FileTree::File {
-        platform_path: path::PathBuf::from("resources/configuration/translations.csv"),
+        path: path::PathBuf::from("resources/configuration/translations.csv"),
     };
     let credits_md = model::FileTree::File {
-        platform_path: path::PathBuf::from("resources/credits.md"),
+        path: path::PathBuf::from("resources/credits.md"),
     };
     let tutorial_json = model::FileTree::File {
-        platform_path: path::PathBuf::from("resources/world/levels/tutorial.json"),
+        path: path::PathBuf::from("resources/world/levels/tutorial.json"),
     };
     let physical_constants_json = model::FileTree::File {
-        platform_path: path::PathBuf::from("resources/world/physical_constants.json"),
+        path: path::PathBuf::from("resources/world/physical_constants.json"),
     };
 
     let mut configuration = model::FileForest::new();

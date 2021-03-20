@@ -20,6 +20,6 @@ pub struct FileIndex {
 pub type FileForest = collections::BTreeMap<String, FileTree>;
 
 pub enum FileTree {
-    File { platform_path: path::PathBuf },
+    File { path: path::PathBuf },
     Folder(FileForest),
 }
