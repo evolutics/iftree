@@ -2,7 +2,7 @@ use crate::model;
 
 pub fn main(item: proc_macro::TokenStream, file_index: model::FileIndex) -> model::Output {
     let item = proc_macro2::TokenStream::from(item);
-    let resource_type = file_index.resource_type;
+    let resource_type = syn::Ident::new(&file_index.resource_type, proc_macro2::Span::call_site());
 
     let output = quote::quote! {
         #item

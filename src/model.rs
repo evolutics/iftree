@@ -10,5 +10,5 @@ pub struct TypeAlias {
 }
 
 pub struct FileIndex {
-    pub resource_type: syn::Ident,
+    pub resource_type: String,
 }
