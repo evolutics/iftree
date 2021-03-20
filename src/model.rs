@@ -19,6 +19,6 @@ pub struct FileIndex {
 pub type FileForest = collections::BTreeMap<String, FileTree>;
 
 pub enum FileTree {
-    File { path: String },
+    File { platform_path: String },
     Folder(FileForest),
 }

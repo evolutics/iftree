@@ -9,19 +9,19 @@ pub fn main(resource_type: model::TypeAlias) -> model::FileIndex {
 
 fn example_files() -> model::FileForest {
     let menu_json = model::FileTree::File {
-        path: "resources/configuration/menu.json".to_owned(),
+        platform_path: "resources/configuration/menu.json".to_owned(),
     };
     let translations_csv = model::FileTree::File {
-        path: "resources/configuration/translations.csv".to_owned(),
+        platform_path: "resources/configuration/translations.csv".to_owned(),
     };
     let credits_md = model::FileTree::File {
-        path: "resources/credits.md".to_owned(),
+        platform_path: "resources/credits.md".to_owned(),
     };
     let tutorial_json = model::FileTree::File {
-        path: "resources/world/levels/tutorial.json".to_owned(),
+        platform_path: "resources/world/levels/tutorial.json".to_owned(),
     };
     let physical_constants_json = model::FileTree::File {
-        path: "resources/world/physical_constants.json".to_owned(),
+        platform_path: "resources/world/physical_constants.json".to_owned(),
     };
 
     let mut configuration = model::FileForest::new();
