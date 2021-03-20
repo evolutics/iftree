@@ -19,6 +19,10 @@ struct TypeAlias {
     identifier: syn::Ident,
 }
 
+struct FileIndex {
+    resource_type: syn::Ident,
+}
+
 impl parse::Parse for TypeAlias {
     fn parse(item: parse::ParseStream) -> syn::Result<Self> {
         item.call(syn::Attribute::parse_outer)?;
@@ -36,13 +40,20 @@ impl parse::Parse for TypeAlias {
 fn process(input: Input) -> Output {
     let item = input.item;
     let item_clone = item.clone();
-    let resource = syn::parse_macro_input!(item);
-    generate(item_clone, &resource)
+    let resource_type = syn::parse_macro_input!(item);
+    let file_index = index_files(resource_type);
+    print(item_clone, file_index)
 }
 
-fn generate(item: proc_macro::TokenStream, resource: &TypeAlias) -> Output {
+fn index_files(resource_type: TypeAlias) -> FileIndex {
+    FileIndex {
+        resource_type: resource_type.identifier,
+    }
+}
+
+fn print(item: proc_macro::TokenStream, file_index: FileIndex) -> Output {
     let item = proc_macro2::TokenStream::from(item);
-    let resource_type = &resource.identifier;
+    let resource_type = file_index.resource_type;
 
     let output = quote::quote! {
         #item
