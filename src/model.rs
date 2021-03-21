@@ -1,3 +1,4 @@
+use std::cmp;
 use std::collections;
 use std::path;
 
@@ -8,10 +9,12 @@ pub struct Input {
 
 pub type Output = proc_macro::TokenStream;
 
+#[derive(cmp::PartialEq)]
 pub struct TypeAlias {
     pub identifier: syn::Ident,
 }
 
+#[derive(cmp::PartialEq)]
 pub struct FileIndex {
     pub resource_type: String,
     pub forest: FileForest,
@@ -19,11 +22,13 @@ pub struct FileIndex {
 
 pub type FileForest = collections::BTreeMap<String, FileTree>;
 
+#[derive(cmp::PartialEq)]
 pub enum FileTree {
     File(File),
     Folder(FileForest),
 }
 
+#[derive(cmp::PartialEq)]
 pub struct File {
     pub path: path::PathBuf,
 }
