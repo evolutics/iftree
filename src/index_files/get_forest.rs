@@ -59,8 +59,8 @@ fn add_file(
                     colliding_file.full_path.display()
                 );
                 let name = generate_identifier::main(&name, &|name| !parent.contains_key(name));
-                reverse_file_path.push(name);
-                add_file(parent, reverse_file_path, file);
+                let child = get_singleton_tree(reverse_file_path.to_vec(), file);
+                parent.insert(name, child);
             }
 
             Some(model::FileTree::Folder(child)) => {
