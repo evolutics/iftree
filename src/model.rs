@@ -14,7 +14,7 @@ pub struct TypeAlias {
 
 pub struct FileIndex {
     pub resource_type: String,
-    pub files: FileForest,
+    pub forest: FileForest,
 }
 
 pub type FileForest = collections::BTreeMap<String, FileTree>;

@@ -1,7 +1,7 @@
 use crate::model;
 
 pub fn main(file_index: model::FileIndex) -> proc_macro2::TokenStream {
-    print_forest(&file_index.resource_type, &file_index.files)
+    print_forest(&file_index.resource_type, &file_index.forest)
 }
 
 fn print_forest(resource_type: &str, forest: &model::FileForest) -> proc_macro2::TokenStream {
@@ -60,11 +60,11 @@ mod tests {
 
     #[test]
     fn prints_empty_set() {
-        let files = model::FileForest::new();
+        let forest = model::FileForest::new();
 
         let actual = main(model::FileIndex {
             resource_type: "Resource".to_owned(),
-            files,
+            forest,
         });
 
         let expected = quote::quote! {
@@ -75,14 +75,14 @@ mod tests {
 
     #[test]
     fn prints_files() {
-        let mut files = model::FileForest::new();
-        files.insert(
+        let mut forest = model::FileForest::new();
+        forest.insert(
             "MENU_JSON".to_owned(),
             model::FileTree::File(model::File {
                 path: path::PathBuf::from("menu.json"),
             }),
         );
-        files.insert(
+        forest.insert(
             "TRANSLATIONS_CSV".to_owned(),
             model::FileTree::File(model::File {
                 path: path::PathBuf::from("translations.csv"),
@@ -91,7 +91,7 @@ mod tests {
 
         let actual = main(model::FileIndex {
             resource_type: "Resource".to_owned(),
-            files,
+            forest,
         });
 
         let expected = quote::quote! {
@@ -121,18 +121,18 @@ mod tests {
                 path: path::PathBuf::from("world/physical_constants.json"),
             }),
         );
-        let mut files = model::FileForest::new();
-        files.insert(
+        let mut forest = model::FileForest::new();
+        forest.insert(
             "CREDITS_MD".to_owned(),
             model::FileTree::File(model::File {
                 path: path::PathBuf::from("credits.md"),
             }),
         );
-        files.insert("world".to_owned(), model::FileTree::Folder(world));
+        forest.insert("world".to_owned(), model::FileTree::Folder(world));
 
         let actual = main(model::FileIndex {
             resource_type: "Resource".to_owned(),
-            files,
+            forest,
         });
 
         let expected = quote::quote! {

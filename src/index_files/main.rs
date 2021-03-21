@@ -4,11 +4,11 @@ use std::path;
 pub fn main(resource_type: model::TypeAlias) -> model::FileIndex {
     model::FileIndex {
         resource_type: resource_type.identifier.to_string(),
-        files: example_files(),
+        forest: example_forest(),
     }
 }
 
-fn example_files() -> model::FileForest {
+fn example_forest() -> model::FileForest {
     let menu_json = model::FileTree::File(model::File {
         path: path::PathBuf::from("resources/configuration/menu.json"),
     });
@@ -36,13 +36,13 @@ fn example_files() -> model::FileForest {
         "PHYSICAL_CONSTANTS_JSON".to_owned(),
         physical_constants_json,
     );
-    let mut files = model::FileForest::new();
-    files.insert(
+    let mut forest = model::FileForest::new();
+    forest.insert(
         "configuration".to_owned(),
         model::FileTree::Folder(configuration),
     );
-    files.insert("CREDITS_MD".to_owned(), credits_md);
-    files.insert("world".to_owned(), model::FileTree::Folder(world));
+    forest.insert("CREDITS_MD".to_owned(), credits_md);
+    forest.insert("world".to_owned(), model::FileTree::Folder(world));
 
-    files
+    forest
 }
