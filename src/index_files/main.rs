@@ -1,48 +1,12 @@
+use super::get_forest;
+use super::get_paths;
 use crate::model;
-use std::path;
 
 pub fn main(resource_type: model::TypeAlias) -> model::FileIndex {
+    let canonical_paths = get_paths::main();
+    let forest = get_forest::main(canonical_paths);
     model::FileIndex {
         resource_type: resource_type.identifier.to_string(),
-        forest: example_forest(),
+        forest,
     }
-}
-
-fn example_forest() -> model::FileForest {
-    let menu_json = model::FileTree::File(model::File {
-        path: path::PathBuf::from("resources/configuration/menu.json"),
-    });
-    let translations_csv = model::FileTree::File(model::File {
-        path: path::PathBuf::from("resources/configuration/translations.csv"),
-    });
-    let credits_md = model::FileTree::File(model::File {
-        path: path::PathBuf::from("resources/credits.md"),
-    });
-    let tutorial_json = model::FileTree::File(model::File {
-        path: path::PathBuf::from("resources/world/levels/tutorial.json"),
-    });
-    let physical_constants_json = model::FileTree::File(model::File {
-        path: path::PathBuf::from("resources/world/physical_constants.json"),
-    });
-
-    let mut configuration = model::FileForest::new();
-    configuration.insert("MENU_JSON".to_owned(), menu_json);
-    configuration.insert("TRANSLATIONS_CSV".to_owned(), translations_csv);
-    let mut levels = model::FileForest::new();
-    levels.insert("TUTORIAL_JSON".to_owned(), tutorial_json);
-    let mut world = model::FileForest::new();
-    world.insert("levels".to_owned(), model::FileTree::Folder(levels));
-    world.insert(
-        "PHYSICAL_CONSTANTS_JSON".to_owned(),
-        physical_constants_json,
-    );
-    let mut forest = model::FileForest::new();
-    forest.insert(
-        "configuration".to_owned(),
-        model::FileTree::Folder(configuration),
-    );
-    forest.insert("CREDITS_MD".to_owned(), credits_md);
-    forest.insert("world".to_owned(), model::FileTree::Folder(world));
-
-    forest
 }

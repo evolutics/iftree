@@ -1,4 +1,3 @@
-#[allow(dead_code)]
 pub fn main(base: &str, is_valid: &dyn Fn(&str) -> bool) -> String {
     let mut index = 0;
     loop {

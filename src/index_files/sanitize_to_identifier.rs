@@ -1,4 +1,3 @@
-#[allow(dead_code)]
 pub fn main(original: &str, convention: Convention) -> String {
     match convention {
         Convention::ScreamingSnakeCase => original.to_uppercase(),
@@ -7,7 +6,6 @@ pub fn main(original: &str, convention: Convention) -> String {
     .replace(".", "_")
 }
 
-#[allow(dead_code)]
 pub enum Convention {
     ScreamingSnakeCase,
     SnakeCase,
