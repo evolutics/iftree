@@ -35,7 +35,7 @@ fn get_reverse_file_path(canonical_path: &path::PathBuf) -> vec::Vec<String> {
 
 fn get_file(canonical_path: &path::PathBuf) -> model::File {
     model::File {
-        path: path::PathBuf::from("resources").join(canonical_path),
+        full_path: path::PathBuf::from("resources").join(canonical_path),
     }
 }
 
@@ -56,7 +56,7 @@ fn add_file(
             Some(model::FileTree::File(colliding_file)) => {
                 eprintln!(
                     "Adapting generated name due to collision with file: {}",
-                    colliding_file.path.display()
+                    colliding_file.full_path.display()
                 );
                 let name = generate_identifier::main(&name, &|name| !parent.contains_key(name));
                 reverse_file_path.push(name);
@@ -106,13 +106,13 @@ mod tests {
         expected.insert(
             "MENU_JSON".to_owned(),
             model::FileTree::File(model::File {
-                path: path::PathBuf::from("resources/menu.json"),
+                full_path: path::PathBuf::from("resources/menu.json"),
             }),
         );
         expected.insert(
             "TRANSLATIONS_CSV".to_owned(),
             model::FileTree::File(model::File {
-                path: path::PathBuf::from("resources/translations.csv"),
+                full_path: path::PathBuf::from("resources/translations.csv"),
             }),
         );
         assert_eq!(actual, expected);
@@ -132,7 +132,7 @@ mod tests {
         levels.insert(
             "TUTORIAL_JSON".to_owned(),
             model::FileTree::File(model::File {
-                path: path::PathBuf::from("resources/world/levels/tutorial.json"),
+                full_path: path::PathBuf::from("resources/world/levels/tutorial.json"),
             }),
         );
         let mut world = model::FileForest::new();
@@ -140,14 +140,14 @@ mod tests {
         world.insert(
             "PHYSICAL_CONSTANTS_JSON".to_owned(),
             model::FileTree::File(model::File {
-                path: path::PathBuf::from("resources/world/physical_constants.json"),
+                full_path: path::PathBuf::from("resources/world/physical_constants.json"),
             }),
         );
         let mut expected = model::FileForest::new();
         expected.insert(
             "CREDITS_MD".to_owned(),
             model::FileTree::File(model::File {
-                path: path::PathBuf::from("resources/credits.md"),
+                full_path: path::PathBuf::from("resources/credits.md"),
             }),
         );
         expected.insert("world".to_owned(), model::FileTree::Folder(world));
@@ -169,25 +169,25 @@ mod tests {
         expected.insert(
             "CREDITS_MD".to_owned(),
             model::FileTree::File(model::File {
-                path: path::PathBuf::from("resources/credits.md"),
+                full_path: path::PathBuf::from("resources/credits.md"),
             }),
         );
         expected.insert(
             "CREDITS_MD0".to_owned(),
             model::FileTree::File(model::File {
-                path: path::PathBuf::from("resources/Credits.md"),
+                full_path: path::PathBuf::from("resources/Credits.md"),
             }),
         );
         expected.insert(
             "CREDITS_MD1".to_owned(),
             model::FileTree::File(model::File {
-                path: path::PathBuf::from("resources/CREDITS.md"),
+                full_path: path::PathBuf::from("resources/CREDITS.md"),
             }),
         );
         expected.insert(
             "CREDITS_MD00".to_owned(),
             model::FileTree::File(model::File {
-                path: path::PathBuf::from("resources/credits.md0"),
+                full_path: path::PathBuf::from("resources/credits.md0"),
             }),
         );
         assert_eq!(actual, expected);

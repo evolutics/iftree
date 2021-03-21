@@ -30,5 +30,5 @@ pub enum FileTree {
 
 #[derive(cmp::PartialEq, Debug)]
 pub struct File {
-    pub path: path::PathBuf,
+    pub full_path: path::PathBuf,
 }
