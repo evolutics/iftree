@@ -55,7 +55,6 @@ fn print_folder(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::model;
     use std::path;
 
     #[test]
