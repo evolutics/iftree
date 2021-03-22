@@ -30,5 +30,18 @@ pub enum FileTree {
 
 #[derive(Clone, cmp::PartialEq, Debug)]
 pub struct File {
+    pub canonical_path: path::PathBuf,
     pub full_path: path::PathBuf,
+}
+
+#[cfg(test)]
+pub mod stubs {
+    use super::*;
+
+    pub fn file() -> File {
+        File {
+            canonical_path: path::PathBuf::from("bar"),
+            full_path: path::PathBuf::from("foo/bar"),
+        }
+    }
 }

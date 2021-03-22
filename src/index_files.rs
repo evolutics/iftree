@@ -1,4 +1,5 @@
 mod generate_identifier;
+mod get_files;
 mod get_forest;
 mod get_paths;
 mod main;

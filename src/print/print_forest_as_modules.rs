@@ -79,12 +79,14 @@ mod tests {
             "MENU_JSON".to_owned(),
             model::FileTree::File(model::File {
                 full_path: path::PathBuf::from("menu.json"),
+                ..model::stubs::file()
             }),
         );
         forest.insert(
             "TRANSLATIONS_CSV".to_owned(),
             model::FileTree::File(model::File {
                 full_path: path::PathBuf::from("translations.csv"),
+                ..model::stubs::file()
             }),
         );
 
@@ -110,6 +112,7 @@ mod tests {
             "TUTORIAL_JSON".to_owned(),
             model::FileTree::File(model::File {
                 full_path: path::PathBuf::from("world/levels/tutorial.json"),
+                ..model::stubs::file()
             }),
         );
         let mut world = model::FileForest::new();
@@ -118,6 +121,7 @@ mod tests {
             "PHYSICAL_CONSTANTS_JSON".to_owned(),
             model::FileTree::File(model::File {
                 full_path: path::PathBuf::from("world/physical_constants.json"),
+                ..model::stubs::file()
             }),
         );
         let mut forest = model::FileForest::new();
@@ -125,6 +129,7 @@ mod tests {
             "CREDITS_MD".to_owned(),
             model::FileTree::File(model::File {
                 full_path: path::PathBuf::from("credits.md"),
+                ..model::stubs::file()
             }),
         );
         forest.insert("world".to_owned(), model::FileTree::Folder(world));
