@@ -35,7 +35,7 @@ fn print_file(resource_type: &str, name: &str, file: &model::File) -> proc_macro
 }
 
 fn identifier(name: &str) -> syn::Ident {
-    syn::Ident::new(name, proc_macro2::Span::call_site())
+    quote::format_ident!("{}", name)
 }
 
 fn print_folder(
@@ -155,6 +155,36 @@ mod tests {
 
                     pub const TUTORIAL_JSON: Resource = include_str!("world/levels/tutorial.json");
                 }
+            }
+        };
+        assert_eq!(actual.to_string(), expected.to_string());
+    }
+
+    #[test]
+    fn prints_both_normal_and_raw_identifiers() {
+        let mut raw = model::FileForest::new();
+        raw.insert(
+            "NORMAL".to_owned(),
+            model::FileTree::File(model::File {
+                full_path: path::PathBuf::from("normal"),
+                ..model::stubs::file()
+            }),
+        );
+        let mut forest = model::FileForest::new();
+        forest.insert("r#match".to_owned(), model::FileTree::Folder(raw));
+
+        let actual = main(model::FileIndex {
+            resource_type: "Resource".to_owned(),
+            forest,
+        });
+
+        let expected = quote::quote! {
+            use super::Resource;
+
+            pub mod r#match {
+                use super::Resource;
+
+                pub const NORMAL: Resource = include_str!("normal");
             }
         };
         assert_eq!(actual.to_string(), expected.to_string());
