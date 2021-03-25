@@ -43,8 +43,9 @@ mod tests {
 
     #[test]
     fn gets() {
-        let mut actual = main(path::Path::new("examples/resources")).unwrap();
+        let actual = main(path::Path::new("examples/resources"));
 
+        let mut actual = actual.unwrap();
         actual.sort();
         assert_eq!(
             actual,

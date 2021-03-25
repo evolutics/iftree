@@ -23,11 +23,10 @@ mod tests {
 
     #[test]
     fn parses_type_alias() {
-        let actual =
-            syn::parse_str::<model::TypeAlias>("pub type MyResource = &'static str;").unwrap();
+        let actual = syn::parse_str::<model::TypeAlias>("pub type MyResource = &'static str;");
 
         assert_eq!(
-            actual,
+            actual.unwrap(),
             model::TypeAlias {
                 identifier: "MyResource".to_owned()
             }

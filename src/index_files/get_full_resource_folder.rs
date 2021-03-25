@@ -16,9 +16,8 @@ mod tests {
     fn gets() {
         let actual = main(&model::Configuration {
             resource_folder: path::PathBuf::from("example/resources"),
-        })
-        .unwrap();
+        });
 
-        assert!(actual.ends_with("example/resources"));
+        assert!(actual.unwrap().ends_with("example/resources"));
     }
 }
