@@ -16,3 +16,21 @@ impl parse::Parse for model::TypeAlias {
         })
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn parses_type_alias() {
+        let actual =
+            syn::parse_str::<model::TypeAlias>("pub type MyResource = &'static str;").unwrap();
+
+        assert_eq!(
+            actual,
+            model::TypeAlias {
+                identifier: "MyResource".to_owned()
+            }
+        );
+    }
+}
