@@ -1,7 +1,7 @@
 use crate::model;
 use syn::parse;
 
-impl parse::Parse for model::TypeAlias {
+impl parse::Parse for model::ResourceType {
     fn parse(item: parse::ParseStream) -> syn::Result<Self> {
         item.call(syn::Attribute::parse_outer)?;
         item.parse::<syn::Visibility>()?;
@@ -11,8 +11,9 @@ impl parse::Parse for model::TypeAlias {
         item.parse::<syn::Type>()?;
         item.parse::<syn::Token![;]>()?;
 
-        Ok(model::TypeAlias {
+        Ok(model::ResourceType {
             identifier: identifier.to_string(),
+            structure: model::ResourceStructure::TypeAlias,
         })
     }
 }
@@ -23,11 +24,12 @@ mod tests {
 
     #[test]
     fn parses_type_alias() {
-        let actual = syn::parse_str::<model::TypeAlias>("pub type MyResource = &'static str;");
+        let actual = syn::parse_str::<model::ResourceType>("pub type MyResource = &'static str;");
 
         let actual = actual.unwrap();
-        let expected = model::TypeAlias {
+        let expected = model::ResourceType {
             identifier: String::from("MyResource"),
+            structure: model::ResourceStructure::TypeAlias,
         };
         assert_eq!(actual, expected);
     }

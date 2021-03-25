@@ -6,7 +6,7 @@ use crate::model;
 
 pub fn main(
     configuration: model::Configuration,
-    resource_type: model::TypeAlias,
+    resource_type: model::ResourceType,
 ) -> model::Result<model::FileIndex> {
     let full_resource_folder = get_full_resource_folder::main(&configuration)?;
     let canonical_paths = get_canonical_paths::main(&full_resource_folder)?;

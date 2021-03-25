@@ -26,8 +26,16 @@ pub struct Configuration {
 }
 
 #[derive(Clone, cmp::PartialEq, Debug)]
-pub struct TypeAlias {
+pub struct ResourceType {
     pub identifier: String,
+    pub structure: ResourceStructure,
+}
+
+#[derive(Clone, cmp::PartialEq, Debug)]
+pub enum ResourceStructure {
+    TypeAlias,
+    #[allow(dead_code)]
+    NamedFields(collections::HashSet<String>),
 }
 
 #[derive(Clone, cmp::PartialEq, Debug)]
