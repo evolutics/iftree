@@ -11,7 +11,7 @@ pub fn main(
     let files = get_files::main(&configuration, canonical_paths);
     let forest = get_forest::main(files);
     model::FileIndex {
-        resource_type: resource_type.identifier.to_string(),
+        resource_type: resource_type.identifier,
         forest,
     }
 }

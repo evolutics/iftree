@@ -16,7 +16,7 @@ pub struct Configuration {
 
 #[derive(Clone, cmp::PartialEq, Debug)]
 pub struct TypeAlias {
-    pub identifier: syn::Ident,
+    pub identifier: String,
 }
 
 #[derive(Clone, cmp::PartialEq, Debug)]

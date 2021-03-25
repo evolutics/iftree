@@ -11,6 +11,8 @@ impl parse::Parse for model::TypeAlias {
         item.parse::<syn::Type>()?;
         item.parse::<syn::Token![;]>()?;
 
-        Ok(model::TypeAlias { identifier })
+        Ok(model::TypeAlias {
+            identifier: identifier.to_string(),
+        })
     }
 }
