@@ -10,6 +10,11 @@ pub struct Input {
 pub type Output = proc_macro::TokenStream;
 
 #[derive(Clone, cmp::PartialEq, Debug)]
+pub struct Configuration {
+    pub resource_folder: path::PathBuf,
+}
+
+#[derive(Clone, cmp::PartialEq, Debug)]
 pub struct TypeAlias {
     pub identifier: syn::Ident,
 }
