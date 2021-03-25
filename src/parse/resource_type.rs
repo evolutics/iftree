@@ -28,7 +28,7 @@ mod tests {
         assert_eq!(
             actual.unwrap(),
             model::TypeAlias {
-                identifier: "MyResource".to_owned()
+                identifier: String::from("MyResource")
             }
         );
     }

@@ -62,7 +62,7 @@ mod tests {
         let forest = model::FileForest::new();
 
         let actual = main(model::FileIndex {
-            resource_type: "Resource".to_owned(),
+            resource_type: String::from("Resource"),
             forest,
         });
 
@@ -76,14 +76,14 @@ mod tests {
     fn prints_files() {
         let mut forest = model::FileForest::new();
         forest.insert(
-            "MENU_JSON".to_owned(),
+            String::from("MENU_JSON"),
             model::FileTree::File(model::File {
                 full_path: path::PathBuf::from("menu.json"),
                 ..model::stubs::file()
             }),
         );
         forest.insert(
-            "TRANSLATIONS_CSV".to_owned(),
+            String::from("TRANSLATIONS_CSV"),
             model::FileTree::File(model::File {
                 full_path: path::PathBuf::from("translations.csv"),
                 ..model::stubs::file()
@@ -91,7 +91,7 @@ mod tests {
         );
 
         let actual = main(model::FileIndex {
-            resource_type: "Resource".to_owned(),
+            resource_type: String::from("Resource"),
             forest,
         });
 
@@ -109,16 +109,16 @@ mod tests {
     fn prints_folders() {
         let mut levels = model::FileForest::new();
         levels.insert(
-            "TUTORIAL_JSON".to_owned(),
+            String::from("TUTORIAL_JSON"),
             model::FileTree::File(model::File {
                 full_path: path::PathBuf::from("world/levels/tutorial.json"),
                 ..model::stubs::file()
             }),
         );
         let mut world = model::FileForest::new();
-        world.insert("levels".to_owned(), model::FileTree::Folder(levels));
+        world.insert(String::from("levels"), model::FileTree::Folder(levels));
         world.insert(
-            "PHYSICAL_CONSTANTS_JSON".to_owned(),
+            String::from("PHYSICAL_CONSTANTS_JSON"),
             model::FileTree::File(model::File {
                 full_path: path::PathBuf::from("world/physical_constants.json"),
                 ..model::stubs::file()
@@ -126,16 +126,16 @@ mod tests {
         );
         let mut forest = model::FileForest::new();
         forest.insert(
-            "CREDITS_MD".to_owned(),
+            String::from("CREDITS_MD"),
             model::FileTree::File(model::File {
                 full_path: path::PathBuf::from("credits.md"),
                 ..model::stubs::file()
             }),
         );
-        forest.insert("world".to_owned(), model::FileTree::Folder(world));
+        forest.insert(String::from("world"), model::FileTree::Folder(world));
 
         let actual = main(model::FileIndex {
-            resource_type: "Resource".to_owned(),
+            resource_type: String::from("Resource"),
             forest,
         });
 
@@ -164,17 +164,17 @@ mod tests {
     fn prints_both_normal_and_raw_identifiers() {
         let mut raw = model::FileForest::new();
         raw.insert(
-            "NORMAL".to_owned(),
+            String::from("NORMAL"),
             model::FileTree::File(model::File {
                 full_path: path::PathBuf::from("normal"),
                 ..model::stubs::file()
             }),
         );
         let mut forest = model::FileForest::new();
-        forest.insert("r#match".to_owned(), model::FileTree::Folder(raw));
+        forest.insert(String::from("r#match"), model::FileTree::Folder(raw));
 
         let actual = main(model::FileIndex {
-            resource_type: "Resource".to_owned(),
+            resource_type: String::from("Resource"),
             forest,
         });
 

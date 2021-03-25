@@ -40,7 +40,7 @@ fn sanitize_first_character(identifier: String) -> String {
 
 fn sanitize_special_cases(identifier: String) -> String {
     match identifier.as_ref() {
-        "" => "__".to_owned(),
+        "" => String::from("__"),
         "_" | "crate" | "self" | "Self" | "super" => format!("{}_", identifier),
         _ => identifier,
     }
