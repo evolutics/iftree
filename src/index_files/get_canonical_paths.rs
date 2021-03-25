@@ -47,16 +47,14 @@ mod tests {
 
         let mut actual = actual.unwrap();
         actual.sort();
-        assert_eq!(
-            actual,
-            vec![
-                path::PathBuf::from(".env"),
-                path::PathBuf::from("configuration/menu.json"),
-                path::PathBuf::from("configuration/translations.csv"),
-                path::PathBuf::from("credits.md"),
-                path::PathBuf::from("world/levels/tutorial.json"),
-                path::PathBuf::from("world/physical_constants.json"),
-            ],
-        );
+        let expected = vec![
+            path::PathBuf::from(".env"),
+            path::PathBuf::from("configuration/menu.json"),
+            path::PathBuf::from("configuration/translations.csv"),
+            path::PathBuf::from("credits.md"),
+            path::PathBuf::from("world/levels/tutorial.json"),
+            path::PathBuf::from("world/physical_constants.json"),
+        ];
+        assert_eq!(actual, expected);
     }
 }

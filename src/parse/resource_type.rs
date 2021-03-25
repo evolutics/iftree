@@ -25,11 +25,10 @@ mod tests {
     fn parses_type_alias() {
         let actual = syn::parse_str::<model::TypeAlias>("pub type MyResource = &'static str;");
 
-        assert_eq!(
-            actual.unwrap(),
-            model::TypeAlias {
-                identifier: String::from("MyResource")
-            }
-        );
+        let actual = actual.unwrap();
+        let expected = model::TypeAlias {
+            identifier: String::from("MyResource"),
+        };
+        assert_eq!(actual, expected);
     }
 }

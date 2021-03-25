@@ -63,55 +63,63 @@ mod tests {
     fn sanitizes_by_convention_of_screaming_snake_case() {
         let actual = main("README.md", Convention::ScreamingSnakeCase);
 
-        assert_eq!(actual, "r#README_MD");
+        let expected = "r#README_MD";
+        assert_eq!(actual, expected);
     }
 
     #[test]
     fn sanitizes_by_convention_of_snake_case() {
         let actual = main("README.md", Convention::SnakeCase);
 
-        assert_eq!(actual, "r#readme_md");
+        let expected = "r#readme_md";
+        assert_eq!(actual, expected);
     }
 
     #[test]
     fn sanitizes_special_characters() {
         let actual = main("A B##C_D±EÅF𝟙G.H", Convention::ScreamingSnakeCase);
 
-        assert_eq!(actual, "r#A_B__C_D_E_F_G_H");
+        let expected = "r#A_B__C_D_E_F_G_H";
+        assert_eq!(actual, expected);
     }
 
     #[test]
     fn sanitizes_first_character() {
         let actual = main("2a", Convention::SnakeCase);
 
-        assert_eq!(actual, "r#_2a");
+        let expected = "r#_2a";
+        assert_eq!(actual, expected);
     }
 
     #[test]
     fn sanitizes_empty_string() {
         let actual = main("", stubs::convention());
 
-        assert_eq!(actual, "r#__");
+        let expected = "r#__";
+        assert_eq!(actual, expected);
     }
 
     #[test]
     fn sanitizes_wildcard_pattern() {
         let actual = main("_", stubs::convention());
 
-        assert_eq!(actual, "r#__");
+        let expected = "r#__";
+        assert_eq!(actual, expected);
     }
 
     #[test]
     fn sanitizes_special_keywords() {
         let actual = main("self", Convention::SnakeCase);
 
-        assert_eq!(actual, "r#self_");
+        let expected = "r#self_";
+        assert_eq!(actual, expected);
     }
 
     #[test]
     fn sanitizes_other_keywords() {
         let actual = main("match", Convention::SnakeCase);
 
-        assert_eq!(actual, "r#match");
+        let expected = "r#match";
+        assert_eq!(actual, expected);
     }
 }

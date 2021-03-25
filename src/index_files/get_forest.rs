@@ -83,7 +83,8 @@ mod tests {
     fn gets_empty_set() {
         let actual = main(vec![]);
 
-        assert_eq!(actual, model::FileForest::new());
+        let expected = model::FileForest::new();
+        assert_eq!(actual, expected);
     }
 
     #[test]

@@ -17,6 +17,7 @@ mod tests {
     fn generates() {
         let actual = main("zeta", &|name| name.len() > 5);
 
-        assert_eq!(actual, "zeta10");
+        let expected = "zeta10";
+        assert_eq!(actual, expected);
     }
 }

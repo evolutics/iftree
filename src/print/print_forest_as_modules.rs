@@ -66,10 +66,12 @@ mod tests {
             forest,
         });
 
+        let actual = actual.to_string();
         let expected = quote::quote! {
             use super::Resource;
-        };
-        assert_eq!(actual.to_string(), expected.to_string());
+        }
+        .to_string();
+        assert_eq!(actual, expected);
     }
 
     #[test]
@@ -95,14 +97,16 @@ mod tests {
             forest,
         });
 
+        let actual = actual.to_string();
         let expected = quote::quote! {
             use super::Resource;
 
             pub const MENU_JSON: Resource = include_str!("menu.json");
 
             pub const TRANSLATIONS_CSV: Resource = include_str!("translations.csv");
-        };
-        assert_eq!(actual.to_string(), expected.to_string());
+        }
+        .to_string();
+        assert_eq!(actual, expected);
     }
 
     #[test]
@@ -139,6 +143,7 @@ mod tests {
             forest,
         });
 
+        let actual = actual.to_string();
         let expected = quote::quote! {
             use super::Resource;
 
@@ -156,8 +161,9 @@ mod tests {
                     pub const TUTORIAL_JSON: Resource = include_str!("world/levels/tutorial.json");
                 }
             }
-        };
-        assert_eq!(actual.to_string(), expected.to_string());
+        }
+        .to_string();
+        assert_eq!(actual, expected);
     }
 
     #[test]
@@ -178,6 +184,7 @@ mod tests {
             forest,
         });
 
+        let actual = actual.to_string();
         let expected = quote::quote! {
             use super::Resource;
 
@@ -186,7 +193,8 @@ mod tests {
 
                 pub const NORMAL: Resource = include_str!("normal");
             }
-        };
-        assert_eq!(actual.to_string(), expected.to_string());
+        }
+        .to_string();
+        assert_eq!(actual, expected);
     }
 }

@@ -34,18 +34,16 @@ mod tests {
             ],
         );
 
-        assert_eq!(
-            actual,
-            vec![
-                model::File {
-                    canonical_path: path::PathBuf::from("world/physical_constants.json"),
-                    full_path: path::PathBuf::from("resources/world/physical_constants.json"),
-                },
-                model::File {
-                    canonical_path: path::PathBuf::from("configuration/menu.json"),
-                    full_path: path::PathBuf::from("resources/configuration/menu.json"),
-                },
-            ],
-        );
+        let expected = vec![
+            model::File {
+                canonical_path: path::PathBuf::from("world/physical_constants.json"),
+                full_path: path::PathBuf::from("resources/world/physical_constants.json"),
+            },
+            model::File {
+                canonical_path: path::PathBuf::from("configuration/menu.json"),
+                full_path: path::PathBuf::from("resources/configuration/menu.json"),
+            },
+        ];
+        assert_eq!(actual, expected);
     }
 }
