@@ -101,9 +101,9 @@ mod tests {
         let actual = main(files);
 
         let mut expected = model::FileForest::new();
-        expected.insert("MENU_JSON".to_owned(), model::FileTree::File(menu_json));
+        expected.insert("r#MENU_JSON".to_owned(), model::FileTree::File(menu_json));
         expected.insert(
-            "TRANSLATIONS_CSV".to_owned(),
+            "r#TRANSLATIONS_CSV".to_owned(),
             model::FileTree::File(translations_csv),
         );
         assert_eq!(actual, expected);
@@ -133,18 +133,18 @@ mod tests {
 
         let mut levels = model::FileForest::new();
         levels.insert(
-            "TUTORIAL_JSON".to_owned(),
+            "r#TUTORIAL_JSON".to_owned(),
             model::FileTree::File(tutorial_json),
         );
         let mut world = model::FileForest::new();
-        world.insert("levels".to_owned(), model::FileTree::Folder(levels));
+        world.insert("r#levels".to_owned(), model::FileTree::Folder(levels));
         world.insert(
-            "PHYSICAL_CONSTANTS_JSON".to_owned(),
+            "r#PHYSICAL_CONSTANTS_JSON".to_owned(),
             model::FileTree::File(physical_constants_json),
         );
         let mut expected = model::FileForest::new();
-        expected.insert("CREDITS_MD".to_owned(), model::FileTree::File(credits_md));
-        expected.insert("world".to_owned(), model::FileTree::Folder(world));
+        expected.insert("r#CREDITS_MD".to_owned(), model::FileTree::File(credits_md));
+        expected.insert("r#world".to_owned(), model::FileTree::Folder(world));
         assert_eq!(actual, expected);
     }
 
@@ -176,17 +176,20 @@ mod tests {
         let actual = main(files);
 
         let mut expected = model::FileForest::new();
-        expected.insert("CREDITS_MD".to_owned(), model::FileTree::File(credits_md_0));
         expected.insert(
-            "CREDITS_MD0".to_owned(),
+            "r#CREDITS_MD".to_owned(),
+            model::FileTree::File(credits_md_0),
+        );
+        expected.insert(
+            "r#CREDITS_MD0".to_owned(),
             model::FileTree::File(credits_md_1),
         );
         expected.insert(
-            "CREDITS_MD1".to_owned(),
+            "r#CREDITS_MD1".to_owned(),
             model::FileTree::File(credits_md_2),
         );
         expected.insert(
-            "CREDITS_MD00".to_owned(),
+            "r#CREDITS_MD00".to_owned(),
             model::FileTree::File(credits_md_3),
         );
         assert_eq!(actual, expected);
