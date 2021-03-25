@@ -14,14 +14,14 @@ impl fmt::Display for model::Error {
                         "The environment variable `{}` is not defined. \
                         It is required to resolve the resource folder path. \
                         As a workaround, try defining it manually.",
-                        name
+                        name,
                     ),
                     env::VarError::NotUnicode(data) => {
                         write!(
                             formatter,
                             "The environment variable `{}` \
                             has invalid Unicode data: {:?}",
-                            name, data
+                            name, data,
                         )
                     }
                 }
