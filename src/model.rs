@@ -1,5 +1,6 @@
 use std::cmp;
 use std::collections;
+use std::env;
 use std::path;
 use std::result;
 
@@ -13,7 +14,11 @@ pub type Output = proc_macro::TokenStream;
 pub type Result<T> = result::Result<T, Error>;
 
 #[derive(Clone, Debug)]
-pub enum Error {}
+pub enum Error {
+    EnvironmentVariableCargoManifestDir(env::VarError),
+    Ignore(ignore::Error),
+    StripPrefix(path::StripPrefixError),
+}
 
 #[derive(Clone, cmp::PartialEq, Debug)]
 pub struct Configuration {

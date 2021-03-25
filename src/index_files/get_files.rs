@@ -3,17 +3,17 @@ use std::path;
 use std::vec;
 
 pub fn main(
-    configuration: &model::Configuration,
+    full_resource_folder: &path::Path,
     canonical_paths: vec::Vec<path::PathBuf>,
 ) -> vec::Vec<model::File> {
     canonical_paths
         .into_iter()
-        .map(|canonical_path| get_file(configuration, canonical_path))
+        .map(|canonical_path| get_file(full_resource_folder, canonical_path))
         .collect()
 }
 
-fn get_file(configuration: &model::Configuration, canonical_path: path::PathBuf) -> model::File {
-    let full_path = configuration.resource_folder.join(&canonical_path);
+fn get_file(full_resource_folder: &path::Path, canonical_path: path::PathBuf) -> model::File {
+    let full_path = full_resource_folder.join(&canonical_path);
     model::File {
         canonical_path,
         full_path,
@@ -27,9 +27,7 @@ mod tests {
     #[test]
     fn gets() {
         let actual = main(
-            &model::Configuration {
-                resource_folder: path::PathBuf::from("resources"),
-            },
+            path::Path::new("resources"),
             vec![
                 path::PathBuf::from("world/physical_constants.json"),
                 path::PathBuf::from("configuration/menu.json"),

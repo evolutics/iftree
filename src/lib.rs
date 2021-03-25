@@ -16,7 +16,7 @@ pub fn embed_files_as_modules(
 
 fn process(input: model::Input) -> model::Output {
     let configuration = model::Configuration {
-        resource_folder: path::PathBuf::from("resources"),
+        resource_folder: path::PathBuf::from("examples/resources"),
     };
     let item = input.item;
     let item_clone = item.clone();
