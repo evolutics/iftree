@@ -6,12 +6,12 @@ use crate::model;
 pub fn main(
     configuration: model::Configuration,
     resource_type: model::TypeAlias,
-) -> model::FileIndex {
-    let canonical_paths = get_canonical_paths::main();
+) -> model::Result<model::FileIndex> {
+    let canonical_paths = get_canonical_paths::main()?;
     let files = get_files::main(&configuration, canonical_paths);
     let forest = get_forest::main(files);
-    model::FileIndex {
+    Ok(model::FileIndex {
         resource_type: resource_type.identifier,
         forest,
-    }
+    })
 }

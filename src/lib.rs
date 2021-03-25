@@ -1,3 +1,4 @@
+mod error;
 mod index_files;
 mod model;
 mod parse;
@@ -20,6 +21,10 @@ fn process(input: model::Input) -> model::Output {
     let item = input.item;
     let item_clone = item.clone();
     let resource_type = syn::parse_macro_input!(item);
-    let file_index = index_files::main(configuration, resource_type);
-    print::main(item_clone, file_index)
+    match index_files::main(configuration, resource_type)
+        .map(|file_index| print::main(item_clone, file_index))
+    {
+        Err(error) => panic!("{}", error),
+        Ok(value) => value,
+    }
 }

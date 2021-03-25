@@ -1,6 +1,7 @@
 use std::cmp;
 use std::collections;
 use std::path;
+use std::result;
 
 pub struct Input {
     pub _attribute: proc_macro::TokenStream,
@@ -8,6 +9,11 @@ pub struct Input {
 }
 
 pub type Output = proc_macro::TokenStream;
+
+pub type Result<T> = result::Result<T, Error>;
+
+#[derive(Clone, Debug)]
+pub enum Error {}
 
 #[derive(Clone, cmp::PartialEq, Debug)]
 pub struct Configuration {
