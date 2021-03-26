@@ -1,4 +1,8 @@
-#[files_embedded_as_modules::embed_files_as_modules]
+#[files_embedded_as_modules::embed_files_as_modules(
+    "
+resource_folder = 'examples/resources'
+"
+)]
 pub type Resource = &'static str;
 
 pub fn main() {

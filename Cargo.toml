@@ -11,4 +11,6 @@ proc-macro = true
 ignore = "0.4"
 proc-macro2 = "1.0"
 quote = "1.0"
+serde = { version = "1.0", features = ["derive"] }
 syn = "1.0"
+toml = "0.5"

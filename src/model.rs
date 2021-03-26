@@ -5,7 +5,7 @@ use std::path;
 use std::result;
 
 pub struct Input {
-    pub _attribute: proc_macro::TokenStream,
+    pub parameters: proc_macro::TokenStream,
     pub item: proc_macro::TokenStream,
 }
 
@@ -20,7 +20,7 @@ pub enum Error {
     StripPrefix(path::StripPrefixError),
 }
 
-#[derive(Clone, cmp::PartialEq, Debug)]
+#[derive(Clone, cmp::PartialEq, Debug, serde::Deserialize)]
 pub struct Configuration {
     pub resource_folder: path::PathBuf,
 }
