@@ -28,7 +28,7 @@ impl fmt::Display for model::Error {
                 }
             }
             model::Error::Ignore(error) => write!(formatter, "{}", error),
-            model::Error::StripPrefix(error) => write!(formatter, "{}", error),
+            model::Error::PathStripPrefix(error) => write!(formatter, "{}", error),
         }
     }
 }
@@ -38,7 +38,7 @@ impl error::Error for model::Error {
         match self {
             model::Error::EnvironmentVariableCargoManifestDir(error) => Some(error),
             model::Error::Ignore(error) => Some(error),
-            model::Error::StripPrefix(error) => Some(error),
+            model::Error::PathStripPrefix(error) => Some(error),
         }
     }
 }
@@ -57,6 +57,6 @@ impl From<ignore::Error> for model::Error {
 
 impl From<path::StripPrefixError> for model::Error {
     fn from(error: path::StripPrefixError) -> Self {
-        model::Error::StripPrefix(error)
+        model::Error::PathStripPrefix(error)
     }
 }

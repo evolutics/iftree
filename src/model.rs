@@ -17,7 +17,7 @@ pub type Result<T> = result::Result<T, Error>;
 pub enum Error {
     EnvironmentVariableCargoManifestDir(env::VarError),
     Ignore(ignore::Error),
-    StripPrefix(path::StripPrefixError),
+    PathStripPrefix(path::StripPrefixError),
 }
 
 #[derive(Clone, cmp::PartialEq, Debug, serde::Deserialize)]
