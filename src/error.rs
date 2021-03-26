@@ -2,6 +2,7 @@ use crate::model;
 use std::env;
 use std::error;
 use std::fmt;
+use std::path;
 
 impl fmt::Display for model::Error {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -39,5 +40,23 @@ impl error::Error for model::Error {
             model::Error::Ignore(error) => Some(error),
             model::Error::StripPrefix(error) => Some(error),
         }
+    }
+}
+
+impl From<env::VarError> for model::Error {
+    fn from(error: env::VarError) -> Self {
+        model::Error::EnvironmentVariableCargoManifestDir(error)
+    }
+}
+
+impl From<ignore::Error> for model::Error {
+    fn from(error: ignore::Error) -> Self {
+        model::Error::Ignore(error)
+    }
+}
+
+impl From<path::StripPrefixError> for model::Error {
+    fn from(error: path::StripPrefixError) -> Self {
+        model::Error::StripPrefix(error)
     }
 }

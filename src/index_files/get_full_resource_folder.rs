@@ -3,9 +3,8 @@ use std::env;
 use std::path;
 
 pub fn main(configuration: &model::Configuration) -> model::Result<path::PathBuf> {
-    env::var("CARGO_MANIFEST_DIR")
-        .map_err(model::Error::EnvironmentVariableCargoManifestDir)
-        .map(|folder| path::PathBuf::from(folder).join(&configuration.resource_folder))
+    let folder = env::var("CARGO_MANIFEST_DIR")?;
+    Ok(path::PathBuf::from(folder).join(&configuration.resource_folder))
 }
 
 #[cfg(test)]

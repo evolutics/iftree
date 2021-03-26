@@ -6,9 +6,9 @@ pub fn main(full_resource_folder: &path::Path) -> model::Result<vec::Vec<path::P
     iterate_entries(full_resource_folder)
         .into_iter()
         .filter_map(|entry| match entry {
-            Err(error) => Some(Err(model::Error::Ignore(error))),
+            Err(error) => Some(Err(model::Error::from(error))),
             Ok(entry) => match entry.metadata() {
-                Err(error) => Some(Err(model::Error::Ignore(error))),
+                Err(error) => Some(Err(model::Error::from(error))),
                 Ok(metadata) => {
                     if metadata.is_dir() {
                         None
@@ -31,10 +31,8 @@ fn canonicalize_path(
     full_resource_folder: &path::Path,
     entry: ignore::DirEntry,
 ) -> model::Result<path::PathBuf> {
-    match entry.path().strip_prefix(full_resource_folder) {
-        Err(error) => Err(model::Error::StripPrefix(error)),
-        Ok(canonical_path) => Ok(canonical_path.to_path_buf()),
-    }
+    let canonical_path = entry.path().strip_prefix(full_resource_folder)?;
+    Ok(canonical_path.to_path_buf())
 }
 
 #[cfg(test)]
