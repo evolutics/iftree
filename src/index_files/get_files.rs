@@ -4,19 +4,19 @@ use std::vec;
 
 pub fn main(
     full_resource_folder: &path::Path,
-    canonical_paths: vec::Vec<path::PathBuf>,
+    paths: vec::Vec<path::PathBuf>,
 ) -> vec::Vec<model::File> {
-    canonical_paths
+    paths
         .into_iter()
-        .map(|canonical_path| get_file(full_resource_folder, canonical_path))
+        .map(|path| get_file(full_resource_folder, path))
         .collect()
 }
 
-fn get_file(full_resource_folder: &path::Path, canonical_path: path::PathBuf) -> model::File {
-    let full_path = full_resource_folder.join(&canonical_path);
+fn get_file(full_resource_folder: &path::Path, relative_path: path::PathBuf) -> model::File {
+    let absolute_path = full_resource_folder.join(&relative_path);
     model::File {
-        canonical_path,
-        full_path,
+        relative_path,
+        absolute_path,
     }
 }
 
@@ -27,7 +27,7 @@ mod tests {
     #[test]
     fn gets() {
         let actual = main(
-            path::Path::new("resources"),
+            path::Path::new("/resources"),
             vec![
                 path::PathBuf::from("world/physical_constants.json"),
                 path::PathBuf::from("configuration/menu.json"),
@@ -36,12 +36,12 @@ mod tests {
 
         let expected = vec![
             model::File {
-                canonical_path: path::PathBuf::from("world/physical_constants.json"),
-                full_path: path::PathBuf::from("resources/world/physical_constants.json"),
+                relative_path: path::PathBuf::from("world/physical_constants.json"),
+                absolute_path: path::PathBuf::from("/resources/world/physical_constants.json"),
             },
             model::File {
-                canonical_path: path::PathBuf::from("configuration/menu.json"),
-                full_path: path::PathBuf::from("resources/configuration/menu.json"),
+                relative_path: path::PathBuf::from("configuration/menu.json"),
+                absolute_path: path::PathBuf::from("/resources/configuration/menu.json"),
             },
         ];
         assert_eq!(actual, expected);

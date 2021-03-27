@@ -56,8 +56,8 @@ pub enum FileTree {
 
 #[derive(Clone, cmp::PartialEq, Debug)]
 pub struct File {
-    pub canonical_path: path::PathBuf,
-    pub full_path: path::PathBuf,
+    pub relative_path: path::PathBuf,
+    pub absolute_path: path::PathBuf,
 }
 
 #[cfg(test)]
@@ -73,8 +73,8 @@ pub mod stubs {
 
     pub fn file() -> File {
         File {
-            canonical_path: path::PathBuf::from("bar"),
-            full_path: path::PathBuf::from("foo/bar"),
+            relative_path: path::PathBuf::from("bar"),
+            absolute_path: path::PathBuf::from("/foo/bar"),
         }
     }
 }

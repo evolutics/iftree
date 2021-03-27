@@ -15,7 +15,7 @@ pub fn main(files: vec::Vec<model::File>) -> model::FileForest {
 }
 
 fn get_reverse_file_path(file: &model::File) -> vec::Vec<String> {
-    file.canonical_path
+    file.relative_path
         .iter()
         .rev()
         .enumerate()
@@ -48,7 +48,7 @@ fn add_file(
             Some(model::FileTree::File(colliding_file)) => {
                 eprintln!(
                     "Adapting generated name due to collision with file: {}",
-                    colliding_file.full_path.display(),
+                    colliding_file.absolute_path.display(),
                 );
                 let name = generate_identifier::main(&name, &|name| !parent.contains_key(name));
                 let child = get_singleton_tree(reverse_file_path.to_vec(), file);
@@ -90,11 +90,11 @@ mod tests {
     #[test]
     fn gets_files() {
         let menu_json = model::File {
-            canonical_path: path::PathBuf::from("menu.json"),
+            relative_path: path::PathBuf::from("menu.json"),
             ..model::stubs::file()
         };
         let translations_csv = model::File {
-            canonical_path: path::PathBuf::from("translations.csv"),
+            relative_path: path::PathBuf::from("translations.csv"),
             ..model::stubs::file()
         };
         let files = vec![menu_json.clone(), translations_csv.clone()];
@@ -116,15 +116,15 @@ mod tests {
     #[test]
     fn gets_folders() {
         let credits_md = model::File {
-            canonical_path: path::PathBuf::from("credits.md"),
+            relative_path: path::PathBuf::from("credits.md"),
             ..model::stubs::file()
         };
         let tutorial_json = model::File {
-            canonical_path: path::PathBuf::from("world/levels/tutorial.json"),
+            relative_path: path::PathBuf::from("world/levels/tutorial.json"),
             ..model::stubs::file()
         };
         let physical_constants_json = model::File {
-            canonical_path: path::PathBuf::from("world/physical_constants.json"),
+            relative_path: path::PathBuf::from("world/physical_constants.json"),
             ..model::stubs::file()
         };
         let files = vec![
@@ -158,19 +158,19 @@ mod tests {
     #[test]
     fn resolves_collisions() {
         let credits_md_0 = model::File {
-            canonical_path: path::PathBuf::from("credits.md"),
+            relative_path: path::PathBuf::from("credits.md"),
             ..model::stubs::file()
         };
         let credits_md_1 = model::File {
-            canonical_path: path::PathBuf::from("Credits.md"),
+            relative_path: path::PathBuf::from("Credits.md"),
             ..model::stubs::file()
         };
         let credits_md_2 = model::File {
-            canonical_path: path::PathBuf::from("CREDITS.md"),
+            relative_path: path::PathBuf::from("CREDITS.md"),
             ..model::stubs::file()
         };
         let credits_md_3 = model::File {
-            canonical_path: path::PathBuf::from("credits.md0"),
+            relative_path: path::PathBuf::from("credits.md0"),
             ..model::stubs::file()
         };
         let files = vec![

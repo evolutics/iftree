@@ -28,9 +28,9 @@ fn print_tree(resource_type: &str, name: &str, tree: &model::FileTree) -> proc_m
 fn print_file(resource_type: &str, name: &str, file: &model::File) -> proc_macro2::TokenStream {
     let name = identifier(name);
     let resource_type = identifier(resource_type);
-    let full_path = file.full_path.to_string_lossy();
+    let absolute_path = file.absolute_path.to_string_lossy();
     quote::quote! {
-        pub const #name: #resource_type = include_str!(#full_path);
+        pub const #name: #resource_type = include_str!(#absolute_path);
     }
 }
 
@@ -80,14 +80,14 @@ mod tests {
         forest.insert(
             String::from("MENU_JSON"),
             model::FileTree::File(model::File {
-                full_path: path::PathBuf::from("menu.json"),
+                absolute_path: path::PathBuf::from("/menu.json"),
                 ..model::stubs::file()
             }),
         );
         forest.insert(
             String::from("TRANSLATIONS_CSV"),
             model::FileTree::File(model::File {
-                full_path: path::PathBuf::from("translations.csv"),
+                absolute_path: path::PathBuf::from("/translations.csv"),
                 ..model::stubs::file()
             }),
         );
@@ -101,9 +101,9 @@ mod tests {
         let expected = quote::quote! {
             use super::Resource;
 
-            pub const MENU_JSON: Resource = include_str!("menu.json");
+            pub const MENU_JSON: Resource = include_str!("/menu.json");
 
-            pub const TRANSLATIONS_CSV: Resource = include_str!("translations.csv");
+            pub const TRANSLATIONS_CSV: Resource = include_str!("/translations.csv");
         }
         .to_string();
         assert_eq!(actual, expected);
@@ -115,7 +115,7 @@ mod tests {
         levels.insert(
             String::from("TUTORIAL_JSON"),
             model::FileTree::File(model::File {
-                full_path: path::PathBuf::from("world/levels/tutorial.json"),
+                absolute_path: path::PathBuf::from("/world/levels/tutorial.json"),
                 ..model::stubs::file()
             }),
         );
@@ -124,7 +124,7 @@ mod tests {
         world.insert(
             String::from("PHYSICAL_CONSTANTS_JSON"),
             model::FileTree::File(model::File {
-                full_path: path::PathBuf::from("world/physical_constants.json"),
+                absolute_path: path::PathBuf::from("/world/physical_constants.json"),
                 ..model::stubs::file()
             }),
         );
@@ -132,7 +132,7 @@ mod tests {
         forest.insert(
             String::from("CREDITS_MD"),
             model::FileTree::File(model::File {
-                full_path: path::PathBuf::from("credits.md"),
+                absolute_path: path::PathBuf::from("/credits.md"),
                 ..model::stubs::file()
             }),
         );
@@ -147,18 +147,18 @@ mod tests {
         let expected = quote::quote! {
             use super::Resource;
 
-            pub const CREDITS_MD: Resource = include_str!("credits.md");
+            pub const CREDITS_MD: Resource = include_str!("/credits.md");
 
             pub mod world {
                 use super::Resource;
 
                 pub const PHYSICAL_CONSTANTS_JSON: Resource =
-                    include_str!("world/physical_constants.json");
+                    include_str!("/world/physical_constants.json");
 
                 pub mod levels {
                     use super::Resource;
 
-                    pub const TUTORIAL_JSON: Resource = include_str!("world/levels/tutorial.json");
+                    pub const TUTORIAL_JSON: Resource = include_str!("/world/levels/tutorial.json");
                 }
             }
         }
@@ -172,7 +172,7 @@ mod tests {
         raw.insert(
             String::from("NORMAL"),
             model::FileTree::File(model::File {
-                full_path: path::PathBuf::from("normal"),
+                absolute_path: path::PathBuf::from("/normal"),
                 ..model::stubs::file()
             }),
         );
@@ -191,7 +191,7 @@ mod tests {
             pub mod r#match {
                 use super::Resource;
 
-                pub const NORMAL: Resource = include_str!("normal");
+                pub const NORMAL: Resource = include_str!("/normal");
             }
         }
         .to_string();

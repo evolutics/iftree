@@ -17,7 +17,7 @@ pub fn main(
                     if metadata.is_dir() {
                         None
                     } else {
-                        Some(canonicalize_path(full_resource_folder, entry))
+                        Some(relativize_path(full_resource_folder, entry))
                     }
                 }
             },
@@ -47,12 +47,12 @@ fn get_filter(
     Ok(builder.build()?)
 }
 
-fn canonicalize_path(
+fn relativize_path(
     full_resource_folder: &path::Path,
     entry: ignore::DirEntry,
 ) -> model::Result<path::PathBuf> {
-    let canonical_path = entry.path().strip_prefix(full_resource_folder)?;
-    Ok(canonical_path.to_path_buf())
+    let relative_path = entry.path().strip_prefix(full_resource_folder)?;
+    Ok(relative_path.to_path_buf())
 }
 
 #[cfg(test)]
