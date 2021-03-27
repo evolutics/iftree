@@ -45,13 +45,15 @@ mod tests {
     fn parses_valid_configuration() {
         let actual = syn::parse_str::<model::Configuration>(
             r#""
-            resource_folder = 'my/resources'
+resource_folder = 'my/resources'
+path_filter = '*.csv'
             ""#,
         );
 
         let actual = actual.unwrap();
         let expected = model::Configuration {
             resource_folder: path::PathBuf::from("my/resources"),
+            path_filter: String::from("*.csv"),
         };
         assert_eq!(actual, expected);
     }

@@ -9,7 +9,7 @@ pub fn main(
     resource_type: model::ResourceType,
 ) -> model::Result<model::FileIndex> {
     let full_resource_folder = get_full_resource_folder::main(&configuration)?;
-    let canonical_paths = get_canonical_paths::main(&full_resource_folder)?;
+    let canonical_paths = get_canonical_paths::main(&configuration, &full_resource_folder)?;
     let files = get_files::main(&full_resource_folder, canonical_paths);
     let forest = get_forest::main(files);
     Ok(model::FileIndex {

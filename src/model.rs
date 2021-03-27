@@ -23,6 +23,8 @@ pub enum Error {
 #[derive(Clone, cmp::PartialEq, Debug, serde::Deserialize)]
 pub struct Configuration {
     pub resource_folder: path::PathBuf,
+    #[serde(default)]
+    pub path_filter: String,
 }
 
 #[derive(Clone, cmp::PartialEq, Debug)]
@@ -61,6 +63,13 @@ pub struct File {
 #[cfg(test)]
 pub mod stubs {
     use super::*;
+
+    pub fn configuration() -> Configuration {
+        Configuration {
+            resource_folder: path::PathBuf::from("foo"),
+            path_filter: String::from("bar"),
+        }
+    }
 
     pub fn file() -> File {
         File {
