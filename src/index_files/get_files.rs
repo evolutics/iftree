@@ -2,18 +2,15 @@ use crate::model;
 use std::path;
 use std::vec;
 
-pub fn main(
-    full_resource_folder: &path::Path,
-    paths: vec::Vec<path::PathBuf>,
-) -> vec::Vec<model::File> {
+pub fn main(base_folder: &path::Path, paths: vec::Vec<path::PathBuf>) -> vec::Vec<model::File> {
     paths
         .into_iter()
-        .map(|path| get_file(full_resource_folder, path))
+        .map(|path| get_file(base_folder, path))
         .collect()
 }
 
-fn get_file(full_resource_folder: &path::Path, relative_path: path::PathBuf) -> model::File {
-    let absolute_path = full_resource_folder.join(&relative_path);
+fn get_file(base_folder: &path::Path, relative_path: path::PathBuf) -> model::File {
+    let absolute_path = base_folder.join(&relative_path);
     model::File {
         relative_path,
         absolute_path,

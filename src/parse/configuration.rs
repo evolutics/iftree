@@ -39,21 +39,18 @@ impl fmt::Display for InStringError {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::path;
 
     #[test]
     fn parses_valid_configuration() {
         let actual = syn::parse_str::<model::Configuration>(
             r#""
-resource_folder = 'my/resources'
-path_filter = '*.csv'
+resource_paths = 'my/resources/**'
             ""#,
         );
 
         let actual = actual.unwrap();
         let expected = model::Configuration {
-            resource_folder: path::PathBuf::from("my/resources"),
-            path_filter: String::from("*.csv"),
+            resource_paths: String::from("my/resources/**"),
         };
         assert_eq!(actual, expected);
     }
@@ -62,16 +59,16 @@ path_filter = '*.csv'
     fn parses_invalid_configuration() {
         let actual = syn::parse_str::<model::Configuration>(
             r#""
-            resource_folder = #
+resource_paths = #
             ""#,
         );
 
         let actual = actual.unwrap_err();
         let actual = format!("{}", actual);
         let expected = String::from(
-            "expected a value, found a comment at line 2 column 31 (in the string) here:
-            resource_folder = #
-                              ▲",
+            "expected a value, found a comment at line 2 column 18 (in the string) here:
+resource_paths = #
+                 ▲",
         );
         assert_eq!(actual, expected);
     }

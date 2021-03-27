@@ -5,9 +5,9 @@ use std::vec;
 
 pub fn main(
     configuration: &model::Configuration,
-    full_resource_folder: &path::Path,
+    base_folder: &path::Path,
 ) -> model::Result<vec::Vec<path::PathBuf>> {
-    iterate_entries(configuration, full_resource_folder)?
+    iterate_entries(configuration, base_folder)?
         .into_iter()
         .filter_map(|entry| match entry {
             Err(error) => Some(Err(model::Error::from(error))),
@@ -17,7 +17,7 @@ pub fn main(
                     if metadata.is_dir() {
                         None
                     } else {
-                        Some(relativize_path(full_resource_folder, entry))
+                        Some(relativize_path(base_folder, entry))
                     }
                 }
             },
@@ -27,10 +27,10 @@ pub fn main(
 
 fn iterate_entries(
     configuration: &model::Configuration,
-    full_resource_folder: &path::Path,
+    base_folder: &path::Path,
 ) -> model::Result<ignore::Walk> {
-    let filter = get_filter(configuration, full_resource_folder)?;
-    Ok(ignore::WalkBuilder::new(full_resource_folder)
+    let filter = get_filter(configuration, base_folder)?;
+    Ok(ignore::WalkBuilder::new(base_folder)
         .standard_filters(false)
         .overrides(filter)
         .build())
@@ -38,20 +38,20 @@ fn iterate_entries(
 
 fn get_filter(
     configuration: &model::Configuration,
-    full_resource_folder: &path::Path,
+    base_folder: &path::Path,
 ) -> model::Result<overrides::Override> {
-    let mut builder = overrides::OverrideBuilder::new(full_resource_folder);
-    for pattern in configuration.path_filter.lines() {
+    let mut builder = overrides::OverrideBuilder::new(base_folder);
+    for pattern in configuration.resource_paths.lines() {
         builder.add(pattern)?;
     }
     Ok(builder.build()?)
 }
 
 fn relativize_path(
-    full_resource_folder: &path::Path,
+    base_folder: &path::Path,
     entry: ignore::DirEntry,
 ) -> model::Result<path::PathBuf> {
-    let relative_path = entry.path().strip_prefix(full_resource_folder)?;
+    let relative_path = entry.path().strip_prefix(base_folder)?;
     Ok(relative_path.to_path_buf())
 }
 
@@ -60,47 +60,86 @@ mod tests {
     use super::*;
 
     #[test]
-    fn gets_with_empty_filter() {
+    fn gets_from_single_resource_path() {
         let actual = main(
             &model::Configuration {
-                path_filter: String::new(),
-                ..model::stubs::configuration()
+                resource_paths: String::from("/examples/resources/**"),
             },
-            path::Path::new("examples/resources"),
+            path::Path::new("."),
         );
 
         let mut actual = actual.unwrap();
         actual.sort();
         let expected = vec![
-            path::PathBuf::from(".env"),
-            path::PathBuf::from("configuration/menu.json"),
-            path::PathBuf::from("configuration/translations.csv"),
-            path::PathBuf::from("credits.md"),
-            path::PathBuf::from("world/levels/tutorial.json"),
-            path::PathBuf::from("world/physical_constants.json"),
+            path::PathBuf::from("examples/resources/.env"),
+            path::PathBuf::from("examples/resources/configuration/menu.json"),
+            path::PathBuf::from("examples/resources/configuration/translations.csv"),
+            path::PathBuf::from("examples/resources/credits.md"),
+            path::PathBuf::from("examples/resources/world/levels/tutorial.json"),
+            path::PathBuf::from("examples/resources/world/physical_constants.json"),
         ];
         assert_eq!(actual, expected);
     }
 
     #[test]
-    fn gets_files_based_on_path_filter() {
+    fn gets_from_multiple_resource_paths() {
         let actual = main(
             &model::Configuration {
-                path_filter: String::from(
-                    "*.json
-!/world/levels/",
+                resource_paths: String::from(
+                    "/examples/resources/configuration/**
+/examples/resources/world/**",
                 ),
-                ..model::stubs::configuration()
             },
-            path::Path::new("examples/resources"),
+            path::Path::new("."),
         );
 
         let mut actual = actual.unwrap();
         actual.sort();
         let expected = vec![
-            path::PathBuf::from("configuration/menu.json"),
-            path::PathBuf::from("world/physical_constants.json"),
+            path::PathBuf::from("examples/resources/configuration/menu.json"),
+            path::PathBuf::from("examples/resources/configuration/translations.csv"),
+            path::PathBuf::from("examples/resources/world/levels/tutorial.json"),
+            path::PathBuf::from("examples/resources/world/physical_constants.json"),
         ];
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn gets_from_include_and_exclude_resource_paths() {
+        let actual = main(
+            &model::Configuration {
+                resource_paths: String::from(
+                    "/examples/resources/**/*.json
+!/examples/resources/world/levels/",
+                ),
+            },
+            path::Path::new("."),
+        );
+
+        let mut actual = actual.unwrap();
+        actual.sort();
+        let expected = vec![
+            path::PathBuf::from("examples/resources/configuration/menu.json"),
+            path::PathBuf::from("examples/resources/world/physical_constants.json"),
+        ];
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn gets_without_hidden_files() {
+        let actual = main(
+            &model::Configuration {
+                resource_paths: String::from(
+                    "/examples/resources/*
+!.*",
+                ),
+            },
+            path::Path::new("."),
+        );
+
+        let mut actual = actual.unwrap();
+        actual.sort();
+        let expected = vec![path::PathBuf::from("examples/resources/credits.md")];
         assert_eq!(actual, expected);
     }
 }
