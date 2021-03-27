@@ -8,7 +8,7 @@ pub fn main(item: proc_macro::TokenStream, file_index: model::FileIndex) -> mode
     let output = quote::quote! {
         #item
 
-        pub mod resources {
+        pub mod root {
             #file_modules
         }
     };
