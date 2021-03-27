@@ -43,12 +43,6 @@ impl error::Error for model::Error {
     }
 }
 
-impl From<env::VarError> for model::Error {
-    fn from(error: env::VarError) -> Self {
-        model::Error::EnvironmentVariableCargoManifestDir(error)
-    }
-}
-
 impl From<ignore::Error> for model::Error {
     fn from(error: ignore::Error) -> Self {
         model::Error::Ignore(error)
