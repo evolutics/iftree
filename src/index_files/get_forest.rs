@@ -48,7 +48,7 @@ fn add_file(
             Some(model::FileTree::File(colliding_file)) => {
                 eprintln!(
                     "Adapting generated name due to collision with file: {}",
-                    colliding_file.absolute_path.display(),
+                    colliding_file.relative_path.display(),
                 );
                 let name = generate_identifier::main(&name, &|name| !parent.contains_key(name));
                 let child = get_singleton_tree(reverse_file_path.to_vec(), file);
