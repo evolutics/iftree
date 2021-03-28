@@ -64,6 +64,7 @@ mod tests {
         let actual = main(
             &model::Configuration {
                 resource_paths: String::from("/examples/resources/**"),
+                ..model::stubs::configuration()
             },
             path::Path::new("."),
         );
@@ -89,6 +90,7 @@ mod tests {
                     "/examples/resources/configuration/**
 /examples/resources/world/**",
                 ),
+                ..model::stubs::configuration()
             },
             path::Path::new("."),
         );
@@ -112,6 +114,7 @@ mod tests {
                     "/examples/resources/**/*.json
 !/examples/resources/world/levels/",
                 ),
+                ..model::stubs::configuration()
             },
             path::Path::new("."),
         );
@@ -133,6 +136,7 @@ mod tests {
                     "/examples/resources/*
 !.*",
                 ),
+                ..model::stubs::configuration()
             },
             path::Path::new("."),
         );

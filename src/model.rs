@@ -3,6 +3,7 @@ use std::collections;
 use std::env;
 use std::path;
 use std::result;
+use std::vec;
 
 pub struct Input {
     pub parameters: proc_macro::TokenStream,
@@ -17,12 +18,22 @@ pub type Result<T> = result::Result<T, Error>;
 pub enum Error {
     EnvironmentVariableCargoManifestDir(env::VarError),
     Ignore(ignore::Error),
+    NameCollisions(vec::Vec<NameCollision>),
     PathStripPrefix(path::StripPrefixError),
+}
+
+#[derive(Clone, cmp::PartialEq, Debug)]
+pub struct NameCollision {
+    pub colliding_file: File,
+    pub existing_filename: Option<String>,
+    pub identifier: String,
 }
 
 #[derive(Clone, cmp::PartialEq, Debug, serde::Deserialize)]
 pub struct Configuration {
     pub resource_paths: String,
+    #[serde(default)]
+    pub resolve_name_collisions: bool,
 }
 
 #[derive(Clone, cmp::PartialEq, Debug)]
@@ -61,6 +72,13 @@ pub struct File {
 #[cfg(test)]
 pub mod stubs {
     use super::*;
+
+    pub fn configuration() -> Configuration {
+        Configuration {
+            resource_paths: String::from("!*"),
+            resolve_name_collisions: false,
+        }
+    }
 
     pub fn file() -> File {
         File {

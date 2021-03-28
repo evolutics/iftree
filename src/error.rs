@@ -27,7 +27,33 @@ impl fmt::Display for model::Error {
                     }
                 }
             }
+
             model::Error::Ignore(error) => write!(formatter, "{}", error),
+
+            model::Error::NameCollisions(collisions) => {
+                let configuration = "resolve_name_collisions = true";
+                write!(
+                    formatter,
+                    "Name collisions in generated code; \
+                    rename files or configure {:?}:",
+                    configuration,
+                )?;
+                for collision in collisions {
+                    let existing_file_hint = match &collision.existing_filename {
+                        None => String::new(),
+                        Some(filename) => format!("with {:?} ", filename),
+                    };
+                    write!(
+                        formatter,
+                        "\n- {:?} collides {}on identifier {:?}.",
+                        collision.colliding_file.relative_path,
+                        existing_file_hint,
+                        collision.identifier,
+                    )?;
+                }
+                Ok(())
+            }
+
             model::Error::PathStripPrefix(error) => write!(formatter, "{}", error),
         }
     }
@@ -38,6 +64,7 @@ impl error::Error for model::Error {
         match self {
             model::Error::EnvironmentVariableCargoManifestDir(error) => Some(error),
             model::Error::Ignore(error) => Some(error),
+            model::Error::NameCollisions(_) => None,
             model::Error::PathStripPrefix(error) => Some(error),
         }
     }

@@ -45,12 +45,14 @@ mod tests {
         let actual = syn::parse_str::<model::Configuration>(
             r#""
 resource_paths = 'my/resources/**'
+resolve_name_collisions = true
             ""#,
         );
 
         let actual = actual.unwrap();
         let expected = model::Configuration {
             resource_paths: String::from("my/resources/**"),
+            resolve_name_collisions: true,
         };
         assert_eq!(actual, expected);
     }
