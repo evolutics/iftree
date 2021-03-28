@@ -12,7 +12,7 @@ impl fmt::Display for model::Error {
                 match error {
                     env::VarError::NotPresent => write!(
                         formatter,
-                        "The environment variable `{}` is not defined. \
+                        "The environment variable {:?} is not defined. \
                         It is required to resolve the resource folder path. \
                         As a workaround, try defining it manually.",
                         name,
@@ -20,7 +20,7 @@ impl fmt::Display for model::Error {
                     env::VarError::NotUnicode(data) => {
                         write!(
                             formatter,
-                            "The environment variable `{}` \
+                            "The environment variable {:?} \
                             has invalid Unicode data: {:?}",
                             name, data,
                         )
