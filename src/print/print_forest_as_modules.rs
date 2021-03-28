@@ -1,13 +1,18 @@
 use crate::model;
 
 pub fn main(file_index: model::FileIndex) -> proc_macro2::TokenStream {
-    print_forest(&file_index.resource_type, &file_index.forest)
+    let resource_type = file_index.resource_type;
+    let resource_type = quote::format_ident!("{}", resource_type);
+    print_forest(&resource_type, &file_index.forest)
 }
 
-fn print_forest(resource_type: &str, forest: &model::FileForest) -> proc_macro2::TokenStream {
+fn print_forest(
+    resource_type: &syn::Ident,
+    forest: &model::FileForest,
+) -> proc_macro2::TokenStream {
     let trees: proc_macro2::TokenStream = forest
         .iter()
-        .map(|(name, tree)| print_tree(&resource_type, name, tree))
+        .map(|(name, tree)| print_tree(resource_type, name, tree))
         .collect();
 
     let resource_type = quote::format_ident!("{}", resource_type);
@@ -18,14 +23,22 @@ fn print_forest(resource_type: &str, forest: &model::FileForest) -> proc_macro2:
     }
 }
 
-fn print_tree(resource_type: &str, name: &str, tree: &model::FileTree) -> proc_macro2::TokenStream {
+fn print_tree(
+    resource_type: &syn::Ident,
+    name: &str,
+    tree: &model::FileTree,
+) -> proc_macro2::TokenStream {
     match tree {
         model::FileTree::File(file) => print_file(resource_type, name, file),
         model::FileTree::Folder(forest) => print_folder(resource_type, name, forest),
     }
 }
 
-fn print_file(resource_type: &str, name: &str, file: &model::File) -> proc_macro2::TokenStream {
+fn print_file(
+    resource_type: &syn::Ident,
+    name: &str,
+    file: &model::File,
+) -> proc_macro2::TokenStream {
     let name = quote::format_ident!("{}", name);
     let resource_type = quote::format_ident!("{}", resource_type);
     let absolute_path = file.absolute_path.to_string_lossy();
@@ -35,7 +48,7 @@ fn print_file(resource_type: &str, name: &str, file: &model::File) -> proc_macro
 }
 
 fn print_folder(
-    resource_type: &str,
+    resource_type: &syn::Ident,
     name: &str,
     forest: &model::FileForest,
 ) -> proc_macro2::TokenStream {
