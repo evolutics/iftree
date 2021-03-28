@@ -10,7 +10,7 @@ fn print_forest(resource_type: &str, forest: &model::FileForest) -> proc_macro2:
         .map(|(name, tree)| print_tree(&resource_type, name, tree))
         .collect();
 
-    let resource_type = identifier(resource_type);
+    let resource_type = quote::format_ident!("{}", resource_type);
     quote::quote! {
         use super::#resource_type;
 
@@ -26,16 +26,12 @@ fn print_tree(resource_type: &str, name: &str, tree: &model::FileTree) -> proc_m
 }
 
 fn print_file(resource_type: &str, name: &str, file: &model::File) -> proc_macro2::TokenStream {
-    let name = identifier(name);
-    let resource_type = identifier(resource_type);
+    let name = quote::format_ident!("{}", name);
+    let resource_type = quote::format_ident!("{}", resource_type);
     let absolute_path = file.absolute_path.to_string_lossy();
     quote::quote! {
         pub const #name: #resource_type = include_str!(#absolute_path);
     }
-}
-
-fn identifier(name: &str) -> syn::Ident {
-    quote::format_ident!("{}", name)
 }
 
 fn print_folder(
@@ -43,7 +39,7 @@ fn print_folder(
     name: &str,
     forest: &model::FileForest,
 ) -> proc_macro2::TokenStream {
-    let name = identifier(name);
+    let name = quote::format_ident!("{}", name);
     let forest = print_forest(resource_type, forest);
     quote::quote! {
         pub mod #name {
