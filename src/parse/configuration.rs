@@ -41,7 +41,23 @@ mod tests {
     use super::*;
 
     #[test]
-    fn parses_valid_configuration() {
+    fn parses_valid_configuration_with_required_fields_only() {
+        let actual = syn::parse_str::<model::Configuration>(
+            r#""
+resource_paths = 'resources/**'
+            ""#,
+        );
+
+        let actual = actual.unwrap();
+        let expected = model::Configuration {
+            resource_paths: String::from("resources/**"),
+            resolve_name_collisions: false,
+        };
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn parses_valid_configuration_with_optional_fields() {
         let actual = syn::parse_str::<model::Configuration>(
             r#""
 resource_paths = 'my/resources/**'
