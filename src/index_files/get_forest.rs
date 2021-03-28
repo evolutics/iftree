@@ -8,12 +8,24 @@ pub fn main(mut files: vec::Vec<model::File>) -> model::FileForest {
 
     let mut forest = model::FileForest::new();
 
-    for file in files {
-        let mut reverse_file_path = get_reverse_file_path(&file);
-        add_file(&mut forest, &mut reverse_file_path, file);
+    let remaining_files: vec::Vec<model::File> = files
+        .into_iter()
+        .filter_map(|file| add_file(&mut forest, file, false))
+        .collect();
+    for file in remaining_files {
+        add_file(&mut forest, file, true);
     }
 
     forest
+}
+
+fn add_file(
+    forest: &mut model::FileForest,
+    file: model::File,
+    is_to_force: bool,
+) -> Option<model::File> {
+    let mut reverse_file_path = get_reverse_file_path(&file);
+    add_file_recursively(forest, &mut reverse_file_path, file, is_to_force)
 }
 
 fn get_reverse_file_path(file: &model::File) -> vec::Vec<String> {
@@ -33,35 +45,38 @@ fn get_reverse_file_path(file: &model::File) -> vec::Vec<String> {
         .collect()
 }
 
-fn add_file(
+fn add_file_recursively(
     parent: &mut model::FileForest,
     reverse_file_path: &mut vec::Vec<String>,
     file: model::File,
-) {
+    is_to_force: bool,
+) -> Option<model::File> {
     match reverse_file_path.pop() {
-        None => {}
+        None => None,
 
         Some(name) => match parent.get_mut(&name) {
             None => {
                 let child = get_singleton_tree(reverse_file_path.to_vec(), file);
                 parent.insert(name, child);
+                None
             }
 
-            Some(model::FileTree::File(colliding_file)) => {
-                eprintln!(
-                    "Adapting generated name due to collision with file: {}",
-                    colliding_file.relative_path.display(),
-                );
-                let name = generate_identifier::main(&name, &|name| !parent.contains_key(name));
-                let child = get_singleton_tree(reverse_file_path.to_vec(), file);
-                parent.insert(name, child);
+            Some(model::FileTree::File(_)) => {
+                if is_to_force {
+                    let name = generate_identifier::main(&name, &|name| !parent.contains_key(name));
+                    let child = get_singleton_tree(reverse_file_path.to_vec(), file);
+                    parent.insert(name, child);
+                    None
+                } else {
+                    Some(file)
+                }
             }
 
             Some(model::FileTree::Folder(child)) => {
-                add_file(child, reverse_file_path, file);
+                add_file_recursively(child, reverse_file_path, file, is_to_force)
             }
         },
-    };
+    }
 }
 
 fn get_singleton_tree(reverse_file_path: vec::Vec<String>, file: model::File) -> model::FileTree {
@@ -191,15 +206,15 @@ mod tests {
         );
         expected.insert(
             String::from("r#CREDITS_MD0"),
-            model::FileTree::File(credits_md_2),
+            model::FileTree::File(credits_md_3),
         );
         expected.insert(
             String::from("r#CREDITS_MD1"),
-            model::FileTree::File(credits_md_0),
+            model::FileTree::File(credits_md_2),
         );
         expected.insert(
-            String::from("r#CREDITS_MD00"),
-            model::FileTree::File(credits_md_3),
+            String::from("r#CREDITS_MD2"),
+            model::FileTree::File(credits_md_0),
         );
         assert_eq!(actual, expected);
     }
