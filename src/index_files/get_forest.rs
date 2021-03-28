@@ -3,7 +3,9 @@ use super::sanitize_to_identifier;
 use crate::model;
 use std::vec;
 
-pub fn main(files: vec::Vec<model::File>) -> model::FileForest {
+pub fn main(mut files: vec::Vec<model::File>) -> model::FileForest {
+    files.sort_unstable();
+
     let mut forest = model::FileForest::new();
 
     for file in files {
@@ -156,17 +158,17 @@ mod tests {
     }
 
     #[test]
-    fn resolves_collisions() {
+    fn resolves_collisions_in_order() {
         let credits_md_0 = model::File {
             relative_path: path::PathBuf::from("credits.md"),
             ..model::stubs::file()
         };
         let credits_md_1 = model::File {
-            relative_path: path::PathBuf::from("Credits.md"),
+            relative_path: path::PathBuf::from("CREDITS.md"),
             ..model::stubs::file()
         };
         let credits_md_2 = model::File {
-            relative_path: path::PathBuf::from("CREDITS.md"),
+            relative_path: path::PathBuf::from("Credits.md"),
             ..model::stubs::file()
         };
         let credits_md_3 = model::File {
@@ -185,15 +187,15 @@ mod tests {
         let mut expected = model::FileForest::new();
         expected.insert(
             String::from("r#CREDITS_MD"),
-            model::FileTree::File(credits_md_0),
-        );
-        expected.insert(
-            String::from("r#CREDITS_MD0"),
             model::FileTree::File(credits_md_1),
         );
         expected.insert(
-            String::from("r#CREDITS_MD1"),
+            String::from("r#CREDITS_MD0"),
             model::FileTree::File(credits_md_2),
+        );
+        expected.insert(
+            String::from("r#CREDITS_MD1"),
+            model::FileTree::File(credits_md_0),
         );
         expected.insert(
             String::from("r#CREDITS_MD00"),

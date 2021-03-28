@@ -52,7 +52,7 @@ pub enum FileTree {
     Folder(FileForest),
 }
 
-#[derive(Clone, cmp::PartialEq, Debug)]
+#[derive(Clone, cmp::Eq, cmp::Ord, cmp::PartialEq, cmp::PartialOrd, Debug)]
 pub struct File {
     pub relative_path: path::PathBuf,
     pub absolute_path: path::PathBuf,
