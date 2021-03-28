@@ -1,4 +1,3 @@
-mod error;
 mod index_files;
 mod model;
 mod parse;

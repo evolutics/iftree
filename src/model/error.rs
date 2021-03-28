@@ -1,13 +1,13 @@
-use crate::model;
+use super::main;
 use std::env;
 use std::error;
 use std::fmt;
 use std::path;
 
-impl fmt::Display for model::Error {
+impl fmt::Display for main::Error {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            model::Error::EnvironmentVariableCargoManifestDir(error) => {
+            main::Error::EnvironmentVariableCargoManifestDir(error) => {
                 let name = "CARGO_MANIFEST_DIR";
                 match error {
                     env::VarError::NotPresent => write!(
@@ -28,9 +28,9 @@ impl fmt::Display for model::Error {
                 }
             }
 
-            model::Error::Ignore(error) => write!(formatter, "{}", error),
+            main::Error::Ignore(error) => write!(formatter, "{}", error),
 
-            model::Error::NameCollisions(collisions) => {
+            main::Error::NameCollisions(collisions) => {
                 let configuration = "resolve_name_collisions = true";
                 write!(
                     formatter,
@@ -54,30 +54,30 @@ impl fmt::Display for model::Error {
                 Ok(())
             }
 
-            model::Error::PathStripPrefix(error) => write!(formatter, "{}", error),
+            main::Error::PathStripPrefix(error) => write!(formatter, "{}", error),
         }
     }
 }
 
-impl error::Error for model::Error {
+impl error::Error for main::Error {
     fn source(&self) -> Option<&(dyn error::Error + 'static)> {
         match self {
-            model::Error::EnvironmentVariableCargoManifestDir(error) => Some(error),
-            model::Error::Ignore(error) => Some(error),
-            model::Error::NameCollisions(_) => None,
-            model::Error::PathStripPrefix(error) => Some(error),
+            main::Error::EnvironmentVariableCargoManifestDir(error) => Some(error),
+            main::Error::Ignore(error) => Some(error),
+            main::Error::NameCollisions(_) => None,
+            main::Error::PathStripPrefix(error) => Some(error),
         }
     }
 }
 
-impl From<ignore::Error> for model::Error {
+impl From<ignore::Error> for main::Error {
     fn from(error: ignore::Error) -> Self {
-        model::Error::Ignore(error)
+        main::Error::Ignore(error)
     }
 }
 
-impl From<path::StripPrefixError> for model::Error {
+impl From<path::StripPrefixError> for main::Error {
     fn from(error: path::StripPrefixError) -> Self {
-        model::Error::PathStripPrefix(error)
+        main::Error::PathStripPrefix(error)
     }
 }
