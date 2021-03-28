@@ -17,13 +17,13 @@ fn process(input: model::Input) -> model::Output {
     let configuration = syn::parse_macro_input!(parameters);
 
     let item = input.item;
-    let item_clone = item.clone();
+    let item2 = proc_macro2::TokenStream::from(item.clone());
     let resource_type = syn::parse_macro_input!(item);
 
     match index_files::main(configuration, resource_type)
-        .map(|file_index| print::main(item_clone, file_index))
+        .map(|file_index| print::main(item2, file_index))
     {
         Err(error) => panic!("{}", error),
-        Ok(value) => value,
+        Ok(value) => value.into(),
     }
 }
