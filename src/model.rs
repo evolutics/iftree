@@ -80,6 +80,17 @@ pub mod stubs {
         }
     }
 
+    pub fn resource_type() -> ResourceType {
+        ResourceType {
+            identifier: String::from("foo"),
+            structure: resource_structure(),
+        }
+    }
+
+    pub fn resource_structure() -> ResourceStructure {
+        ResourceStructure::TypeAlias
+    }
+
     pub fn file() -> File {
         File {
             relative_path: path::PathBuf::from("bar"),
