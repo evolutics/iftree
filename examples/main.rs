@@ -14,4 +14,11 @@ pub fn main() {
     assert_eq!(resources::CREDITS_MD, "Foo Bar\n");
     assert_eq!(resources::world::levels::TUTORIAL_JSON, "\"Hi\"\n");
     assert_eq!(resources::world::PHYSICAL_CONSTANTS_JSON, "7e-3\n");
+
+    assert_eq!(ARRAY[0], &resources::CREDITS_MD);
+    assert_eq!(ARRAY[1], &resources::_ENV);
+    assert_eq!(ARRAY[2], &resources::configuration::MENU_JSON);
+    assert_eq!(ARRAY[3], &resources::configuration::TRANSLATIONS_CSV);
+    assert_eq!(ARRAY[4], &resources::world::PHYSICAL_CONSTANTS_JSON);
+    assert_eq!(ARRAY[5], &resources::world::levels::TUTORIAL_JSON);
 }

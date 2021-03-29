@@ -1,3 +1,4 @@
+use super::print_array;
 use super::print_resource_module;
 use crate::model;
 
@@ -6,11 +7,14 @@ pub fn main(
     file_index: model::FileIndex,
 ) -> proc_macro2::TokenStream {
     let resource_module = print_resource_module::main(&file_index);
+    let array = print_array::main(&file_index);
 
     quote::quote! {
         #item
 
         #resource_module
+
+        #array
     }
 }
 
@@ -50,6 +54,10 @@ mod tests {
 
                 pub const CREDITS_MD: Resource = include_str!("/credits.md");
             }
+
+            pub const ARRAY: [&Resource; 1usize] = [
+                &root::CREDITS_MD,
+            ];
         }
         .to_string();
         assert_eq!(actual, expected);
