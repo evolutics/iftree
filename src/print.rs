@@ -1,4 +1,4 @@
 mod main;
-mod print_forest_as_modules;
+mod print_resource_module;
 
 pub use main::main;

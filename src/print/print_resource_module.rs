@@ -3,11 +3,12 @@ use crate::model;
 pub fn main(file_index: model::FileIndex) -> proc_macro2::TokenStream {
     let resource_type = file_index.resource_type;
     let resource_type = quote::format_ident!("{}", resource_type);
-    print_forest(&resource_type, &file_index.forest)
+    print_forest(&resource_type, "root", &file_index.forest)
 }
 
 fn print_forest(
     resource_type: &syn::Ident,
+    name: &str,
     forest: &model::FileForest,
 ) -> proc_macro2::TokenStream {
     let trees: proc_macro2::TokenStream = forest
@@ -15,11 +16,14 @@ fn print_forest(
         .map(|(name, tree)| print_tree(resource_type, name, tree))
         .collect();
 
+    let name = quote::format_ident!("{}", name);
     let resource_type = quote::format_ident!("{}", resource_type);
     quote::quote! {
-        use super::#resource_type;
+        pub mod #name {
+            use super::#resource_type;
 
-        #trees
+            #trees
+        }
     }
 }
 
@@ -30,7 +34,7 @@ fn print_tree(
 ) -> proc_macro2::TokenStream {
     match tree {
         model::FileTree::File(file) => print_file(resource_type, name, file),
-        model::FileTree::Folder(forest) => print_folder(resource_type, name, forest),
+        model::FileTree::Folder(forest) => print_forest(resource_type, name, forest),
     }
 }
 
@@ -44,20 +48,6 @@ fn print_file(
     let absolute_path = file.absolute_path.to_string_lossy();
     quote::quote! {
         pub const #name: #resource_type = include_str!(#absolute_path);
-    }
-}
-
-fn print_folder(
-    resource_type: &syn::Ident,
-    name: &str,
-    forest: &model::FileForest,
-) -> proc_macro2::TokenStream {
-    let name = quote::format_ident!("{}", name);
-    let forest = print_forest(resource_type, forest);
-    quote::quote! {
-        pub mod #name {
-            #forest
-        }
     }
 }
 
@@ -77,7 +67,9 @@ mod tests {
 
         let actual = actual.to_string();
         let expected = quote::quote! {
-            use super::Resource;
+            pub mod root {
+                use super::Resource;
+            }
         }
         .to_string();
         assert_eq!(actual, expected);
@@ -108,11 +100,13 @@ mod tests {
 
         let actual = actual.to_string();
         let expected = quote::quote! {
-            use super::Resource;
+            pub mod root {
+                use super::Resource;
 
-            pub const MENU_JSON: Resource = include_str!("/menu.json");
+                pub const MENU_JSON: Resource = include_str!("/menu.json");
 
-            pub const TRANSLATIONS_CSV: Resource = include_str!("/translations.csv");
+                pub const TRANSLATIONS_CSV: Resource = include_str!("/translations.csv");
+            }
         }
         .to_string();
         assert_eq!(actual, expected);
@@ -154,20 +148,23 @@ mod tests {
 
         let actual = actual.to_string();
         let expected = quote::quote! {
-            use super::Resource;
-
-            pub const CREDITS_MD: Resource = include_str!("/credits.md");
-
-            pub mod world {
+            pub mod root {
                 use super::Resource;
 
-                pub const PHYSICAL_CONSTANTS_JSON: Resource =
-                    include_str!("/world/physical_constants.json");
+                pub const CREDITS_MD: Resource = include_str!("/credits.md");
 
-                pub mod levels {
+                pub mod world {
                     use super::Resource;
 
-                    pub const TUTORIAL_JSON: Resource = include_str!("/world/levels/tutorial.json");
+                    pub const PHYSICAL_CONSTANTS_JSON: Resource =
+                        include_str!("/world/physical_constants.json");
+
+                    pub mod levels {
+                        use super::Resource;
+
+                        pub const TUTORIAL_JSON: Resource =
+                            include_str!("/world/levels/tutorial.json");
+                    }
                 }
             }
         }
@@ -195,12 +192,14 @@ mod tests {
 
         let actual = actual.to_string();
         let expected = quote::quote! {
-            use super::Resource;
-
-            pub mod r#match {
+            pub mod root {
                 use super::Resource;
 
-                pub const NORMAL: Resource = include_str!("/normal");
+                pub mod r#match {
+                    use super::Resource;
+
+                    pub const NORMAL: Resource = include_str!("/normal");
+                }
             }
         }
         .to_string();
