@@ -16,7 +16,7 @@ struct Visitor {
     resource_type: syn::Ident,
 }
 
-impl file_forest_visit::Visitor for Visitor {
+impl file_forest_visit::Visitor<'_> for Visitor {
     type State = vec::Vec<proc_macro2::TokenStream>;
 
     fn file(&self, file: &model::File, path: &[&str], stack: &mut Self::State) {

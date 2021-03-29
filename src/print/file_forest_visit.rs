@@ -1,22 +1,26 @@
 use crate::model;
 use std::vec;
 
-pub trait Visitor {
+pub trait Visitor<'a> {
     type State;
 
-    fn file(&self, file: &model::File, path: &[&str], state: &mut Self::State);
+    fn file(&self, file: &'a model::File, path: &[&str], state: &mut Self::State);
 
     fn before_forest(&self, path: &[&str], state: &mut Self::State);
 
     fn after_forest(&self, path: &[&str], state: &mut Self::State);
 }
 
-pub fn visit<T>(visitor: &impl Visitor<State = T>, forest: &model::FileForest, state: &mut T) {
+pub fn visit<'a, T>(
+    visitor: &impl Visitor<'a, State = T>,
+    forest: &'a model::FileForest,
+    state: &mut T,
+) {
     visit_recursively(visitor, forest, &mut vec![], state)
 }
 
 fn visit_recursively<'a, T>(
-    visitor: &impl Visitor<State = T>,
+    visitor: &impl Visitor<'a, State = T>,
     forest: &'a model::FileForest,
     path: &mut vec::Vec<&'a str>,
     state: &mut T,
@@ -52,7 +56,7 @@ mod tests {
         }
     }
 
-    impl Visitor for Indenter {
+    impl Visitor<'_> for Indenter {
         type State = String;
 
         fn file(&self, file: &model::File, path: &[&str], text: &mut Self::State) {
