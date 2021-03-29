@@ -1,7 +1,7 @@
 use crate::model;
 
-pub fn main(file_index: model::FileIndex) -> proc_macro2::TokenStream {
-    let resource_type = file_index.resource_type;
+pub fn main(file_index: &model::FileIndex) -> proc_macro2::TokenStream {
+    let resource_type = &file_index.resource_type;
     let resource_type = quote::format_ident!("{}", resource_type);
     print_forest(&resource_type, "root", &file_index.forest)
 }
@@ -60,7 +60,7 @@ mod tests {
     fn prints_empty_set() {
         let forest = model::FileForest::new();
 
-        let actual = main(model::FileIndex {
+        let actual = main(&model::FileIndex {
             resource_type: String::from("Resource"),
             forest,
         });
@@ -93,7 +93,7 @@ mod tests {
             }),
         );
 
-        let actual = main(model::FileIndex {
+        let actual = main(&model::FileIndex {
             resource_type: String::from("Resource"),
             forest,
         });
@@ -141,7 +141,7 @@ mod tests {
         );
         forest.insert(String::from("world"), model::FileTree::Folder(world));
 
-        let actual = main(model::FileIndex {
+        let actual = main(&model::FileIndex {
             resource_type: String::from("Resource"),
             forest,
         });
@@ -185,7 +185,7 @@ mod tests {
         let mut forest = model::FileForest::new();
         forest.insert(String::from("r#match"), model::FileTree::Folder(raw));
 
-        let actual = main(model::FileIndex {
+        let actual = main(&model::FileIndex {
             resource_type: String::from("Resource"),
             forest,
         });
