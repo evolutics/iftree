@@ -13,7 +13,7 @@ impl fmt::Display for main::Error {
                     env::VarError::NotPresent => write!(
                         formatter,
                         "The environment variable {:?} is not defined. \
-                        It is required to resolve the resource folder path. \
+                        It is required as a base to resolve relative paths. \
                         As a workaround, try defining it manually.",
                         name,
                     ),
