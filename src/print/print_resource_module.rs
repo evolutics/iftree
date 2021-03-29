@@ -1,53 +1,55 @@
+use super::file_forest_visit;
 use crate::model;
+use std::vec;
 
 pub fn main(file_index: &model::FileIndex) -> proc_macro2::TokenStream {
     let resource_type = &file_index.resource_type;
     let resource_type = quote::format_ident!("{}", resource_type);
-    print_forest(&resource_type, "root", &file_index.forest)
+    let visitor = Visitor { resource_type };
+
+    let mut stack = vec![proc_macro2::TokenStream::new()];
+    file_forest_visit::visit(&visitor, &file_index.forest, &mut stack);
+    stack.pop().unwrap()
 }
 
-fn print_forest(
-    resource_type: &syn::Ident,
-    name: &str,
-    forest: &model::FileForest,
-) -> proc_macro2::TokenStream {
-    let trees: proc_macro2::TokenStream = forest
-        .iter()
-        .map(|(name, tree)| print_tree(resource_type, name, tree))
-        .collect();
+struct Visitor {
+    resource_type: syn::Ident,
+}
 
-    let name = quote::format_ident!("{}", name);
-    let resource_type = quote::format_ident!("{}", resource_type);
-    quote::quote! {
-        pub mod #name {
-            use super::#resource_type;
+impl file_forest_visit::Visitor for Visitor {
+    type State = vec::Vec<proc_macro2::TokenStream>;
 
-            #trees
-        }
+    fn file(&self, file: &model::File, path: &[&str], stack: &mut Self::State) {
+        let name = quote::format_ident!("{}", path.last().unwrap());
+        let resource_type = &self.resource_type;
+        let absolute_path = file.absolute_path.to_string_lossy();
+
+        let tokens = quote::quote! {
+            pub const #name: #resource_type = include_str!(#absolute_path);
+        };
+
+        stack.last_mut().unwrap().extend(tokens);
     }
-}
 
-fn print_tree(
-    resource_type: &syn::Ident,
-    name: &str,
-    tree: &model::FileTree,
-) -> proc_macro2::TokenStream {
-    match tree {
-        model::FileTree::File(file) => print_file(resource_type, name, file),
-        model::FileTree::Folder(forest) => print_forest(resource_type, name, forest),
+    fn before_forest(&self, _path: &[&str], stack: &mut Self::State) {
+        stack.push(proc_macro2::TokenStream::new());
     }
-}
 
-fn print_file(
-    resource_type: &syn::Ident,
-    name: &str,
-    file: &model::File,
-) -> proc_macro2::TokenStream {
-    let name = quote::format_ident!("{}", name);
-    let resource_type = quote::format_ident!("{}", resource_type);
-    let absolute_path = file.absolute_path.to_string_lossy();
-    quote::quote! {
-        pub const #name: #resource_type = include_str!(#absolute_path);
+    fn after_forest(&self, path: &[&str], stack: &mut Self::State) {
+        let name = path.last().unwrap_or(&"root");
+        let name = quote::format_ident!("{}", name);
+        let resource_type = &self.resource_type;
+        let trees = stack.pop().unwrap();
+
+        let tokens = quote::quote! {
+            pub mod #name {
+                use super::#resource_type;
+
+                #trees
+            }
+        };
+
+        stack.last_mut().unwrap().extend(tokens);
     }
 }
 

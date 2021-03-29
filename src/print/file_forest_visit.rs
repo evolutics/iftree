@@ -11,7 +11,6 @@ pub trait Visitor {
     fn after_forest(&self, path: &[&str], state: &mut Self::State);
 }
 
-#[allow(dead_code)]
 pub fn visit<T>(visitor: &impl Visitor<State = T>, forest: &model::FileForest, state: &mut T) {
     visit_recursively(visitor, forest, &mut vec::Vec::new(), state)
 }
