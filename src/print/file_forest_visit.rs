@@ -12,7 +12,7 @@ pub trait Visitor {
 }
 
 pub fn visit<T>(visitor: &impl Visitor<State = T>, forest: &model::FileForest, state: &mut T) {
-    visit_recursively(visitor, forest, &mut vec::Vec::new(), state)
+    visit_recursively(visitor, forest, &mut vec![], state)
 }
 
 fn visit_recursively<'a, T>(
