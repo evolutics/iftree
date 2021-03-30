@@ -16,10 +16,17 @@ pub type Result<T> = result::Result<T, Error>;
 
 #[derive(Clone, Debug)]
 pub enum Error {
-    EnvironmentVariableCargoManifestDir(env::VarError),
+    EnvironmentVariable(EnvironmentVariableError),
     Ignore(ignore::Error),
     NameCollisions(vec::Vec<NameCollision>),
     PathStripPrefix(path::StripPrefixError),
+}
+
+#[derive(Clone, cmp::PartialEq, Debug)]
+pub struct EnvironmentVariableError {
+    pub name: String,
+    pub source: env::VarError,
+    pub appendix: Option<String>,
 }
 
 #[derive(Clone, cmp::PartialEq, Debug)]

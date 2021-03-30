@@ -1,5 +1,4 @@
 use super::main;
-use std::env;
 use std::error;
 use std::fmt;
 use std::path;
@@ -7,25 +6,20 @@ use std::path;
 impl fmt::Display for main::Error {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            main::Error::EnvironmentVariableCargoManifestDir(error) => {
-                let name = "CARGO_MANIFEST_DIR";
-                match error {
-                    env::VarError::NotPresent => write!(
-                        formatter,
-                        "The environment variable {:?} is not defined. \
-                        It is required as a base to resolve relative paths. \
-                        As a workaround, try defining it manually.",
-                        name,
-                    ),
-                    env::VarError::NotUnicode(data) => {
-                        write!(
-                            formatter,
-                            "The environment variable {:?} \
-                            has invalid Unicode data: {:?}",
-                            name, data,
-                        )
-                    }
-                }
+            main::Error::EnvironmentVariable(main::EnvironmentVariableError {
+                name,
+                source,
+                appendix,
+            }) => {
+                let appendix = match appendix {
+                    None => String::new(),
+                    Some(appendix) => format!("\n{}", appendix),
+                };
+                write!(
+                    formatter,
+                    "Unable to get environment variable {:?}: {}{}",
+                    name, source, appendix,
+                )
             }
 
             main::Error::Ignore(error) => write!(formatter, "{}", error),
@@ -62,7 +56,9 @@ impl fmt::Display for main::Error {
 impl error::Error for main::Error {
     fn source(&self) -> Option<&(dyn error::Error + 'static)> {
         match self {
-            main::Error::EnvironmentVariableCargoManifestDir(error) => Some(error),
+            main::Error::EnvironmentVariable(main::EnvironmentVariableError { source, .. }) => {
+                Some(source)
+            }
             main::Error::Ignore(error) => Some(error),
             main::Error::NameCollisions(_) => None,
             main::Error::PathStripPrefix(error) => Some(error),
