@@ -77,21 +77,24 @@ mod tests {
 
     #[test]
     fn prints_files() {
-        let mut forest = model::FileForest::new();
-        forest.insert(
-            String::from("MENU_JSON"),
-            model::FileTree::File(model::File {
-                relative_path: path::PathBuf::from("menu.json"),
-                ..model::stubs::file()
-            }),
-        );
-        forest.insert(
-            String::from("TRANSLATIONS_CSV"),
-            model::FileTree::File(model::File {
-                relative_path: path::PathBuf::from("translations.csv"),
-                ..model::stubs::file()
-            }),
-        );
+        let forest = vec![
+            (
+                String::from("MENU_JSON"),
+                model::FileTree::File(model::File {
+                    relative_path: path::PathBuf::from("menu.json"),
+                    ..model::stubs::file()
+                }),
+            ),
+            (
+                String::from("TRANSLATIONS_CSV"),
+                model::FileTree::File(model::File {
+                    relative_path: path::PathBuf::from("translations.csv"),
+                    ..model::stubs::file()
+                }),
+            ),
+        ]
+        .into_iter()
+        .collect();
 
         let actual = main(&model::FileIndex {
             resource_type: String::from("Resource"),
@@ -111,32 +114,49 @@ mod tests {
 
     #[test]
     fn prints_folders() {
-        let mut levels = model::FileForest::new();
-        levels.insert(
-            String::from("TUTORIAL_JSON"),
-            model::FileTree::File(model::File {
-                relative_path: path::PathBuf::from("world/levels/tutorial.json"),
-                ..model::stubs::file()
-            }),
-        );
-        let mut world = model::FileForest::new();
-        world.insert(String::from("levels"), model::FileTree::Folder(levels));
-        world.insert(
-            String::from("PHYSICAL_CONSTANTS_JSON"),
-            model::FileTree::File(model::File {
-                relative_path: path::PathBuf::from("world/physical_constants.json"),
-                ..model::stubs::file()
-            }),
-        );
-        let mut forest = model::FileForest::new();
-        forest.insert(
-            String::from("CREDITS_MD"),
-            model::FileTree::File(model::File {
-                relative_path: path::PathBuf::from("credits.md"),
-                ..model::stubs::file()
-            }),
-        );
-        forest.insert(String::from("world"), model::FileTree::Folder(world));
+        let forest = vec![
+            (
+                String::from("CREDITS_MD"),
+                model::FileTree::File(model::File {
+                    relative_path: path::PathBuf::from("credits.md"),
+                    ..model::stubs::file()
+                }),
+            ),
+            (
+                String::from("world"),
+                model::FileTree::Folder(
+                    vec![
+                        (
+                            String::from("levels"),
+                            model::FileTree::Folder(
+                                vec![(
+                                    String::from("TUTORIAL_JSON"),
+                                    model::FileTree::File(model::File {
+                                        relative_path: path::PathBuf::from(
+                                            "world/levels/tutorial.json",
+                                        ),
+                                        ..model::stubs::file()
+                                    }),
+                                )]
+                                .into_iter()
+                                .collect(),
+                            ),
+                        ),
+                        (
+                            String::from("PHYSICAL_CONSTANTS_JSON"),
+                            model::FileTree::File(model::File {
+                                relative_path: path::PathBuf::from("world/physical_constants.json"),
+                                ..model::stubs::file()
+                            }),
+                        ),
+                    ]
+                    .into_iter()
+                    .collect(),
+                ),
+            ),
+        ]
+        .into_iter()
+        .collect();
 
         let actual = main(&model::FileIndex {
             resource_type: String::from("Resource"),
@@ -157,28 +177,31 @@ mod tests {
 
     #[test]
     fn prints_ordered_by_relative_path() {
-        let mut forest = model::FileForest::new();
-        forest.insert(
-            String::from('X'),
-            model::FileTree::File(model::File {
-                relative_path: path::PathBuf::from("B"),
-                ..model::stubs::file()
-            }),
-        );
-        forest.insert(
-            String::from('Y'),
-            model::FileTree::File(model::File {
-                relative_path: path::PathBuf::from("A"),
-                ..model::stubs::file()
-            }),
-        );
-        forest.insert(
-            String::from('Z'),
-            model::FileTree::File(model::File {
-                relative_path: path::PathBuf::from("a"),
-                ..model::stubs::file()
-            }),
-        );
+        let forest = vec![
+            (
+                String::from('X'),
+                model::FileTree::File(model::File {
+                    relative_path: path::PathBuf::from("B"),
+                    ..model::stubs::file()
+                }),
+            ),
+            (
+                String::from('Y'),
+                model::FileTree::File(model::File {
+                    relative_path: path::PathBuf::from("A"),
+                    ..model::stubs::file()
+                }),
+            ),
+            (
+                String::from('Z'),
+                model::FileTree::File(model::File {
+                    relative_path: path::PathBuf::from("a"),
+                    ..model::stubs::file()
+                }),
+            ),
+        ]
+        .into_iter()
+        .collect();
 
         let actual = main(&model::FileIndex {
             resource_type: String::from("Resource"),

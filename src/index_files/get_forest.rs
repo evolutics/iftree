@@ -97,9 +97,7 @@ fn get_singleton_tree(reverse_file_path: vec::Vec<String>, file: model::File) ->
     let mut child = model::FileTree::File(file);
 
     for name in reverse_file_path.into_iter() {
-        let mut parent = model::FileForest::new();
-        parent.insert(name, child);
-        child = model::FileTree::Folder(parent);
+        child = model::FileTree::Folder(vec![(name, child)].into_iter().collect())
     }
 
     child
@@ -134,15 +132,18 @@ mod tests {
         let actual = main(&model::stubs::configuration(), files);
 
         let actual = actual.unwrap();
-        let mut expected = model::FileForest::new();
-        expected.insert(
-            String::from("r#MENU_JSON"),
-            model::FileTree::File(menu_json),
-        );
-        expected.insert(
-            String::from("r#TRANSLATIONS_CSV"),
-            model::FileTree::File(translations_csv),
-        );
+        let expected = vec![
+            (
+                String::from("r#MENU_JSON"),
+                model::FileTree::File(menu_json),
+            ),
+            (
+                String::from("r#TRANSLATIONS_CSV"),
+                model::FileTree::File(translations_csv),
+            ),
+        ]
+        .into_iter()
+        .collect();
         assert_eq!(actual, expected);
     }
 
@@ -169,23 +170,38 @@ mod tests {
         let actual = main(&model::stubs::configuration(), files);
 
         let actual = actual.unwrap();
-        let mut levels = model::FileForest::new();
-        levels.insert(
-            String::from("r#TUTORIAL_JSON"),
-            model::FileTree::File(tutorial_json),
-        );
-        let mut world = model::FileForest::new();
-        world.insert(String::from("r#levels"), model::FileTree::Folder(levels));
-        world.insert(
-            String::from("r#PHYSICAL_CONSTANTS_JSON"),
-            model::FileTree::File(physical_constants_json),
-        );
-        let mut expected = model::FileForest::new();
-        expected.insert(
-            String::from("r#CREDITS_MD"),
-            model::FileTree::File(credits_md),
-        );
-        expected.insert(String::from("r#world"), model::FileTree::Folder(world));
+        let expected = vec![
+            (
+                String::from("r#CREDITS_MD"),
+                model::FileTree::File(credits_md),
+            ),
+            (
+                String::from("r#world"),
+                model::FileTree::Folder(
+                    vec![
+                        (
+                            String::from("r#levels"),
+                            model::FileTree::Folder(
+                                vec![(
+                                    String::from("r#TUTORIAL_JSON"),
+                                    model::FileTree::File(tutorial_json),
+                                )]
+                                .into_iter()
+                                .collect(),
+                            ),
+                        ),
+                        (
+                            String::from("r#PHYSICAL_CONSTANTS_JSON"),
+                            model::FileTree::File(physical_constants_json),
+                        ),
+                    ]
+                    .into_iter()
+                    .collect(),
+                ),
+            ),
+        ]
+        .into_iter()
+        .collect();
         assert_eq!(actual, expected);
     }
 
@@ -255,23 +271,26 @@ mod tests {
         );
 
         let actual = actual.unwrap();
-        let mut expected = model::FileForest::new();
-        expected.insert(
-            String::from("r#CREDITS_MD"),
-            model::FileTree::File(credits_md_1),
-        );
-        expected.insert(
-            String::from("r#CREDITS_MD0"),
-            model::FileTree::File(credits_md_3),
-        );
-        expected.insert(
-            String::from("r#CREDITS_MD1"),
-            model::FileTree::File(credits_md_2),
-        );
-        expected.insert(
-            String::from("r#CREDITS_MD2"),
-            model::FileTree::File(credits_md_0),
-        );
+        let expected = vec![
+            (
+                String::from("r#CREDITS_MD"),
+                model::FileTree::File(credits_md_1),
+            ),
+            (
+                String::from("r#CREDITS_MD0"),
+                model::FileTree::File(credits_md_3),
+            ),
+            (
+                String::from("r#CREDITS_MD1"),
+                model::FileTree::File(credits_md_2),
+            ),
+            (
+                String::from("r#CREDITS_MD2"),
+                model::FileTree::File(credits_md_0),
+            ),
+        ]
+        .into_iter()
+        .collect();
         assert_eq!(actual, expected);
     }
 }

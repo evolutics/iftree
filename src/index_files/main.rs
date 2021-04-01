@@ -39,27 +39,36 @@ mod tests {
         );
 
         let actual = actual.unwrap();
-        let mut resources = model::FileForest::new();
-        resources.insert(
-            String::from("r#CREDITS_MD"),
-            model::FileTree::File(model::File {
-                relative_path: path::PathBuf::from("examples/resources/credits.md"),
-                absolute_path: fs::canonicalize("examples/resources/credits.md").unwrap(),
-            }),
-        );
-        let mut examples = model::FileForest::new();
-        examples.insert(
-            String::from("r#resources"),
-            model::FileTree::Folder(resources),
-        );
-        let mut forest = model::FileForest::new();
-        forest.insert(
-            String::from("r#examples"),
-            model::FileTree::Folder(examples),
-        );
         let expected = model::FileIndex {
             resource_type: String::from("Resource"),
-            forest,
+            forest: vec![(
+                String::from("r#examples"),
+                model::FileTree::Folder(
+                    vec![(
+                        String::from("r#resources"),
+                        model::FileTree::Folder(
+                            vec![(
+                                String::from("r#CREDITS_MD"),
+                                model::FileTree::File(model::File {
+                                    relative_path: path::PathBuf::from(
+                                        "examples/resources/credits.md",
+                                    ),
+                                    absolute_path: fs::canonicalize(
+                                        "examples/resources/credits.md",
+                                    )
+                                    .unwrap(),
+                                }),
+                            )]
+                            .into_iter()
+                            .collect(),
+                        ),
+                    )]
+                    .into_iter()
+                    .collect(),
+                ),
+            )]
+            .into_iter()
+            .collect(),
         };
         assert_eq!(actual, expected);
     }

@@ -78,18 +78,29 @@ mod tests {
     #[test]
     fn visits() {
         let indenter = Indenter { length: 2 };
-        let mut child = model::FileForest::new();
-        child.insert(
-            String::from("Grandchild"),
-            model::FileTree::File(model::File {
-                relative_path: path::PathBuf::from("abc"),
-                ..model::stubs::file()
-            }),
-        );
-        let mut parent = model::FileForest::new();
-        parent.insert(String::from("Child"), model::FileTree::Folder(child));
-        let mut grandparent = model::FileForest::new();
-        grandparent.insert(String::from("Parent"), model::FileTree::Folder(parent));
+        let grandparent = vec![(
+            String::from("Parent"),
+            model::FileTree::Folder(
+                vec![(
+                    String::from("Child"),
+                    model::FileTree::Folder(
+                        vec![(
+                            String::from("Grandchild"),
+                            model::FileTree::File(model::File {
+                                relative_path: path::PathBuf::from("abc"),
+                                ..model::stubs::file()
+                            }),
+                        )]
+                        .into_iter()
+                        .collect(),
+                    ),
+                )]
+                .into_iter()
+                .collect(),
+            ),
+        )]
+        .into_iter()
+        .collect();
         let mut actual = String::new();
 
         visit(&indenter, &grandparent, &mut actual);

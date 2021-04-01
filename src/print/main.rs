@@ -28,14 +28,15 @@ mod tests {
         let item = quote::quote! {
             pub type Resource = &'static str;
         };
-        let mut forest = model::FileForest::new();
-        forest.insert(
+        let forest = vec![(
             String::from("CREDITS_MD"),
             model::FileTree::File(model::File {
                 absolute_path: path::PathBuf::from("/credits.md"),
                 ..model::stubs::file()
             }),
-        );
+        )]
+        .into_iter()
+        .collect();
 
         let actual = main(
             item,
