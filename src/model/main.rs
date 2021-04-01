@@ -36,10 +36,9 @@ pub struct NameCollision {
     pub identifier: String,
 }
 
-#[derive(Clone, cmp::PartialEq, Debug, serde::Deserialize)]
+#[derive(Clone, cmp::PartialEq, Debug)]
 pub struct Configuration {
     pub resource_paths: String,
-    #[serde(default)]
     pub resolve_name_collisions: bool,
 }
 

@@ -1,3 +1,4 @@
+use super::parse_configuration_from_string;
 use crate::model;
 use std::fmt;
 use syn::parse;
@@ -6,7 +7,8 @@ use toml::de;
 impl parse::Parse for model::Configuration {
     fn parse(parameters: parse::ParseStream) -> syn::Result<Self> {
         let token = parameters.parse::<syn::LitStr>()?;
-        toml::from_str(&token.value()).map_err(|error| refine_error(token, error))
+        parse_configuration_from_string::main(&token.value())
+            .map_err(|error| refine_error(token, error))
     }
 }
 
@@ -41,50 +43,25 @@ mod tests {
     use super::*;
 
     #[test]
-    fn parses_valid_configuration_with_required_fields_only() {
-        let actual = syn::parse_str::<model::Configuration>(
-            r#""
-resource_paths = 'resources/**'
-            ""#,
-        );
+    fn parses_valid_configuration() {
+        let actual = syn::parse_str::<model::Configuration>(r#""resource_paths = 'resources'""#);
 
         let actual = actual.unwrap();
         let expected = model::Configuration {
-            resource_paths: String::from("resources/**"),
+            resource_paths: String::from("resources"),
             resolve_name_collisions: false,
         };
         assert_eq!(actual, expected);
     }
 
     #[test]
-    fn parses_valid_configuration_with_optional_fields() {
-        let actual = syn::parse_str::<model::Configuration>(
-            r#""
-resource_paths = 'my/resources/**'
-resolve_name_collisions = true
-            ""#,
-        );
-
-        let actual = actual.unwrap();
-        let expected = model::Configuration {
-            resource_paths: String::from("my/resources/**"),
-            resolve_name_collisions: true,
-        };
-        assert_eq!(actual, expected);
-    }
-
-    #[test]
     fn parses_invalid_configuration() {
-        let actual = syn::parse_str::<model::Configuration>(
-            r#""
-resource_paths = #
-            ""#,
-        );
+        let actual = syn::parse_str::<model::Configuration>(r#""resource_paths = #""#);
 
         let actual = actual.unwrap_err();
         let actual = format!("{}", actual);
         let expected = String::from(
-            "expected a value, found a comment at line 2 column 18 (in the string) here:
+            "expected a value, found a comment at line 1 column 18 (in the string) here:
 resource_paths = #
                  ▲",
         );
