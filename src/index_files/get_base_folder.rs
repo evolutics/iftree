@@ -55,8 +55,8 @@ mod tests {
             &|_| Err(env::VarError::NotPresent),
         );
 
-        let actual = match actual {
-            Err(model::Error::EnvironmentVariable(error)) => error,
+        let actual = match actual.unwrap_err() {
+            model::Error::EnvironmentVariable(error) => error,
             _ => unreachable!(),
         };
         let expected = model::EnvironmentVariableError {
