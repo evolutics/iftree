@@ -26,7 +26,6 @@ pub enum Error {
 pub struct EnvironmentVariableError {
     pub name: String,
     pub source: env::VarError,
-    pub appendix: Option<String>,
 }
 
 #[derive(Clone, cmp::PartialEq, Debug)]
@@ -40,6 +39,7 @@ pub struct NameCollision {
 pub struct Configuration {
     pub resource_paths: String,
     pub resolve_name_collisions: bool,
+    pub base_folder_environment_variable: String,
 }
 
 #[derive(Clone, cmp::PartialEq, Debug)]
@@ -83,6 +83,7 @@ pub mod stubs {
         Configuration {
             resource_paths: String::from("!*"),
             resolve_name_collisions: false,
+            base_folder_environment_variable: String::from("FOO"),
         }
     }
 

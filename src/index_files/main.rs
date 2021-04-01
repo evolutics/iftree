@@ -9,7 +9,7 @@ pub fn main(
     configuration: model::Configuration,
     resource_type: model::ResourceType,
 ) -> model::Result<model::FileIndex> {
-    let base_folder = get_base_folder::main(&|name| env::var(name))?;
+    let base_folder = get_base_folder::main(&configuration, &|name| env::var(name))?;
     let paths = get_paths::main(&configuration, &base_folder)?;
     let files = get_files::main(&base_folder, paths);
     let forest = get_forest::main(&configuration, files)?;
@@ -30,6 +30,7 @@ mod tests {
         let actual = main(
             model::Configuration {
                 resource_paths: String::from("examples/resources/credits.md"),
+                base_folder_environment_variable: String::from("CARGO_MANIFEST_DIR"),
                 ..model::stubs::configuration()
             },
             model::ResourceType {

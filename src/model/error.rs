@@ -6,19 +6,11 @@ use std::path;
 impl fmt::Display for main::Error {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            main::Error::EnvironmentVariable(main::EnvironmentVariableError {
-                name,
-                source,
-                appendix,
-            }) => {
-                let appendix = match appendix {
-                    None => String::new(),
-                    Some(appendix) => format!("\n{}", appendix),
-                };
+            main::Error::EnvironmentVariable(main::EnvironmentVariableError { name, source }) => {
                 write!(
                     formatter,
-                    "Unable to get environment variable {:?}: {}{}",
-                    name, source, appendix,
+                    "Unable to get environment variable {:?}: {}",
+                    name, source,
                 )
             }
 
