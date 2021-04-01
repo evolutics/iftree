@@ -1,11 +1,11 @@
-use super::file_forest_visit;
+use super::visit_file_forest;
 use crate::model;
 use std::vec;
 
 pub fn main(file_index: &model::FileIndex) -> proc_macro2::TokenStream {
     let visitor = Visitor {};
     let mut array = vec![];
-    file_forest_visit::visit(&visitor, &file_index.forest, &mut array);
+    visit_file_forest::main(&visitor, &file_index.forest, &mut array);
 
     let resource_type = &file_index.resource_type;
     let resource_type = quote::format_ident!("{}", resource_type);
@@ -27,7 +27,7 @@ struct Entry<'a> {
     file: &'a model::File,
 }
 
-impl<'a> file_forest_visit::Visitor<'a> for Visitor {
+impl<'a> visit_file_forest::Visitor<'a> for Visitor {
     type State = vec::Vec<Entry<'a>>;
 
     fn file(&self, file: &'a model::File, path: &[&str], array: &mut Self::State) {

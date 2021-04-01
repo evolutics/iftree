@@ -11,15 +11,15 @@ pub trait Visitor<'a> {
     fn after_forest(&self, path: &[&str], state: &mut Self::State);
 }
 
-pub fn visit<'a, T>(
+pub fn main<'a, T>(
     visitor: &impl Visitor<'a, State = T>,
     forest: &'a model::FileForest,
     state: &mut T,
 ) {
-    visit_recursively(visitor, forest, &mut vec![], state)
+    recursive_main(visitor, forest, &mut vec![], state)
 }
 
-fn visit_recursively<'a, T>(
+fn recursive_main<'a, T>(
     visitor: &impl Visitor<'a, State = T>,
     forest: &'a model::FileForest,
     path: &mut vec::Vec<&'a str>,
@@ -32,7 +32,7 @@ fn visit_recursively<'a, T>(
 
         match tree {
             model::FileTree::File(file) => visitor.file(file, path, state),
-            model::FileTree::Folder(forest) => visit_recursively(visitor, forest, path, state),
+            model::FileTree::Folder(forest) => recursive_main(visitor, forest, path, state),
         }
 
         path.pop();
@@ -103,7 +103,7 @@ mod tests {
         .collect();
         let mut actual = String::new();
 
-        visit(&indenter, &grandparent, &mut actual);
+        main(&indenter, &grandparent, &mut actual);
 
         let expected = "(
   (Parent

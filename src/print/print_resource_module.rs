@@ -1,4 +1,4 @@
-use super::file_forest_visit;
+use super::visit_file_forest;
 use crate::model;
 use std::vec;
 
@@ -8,7 +8,7 @@ pub fn main(file_index: &model::FileIndex) -> proc_macro2::TokenStream {
     let visitor = Visitor { resource_type };
 
     let mut stack = vec![proc_macro2::TokenStream::new()];
-    file_forest_visit::visit(&visitor, &file_index.forest, &mut stack);
+    visit_file_forest::main(&visitor, &file_index.forest, &mut stack);
     stack.pop().unwrap()
 }
 
@@ -16,7 +16,7 @@ struct Visitor {
     resource_type: syn::Ident,
 }
 
-impl file_forest_visit::Visitor<'_> for Visitor {
+impl visit_file_forest::Visitor<'_> for Visitor {
     type State = vec::Vec<proc_macro2::TokenStream>;
 
     fn file(&self, file: &model::File, path: &[&str], stack: &mut Self::State) {
