@@ -18,6 +18,13 @@ impl Ord for main::File {
 fn comparable_fields(fields: &main::Fields<proc_macro2::TokenStream>) -> main::Fields<String> {
     match fields {
         main::Fields::TypeAlias(value) => main::Fields::TypeAlias(value.to_string()),
+
+        main::Fields::NamedFields(fields) => main::Fields::NamedFields(
+            fields
+                .iter()
+                .map(|(name, value)| (name.clone(), value.to_string()))
+                .collect(),
+        ),
     }
 }
 

@@ -23,7 +23,7 @@ impl visit_file_forest::Visitor<'_> for Visitor {
     fn file(&self, file: &model::File, path: &[&str], stack: &mut Self::State) {
         let name = quote::format_ident!("{}", path.last().unwrap());
         let resource_type = &self.resource_type;
-        let value = print_resource_value::main(&file.fields);
+        let value = print_resource_value::main(resource_type, &file.fields);
 
         let tokens = quote::quote! {
             pub const #name: #resource_type = #value;

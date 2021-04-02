@@ -51,6 +51,8 @@ pub struct ResourceType {
 #[derive(Clone, cmp::Eq, cmp::Ord, cmp::PartialEq, cmp::PartialOrd, Debug)]
 pub enum Fields<T> {
     TypeAlias(T),
+    #[allow(dead_code)]
+    NamedFields(collections::BTreeMap<String, T>),
 }
 
 #[derive(Clone, cmp::PartialEq, Debug)]
