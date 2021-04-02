@@ -51,8 +51,6 @@ pub struct ResourceType {
 #[derive(Clone, cmp::PartialEq, Debug)]
 pub enum ResourceStructure {
     TypeAlias,
-    #[allow(dead_code)]
-    NamedFields(collections::HashSet<String>),
 }
 
 #[derive(Clone, cmp::PartialEq, Debug)]
