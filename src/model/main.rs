@@ -45,12 +45,12 @@ pub struct Configuration {
 #[derive(Clone, cmp::PartialEq, Debug)]
 pub struct ResourceType {
     pub identifier: String,
-    pub structure: ResourceStructure,
+    pub structure: Fields<()>,
 }
 
 #[derive(Clone, cmp::PartialEq, Debug)]
-pub enum ResourceStructure {
-    TypeAlias,
+pub enum Fields<T> {
+    TypeAlias(T),
 }
 
 #[derive(Clone, cmp::PartialEq, Debug)]
@@ -88,12 +88,12 @@ pub mod stubs {
     pub fn resource_type() -> ResourceType {
         ResourceType {
             identifier: String::from("foo"),
-            structure: resource_structure(),
+            structure: fields(()),
         }
     }
 
-    pub fn resource_structure() -> ResourceStructure {
-        ResourceStructure::TypeAlias
+    pub fn fields<T>(value: T) -> Fields<T> {
+        Fields::TypeAlias(value)
     }
 
     pub fn file() -> File {
