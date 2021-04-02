@@ -21,7 +21,6 @@ pub fn main(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::path;
 
     #[test]
     fn prints() {
@@ -31,7 +30,9 @@ mod tests {
         let forest = vec![(
             String::from("CREDITS_MD"),
             model::FileTree::File(model::File {
-                absolute_path: path::PathBuf::from("/credits.md"),
+                fields: model::Fields::TypeAlias(quote::quote! {
+                    include_str!("/credits.md")
+                }),
                 ..model::stubs::file()
             }),
         )]

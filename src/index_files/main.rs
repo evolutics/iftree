@@ -40,6 +40,10 @@ mod tests {
         );
 
         let actual = actual.unwrap();
+        let absolute_path = fs::canonicalize("examples/resources/credits.md")
+            .unwrap()
+            .to_string_lossy()
+            .into_owned();
         let expected = model::FileIndex {
             resource_type: String::from("Resource"),
             forest: vec![(
@@ -54,10 +58,9 @@ mod tests {
                                     relative_path: path::PathBuf::from(
                                         "examples/resources/credits.md",
                                     ),
-                                    absolute_path: fs::canonicalize(
-                                        "examples/resources/credits.md",
-                                    )
-                                    .unwrap(),
+                                    fields: model::Fields::TypeAlias(quote::quote! {
+                                        include_str!(#absolute_path)
+                                    }),
                                 }),
                             )]
                             .into_iter()

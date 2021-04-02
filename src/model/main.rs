@@ -48,7 +48,7 @@ pub struct ResourceType {
     pub structure: Fields<()>,
 }
 
-#[derive(Clone, cmp::PartialEq, Debug)]
+#[derive(Clone, cmp::Eq, cmp::Ord, cmp::PartialEq, cmp::PartialOrd, Debug)]
 pub enum Fields<T> {
     TypeAlias(T),
 }
@@ -67,10 +67,10 @@ pub enum FileTree {
     Folder(FileForest),
 }
 
-#[derive(Clone, cmp::Eq, Debug)]
+#[derive(Clone, Debug)]
 pub struct File {
     pub relative_path: path::PathBuf,
-    pub absolute_path: path::PathBuf,
+    pub fields: Fields<proc_macro2::TokenStream>,
 }
 
 #[cfg(test)]
@@ -99,7 +99,9 @@ pub mod stubs {
     pub fn file() -> File {
         File {
             relative_path: path::PathBuf::from("bar"),
-            absolute_path: path::PathBuf::from("/foo/bar"),
+            fields: Fields::TypeAlias(quote::quote! {
+                include_str!("/foo/bar")
+            }),
         }
     }
 }
