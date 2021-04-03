@@ -32,11 +32,8 @@ mod tests {
             model::FieldIdentifier::Anonymous,
         );
 
-        let actual = match actual.unwrap_err() {
-            model::Error::MissingImplementation(actual) => actual,
-            _ => unreachable!(),
-        };
-        let expected = model::FieldIdentifier::Anonymous;
+        let actual = actual.unwrap_err();
+        let expected = model::Error::MissingImplementation(model::FieldIdentifier::Anonymous);
         assert_eq!(actual, expected);
     }
 
@@ -80,11 +77,9 @@ mod tests {
             model::FieldIdentifier::Anonymous,
         );
 
-        let actual = match actual.unwrap_err() {
-            model::Error::NonStandardTemplate(actual) => actual,
-            _ => unreachable!(),
-        };
-        let expected = String::from("my_include!({{absolute_path}})");
+        let actual = actual.unwrap_err();
+        let expected =
+            model::Error::NonStandardTemplate(String::from("my_include!({{absolute_path}})"));
         assert_eq!(actual, expected);
     }
 }

@@ -225,15 +225,12 @@ mod tests {
             files,
         );
 
-        let actual = match actual.unwrap_err() {
-            model::Error::NameCollisions(actual) => actual,
-            _ => unreachable!(),
-        };
-        let expected = vec![model::NameCollision {
+        let actual = actual.unwrap_err();
+        let expected = model::Error::NameCollisions(vec![model::NameCollision {
             colliding_file: credits_md_1,
             existing_filename: Some(String::from("CREDITS.md")),
             identifier: String::from("r#CREDITS_MD"),
-        }];
+        }]);
         assert_eq!(actual, expected);
     }
 

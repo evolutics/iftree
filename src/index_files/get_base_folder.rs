@@ -55,14 +55,11 @@ mod tests {
             &|_| Err(env::VarError::NotPresent),
         );
 
-        let actual = match actual.unwrap_err() {
-            model::Error::EnvironmentVariable(error) => error,
-            _ => unreachable!(),
-        };
-        let expected = model::EnvironmentVariableError {
+        let actual = actual.unwrap_err();
+        let expected = model::Error::EnvironmentVariable(model::EnvironmentVariableError {
             name: String::from("BASE_FOLDER"),
             source: env::VarError::NotPresent,
-        };
+        });
         assert_eq!(actual, expected);
     }
 }
