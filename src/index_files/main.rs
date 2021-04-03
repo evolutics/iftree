@@ -35,7 +35,7 @@ mod tests {
             },
             model::ResourceType {
                 identifier: String::from("Resource"),
-                ..model::stubs::resource_type()
+                structure: model::Fields::TypeAlias(()),
             },
         );
 

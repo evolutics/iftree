@@ -94,17 +94,6 @@ pub mod stubs {
         }
     }
 
-    pub fn resource_type() -> ResourceType {
-        ResourceType {
-            identifier: String::from("foo"),
-            structure: fields(()),
-        }
-    }
-
-    pub fn fields<T>(value: T) -> Fields<T> {
-        Fields::TypeAlias(value)
-    }
-
     pub fn file() -> File {
         File {
             relative_path: path::PathBuf::from("bar"),
