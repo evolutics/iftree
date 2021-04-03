@@ -54,8 +54,7 @@ mod tests {
     fn parses_invalid_configuration() {
         let actual = syn::parse_str::<model::Configuration>(r#""resource_paths = #""#);
 
-        let actual = actual.unwrap_err();
-        let actual = format!("{}", actual);
+        let actual = actual.unwrap_err().to_string();
         let expected = String::from(
             "expected a value, found a comment at line 1 column 18 (in the string) here:
 resource_paths = #
