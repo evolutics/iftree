@@ -3,6 +3,12 @@ use std::error;
 use std::fmt;
 use std::path;
 
+impl PartialEq for main::IgnoreError {
+    fn eq(&self, other: &Self) -> bool {
+        format!("{:?}", self) == format!("{:?}", other)
+    }
+}
+
 impl fmt::Display for main::Error {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
@@ -14,7 +20,7 @@ impl fmt::Display for main::Error {
                 )
             }
 
-            main::Error::Ignore(error) => write!(formatter, "{}", error),
+            main::Error::Ignore(main::IgnoreError(error)) => write!(formatter, "{}", error),
 
             main::Error::MissingImplementation(field) => {
                 let field_hint = match field {
@@ -69,7 +75,7 @@ impl error::Error for main::Error {
             main::Error::EnvironmentVariable(main::EnvironmentVariableError { source, .. }) => {
                 Some(source)
             }
-            main::Error::Ignore(error) => Some(error),
+            main::Error::Ignore(main::IgnoreError(error)) => Some(error),
             main::Error::MissingImplementation(_) => None,
             main::Error::NameCollisions(_) => None,
             main::Error::NonStandardTemplate(_) => None,
@@ -80,7 +86,7 @@ impl error::Error for main::Error {
 
 impl From<ignore::Error> for main::Error {
     fn from(error: ignore::Error) -> Self {
-        main::Error::Ignore(error)
+        main::Error::Ignore(main::IgnoreError(error))
     }
 }
 

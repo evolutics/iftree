@@ -14,10 +14,10 @@ pub type Output = proc_macro::TokenStream;
 
 pub type Result<T> = result::Result<T, Error>;
 
-#[derive(Clone, Debug)]
+#[derive(Clone, cmp::PartialEq, Debug)]
 pub enum Error {
     EnvironmentVariable(EnvironmentVariableError),
-    Ignore(ignore::Error),
+    Ignore(IgnoreError),
     MissingImplementation(FieldIdentifier),
     NameCollisions(vec::Vec<NameCollision>),
     NonStandardTemplate(Template),
@@ -29,6 +29,9 @@ pub struct EnvironmentVariableError {
     pub name: String,
     pub source: env::VarError,
 }
+
+#[derive(Clone, Debug)]
+pub struct IgnoreError(pub ignore::Error);
 
 #[derive(Clone, cmp::Eq, cmp::Ord, cmp::PartialEq, cmp::PartialOrd, Debug)]
 pub enum FieldIdentifier {
