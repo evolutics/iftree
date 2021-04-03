@@ -18,8 +18,15 @@ pub type Result<T> = result::Result<T, Error>;
 pub enum Error {
     EnvironmentVariable(EnvironmentVariableError),
     Ignore(ignore::Error),
+    MissingImplementation(FieldIdentifier),
     NameCollisions(vec::Vec<NameCollision>),
     PathStripPrefix(path::StripPrefixError),
+}
+
+#[derive(Clone, cmp::PartialEq, Debug)]
+pub enum FieldIdentifier {
+    Anonymous,
+    Named(String),
 }
 
 #[derive(Clone, cmp::PartialEq, Debug)]

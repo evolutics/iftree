@@ -16,6 +16,18 @@ impl fmt::Display for main::Error {
 
             main::Error::Ignore(error) => write!(formatter, "{}", error),
 
+            main::Error::MissingImplementation(field) => {
+                let field_hint = match field {
+                    main::FieldIdentifier::Anonymous => String::new(),
+                    main::FieldIdentifier::Named(name) => format!("field {:?} of ", name),
+                };
+                write!(
+                    formatter,
+                    "No implementation configured for {}resource type.",
+                    field_hint,
+                )
+            }
+
             main::Error::NameCollisions(collisions) => {
                 let configuration = "resolve_name_collisions = true";
                 write!(
@@ -52,6 +64,7 @@ impl error::Error for main::Error {
                 Some(source)
             }
             main::Error::Ignore(error) => Some(error),
+            main::Error::MissingImplementation(_) => None,
             main::Error::NameCollisions(_) => None,
             main::Error::PathStripPrefix(error) => Some(error),
         }
