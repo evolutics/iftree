@@ -47,7 +47,7 @@ mod tests {
         let actual = syn::parse_str::<model::Configuration>(r#""resource_paths = 'resources'""#);
 
         let actual = actual.is_ok();
-        assert!(actual,);
+        assert!(actual);
     }
 
     #[test]
