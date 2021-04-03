@@ -37,7 +37,10 @@ impl<'a> de::Visitor<'a> for FieldIdentifierVisitor {
         Ok(if string == "_" {
             model::FieldIdentifier::Anonymous
         } else {
-            model::FieldIdentifier::Named(String::from(string))
+            match string.parse() {
+                Err(_) => model::FieldIdentifier::Named(String::from(string)),
+                Ok(index) => model::FieldIdentifier::Indexed(index),
+            }
         })
     }
 }
@@ -109,6 +112,7 @@ base_folder_environment_variable = 'MY_BASE_FOLDER'
 [fields]
 _ = 'my::include!({{absolute_path}})'
 custom = 'my::custom_include!({{absolute_path}})'
+3 = 'my::another_include!({{absolute_path}})'
 ",
         );
 
@@ -129,6 +133,10 @@ custom = 'my::custom_include!({{absolute_path}})'
                 (
                     model::FieldIdentifier::Named(String::from("custom")),
                     String::from("my::custom_include!({{absolute_path}})"),
+                ),
+                (
+                    model::FieldIdentifier::Indexed(3),
+                    String::from("my::another_include!({{absolute_path}})"),
                 ),
             ]
             .into_iter()
