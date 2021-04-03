@@ -26,8 +26,8 @@ fn comparable_fields(fields: &main::Fields<proc_macro2::TokenStream>) -> main::F
                 .collect(),
         ),
 
-        main::Fields::TupleFields(fields) => {
-            main::Fields::TupleFields(fields.iter().map(|value| value.to_string()).collect())
+        main::Fields::TupleFields(values) => {
+            main::Fields::TupleFields(values.iter().map(|value| value.to_string()).collect())
         }
     }
 }

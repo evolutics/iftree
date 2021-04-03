@@ -63,20 +63,16 @@ mod tests {
     fn prints_named_fields() {
         let actual = main(
             &quote::format_ident!("Resource"),
-            &model::Fields::NamedFields(
-                vec![
-                    (
-                        String::from("content"),
-                        quote::quote! { include_str!("/credits.md") },
-                    ),
-                    (
-                        String::from("media_type"),
-                        quote::quote! { "text/markdown" },
-                    ),
-                ]
-                .into_iter()
-                .collect(),
-            ),
+            &model::Fields::NamedFields(vec![
+                (
+                    String::from("content"),
+                    quote::quote! { include_str!("/credits.md") },
+                ),
+                (
+                    String::from("media_type"),
+                    quote::quote! { "text/markdown" },
+                ),
+            ]),
         );
 
         let actual = actual.to_string();

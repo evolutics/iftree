@@ -5,7 +5,7 @@ use std::vec;
 
 pub fn main(
     configuration: &model::Configuration,
-    resource_structure: &model::Fields<()>,
+    resource_structure: &model::ResourceTypeStructure,
     base_folder: &path::Path,
     paths: vec::Vec<path::PathBuf>,
 ) -> model::Result<vec::Vec<model::File>> {
@@ -17,7 +17,7 @@ pub fn main(
 
 fn get_file(
     configuration: &model::Configuration,
-    resource_structure: &model::Fields<()>,
+    resource_structure: &model::ResourceTypeStructure,
     base_folder: &path::Path,
     relative_path: path::PathBuf,
 ) -> model::Result<model::File> {
@@ -25,15 +25,17 @@ fn get_file(
     let absolute_path = absolute_path.to_string_lossy();
 
     let fields = match resource_structure {
-        model::Fields::TypeAlias(()) => model::Fields::TypeAlias(get_field_implementation::main(
-            configuration,
-            absolute_path.as_ref(),
-            model::FieldIdentifier::Anonymous,
-        )?),
+        model::ResourceTypeStructure::TypeAlias => {
+            model::Fields::TypeAlias(get_field_implementation::main(
+                configuration,
+                absolute_path.as_ref(),
+                model::FieldIdentifier::Anonymous,
+            )?)
+        }
 
-        model::Fields::NamedFields(fields) => model::Fields::NamedFields(
-            fields
-                .keys()
+        model::ResourceTypeStructure::NamedFields(names) => model::Fields::NamedFields(
+            names
+                .iter()
                 .map(|name| {
                     let value = get_field_implementation::main(
                         configuration,
@@ -45,11 +47,9 @@ fn get_file(
                 .collect::<model::Result<_>>()?,
         ),
 
-        model::Fields::TupleFields(fields) => model::Fields::TupleFields(
-            fields
-                .iter()
-                .enumerate()
-                .map(|(index, _)| {
+        model::ResourceTypeStructure::TupleFields(length) => model::Fields::TupleFields(
+            (0..*length)
+                .map(|index| {
                     get_field_implementation::main(
                         configuration,
                         absolute_path.as_ref(),
@@ -82,7 +82,7 @@ mod tests {
                 .collect(),
                 ..model::stubs::configuration()
             },
-            &model::Fields::TypeAlias(()),
+            &model::ResourceTypeStructure::TypeAlias,
             path::Path::new("/resources"),
             vec![
                 path::PathBuf::from("world/physical_constants.json"),
@@ -120,7 +120,7 @@ mod tests {
                 .collect(),
                 ..model::stubs::configuration()
             },
-            &model::Fields::NamedFields(vec![(String::from("content"), ())].into_iter().collect()),
+            &model::ResourceTypeStructure::NamedFields(vec![String::from("content")]),
             path::Path::new("/resources"),
             vec![
                 path::PathBuf::from("world/physical_constants.json"),
@@ -132,29 +132,21 @@ mod tests {
         let expected = vec![
             model::File {
                 relative_path: path::PathBuf::from("world/physical_constants.json"),
-                fields: model::Fields::NamedFields(
-                    vec![(
-                        String::from("content"),
-                        quote::quote! {
-                            include_str!("/resources/world/physical_constants.json")
-                        },
-                    )]
-                    .into_iter()
-                    .collect(),
-                ),
+                fields: model::Fields::NamedFields(vec![(
+                    String::from("content"),
+                    quote::quote! {
+                        include_str!("/resources/world/physical_constants.json")
+                    },
+                )]),
             },
             model::File {
                 relative_path: path::PathBuf::from("configuration/menu.json"),
-                fields: model::Fields::NamedFields(
-                    vec![(
-                        String::from("content"),
-                        quote::quote! {
-                            include_str!("/resources/configuration/menu.json")
-                        },
-                    )]
-                    .into_iter()
-                    .collect(),
-                ),
+                fields: model::Fields::NamedFields(vec![(
+                    String::from("content"),
+                    quote::quote! {
+                        include_str!("/resources/configuration/menu.json")
+                    },
+                )]),
             },
         ];
         assert_eq!(actual, expected);
@@ -172,7 +164,7 @@ mod tests {
                 .collect(),
                 ..model::stubs::configuration()
             },
-            &model::Fields::TupleFields(vec![()].into_iter().collect()),
+            &model::ResourceTypeStructure::TupleFields(1),
             path::Path::new("/resources"),
             vec![
                 path::PathBuf::from("world/physical_constants.json"),

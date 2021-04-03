@@ -13,7 +13,7 @@ impl parse::Parse for model::ResourceType {
 
         Ok(model::ResourceType {
             identifier: identifier.to_string(),
-            structure: model::Fields::TypeAlias(()),
+            structure: model::ResourceTypeStructure::TypeAlias,
         })
     }
 }
@@ -29,7 +29,7 @@ mod tests {
         let actual = actual.unwrap();
         let expected = model::ResourceType {
             identifier: String::from("MyResource"),
-            structure: model::Fields::TypeAlias(()),
+            structure: model::ResourceTypeStructure::TypeAlias,
         };
         assert_eq!(actual, expected);
     }

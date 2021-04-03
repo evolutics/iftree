@@ -60,16 +60,16 @@ pub struct Configuration {
 #[derive(Clone, cmp::PartialEq, Debug)]
 pub struct ResourceType {
     pub identifier: String,
-    pub structure: Fields<()>,
+    pub structure: ResourceTypeStructure,
 }
 
-#[derive(Clone, cmp::Eq, cmp::Ord, cmp::PartialEq, cmp::PartialOrd, Debug)]
-pub enum Fields<T> {
-    TypeAlias(T),
+#[derive(Clone, cmp::PartialEq, Debug)]
+pub enum ResourceTypeStructure {
+    TypeAlias,
     #[allow(dead_code)]
-    NamedFields(collections::BTreeMap<String, T>),
+    NamedFields(vec::Vec<String>),
     #[allow(dead_code)]
-    TupleFields(vec::Vec<T>),
+    TupleFields(usize),
 }
 
 #[derive(Clone, cmp::PartialEq, Debug)]
@@ -90,6 +90,13 @@ pub enum FileTree {
 pub struct File {
     pub relative_path: path::PathBuf,
     pub fields: Fields<proc_macro2::TokenStream>,
+}
+
+#[derive(Clone, cmp::Eq, cmp::Ord, cmp::PartialEq, cmp::PartialOrd, Debug)]
+pub enum Fields<T> {
+    TypeAlias(T),
+    NamedFields(vec::Vec<(String, T)>),
+    TupleFields(vec::Vec<T>),
 }
 
 #[cfg(test)]
