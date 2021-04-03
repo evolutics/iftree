@@ -2,17 +2,17 @@ use crate::model;
 
 pub fn main(
     resource_type: &syn::Ident,
-    fields: &model::Fields<proc_macro2::TokenStream>,
+    resource_term: &model::ResourceTerm<proc_macro2::TokenStream>,
 ) -> proc_macro2::TokenStream {
-    match fields {
-        model::Fields::TypeAlias(value) => value.clone(),
+    match resource_term {
+        model::ResourceTerm::TypeAlias(term) => term.clone(),
 
-        model::Fields::NamedFields(fields) => {
+        model::ResourceTerm::NamedFields(fields) => {
             let content: proc_macro2::TokenStream = fields
                 .iter()
-                .map(|(name, value)| {
+                .map(|(name, term)| {
                     let name = quote::format_ident!("{}", name);
-                    quote::quote! { #name: #value, }
+                    quote::quote! { #name: #term, }
                 })
                 .collect();
 
@@ -23,11 +23,9 @@ pub fn main(
             }
         }
 
-        model::Fields::TupleFields(fields) => {
-            let content: proc_macro2::TokenStream = fields
-                .iter()
-                .map(|value| quote::quote! { #value, })
-                .collect();
+        model::ResourceTerm::TupleFields(terms) => {
+            let content: proc_macro2::TokenStream =
+                terms.iter().map(|term| quote::quote! { #term, }).collect();
 
             quote::quote! {
                 #resource_type(
@@ -46,7 +44,7 @@ mod tests {
     fn prints_type_alias() {
         let actual = main(
             &quote::format_ident!("Foo"),
-            &model::Fields::TypeAlias(quote::quote! {
+            &model::ResourceTerm::TypeAlias(quote::quote! {
                 include_str!("/credits.md")
             }),
         );
@@ -63,7 +61,7 @@ mod tests {
     fn prints_named_fields() {
         let actual = main(
             &quote::format_ident!("Resource"),
-            &model::Fields::NamedFields(vec![
+            &model::ResourceTerm::NamedFields(vec![
                 (
                     String::from("content"),
                     quote::quote! { include_str!("/credits.md") },
@@ -90,7 +88,7 @@ mod tests {
     fn prints_tuple_fields() {
         let actual = main(
             &quote::format_ident!("Resource"),
-            &model::Fields::TupleFields(vec![
+            &model::ResourceTerm::TupleFields(vec![
                 quote::quote! { include_str!("/credits.md") },
                 quote::quote! { "text/markdown" },
             ]),

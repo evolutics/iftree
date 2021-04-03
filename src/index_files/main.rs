@@ -69,7 +69,7 @@ mod tests {
                                     relative_path: path::PathBuf::from(
                                         "examples/resources/credits.md",
                                     ),
-                                    fields: model::Fields::TypeAlias(quote::quote! {
+                                    resource_term: model::ResourceTerm::TypeAlias(quote::quote! {
                                         include_str!(#absolute_path)
                                     }),
                                 }),

@@ -1,4 +1,4 @@
-use super::get_field_implementation;
+use super::get_field_term;
 use crate::model;
 use std::path;
 use std::vec;
@@ -24,33 +24,33 @@ fn get_file(
     let absolute_path = base_folder.join(&relative_path);
     let absolute_path = absolute_path.to_string_lossy();
 
-    let fields = match resource_structure {
+    let resource_term = match resource_structure {
         model::ResourceTypeStructure::TypeAlias => {
-            model::Fields::TypeAlias(get_field_implementation::main(
+            model::ResourceTerm::TypeAlias(get_field_term::main(
                 configuration,
                 absolute_path.as_ref(),
                 model::FieldIdentifier::Anonymous,
             )?)
         }
 
-        model::ResourceTypeStructure::NamedFields(names) => model::Fields::NamedFields(
+        model::ResourceTypeStructure::NamedFields(names) => model::ResourceTerm::NamedFields(
             names
                 .iter()
                 .map(|name| {
-                    let value = get_field_implementation::main(
+                    let term = get_field_term::main(
                         configuration,
                         absolute_path.as_ref(),
                         model::FieldIdentifier::Named(name.clone()),
                     )?;
-                    Ok((name.clone(), value))
+                    Ok((name.clone(), term))
                 })
                 .collect::<model::Result<_>>()?,
         ),
 
-        model::ResourceTypeStructure::TupleFields(length) => model::Fields::TupleFields(
+        model::ResourceTypeStructure::TupleFields(length) => model::ResourceTerm::TupleFields(
             (0..*length)
                 .map(|index| {
-                    get_field_implementation::main(
+                    get_field_term::main(
                         configuration,
                         absolute_path.as_ref(),
                         model::FieldIdentifier::Indexed(index),
@@ -62,7 +62,7 @@ fn get_file(
 
     Ok(model::File {
         relative_path,
-        fields,
+        resource_term,
     })
 }
 
@@ -94,13 +94,13 @@ mod tests {
         let expected = vec![
             model::File {
                 relative_path: path::PathBuf::from("world/physical_constants.json"),
-                fields: model::Fields::TypeAlias(quote::quote! {
+                resource_term: model::ResourceTerm::TypeAlias(quote::quote! {
                     include_str!("/resources/world/physical_constants.json")
                 }),
             },
             model::File {
                 relative_path: path::PathBuf::from("configuration/menu.json"),
-                fields: model::Fields::TypeAlias(quote::quote! {
+                resource_term: model::ResourceTerm::TypeAlias(quote::quote! {
                     include_str!("/resources/configuration/menu.json")
                 }),
             },
@@ -132,7 +132,7 @@ mod tests {
         let expected = vec![
             model::File {
                 relative_path: path::PathBuf::from("world/physical_constants.json"),
-                fields: model::Fields::NamedFields(vec![(
+                resource_term: model::ResourceTerm::NamedFields(vec![(
                     String::from("content"),
                     quote::quote! {
                         include_str!("/resources/world/physical_constants.json")
@@ -141,7 +141,7 @@ mod tests {
             },
             model::File {
                 relative_path: path::PathBuf::from("configuration/menu.json"),
-                fields: model::Fields::NamedFields(vec![(
+                resource_term: model::ResourceTerm::NamedFields(vec![(
                     String::from("content"),
                     quote::quote! {
                         include_str!("/resources/configuration/menu.json")
@@ -176,13 +176,13 @@ mod tests {
         let expected = vec![
             model::File {
                 relative_path: path::PathBuf::from("world/physical_constants.json"),
-                fields: model::Fields::TupleFields(vec![quote::quote! {
+                resource_term: model::ResourceTerm::TupleFields(vec![quote::quote! {
                     include_str!("/resources/world/physical_constants.json")
                 }]),
             },
             model::File {
                 relative_path: path::PathBuf::from("configuration/menu.json"),
-                fields: model::Fields::TupleFields(vec![quote::quote! {
+                resource_term: model::ResourceTerm::TupleFields(vec![quote::quote! {
                     include_str!("/resources/configuration/menu.json")
                 }]),
             },

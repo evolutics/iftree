@@ -1,4 +1,4 @@
-use super::print_resource_value;
+use super::print_resource_term;
 use super::visit_file_forest;
 use crate::model;
 use std::vec;
@@ -23,10 +23,10 @@ impl visit_file_forest::Visitor<'_> for Visitor {
     fn file(&self, file: &model::File, path: &[&str], stack: &mut Self::State) {
         let name = quote::format_ident!("{}", path.last().unwrap());
         let resource_type = &self.resource_type;
-        let value = print_resource_value::main(resource_type, &file.fields);
+        let term = print_resource_term::main(resource_type, &file.resource_term);
 
         let tokens = quote::quote! {
-            pub const #name: #resource_type = #value;
+            pub const #name: #resource_type = #term;
         };
 
         stack.last_mut().unwrap().extend(tokens);
@@ -83,7 +83,7 @@ mod tests {
             (
                 String::from("MENU_JSON"),
                 model::FileTree::File(model::File {
-                    fields: model::Fields::TypeAlias(quote::quote! {
+                    resource_term: model::ResourceTerm::TypeAlias(quote::quote! {
                         include_str!("/menu.json")
                     }),
                     ..model::stubs::file()
@@ -92,7 +92,7 @@ mod tests {
             (
                 String::from("TRANSLATIONS_CSV"),
                 model::FileTree::File(model::File {
-                    fields: model::Fields::TypeAlias(quote::quote! {
+                    resource_term: model::ResourceTerm::TypeAlias(quote::quote! {
                         include_str!("/translations.csv")
                     }),
                     ..model::stubs::file()
@@ -127,7 +127,7 @@ mod tests {
             (
                 String::from("CREDITS_MD"),
                 model::FileTree::File(model::File {
-                    fields: model::Fields::TypeAlias(quote::quote! {
+                    resource_term: model::ResourceTerm::TypeAlias(quote::quote! {
                         include_str!("/credits.md")
                     }),
                     ..model::stubs::file()
@@ -143,9 +143,11 @@ mod tests {
                                 vec![(
                                     String::from("TUTORIAL_JSON"),
                                     model::FileTree::File(model::File {
-                                        fields: model::Fields::TypeAlias(quote::quote! {
-                                            include_str!("/world/levels/tutorial.json")
-                                        }),
+                                        resource_term: model::ResourceTerm::TypeAlias(
+                                            quote::quote! {
+                                                include_str!("/world/levels/tutorial.json")
+                                            },
+                                        ),
                                         ..model::stubs::file()
                                     }),
                                 )]
@@ -156,7 +158,7 @@ mod tests {
                         (
                             String::from("PHYSICAL_CONSTANTS_JSON"),
                             model::FileTree::File(model::File {
-                                fields: model::Fields::TypeAlias(quote::quote! {
+                                resource_term: model::ResourceTerm::TypeAlias(quote::quote! {
                                     include_str!("/world/physical_constants.json")
                                 }),
                                 ..model::stubs::file()
@@ -210,7 +212,7 @@ mod tests {
                 vec![(
                     String::from("NORMAL"),
                     model::FileTree::File(model::File {
-                        fields: model::Fields::TypeAlias(quote::quote! {
+                        resource_term: model::ResourceTerm::TypeAlias(quote::quote! {
                             include_str!("/normal")
                         }),
                         ..model::stubs::file()

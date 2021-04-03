@@ -89,11 +89,11 @@ pub enum FileTree {
 #[derive(Clone, Debug)]
 pub struct File {
     pub relative_path: path::PathBuf,
-    pub fields: Fields<proc_macro2::TokenStream>,
+    pub resource_term: ResourceTerm<proc_macro2::TokenStream>,
 }
 
 #[derive(Clone, cmp::Eq, cmp::Ord, cmp::PartialEq, cmp::PartialOrd, Debug)]
-pub enum Fields<T> {
+pub enum ResourceTerm<T> {
     TypeAlias(T),
     NamedFields(vec::Vec<(String, T)>),
     TupleFields(vec::Vec<T>),
@@ -115,7 +115,7 @@ pub mod stubs {
     pub fn file() -> File {
         File {
             relative_path: path::PathBuf::from("bar"),
-            fields: Fields::TypeAlias(quote::quote! {
+            resource_term: ResourceTerm::TypeAlias(quote::quote! {
                 include_str!("/foo/bar")
             }),
         }

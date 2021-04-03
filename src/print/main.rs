@@ -30,7 +30,7 @@ mod tests {
         let forest = vec![(
             String::from("CREDITS_MD"),
             model::FileTree::File(model::File {
-                fields: model::Fields::TypeAlias(quote::quote! {
+                resource_term: model::ResourceTerm::TypeAlias(quote::quote! {
                     include_str!("/credits.md")
                 }),
                 ..model::stubs::file()

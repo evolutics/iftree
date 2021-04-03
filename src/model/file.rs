@@ -6,28 +6,29 @@ impl Eq for main::File {}
 impl Ord for main::File {
     fn cmp(&self, other: &Self) -> cmp::Ordering {
         match self.relative_path.cmp(&other.relative_path) {
-            cmp::Ordering::Equal => {
-                comparable_fields(&self.fields).cmp(&comparable_fields(&other.fields))
-            }
+            cmp::Ordering::Equal => comparable_resource_term(&self.resource_term)
+                .cmp(&comparable_resource_term(&other.resource_term)),
             cmp::Ordering::Greater => cmp::Ordering::Greater,
             cmp::Ordering::Less => cmp::Ordering::Less,
         }
     }
 }
 
-fn comparable_fields(fields: &main::Fields<proc_macro2::TokenStream>) -> main::Fields<String> {
-    match fields {
-        main::Fields::TypeAlias(value) => main::Fields::TypeAlias(value.to_string()),
+fn comparable_resource_term(
+    resource_term: &main::ResourceTerm<proc_macro2::TokenStream>,
+) -> main::ResourceTerm<String> {
+    match resource_term {
+        main::ResourceTerm::TypeAlias(term) => main::ResourceTerm::TypeAlias(term.to_string()),
 
-        main::Fields::NamedFields(fields) => main::Fields::NamedFields(
+        main::ResourceTerm::NamedFields(fields) => main::ResourceTerm::NamedFields(
             fields
                 .iter()
-                .map(|(name, value)| (name.clone(), value.to_string()))
+                .map(|(name, term)| (name.clone(), term.to_string()))
                 .collect(),
         ),
 
-        main::Fields::TupleFields(values) => {
-            main::Fields::TupleFields(values.iter().map(|value| value.to_string()).collect())
+        main::ResourceTerm::TupleFields(terms) => {
+            main::ResourceTerm::TupleFields(terms.iter().map(|term| term.to_string()).collect())
         }
     }
 }
@@ -53,11 +54,11 @@ mod tests {
     fn compares_equal() {
         let one = main::File {
             relative_path: path::PathBuf::from("abc"),
-            fields: main::Fields::TypeAlias(quote::quote! { println!("Hi"); }),
+            resource_term: main::ResourceTerm::TypeAlias(quote::quote! { println!("Hi"); }),
         };
         let another = main::File {
             relative_path: path::PathBuf::from("abc"),
-            fields: main::Fields::TypeAlias(quote::quote! { println!("Hi"); }),
+            resource_term: main::ResourceTerm::TypeAlias(quote::quote! { println!("Hi"); }),
         };
 
         let actual = one.cmp(&another);
@@ -101,11 +102,11 @@ mod tests {
     fn gets_equality() {
         let one = main::File {
             relative_path: path::PathBuf::from("abc"),
-            fields: main::Fields::TypeAlias(quote::quote! { println!("Hi"); }),
+            resource_term: main::ResourceTerm::TypeAlias(quote::quote! { println!("Hi"); }),
         };
         let another = main::File {
             relative_path: path::PathBuf::from("abc"),
-            fields: main::Fields::TypeAlias(quote::quote! { println!("Hi"); }),
+            resource_term: main::ResourceTerm::TypeAlias(quote::quote! { println!("Hi"); }),
         };
 
         let actual = one == another;
@@ -117,11 +118,11 @@ mod tests {
     fn gets_inequality() {
         let one = main::File {
             relative_path: path::PathBuf::from("abc"),
-            fields: main::Fields::TypeAlias(quote::quote! { println!("Hi A"); }),
+            resource_term: main::ResourceTerm::TypeAlias(quote::quote! { println!("Hi A"); }),
         };
         let another = main::File {
             relative_path: path::PathBuf::from("abc"),
-            fields: main::Fields::TypeAlias(quote::quote! { println!("Hi B"); }),
+            resource_term: main::ResourceTerm::TypeAlias(quote::quote! { println!("Hi B"); }),
         };
 
         let actual = one != another;
