@@ -37,6 +37,7 @@ pub struct IgnoreError(pub ignore::Error);
 pub enum FieldIdentifier {
     Anonymous,
     Named(String),
+    Indexed(usize),
 }
 
 #[derive(Clone, cmp::PartialEq, Debug)]

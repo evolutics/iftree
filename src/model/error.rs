@@ -26,6 +26,7 @@ impl fmt::Display for main::Error {
                 let field_hint = match field {
                     main::FieldIdentifier::Anonymous => String::new(),
                     main::FieldIdentifier::Named(name) => format!("field {:?} of ", name),
+                    main::FieldIdentifier::Indexed(index) => format!("field {} of ", index),
                 };
                 write!(
                     formatter,

@@ -45,7 +45,19 @@ fn get_file(
                 .collect::<model::Result<_>>()?,
         ),
 
-        model::Fields::TupleFields(_) => todo!(),
+        model::Fields::TupleFields(fields) => model::Fields::TupleFields(
+            fields
+                .iter()
+                .enumerate()
+                .map(|(index, _)| {
+                    get_field_implementation::main(
+                        configuration,
+                        absolute_path.as_ref(),
+                        model::FieldIdentifier::Indexed(index),
+                    )
+                })
+                .collect::<model::Result<_>>()?,
+        ),
     };
 
     Ok(model::File {
@@ -143,6 +155,44 @@ mod tests {
                     .into_iter()
                     .collect(),
                 ),
+            },
+        ];
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn gets_tuple_fields() {
+        let actual = main(
+            &model::Configuration {
+                fields: vec![(
+                    model::FieldIdentifier::Indexed(0),
+                    String::from("include_str!({{absolute_path}})"),
+                )]
+                .into_iter()
+                .collect(),
+                ..model::stubs::configuration()
+            },
+            &model::Fields::TupleFields(vec![()].into_iter().collect()),
+            path::Path::new("/resources"),
+            vec![
+                path::PathBuf::from("world/physical_constants.json"),
+                path::PathBuf::from("configuration/menu.json"),
+            ],
+        );
+
+        let actual = actual.unwrap();
+        let expected = vec![
+            model::File {
+                relative_path: path::PathBuf::from("world/physical_constants.json"),
+                fields: model::Fields::TupleFields(vec![quote::quote! {
+                    include_str!("/resources/world/physical_constants.json")
+                }]),
+            },
+            model::File {
+                relative_path: path::PathBuf::from("configuration/menu.json"),
+                fields: model::Fields::TupleFields(vec![quote::quote! {
+                    include_str!("/resources/configuration/menu.json")
+                }]),
             },
         ];
         assert_eq!(actual, expected);
