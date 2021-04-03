@@ -67,6 +67,8 @@ pub enum Fields<T> {
     TypeAlias(T),
     #[allow(dead_code)]
     NamedFields(collections::BTreeMap<String, T>),
+    #[allow(dead_code)]
+    TupleFields(vec::Vec<T>),
 }
 
 #[derive(Clone, cmp::PartialEq, Debug)]

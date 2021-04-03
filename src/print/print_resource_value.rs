@@ -22,6 +22,19 @@ pub fn main(
                 }
             }
         }
+
+        model::Fields::TupleFields(fields) => {
+            let content: proc_macro2::TokenStream = fields
+                .iter()
+                .map(|value| quote::quote! { #value, })
+                .collect();
+
+            quote::quote! {
+                #resource_type(
+                    #content
+                )
+            }
+        }
     }
 }
 
@@ -72,6 +85,27 @@ mod tests {
                 content: include_str!("/credits.md"),
                 media_type: "text/markdown",
             }
+        }
+        .to_string();
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn prints_tuple_fields() {
+        let actual = main(
+            &quote::format_ident!("Resource"),
+            &model::Fields::TupleFields(vec![
+                quote::quote! { include_str!("/credits.md") },
+                quote::quote! { "text/markdown" },
+            ]),
+        );
+
+        let actual = actual.to_string();
+        let expected = quote::quote! {
+            Resource(
+                include_str!("/credits.md"),
+                "text/markdown",
+            )
         }
         .to_string();
         assert_eq!(actual, expected);

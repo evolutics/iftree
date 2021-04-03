@@ -44,6 +44,8 @@ fn get_file(
                 })
                 .collect::<model::Result<_>>()?,
         ),
+
+        model::Fields::TupleFields(_) => todo!(),
     };
 
     Ok(model::File {
