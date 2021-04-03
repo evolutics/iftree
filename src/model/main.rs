@@ -65,12 +65,9 @@ pub struct ResourceType {
 
 #[derive(Clone, cmp::PartialEq, Debug)]
 pub enum ResourceTypeStructure {
-    #[allow(dead_code)]
     Unit,
     TypeAlias,
-    #[allow(dead_code)]
     NamedFields(vec::Vec<String>),
-    #[allow(dead_code)]
     TupleFields(usize),
 }
 
