@@ -24,15 +24,15 @@ pub enum Error {
 }
 
 #[derive(Clone, cmp::PartialEq, Debug)]
-pub enum FieldIdentifier {
-    Anonymous,
-    Named(String),
-}
-
-#[derive(Clone, cmp::PartialEq, Debug)]
 pub struct EnvironmentVariableError {
     pub name: String,
     pub source: env::VarError,
+}
+
+#[derive(Clone, cmp::PartialEq, Debug)]
+pub enum FieldIdentifier {
+    Anonymous,
+    Named(String),
 }
 
 #[derive(Clone, cmp::PartialEq, Debug)]
