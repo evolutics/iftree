@@ -20,6 +20,7 @@ pub enum Error {
     Ignore(ignore::Error),
     MissingImplementation(FieldIdentifier),
     NameCollisions(vec::Vec<NameCollision>),
+    NonStandardTemplate(Template),
     PathStripPrefix(path::StripPrefixError),
 }
 
@@ -29,7 +30,7 @@ pub struct EnvironmentVariableError {
     pub source: env::VarError,
 }
 
-#[derive(Clone, cmp::PartialEq, Debug)]
+#[derive(Clone, cmp::Eq, cmp::Ord, cmp::PartialEq, cmp::PartialOrd, Debug)]
 pub enum FieldIdentifier {
     Anonymous,
     Named(String),
@@ -42,11 +43,14 @@ pub struct NameCollision {
     pub identifier: String,
 }
 
+pub type Template = String;
+
 #[derive(Clone, cmp::PartialEq, Debug)]
 pub struct Configuration {
     pub resource_paths: String,
     pub resolve_name_collisions: bool,
     pub base_folder_environment_variable: String,
+    pub fields: collections::BTreeMap<FieldIdentifier, Template>,
 }
 
 #[derive(Clone, cmp::PartialEq, Debug)]
@@ -91,6 +95,7 @@ pub mod stubs {
             resource_paths: String::from("!*"),
             resolve_name_collisions: false,
             base_folder_environment_variable: String::from("FOO"),
+            fields: Default::default(),
         }
     }
 

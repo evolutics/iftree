@@ -11,7 +11,12 @@ pub fn main(
 ) -> model::Result<model::FileIndex> {
     let base_folder = get_base_folder::main(&configuration, &|name| env::var(name))?;
     let paths = get_paths::main(&configuration, &base_folder)?;
-    let files = get_files::main(&resource_type.structure, &base_folder, paths)?;
+    let files = get_files::main(
+        &configuration,
+        &resource_type.structure,
+        &base_folder,
+        paths,
+    )?;
     let forest = get_forest::main(&configuration, files)?;
     Ok(model::FileIndex {
         resource_type: resource_type.identifier,
@@ -31,6 +36,12 @@ mod tests {
             model::Configuration {
                 resource_paths: String::from("examples/resources/credits.md"),
                 base_folder_environment_variable: String::from("CARGO_MANIFEST_DIR"),
+                fields: vec![(
+                    model::FieldIdentifier::Anonymous,
+                    String::from("include_str!({{absolute_path}})"),
+                )]
+                .into_iter()
+                .collect(),
                 ..model::stubs::configuration()
             },
             model::ResourceType {

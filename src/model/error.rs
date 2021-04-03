@@ -52,6 +52,12 @@ impl fmt::Display for main::Error {
                 Ok(())
             }
 
+            main::Error::NonStandardTemplate(template) => write!(
+                formatter,
+                "Non-standard template not supported: {:?}",
+                template,
+            ),
+
             main::Error::PathStripPrefix(error) => write!(formatter, "{}", error),
         }
     }
@@ -66,6 +72,7 @@ impl error::Error for main::Error {
             main::Error::Ignore(error) => Some(error),
             main::Error::MissingImplementation(_) => None,
             main::Error::NameCollisions(_) => None,
+            main::Error::NonStandardTemplate(_) => None,
             main::Error::PathStripPrefix(error) => Some(error),
         }
     }

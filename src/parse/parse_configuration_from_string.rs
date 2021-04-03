@@ -21,6 +21,18 @@ impl From<UserConfiguration> for model::Configuration {
             base_folder_environment_variable: configuration
                 .base_folder_environment_variable
                 .unwrap_or_else(|| String::from("CARGO_MANIFEST_DIR")),
+            fields: vec![
+                (
+                    model::FieldIdentifier::Anonymous,
+                    String::from("include_str!({{absolute_path}})"),
+                ),
+                (
+                    model::FieldIdentifier::Named(String::from("content")),
+                    String::from("include_str!({{absolute_path}})"),
+                ),
+            ]
+            .into_iter()
+            .collect(),
         }
     }
 }
@@ -38,6 +50,18 @@ mod tests {
             resource_paths: String::from("resources/**"),
             resolve_name_collisions: false,
             base_folder_environment_variable: String::from("CARGO_MANIFEST_DIR"),
+            fields: vec![
+                (
+                    model::FieldIdentifier::Anonymous,
+                    String::from("include_str!({{absolute_path}})"),
+                ),
+                (
+                    model::FieldIdentifier::Named(String::from("content")),
+                    String::from("include_str!({{absolute_path}})"),
+                ),
+            ]
+            .into_iter()
+            .collect(),
         };
         assert_eq!(actual, expected);
     }
@@ -57,6 +81,18 @@ base_folder_environment_variable = 'MY_BASE_FOLDER'
             resource_paths: String::from("my/resources/**"),
             resolve_name_collisions: true,
             base_folder_environment_variable: String::from("MY_BASE_FOLDER"),
+            fields: vec![
+                (
+                    model::FieldIdentifier::Anonymous,
+                    String::from("include_str!({{absolute_path}})"),
+                ),
+                (
+                    model::FieldIdentifier::Named(String::from("content")),
+                    String::from("include_str!({{absolute_path}})"),
+                ),
+            ]
+            .into_iter()
+            .collect(),
         };
         assert_eq!(actual, expected);
     }

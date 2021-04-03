@@ -4,17 +4,19 @@ use std::path;
 use std::vec;
 
 pub fn main(
+    configuration: &model::Configuration,
     resource_structure: &model::Fields<()>,
     base_folder: &path::Path,
     paths: vec::Vec<path::PathBuf>,
 ) -> model::Result<vec::Vec<model::File>> {
     paths
         .into_iter()
-        .map(|path| get_file(resource_structure, base_folder, path))
+        .map(|path| get_file(configuration, resource_structure, base_folder, path))
         .collect()
 }
 
 fn get_file(
+    configuration: &model::Configuration,
     resource_structure: &model::Fields<()>,
     base_folder: &path::Path,
     relative_path: path::PathBuf,
@@ -24,6 +26,7 @@ fn get_file(
 
     let fields = match resource_structure {
         model::Fields::TypeAlias(()) => model::Fields::TypeAlias(get_field_implementation::main(
+            configuration,
             absolute_path.as_ref(),
             model::FieldIdentifier::Anonymous,
         )?),
@@ -33,6 +36,7 @@ fn get_file(
                 .keys()
                 .map(|name| {
                     let value = get_field_implementation::main(
+                        configuration,
                         absolute_path.as_ref(),
                         model::FieldIdentifier::Named(name.clone()),
                     )?;
@@ -55,6 +59,15 @@ mod tests {
     #[test]
     fn gets_type_alias() {
         let actual = main(
+            &model::Configuration {
+                fields: vec![(
+                    model::FieldIdentifier::Anonymous,
+                    String::from("include_str!({{absolute_path}})"),
+                )]
+                .into_iter()
+                .collect(),
+                ..model::stubs::configuration()
+            },
             &model::Fields::TypeAlias(()),
             path::Path::new("/resources"),
             vec![
@@ -84,6 +97,15 @@ mod tests {
     #[test]
     fn gets_named_fields() {
         let actual = main(
+            &model::Configuration {
+                fields: vec![(
+                    model::FieldIdentifier::Named(String::from("content")),
+                    String::from("include_str!({{absolute_path}})"),
+                )]
+                .into_iter()
+                .collect(),
+                ..model::stubs::configuration()
+            },
             &model::Fields::NamedFields(vec![(String::from("content"), ())].into_iter().collect()),
             path::Path::new("/resources"),
             vec![
