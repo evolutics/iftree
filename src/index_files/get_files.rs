@@ -74,7 +74,7 @@ mod tests {
     fn gets_type_alias() {
         let actual = main(
             &model::Configuration {
-                fields: vec![(
+                field_templates: vec![(
                     model::FieldIdentifier::Anonymous,
                     String::from("include_str!({{absolute_path}})"),
                 )]
@@ -112,7 +112,7 @@ mod tests {
     fn gets_named_fields() {
         let actual = main(
             &model::Configuration {
-                fields: vec![(
+                field_templates: vec![(
                     model::FieldIdentifier::Named(String::from("content")),
                     String::from("include_str!({{absolute_path}})"),
                 )]
@@ -156,7 +156,7 @@ mod tests {
     fn gets_tuple_fields() {
         let actual = main(
             &model::Configuration {
-                fields: vec![(
+                field_templates: vec![(
                     model::FieldIdentifier::Indexed(0),
                     String::from("include_str!({{absolute_path}})"),
                 )]

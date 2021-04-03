@@ -54,7 +54,7 @@ pub struct Configuration {
     pub resource_paths: String,
     pub resolve_name_collisions: bool,
     pub base_folder_environment_variable: String,
-    pub fields: collections::BTreeMap<FieldIdentifier, Template>,
+    pub field_templates: collections::BTreeMap<FieldIdentifier, Template>,
 }
 
 #[derive(Clone, cmp::PartialEq, Debug)]
@@ -108,7 +108,7 @@ pub mod stubs {
             resource_paths: String::from("!*"),
             resolve_name_collisions: false,
             base_folder_environment_variable: String::from("FOO"),
-            fields: Default::default(),
+            field_templates: Default::default(),
         }
     }
 

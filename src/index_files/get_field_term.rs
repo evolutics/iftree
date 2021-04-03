@@ -5,7 +5,7 @@ pub fn main(
     absolute_path: &str,
     identifier: model::FieldIdentifier,
 ) -> model::Result<proc_macro2::TokenStream> {
-    match configuration.fields.get(&identifier) {
+    match configuration.field_templates.get(&identifier) {
         None => Err(model::Error::MissingImplementation(identifier)),
 
         Some(template) => match template.as_ref() {
@@ -25,7 +25,7 @@ mod tests {
     fn given_missing_implementation_it_errs() {
         let actual = main(
             &model::Configuration {
-                fields: Default::default(),
+                field_templates: Default::default(),
                 ..model::stubs::configuration()
             },
             "/credits.md",
@@ -41,7 +41,7 @@ mod tests {
     fn gets() {
         let actual = main(
             &model::Configuration {
-                fields: vec![(
+                field_templates: vec![(
                     model::FieldIdentifier::Anonymous,
                     String::from("include_str!({{absolute_path}})"),
                 )]
@@ -65,7 +65,7 @@ mod tests {
     fn given_non_standard_template_it_errs() {
         let actual = main(
             &model::Configuration {
-                fields: vec![(
+                field_templates: vec![(
                     model::FieldIdentifier::Anonymous,
                     String::from("my_include!({{absolute_path}})"),
                 )]

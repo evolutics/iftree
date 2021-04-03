@@ -13,7 +13,7 @@ struct UserConfiguration {
     resource_paths: String,
     resolve_name_collisions: Option<bool>,
     base_folder_environment_variable: Option<String>,
-    fields: Option<collections::BTreeMap<model::FieldIdentifier, model::Template>>,
+    field_templates: Option<collections::BTreeMap<model::FieldIdentifier, model::Template>>,
 }
 
 impl<'a> de::Deserialize<'a> for model::FieldIdentifier {
@@ -47,8 +47,8 @@ impl<'a> de::Visitor<'a> for FieldIdentifierVisitor {
 
 impl From<UserConfiguration> for model::Configuration {
     fn from(configuration: UserConfiguration) -> Self {
-        let mut fields = configuration.fields.unwrap_or_default();
-        extend_fields_with_defaults(&mut fields);
+        let mut field_templates = configuration.field_templates.unwrap_or_default();
+        extend_field_templates_with_defaults(&mut field_templates);
 
         model::Configuration {
             resource_paths: configuration.resource_paths,
@@ -56,18 +56,18 @@ impl From<UserConfiguration> for model::Configuration {
             base_folder_environment_variable: configuration
                 .base_folder_environment_variable
                 .unwrap_or_else(|| String::from("CARGO_MANIFEST_DIR")),
-            fields,
+            field_templates,
         }
     }
 }
 
-fn extend_fields_with_defaults(
-    fields: &mut collections::BTreeMap<model::FieldIdentifier, model::Template>,
+fn extend_field_templates_with_defaults(
+    field_templates: &mut collections::BTreeMap<model::FieldIdentifier, model::Template>,
 ) {
-    fields
+    field_templates
         .entry(model::FieldIdentifier::Anonymous)
         .or_insert_with(|| String::from("include_str!({{absolute_path}})"));
-    fields
+    field_templates
         .entry(model::FieldIdentifier::Named(String::from("content")))
         .or_insert_with(|| String::from("include_str!({{absolute_path}})"));
 }
@@ -85,7 +85,7 @@ mod tests {
             resource_paths: String::from("resources/**"),
             resolve_name_collisions: false,
             base_folder_environment_variable: String::from("CARGO_MANIFEST_DIR"),
-            fields: vec![
+            field_templates: vec![
                 (
                     model::FieldIdentifier::Anonymous,
                     String::from("include_str!({{absolute_path}})"),
@@ -109,7 +109,7 @@ resource_paths = 'my/resources/**'
 resolve_name_collisions = true
 base_folder_environment_variable = 'MY_BASE_FOLDER'
 
-[fields]
+[field_templates]
 _ = 'my::include!({{absolute_path}})'
 custom = 'my::custom_include!({{absolute_path}})'
 3 = 'my::another_include!({{absolute_path}})'
@@ -121,7 +121,7 @@ custom = 'my::custom_include!({{absolute_path}})'
             resource_paths: String::from("my/resources/**"),
             resolve_name_collisions: true,
             base_folder_environment_variable: String::from("MY_BASE_FOLDER"),
-            fields: vec![
+            field_templates: vec![
                 (
                     model::FieldIdentifier::Anonymous,
                     String::from("my::include!({{absolute_path}})"),
