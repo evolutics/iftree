@@ -65,6 +65,8 @@ pub struct ResourceType {
 
 #[derive(Clone, cmp::PartialEq, Debug)]
 pub enum ResourceTypeStructure {
+    #[allow(dead_code)]
+    Unit,
     TypeAlias,
     #[allow(dead_code)]
     NamedFields(vec::Vec<String>),
@@ -94,6 +96,7 @@ pub struct File {
 
 #[derive(Clone, cmp::Eq, cmp::Ord, cmp::PartialEq, cmp::PartialOrd, Debug)]
 pub enum ResourceTerm<T> {
+    Unit,
     TypeAlias(T),
     NamedFields(vec::Vec<(String, T)>),
     TupleFields(vec::Vec<T>),
@@ -115,9 +118,7 @@ pub mod stubs {
     pub fn file() -> File {
         File {
             relative_path: path::PathBuf::from("bar"),
-            resource_term: ResourceTerm::TypeAlias(quote::quote! {
-                include_str!("/foo/bar")
-            }),
+            resource_term: ResourceTerm::Unit,
         }
     }
 }

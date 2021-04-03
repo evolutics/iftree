@@ -25,6 +25,8 @@ fn get_file(
     let absolute_path = absolute_path.to_string_lossy();
 
     let resource_term = match resource_structure {
+        model::ResourceTypeStructure::Unit => model::ResourceTerm::Unit,
+
         model::ResourceTypeStructure::TypeAlias => {
             model::ResourceTerm::TypeAlias(get_field_term::main(
                 configuration,
@@ -69,6 +71,32 @@ fn get_file(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn gets_unit() {
+        let actual = main(
+            &model::stubs::configuration(),
+            &model::ResourceTypeStructure::Unit,
+            path::Path::new("/resources"),
+            vec![
+                path::PathBuf::from("world/physical_constants.json"),
+                path::PathBuf::from("configuration/menu.json"),
+            ],
+        );
+
+        let actual = actual.unwrap();
+        let expected = vec![
+            model::File {
+                relative_path: path::PathBuf::from("world/physical_constants.json"),
+                resource_term: model::ResourceTerm::Unit,
+            },
+            model::File {
+                relative_path: path::PathBuf::from("configuration/menu.json"),
+                resource_term: model::ResourceTerm::Unit,
+            },
+        ];
+        assert_eq!(actual, expected);
+    }
 
     #[test]
     fn gets_type_alias() {

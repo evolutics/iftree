@@ -5,6 +5,8 @@ pub fn main(
     resource_term: &model::ResourceTerm<proc_macro2::TokenStream>,
 ) -> proc_macro2::TokenStream {
     match resource_term {
+        model::ResourceTerm::Unit => quote::quote! { #resource_type },
+
         model::ResourceTerm::TypeAlias(term) => term.clone(),
 
         model::ResourceTerm::NamedFields(fields) => {
@@ -39,6 +41,18 @@ pub fn main(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn prints_unit() {
+        let actual = main(
+            &quote::format_ident!("Resource"),
+            &model::ResourceTerm::Unit,
+        );
+
+        let actual = actual.to_string();
+        let expected = quote::quote! { Resource }.to_string();
+        assert_eq!(actual, expected);
+    }
 
     #[test]
     fn prints_type_alias() {

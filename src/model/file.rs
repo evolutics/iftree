@@ -18,6 +18,8 @@ fn comparable_resource_term(
     resource_term: &main::ResourceTerm<proc_macro2::TokenStream>,
 ) -> main::ResourceTerm<String> {
     match resource_term {
+        main::ResourceTerm::Unit => main::ResourceTerm::Unit,
+
         main::ResourceTerm::TypeAlias(term) => main::ResourceTerm::TypeAlias(term.to_string()),
 
         main::ResourceTerm::NamedFields(fields) => main::ResourceTerm::NamedFields(
