@@ -46,6 +46,7 @@ mod tests {
             },
             &render_field_template::Context {
                 absolute_path: "/credits.md",
+                ..render_field_template::stubs::context()
             },
             model::FieldIdentifier::Anonymous,
         );

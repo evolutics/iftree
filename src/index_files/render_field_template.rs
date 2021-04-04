@@ -2,9 +2,13 @@ use crate::model;
 use std::cmp;
 
 pub fn main<'a>(template: &str, context: &'a Context) -> model::Result<proc_macro2::TokenStream> {
+    let relative_path = context.relative_path;
     let absolute_path = context.absolute_path;
 
     match template {
+        "{{relative_path}}" => Ok(quote::quote! {
+            #relative_path
+        }),
         "include_str!({{absolute_path}})" => Ok(quote::quote! {
             include_str!(#absolute_path)
         }),
@@ -15,6 +19,7 @@ pub fn main<'a>(template: &str, context: &'a Context) -> model::Result<proc_macr
 
 #[derive(Clone, cmp::PartialEq, Debug)]
 pub struct Context<'a> {
+    pub relative_path: &'a str,
     pub absolute_path: &'a str,
 }
 
@@ -24,7 +29,8 @@ pub mod stubs {
 
     pub fn context<'a>() -> Context<'a> {
         Context {
-            absolute_path: "/foo",
+            relative_path: "bar",
+            absolute_path: "/foo/bar",
         }
     }
 }
@@ -34,11 +40,30 @@ mod tests {
     use super::*;
 
     #[test]
+    fn renders_relative_path() {
+        let actual = main(
+            "{{relative_path}}",
+            &Context {
+                relative_path: "credits.md",
+                ..stubs::context()
+            },
+        );
+
+        let actual = actual.unwrap().to_string();
+        let expected = quote::quote! {
+            "credits.md"
+        }
+        .to_string();
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
     fn renders_include_str() {
         let actual = main(
             "include_str!({{absolute_path}})",
             &Context {
                 absolute_path: "/credits.md",
+                ..stubs::context()
             },
         );
 

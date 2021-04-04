@@ -22,9 +22,13 @@ fn get_file(
     base_folder: &path::Path,
     relative_path: path::PathBuf,
 ) -> model::Result<model::File> {
+    let raw_relative_path = &relative_path.to_string_lossy();
     let absolute_path = base_folder.join(&relative_path);
     let absolute_path = &absolute_path.to_string_lossy();
-    let context = render_field_template::Context { absolute_path };
+    let context = render_field_template::Context {
+        relative_path: raw_relative_path,
+        absolute_path,
+    };
 
     let resource_term = match resource_structure {
         model::ResourceTypeStructure::Unit => model::ResourceTerm::Unit,
@@ -71,7 +75,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn gets_unit() {
+    fn gets_type_unit() {
         let actual = main(
             &model::stubs::configuration(),
             &model::ResourceTypeStructure::Unit,
@@ -135,7 +139,7 @@ mod tests {
     }
 
     #[test]
-    fn gets_named_fields() {
+    fn gets_type_named_fields() {
         let actual = main(
             &model::Configuration {
                 field_templates: vec![(
@@ -179,7 +183,7 @@ mod tests {
     }
 
     #[test]
-    fn gets_tuple_fields() {
+    fn gets_type_tuple_fields() {
         let actual = main(
             &model::Configuration {
                 field_templates: vec![(
@@ -213,6 +217,42 @@ mod tests {
                 }]),
             },
         ];
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn gets_template_context() {
+        let configuration = model::Configuration {
+            field_templates: vec![
+                String::from("{{relative_path}}"),
+                String::from("include_str!({{absolute_path}})"),
+            ]
+            .into_iter()
+            .enumerate()
+            .map(|(index, template)| (model::FieldIdentifier::Indexed(index), template))
+            .collect(),
+            ..model::stubs::configuration()
+        };
+
+        let actual = main(
+            &configuration,
+            &model::ResourceTypeStructure::TupleFields(configuration.field_templates.len()),
+            path::Path::new("/resources"),
+            vec![path::PathBuf::from("credits.md")],
+        );
+
+        let actual = actual.unwrap();
+        let expected = vec![model::File {
+            relative_path: path::PathBuf::from("credits.md"),
+            resource_term: model::ResourceTerm::TupleFields(vec![
+                quote::quote! {
+                    "credits.md"
+                },
+                quote::quote! {
+                    include_str!("/resources/credits.md")
+                },
+            ]),
+        }];
         assert_eq!(actual, expected);
     }
 }
