@@ -73,6 +73,9 @@ fn extend_field_templates_with_defaults(
         .entry(model::FieldIdentifier::Named(String::from("content")))
         .or_insert_with(|| String::from("include_str!({{absolute_path}})"));
     field_templates
+        .entry(model::FieldIdentifier::Named(String::from("raw_content")))
+        .or_insert_with(|| String::from("include_bytes!({{absolute_path}})"));
+    field_templates
         .entry(model::FieldIdentifier::Named(String::from("relative_path")))
         .or_insert_with(|| String::from("{{relative_path}}"));
 }
@@ -99,6 +102,10 @@ mod tests {
                 (
                     model::FieldIdentifier::Named(String::from("content")),
                     String::from("include_str!({{absolute_path}})"),
+                ),
+                (
+                    model::FieldIdentifier::Named(String::from("raw_content")),
+                    String::from("include_bytes!({{absolute_path}})"),
                 ),
                 (
                     model::FieldIdentifier::Named(String::from("relative_path")),
@@ -149,6 +156,10 @@ custom = 'my::custom_include!({{absolute_path}})'
                 (
                     model::FieldIdentifier::Named(String::from("custom")),
                     String::from("my::custom_include!({{absolute_path}})"),
+                ),
+                (
+                    model::FieldIdentifier::Named(String::from("raw_content")),
+                    String::from("include_bytes!({{absolute_path}})"),
                 ),
                 (
                     model::FieldIdentifier::Named(String::from("relative_path")),

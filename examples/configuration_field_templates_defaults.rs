@@ -8,6 +8,7 @@ resource_paths = 'examples/resources/credits.md'
 pub struct Resource {
     absolute_path: &'static str,
     content: &'static str,
+    raw_content: &'static [u8],
     relative_path: &'static str,
 }
 
@@ -22,6 +23,8 @@ pub fn main() {
     );
 
     assert_eq!(resources::CREDITS_MD.content, "Foo Bar\n");
+
+    assert_eq!(resources::CREDITS_MD.raw_content, "Foo Bar\n".as_bytes());
 
     assert_eq!(
         resources::CREDITS_MD.relative_path,

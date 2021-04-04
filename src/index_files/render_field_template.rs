@@ -12,6 +12,9 @@ pub fn main<'a>(template: &str, context: &'a Context) -> model::Result<proc_macr
         "{{relative_path}}" => Ok(quote::quote! {
             #relative_path
         }),
+        "include_bytes!({{absolute_path}})" => Ok(quote::quote! {
+            include_bytes!(#absolute_path)
+        }),
         "include_str!({{absolute_path}})" => Ok(quote::quote! {
             include_str!(#absolute_path)
         }),
@@ -73,6 +76,24 @@ mod tests {
         let actual = actual.unwrap().to_string();
         let expected = quote::quote! {
             "credits.md"
+        }
+        .to_string();
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn renders_include_bytes() {
+        let actual = main(
+            "include_bytes!({{absolute_path}})",
+            &Context {
+                absolute_path: "/credits.md",
+                ..stubs::context()
+            },
+        );
+
+        let actual = actual.unwrap().to_string();
+        let expected = quote::quote! {
+            include_bytes!("/credits.md")
         }
         .to_string();
         assert_eq!(actual, expected);
