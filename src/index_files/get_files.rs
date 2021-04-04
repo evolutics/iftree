@@ -1,4 +1,5 @@
 use super::get_field_term;
+use super::render_field_template;
 use crate::model;
 use std::path;
 use std::vec;
@@ -22,18 +23,15 @@ fn get_file(
     relative_path: path::PathBuf,
 ) -> model::Result<model::File> {
     let absolute_path = base_folder.join(&relative_path);
-    let absolute_path = absolute_path.to_string_lossy();
+    let absolute_path = &absolute_path.to_string_lossy();
+    let context = render_field_template::Context { absolute_path };
 
     let resource_term = match resource_structure {
         model::ResourceTypeStructure::Unit => model::ResourceTerm::Unit,
 
-        model::ResourceTypeStructure::TypeAlias => {
-            model::ResourceTerm::TypeAlias(get_field_term::main(
-                configuration,
-                absolute_path.as_ref(),
-                model::FieldIdentifier::Anonymous,
-            )?)
-        }
+        model::ResourceTypeStructure::TypeAlias => model::ResourceTerm::TypeAlias(
+            get_field_term::main(configuration, &context, model::FieldIdentifier::Anonymous)?,
+        ),
 
         model::ResourceTypeStructure::NamedFields(names) => model::ResourceTerm::NamedFields(
             names
@@ -41,7 +39,7 @@ fn get_file(
                 .map(|name| {
                     let term = get_field_term::main(
                         configuration,
-                        absolute_path.as_ref(),
+                        &context,
                         model::FieldIdentifier::Named(name.clone()),
                     )?;
                     Ok((name.clone(), term))
@@ -54,7 +52,7 @@ fn get_file(
                 .map(|index| {
                     get_field_term::main(
                         configuration,
-                        absolute_path.as_ref(),
+                        &context,
                         model::FieldIdentifier::Indexed(index),
                     )
                 })

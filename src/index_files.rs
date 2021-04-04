@@ -5,6 +5,7 @@ mod get_files;
 mod get_forest;
 mod get_paths;
 mod main;
+mod render_field_template;
 mod sanitize_to_identifier;
 
 pub use main::main;
