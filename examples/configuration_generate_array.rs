@@ -1,13 +1,16 @@
+use std::cmp;
+
 #[files_embedded_as_modules::embed_files_as_modules(
     "
 resource_paths = 'examples/resources/**'
 generate_array = true
-
-[field_templates]
-_ = 'include_str!({{absolute_path}})'
 "
 )]
-pub type Resource = &'static str;
+#[derive(cmp::PartialEq, Debug)]
+pub struct Resource {
+    relative_path: &'static str,
+    content: &'static str,
+}
 
 pub fn main() {
     use root::examples::resources;
@@ -19,4 +22,15 @@ pub fn main() {
     assert_eq!(ARRAY[3], &resources::CREDITS_MD);
     assert_eq!(ARRAY[4], &resources::world::levels::TUTORIAL_JSON);
     assert_eq!(ARRAY[5], &resources::world::PHYSICAL_CONSTANTS_JSON);
+
+    let key_function = |resource: &&Resource| resource.relative_path;
+
+    let index = ARRAY.binary_search_by_key(&"examples/resources/credits.md", key_function);
+    assert_eq!(index, Ok(3));
+    assert_eq!(ARRAY[index.unwrap()].content, "Foo Bar\n");
+
+    assert_eq!(
+        ARRAY.binary_search_by_key(&"examples/resources/seed.json", key_function),
+        Err(4),
+    );
 }
