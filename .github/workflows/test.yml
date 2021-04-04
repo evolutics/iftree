@@ -12,4 +12,4 @@ jobs:
           profile: minimal
           toolchain: stable
           override: true
-      - run: scripts/test.sh
+      - run: scripts/test.py
