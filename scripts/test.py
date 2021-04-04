@@ -52,7 +52,9 @@ def _test_rust():
     subprocess.run(["cargo", "check"], check=True)
     subprocess.run(["cargo", "test"], check=True)
 
-    subprocess.run(["cargo", "run", "--example", "main"], check=True)
+    examples = [path.stem for path in pathlib.Path("examples").glob("*.rs")]
+    for example in sorted(examples):
+        subprocess.run(["cargo", "run", "--example", example], check=True)
 
 
 if __name__ == "__main__":
