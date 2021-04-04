@@ -37,6 +37,7 @@ mod tests {
             model::Configuration {
                 resource_paths: String::from("examples/resources/credits.md"),
                 generate_array: true,
+                base_folder: path::PathBuf::new(),
                 base_folder_environment_variable: String::from("CARGO_MANIFEST_DIR"),
                 field_templates: vec![(
                     model::FieldIdentifier::Anonymous,

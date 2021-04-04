@@ -2,6 +2,7 @@ use crate::model;
 use serde::de;
 use std::collections;
 use std::fmt;
+use std::path;
 
 pub fn main(string: &str) -> Result<model::Configuration, toml::de::Error> {
     let configuration: UserConfiguration = toml::from_str(string)?;
@@ -13,6 +14,7 @@ struct UserConfiguration {
     resource_paths: String,
     resolve_name_collisions: Option<bool>,
     generate_array: Option<bool>,
+    base_folder: Option<path::PathBuf>,
     base_folder_environment_variable: Option<String>,
     field_templates: Option<collections::BTreeMap<model::FieldIdentifier, model::Template>>,
 }
@@ -55,6 +57,7 @@ impl From<UserConfiguration> for model::Configuration {
             resource_paths: configuration.resource_paths,
             resolve_name_collisions: configuration.resolve_name_collisions.unwrap_or(false),
             generate_array: configuration.generate_array.unwrap_or(true),
+            base_folder: configuration.base_folder.unwrap_or_else(path::PathBuf::new),
             base_folder_environment_variable: configuration
                 .base_folder_environment_variable
                 .unwrap_or_else(|| String::from("CARGO_MANIFEST_DIR")),
@@ -93,6 +96,7 @@ mod tests {
             resource_paths: String::from("resources/**"),
             resolve_name_collisions: false,
             generate_array: true,
+            base_folder: path::PathBuf::new(),
             base_folder_environment_variable: String::from("CARGO_MANIFEST_DIR"),
             field_templates: vec![
                 (
@@ -125,6 +129,7 @@ mod tests {
 resource_paths = 'my/resources/**'
 resolve_name_collisions = true
 generate_array = false
+base_folder = 'base'
 base_folder_environment_variable = 'MY_BASE_FOLDER'
 
 [field_templates]
@@ -139,6 +144,7 @@ custom = 'my::custom_include!({{absolute_path}})'
             resource_paths: String::from("my/resources/**"),
             resolve_name_collisions: true,
             generate_array: false,
+            base_folder: path::PathBuf::from("base"),
             base_folder_environment_variable: String::from("MY_BASE_FOLDER"),
             field_templates: vec![
                 (
