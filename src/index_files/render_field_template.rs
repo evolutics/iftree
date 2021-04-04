@@ -6,6 +6,9 @@ pub fn main<'a>(template: &str, context: &'a Context) -> model::Result<proc_macr
     let absolute_path = context.absolute_path;
 
     match template {
+        "{{absolute_path}}" => Ok(quote::quote! {
+            #absolute_path
+        }),
         "{{relative_path}}" => Ok(quote::quote! {
             #relative_path
         }),
@@ -38,6 +41,24 @@ pub mod stubs {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn renders_absolute_path() {
+        let actual = main(
+            "{{absolute_path}}",
+            &Context {
+                absolute_path: "/credits.md",
+                ..stubs::context()
+            },
+        );
+
+        let actual = actual.unwrap().to_string();
+        let expected = quote::quote! {
+            "/credits.md"
+        }
+        .to_string();
+        assert_eq!(actual, expected);
+    }
 
     #[test]
     fn renders_relative_path() {
