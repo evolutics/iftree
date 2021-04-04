@@ -8,6 +8,11 @@ import subprocess
 def main():
     os.chdir(pathlib.Path(os.path.realpath(__file__)).parent.parent)
 
+    _check_general_cleanliness()
+    _test_rust()
+
+
+def _check_general_cleanliness():
     working_folder = pathlib.Path.cwd()
     subprocess.run(
         [
@@ -24,8 +29,6 @@ def main():
         ],
         check=True,
     )
-
-    _test_rust()
 
 
 def _test_rust():
