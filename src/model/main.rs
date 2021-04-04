@@ -75,6 +75,7 @@ pub enum ResourceTypeStructure {
 pub struct FileIndex {
     pub resource_type: String,
     pub forest: FileForest,
+    pub generate_array: bool,
 }
 
 pub type FileForest = collections::BTreeMap<String, FileTree>;
@@ -109,6 +110,14 @@ pub mod stubs {
             resolve_name_collisions: false,
             base_folder_environment_variable: String::from("FOO"),
             field_templates: Default::default(),
+        }
+    }
+
+    pub fn file_index() -> FileIndex {
+        FileIndex {
+            resource_type: String::from("Foo"),
+            forest: Default::default(),
+            generate_array: false,
         }
     }
 

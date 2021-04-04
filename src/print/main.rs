@@ -44,6 +44,7 @@ mod tests {
             model::FileIndex {
                 resource_type: String::from("Resource"),
                 forest,
+                generate_array: true,
             },
         );
 

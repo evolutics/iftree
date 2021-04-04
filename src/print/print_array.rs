@@ -3,6 +3,14 @@ use crate::model;
 use std::vec;
 
 pub fn main(file_index: &model::FileIndex) -> proc_macro2::TokenStream {
+    if file_index.generate_array {
+        generate(file_index)
+    } else {
+        proc_macro2::TokenStream::new()
+    }
+}
+
+fn generate(file_index: &model::FileIndex) -> proc_macro2::TokenStream {
     let visitor = Visitor {};
     let mut array = vec![];
     visit_file_forest::main(&visitor, &file_index.forest, &mut array);
@@ -65,6 +73,7 @@ mod tests {
         let actual = main(&model::FileIndex {
             resource_type: String::from("Resource"),
             forest,
+            generate_array: true,
         });
 
         let actual = actual.to_string();
@@ -99,6 +108,7 @@ mod tests {
         let actual = main(&model::FileIndex {
             resource_type: String::from("Resource"),
             forest,
+            generate_array: true,
         });
 
         let actual = actual.to_string();
@@ -161,6 +171,7 @@ mod tests {
         let actual = main(&model::FileIndex {
             resource_type: String::from("Resource"),
             forest,
+            generate_array: true,
         });
 
         let actual = actual.to_string();
@@ -206,6 +217,7 @@ mod tests {
         let actual = main(&model::FileIndex {
             resource_type: String::from("Resource"),
             forest,
+            generate_array: true,
         });
 
         let actual = actual.to_string();
@@ -218,5 +230,16 @@ mod tests {
         }
         .to_string();
         assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn given_not_to_generate_it_prints_empty() {
+        let actual = main(&model::FileIndex {
+            generate_array: false,
+            ..model::stubs::file_index()
+        });
+
+        let actual = actual.is_empty();
+        assert!(actual);
     }
 }

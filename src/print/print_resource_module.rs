@@ -65,6 +65,7 @@ mod tests {
         let actual = main(&model::FileIndex {
             resource_type: String::from("Resource"),
             forest,
+            ..model::stubs::file_index()
         });
 
         let actual = actual.to_string();
@@ -105,6 +106,7 @@ mod tests {
         let actual = main(&model::FileIndex {
             resource_type: String::from("Resource"),
             forest,
+            ..model::stubs::file_index()
         });
 
         let actual = actual.to_string();
@@ -176,6 +178,7 @@ mod tests {
         let actual = main(&model::FileIndex {
             resource_type: String::from("Resource"),
             forest,
+            ..model::stubs::file_index()
         });
 
         let actual = actual.to_string();
@@ -228,6 +231,7 @@ mod tests {
         let actual = main(&model::FileIndex {
             resource_type: String::from("Resource"),
             forest,
+            ..model::stubs::file_index()
         });
 
         let actual = actual.to_string();

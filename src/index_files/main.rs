@@ -21,6 +21,7 @@ pub fn main(
     Ok(model::FileIndex {
         resource_type: resource_type.identifier,
         forest,
+        generate_array: true,
     })
 }
 
@@ -84,6 +85,7 @@ mod tests {
             )]
             .into_iter()
             .collect(),
+            generate_array: true,
         };
         assert_eq!(actual, expected);
     }
