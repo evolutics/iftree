@@ -21,7 +21,7 @@ pub fn main(
     Ok(model::FileIndex {
         resource_type: resource_type.identifier,
         forest,
-        generate_array: true,
+        generate_array: configuration.generate_array,
     })
 }
 
@@ -36,6 +36,7 @@ mod tests {
         let actual = main(
             model::Configuration {
                 resource_paths: String::from("examples/resources/credits.md"),
+                generate_array: true,
                 base_folder_environment_variable: String::from("CARGO_MANIFEST_DIR"),
                 field_templates: vec![(
                     model::FieldIdentifier::Anonymous,
