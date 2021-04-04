@@ -36,9 +36,9 @@ mod tests {
         let actual = main(
             model::Configuration {
                 resource_paths: String::from("examples/resources/credits.md"),
-                generate_array: true,
                 base_folder: path::PathBuf::new(),
                 base_folder_environment_variable: String::from("CARGO_MANIFEST_DIR"),
+                generate_array: true,
                 field_templates: vec![(
                     model::FieldIdentifier::Anonymous,
                     String::from("include_str!({{absolute_path}})"),

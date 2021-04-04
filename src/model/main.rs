@@ -52,10 +52,12 @@ pub type Template = String;
 #[derive(Clone, cmp::PartialEq, Debug)]
 pub struct Configuration {
     pub resource_paths: String,
-    pub resolve_name_collisions: bool,
-    pub generate_array: bool,
     pub base_folder: path::PathBuf,
     pub base_folder_environment_variable: String,
+
+    pub resolve_name_collisions: bool,
+    pub generate_array: bool,
+
     pub field_templates: collections::BTreeMap<FieldIdentifier, Template>,
 }
 
@@ -109,10 +111,12 @@ pub mod stubs {
     pub fn configuration() -> Configuration {
         Configuration {
             resource_paths: String::from("!*"),
-            resolve_name_collisions: false,
-            generate_array: false,
             base_folder: path::PathBuf::from("foo"),
             base_folder_environment_variable: String::from("FOO"),
+
+            resolve_name_collisions: false,
+            generate_array: false,
+
             field_templates: Default::default(),
         }
     }

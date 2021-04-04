@@ -12,10 +12,12 @@ pub fn main(string: &str) -> Result<model::Configuration, toml::de::Error> {
 #[derive(serde::Deserialize)]
 struct UserConfiguration {
     resource_paths: String,
-    resolve_name_collisions: Option<bool>,
-    generate_array: Option<bool>,
     base_folder: Option<path::PathBuf>,
     base_folder_environment_variable: Option<String>,
+
+    resolve_name_collisions: Option<bool>,
+    generate_array: Option<bool>,
+
     field_templates: Option<collections::BTreeMap<model::FieldIdentifier, model::Template>>,
 }
 
@@ -55,12 +57,14 @@ impl From<UserConfiguration> for model::Configuration {
 
         model::Configuration {
             resource_paths: configuration.resource_paths,
-            resolve_name_collisions: configuration.resolve_name_collisions.unwrap_or(false),
-            generate_array: configuration.generate_array.unwrap_or(true),
             base_folder: configuration.base_folder.unwrap_or_else(path::PathBuf::new),
             base_folder_environment_variable: configuration
                 .base_folder_environment_variable
                 .unwrap_or_else(|| String::from("CARGO_MANIFEST_DIR")),
+
+            resolve_name_collisions: configuration.resolve_name_collisions.unwrap_or(false),
+            generate_array: configuration.generate_array.unwrap_or(true),
+
             field_templates,
         }
     }
@@ -94,10 +98,12 @@ mod tests {
         let actual = actual.unwrap();
         let expected = model::Configuration {
             resource_paths: String::from("resources/**"),
-            resolve_name_collisions: false,
-            generate_array: true,
             base_folder: path::PathBuf::new(),
             base_folder_environment_variable: String::from("CARGO_MANIFEST_DIR"),
+
+            resolve_name_collisions: false,
+            generate_array: true,
+
             field_templates: vec![
                 (
                     model::FieldIdentifier::Named(String::from("absolute_path")),
@@ -127,10 +133,11 @@ mod tests {
         let actual = main(
             "
 resource_paths = 'my/resources/**'
-resolve_name_collisions = true
-generate_array = false
 base_folder = 'base'
 base_folder_environment_variable = 'MY_BASE_FOLDER'
+
+resolve_name_collisions = true
+generate_array = false
 
 [field_templates]
 _ = 'my::include!({{absolute_path}})'
@@ -142,10 +149,12 @@ custom = 'my::custom_include!({{absolute_path}})'
         let actual = actual.unwrap();
         let expected = model::Configuration {
             resource_paths: String::from("my/resources/**"),
-            resolve_name_collisions: true,
-            generate_array: false,
             base_folder: path::PathBuf::from("base"),
             base_folder_environment_variable: String::from("MY_BASE_FOLDER"),
+
+            resolve_name_collisions: true,
+            generate_array: false,
+
             field_templates: vec![
                 (
                     model::FieldIdentifier::Anonymous,
