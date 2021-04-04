@@ -16,10 +16,4 @@ pub fn main() {
     assert_eq!(resources::world::PHYSICAL_CONSTANTS_JSON, "7e-3\n");
 
     assert_eq!(ARRAY.len(), 6);
-    assert_eq!(ARRAY[0], &resources::_ENV);
-    assert_eq!(ARRAY[1], &resources::configuration::MENU_JSON);
-    assert_eq!(ARRAY[2], &resources::configuration::TRANSLATIONS_CSV);
-    assert_eq!(ARRAY[3], &resources::CREDITS_MD);
-    assert_eq!(ARRAY[4], &resources::world::levels::TUTORIAL_JSON);
-    assert_eq!(ARRAY[5], &resources::world::PHYSICAL_CONSTANTS_JSON);
 }
