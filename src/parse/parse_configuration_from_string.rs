@@ -67,9 +67,6 @@ fn extend_field_templates_with_defaults(
     field_templates: &mut collections::BTreeMap<model::FieldIdentifier, model::Template>,
 ) {
     field_templates
-        .entry(model::FieldIdentifier::Anonymous)
-        .or_insert_with(|| String::from("include_str!({{absolute_path}})"));
-    field_templates
         .entry(model::FieldIdentifier::Named(String::from("absolute_path")))
         .or_insert_with(|| String::from("{{absolute_path}}"));
     field_templates
@@ -95,10 +92,6 @@ mod tests {
             generate_array: true,
             base_folder_environment_variable: String::from("CARGO_MANIFEST_DIR"),
             field_templates: vec![
-                (
-                    model::FieldIdentifier::Anonymous,
-                    String::from("include_str!({{absolute_path}})"),
-                ),
                 (
                     model::FieldIdentifier::Named(String::from("absolute_path")),
                     String::from("{{absolute_path}}"),

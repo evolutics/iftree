@@ -2,6 +2,9 @@
     "
 resource_paths = 'examples/resources/**'
 generate_array = true
+
+[field_templates]
+_ = 'include_str!({{absolute_path}})'
 "
 )]
 pub type Resource = &'static str;

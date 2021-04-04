@@ -1,6 +1,9 @@
 #[files_embedded_as_modules::embed_files_as_modules(
     "
 resource_paths = 'examples/resources/**'
+
+[field_templates]
+_ = 'include_str!({{absolute_path}})'
 "
 )]
 pub type Resource = &'static str;
