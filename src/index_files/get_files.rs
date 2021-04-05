@@ -10,15 +10,39 @@ pub fn main(
     base_folder: &path::Path,
     paths: vec::Vec<path::PathBuf>,
 ) -> model::Result<vec::Vec<model::File>> {
+    let annotated_resource = annotate_resource(resource_structure);
     paths
         .into_iter()
-        .map(|path| get_file(configuration, resource_structure, base_folder, path))
+        .map(|path| get_file(configuration, &annotated_resource, base_folder, path))
         .collect()
+}
+
+fn annotate_resource(
+    resource_structure: &model::ResourceTypeStructure,
+) -> model::ResourceTerm<model::FieldIdentifier> {
+    match resource_structure {
+        model::ResourceTypeStructure::Unit => model::ResourceTerm::Unit,
+
+        model::ResourceTypeStructure::TypeAlias => {
+            model::ResourceTerm::TypeAlias(model::FieldIdentifier::Anonymous)
+        }
+
+        model::ResourceTypeStructure::NamedFields(names) => model::ResourceTerm::NamedFields(
+            names
+                .iter()
+                .map(|name| (name.clone(), model::FieldIdentifier::Named(name.clone())))
+                .collect(),
+        ),
+
+        model::ResourceTypeStructure::TupleFields(length) => model::ResourceTerm::TupleFields(
+            (0..*length).map(model::FieldIdentifier::Indexed).collect(),
+        ),
+    }
 }
 
 fn get_file(
     configuration: &model::Configuration,
-    resource_structure: &model::ResourceTypeStructure,
+    annotated_resource: &model::ResourceTerm<model::FieldIdentifier>,
     base_folder: &path::Path,
     relative_path: path::PathBuf,
 ) -> model::Result<model::File> {
@@ -30,36 +54,27 @@ fn get_file(
         absolute_path,
     };
 
-    let resource_term = match resource_structure {
-        model::ResourceTypeStructure::Unit => model::ResourceTerm::Unit,
+    let resource_term = match annotated_resource {
+        model::ResourceTerm::Unit => model::ResourceTerm::Unit,
 
-        model::ResourceTypeStructure::TypeAlias => model::ResourceTerm::TypeAlias(
-            get_field_term::main(configuration, &context, model::FieldIdentifier::Anonymous)?,
+        model::ResourceTerm::TypeAlias(identifier) => model::ResourceTerm::TypeAlias(
+            get_field_term::main(configuration, &context, identifier)?,
         ),
 
-        model::ResourceTypeStructure::NamedFields(names) => model::ResourceTerm::NamedFields(
-            names
+        model::ResourceTerm::NamedFields(named_identifiers) => model::ResourceTerm::NamedFields(
+            named_identifiers
                 .iter()
-                .map(|name| {
-                    let term = get_field_term::main(
-                        configuration,
-                        &context,
-                        model::FieldIdentifier::Named(name.clone()),
-                    )?;
+                .map(|(name, identifier)| {
+                    let term = get_field_term::main(configuration, &context, identifier)?;
                     Ok((name.clone(), term))
                 })
                 .collect::<model::Result<_>>()?,
         ),
 
-        model::ResourceTypeStructure::TupleFields(length) => model::ResourceTerm::TupleFields(
-            (0..*length)
-                .map(|index| {
-                    get_field_term::main(
-                        configuration,
-                        &context,
-                        model::FieldIdentifier::Indexed(index),
-                    )
-                })
+        model::ResourceTerm::TupleFields(identifiers) => model::ResourceTerm::TupleFields(
+            identifiers
+                .iter()
+                .map(|identifier| get_field_term::main(configuration, &context, identifier))
                 .collect::<model::Result<_>>()?,
         ),
     };

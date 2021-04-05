@@ -4,10 +4,10 @@ use crate::model;
 pub fn main(
     configuration: &model::Configuration,
     context: &render_field_template::Context,
-    identifier: model::FieldIdentifier,
+    identifier: &model::FieldIdentifier,
 ) -> model::Result<proc_macro2::TokenStream> {
-    match configuration.field_templates.get(&identifier) {
-        None => Err(model::Error::MissingFieldTemplate(identifier)),
+    match configuration.field_templates.get(identifier) {
+        None => Err(model::Error::MissingFieldTemplate(identifier.clone())),
         Some(template) => render_field_template::main(template, context),
     }
 }
@@ -24,7 +24,7 @@ mod tests {
                 ..model::stubs::configuration()
             },
             &render_field_template::stubs::context(),
-            model::FieldIdentifier::Anonymous,
+            &model::FieldIdentifier::Anonymous,
         );
 
         let actual = actual.unwrap_err();
@@ -48,7 +48,7 @@ mod tests {
                 absolute_path: "/credits.md",
                 ..render_field_template::stubs::context()
             },
-            model::FieldIdentifier::Anonymous,
+            &model::FieldIdentifier::Anonymous,
         );
 
         let actual = actual.unwrap().to_string();
