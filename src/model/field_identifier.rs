@@ -33,41 +33,47 @@ mod tests {
     fn converts_string_into_anonymous() {
         let actual = main::FieldIdentifier::from("_");
 
-        assert_eq!(actual, main::FieldIdentifier::Anonymous);
+        let expected = main::FieldIdentifier::Anonymous;
+        assert_eq!(actual, expected);
     }
 
     #[test]
     fn converts_string_into_named() {
         let actual = main::FieldIdentifier::from("foo");
 
-        assert_eq!(actual, main::FieldIdentifier::Named(String::from("foo")));
+        let expected = main::FieldIdentifier::Named(String::from("foo"));
+        assert_eq!(actual, expected);
     }
 
     #[test]
     fn converts_string_into_indexed() {
         let actual = main::FieldIdentifier::from("12");
 
-        assert_eq!(actual, main::FieldIdentifier::Indexed(12));
+        let expected = main::FieldIdentifier::Indexed(12);
+        assert_eq!(actual, expected);
     }
 
     #[test]
     fn converts_string_from_anonymous() {
         let actual = String::from(main::FieldIdentifier::Anonymous);
 
-        assert_eq!(actual, String::from('_'));
+        let expected = String::from('_');
+        assert_eq!(actual, expected);
     }
 
     #[test]
     fn converts_string_from_named() {
         let actual = String::from(main::FieldIdentifier::Named(String::from("bar")));
 
-        assert_eq!(actual, String::from("bar"));
+        let expected = String::from("bar");
+        assert_eq!(actual, expected);
     }
 
     #[test]
     fn converts_string_from_indexed() {
         let actual = String::from(main::FieldIdentifier::Indexed(23));
 
-        assert_eq!(actual, String::from("23"));
+        let expected = String::from("23");
+        assert_eq!(actual, expected);
     }
 }
