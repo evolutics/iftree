@@ -23,15 +23,15 @@ impl fmt::Display for main::Error {
             main::Error::Ignore(main::IgnoreError(error)) => write!(formatter, "{}", error),
 
             main::Error::MissingFieldTemplate(field) => {
-                let field_hint = match field {
-                    main::FieldIdentifier::Anonymous => String::new(),
-                    main::FieldIdentifier::Named(name) => format!("field {:?} of ", name),
-                    main::FieldIdentifier::Indexed(index) => format!("field {} of ", index),
-                };
+                let field = String::from(field.clone());
                 write!(
                     formatter,
-                    "No field template configured for {}resource type.",
-                    field_hint,
+                    "No template for field {:?}. Add one to your configuration as follows:
+```
+[field_templates]
+{} = …
+```",
+                    field, field,
                 )
             }
 
