@@ -7,7 +7,7 @@ pub fn main(
     identifier: model::FieldIdentifier,
 ) -> model::Result<proc_macro2::TokenStream> {
     match configuration.field_templates.get(&identifier) {
-        None => Err(model::Error::MissingImplementation(identifier)),
+        None => Err(model::Error::MissingFieldTemplate(identifier)),
         Some(template) => render_field_template::main(template, context),
     }
 }
@@ -17,7 +17,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn given_missing_implementation_it_errs() {
+    fn given_missing_field_template_it_errs() {
         let actual = main(
             &model::Configuration {
                 field_templates: Default::default(),
@@ -28,7 +28,7 @@ mod tests {
         );
 
         let actual = actual.unwrap_err();
-        let expected = model::Error::MissingImplementation(model::FieldIdentifier::Anonymous);
+        let expected = model::Error::MissingFieldTemplate(model::FieldIdentifier::Anonymous);
         assert_eq!(actual, expected);
     }
 

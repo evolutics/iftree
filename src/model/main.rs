@@ -18,7 +18,7 @@ pub type Result<T> = result::Result<T, Error>;
 pub enum Error {
     EnvironmentVariable(EnvironmentVariableError),
     Ignore(IgnoreError),
-    MissingImplementation(FieldIdentifier),
+    MissingFieldTemplate(FieldIdentifier),
     NameCollisions(vec::Vec<NameCollision>),
     NonStandardTemplate(Template),
     PathStripPrefix(path::StripPrefixError),

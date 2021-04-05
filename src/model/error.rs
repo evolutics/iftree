@@ -22,7 +22,7 @@ impl fmt::Display for main::Error {
 
             main::Error::Ignore(main::IgnoreError(error)) => write!(formatter, "{}", error),
 
-            main::Error::MissingImplementation(field) => {
+            main::Error::MissingFieldTemplate(field) => {
                 let field_hint = match field {
                     main::FieldIdentifier::Anonymous => String::new(),
                     main::FieldIdentifier::Named(name) => format!("field {:?} of ", name),
@@ -30,7 +30,7 @@ impl fmt::Display for main::Error {
                 };
                 write!(
                     formatter,
-                    "No implementation configured for {}resource type.",
+                    "No field template configured for {}resource type.",
                     field_hint,
                 )
             }
@@ -77,7 +77,7 @@ impl error::Error for main::Error {
                 Some(source)
             }
             main::Error::Ignore(main::IgnoreError(error)) => Some(error),
-            main::Error::MissingImplementation(_) => None,
+            main::Error::MissingFieldTemplate(_) => None,
             main::Error::NameCollisions(_) => None,
             main::Error::NonStandardTemplate(_) => None,
             main::Error::PathStripPrefix(error) => Some(error),
