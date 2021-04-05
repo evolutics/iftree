@@ -1,4 +1,3 @@
-use super::get_field_term;
 use super::render_field_template;
 use super::try_map_abstract_resource;
 use crate::model;
@@ -11,28 +10,27 @@ pub fn main(
     base_folder: &path::Path,
     paths: vec::Vec<path::PathBuf>,
 ) -> model::Result<vec::Vec<model::File>> {
-    let annotated_resource = annotate_resource(resource_structure)?;
+    let annotated_resource = annotate_resource(configuration, resource_structure)?;
     paths
         .into_iter()
-        .map(|path| get_file(configuration, &annotated_resource, base_folder, path))
+        .map(|path| get_file(&annotated_resource, base_folder, path))
         .collect()
 }
 
-fn annotate_resource(
+fn annotate_resource<'a>(
+    configuration: &'a model::Configuration,
     resource_structure: &model::ResourceTypeStructure,
-) -> model::Result<model::AbstractResource<model::FieldIdentifier>> {
-    struct TryMap;
-
-    impl try_map_abstract_resource::TryMap for TryMap {
+) -> model::Result<model::AbstractResource<IdentifiedTemplate<'a>>> {
+    impl<'a> try_map_abstract_resource::TryMap for &'a model::Configuration {
         type Input = ();
-        type Output = model::FieldIdentifier;
+        type Output = IdentifiedTemplate<'a>;
 
         fn map_unit(&self) -> model::Result<()> {
             Ok(())
         }
 
         fn map_type_alias(&self, _annotation: &Self::Input) -> model::Result<Self::Output> {
-            Ok(model::FieldIdentifier::Anonymous)
+            get_template(self, model::FieldIdentifier::Anonymous)
         }
 
         fn map_named_field(
@@ -40,7 +38,7 @@ fn annotate_resource(
             name: &str,
             _annotation: &Self::Input,
         ) -> model::Result<Self::Output> {
-            Ok(model::FieldIdentifier::Named(String::from(name)))
+            get_template(self, model::FieldIdentifier::Named(String::from(name)))
         }
 
         fn map_tuple_field(
@@ -48,50 +46,63 @@ fn annotate_resource(
             index: usize,
             _annotation: &Self::Input,
         ) -> model::Result<Self::Output> {
-            Ok(model::FieldIdentifier::Indexed(index))
+            get_template(self, model::FieldIdentifier::Indexed(index))
         }
     }
 
-    try_map_abstract_resource::main(&TryMap, resource_structure)
+    try_map_abstract_resource::main(&configuration, resource_structure)
+}
+
+pub struct IdentifiedTemplate<'a> {
+    #[allow(dead_code)]
+    identifier: model::FieldIdentifier,
+    template: &'a str,
+}
+
+fn get_template(
+    configuration: &model::Configuration,
+    identifier: model::FieldIdentifier,
+) -> model::Result<IdentifiedTemplate> {
+    match configuration.field_templates.get(&identifier) {
+        None => Err(model::Error::MissingFieldTemplate(identifier)),
+        Some(template) => Ok(IdentifiedTemplate {
+            identifier,
+            template,
+        }),
+    }
 }
 
 fn get_file(
-    configuration: &model::Configuration,
-    annotated_resource: &model::AbstractResource<model::FieldIdentifier>,
+    annotated_resource: &model::AbstractResource<IdentifiedTemplate>,
     base_folder: &path::Path,
     relative_path: path::PathBuf,
 ) -> model::Result<model::File> {
-    struct TryMap<'a> {
-        configuration: &'a model::Configuration,
-        context: render_field_template::Context<'a>,
-    }
-
-    impl try_map_abstract_resource::TryMap for TryMap<'_> {
-        type Input = model::FieldIdentifier;
+    impl<'a> try_map_abstract_resource::TryMap for render_field_template::Context<'a> {
+        type Input = IdentifiedTemplate<'a>;
         type Output = proc_macro2::TokenStream;
 
         fn map_unit(&self) -> model::Result<()> {
             Ok(())
         }
 
-        fn map_type_alias(&self, identifier: &Self::Input) -> model::Result<Self::Output> {
-            get_field_term::main(self.configuration, &self.context, identifier)
+        fn map_type_alias(&self, identified_template: &Self::Input) -> model::Result<Self::Output> {
+            render_field_template::main(identified_template.template, &self)
         }
 
         fn map_named_field(
             &self,
             _name: &str,
-            identifier: &Self::Input,
+            identified_template: &Self::Input,
         ) -> model::Result<Self::Output> {
-            get_field_term::main(self.configuration, &self.context, identifier)
+            render_field_template::main(identified_template.template, &self)
         }
 
         fn map_tuple_field(
             &self,
             _index: usize,
-            identifier: &Self::Input,
+            identified_template: &Self::Input,
         ) -> model::Result<Self::Output> {
-            get_field_term::main(self.configuration, &self.context, identifier)
+            render_field_template::main(identified_template.template, &self)
         }
     }
 
@@ -103,12 +114,7 @@ fn get_file(
         absolute_path,
     };
 
-    let try_map = TryMap {
-        configuration,
-        context,
-    };
-
-    let resource_term = try_map_abstract_resource::main(&try_map, annotated_resource)?;
+    let resource_term = try_map_abstract_resource::main(&context, annotated_resource)?;
 
     Ok(model::File {
         relative_path,
@@ -119,6 +125,23 @@ fn get_file(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn given_missing_field_template_it_errs() {
+        let actual = main(
+            &model::Configuration {
+                field_templates: Default::default(),
+                ..model::stubs::configuration()
+            },
+            &model::ResourceTypeStructure::TypeAlias(()),
+            path::Path::new("/foo"),
+            vec![],
+        );
+
+        let actual = actual.unwrap_err();
+        let expected = model::Error::MissingFieldTemplate(model::FieldIdentifier::Anonymous);
+        assert_eq!(actual, expected);
+    }
 
     #[test]
     fn gets_type_unit() {
