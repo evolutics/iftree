@@ -12,43 +12,6 @@ pub struct Input {
 
 pub type Output = proc_macro::TokenStream;
 
-pub type Result<T> = result::Result<T, Error>;
-
-#[derive(Clone, cmp::PartialEq, Debug)]
-pub enum Error {
-    EnvironmentVariable(EnvironmentVariableError),
-    Ignore(IgnoreError),
-    MissingFieldTemplate(FieldIdentifier),
-    NameCollisions(vec::Vec<NameCollision>),
-    NonStandardTemplate(Template),
-    PathStripPrefix(path::StripPrefixError),
-}
-
-#[derive(Clone, cmp::PartialEq, Debug)]
-pub struct EnvironmentVariableError {
-    pub name: String,
-    pub source: env::VarError,
-}
-
-#[derive(Clone, Debug)]
-pub struct IgnoreError(pub ignore::Error);
-
-#[derive(Clone, cmp::Eq, cmp::Ord, cmp::PartialEq, cmp::PartialOrd, Debug)]
-pub enum FieldIdentifier {
-    Anonymous,
-    Named(String),
-    Indexed(usize),
-}
-
-#[derive(Clone, cmp::PartialEq, Debug)]
-pub struct NameCollision {
-    pub colliding_file: File,
-    pub existing_filename: Option<String>,
-    pub identifier: String,
-}
-
-pub type Template = String;
-
 #[derive(Clone, cmp::PartialEq, Debug)]
 pub struct Configuration {
     pub resource_paths: String,
@@ -60,6 +23,15 @@ pub struct Configuration {
 
     pub field_templates: collections::BTreeMap<FieldIdentifier, Template>,
 }
+
+#[derive(Clone, cmp::Eq, cmp::Ord, cmp::PartialEq, cmp::PartialOrd, Debug)]
+pub enum FieldIdentifier {
+    Anonymous,
+    Named(String),
+    Indexed(usize),
+}
+
+pub type Template = String;
 
 #[derive(Clone, cmp::PartialEq, Debug)]
 pub struct ResourceType {
@@ -102,6 +74,34 @@ pub enum ResourceTerm<T> {
     TypeAlias(T),
     NamedFields(vec::Vec<(String, T)>),
     TupleFields(vec::Vec<T>),
+}
+
+pub type Result<T> = result::Result<T, Error>;
+
+#[derive(Clone, cmp::PartialEq, Debug)]
+pub enum Error {
+    EnvironmentVariable(EnvironmentVariableError),
+    Ignore(IgnoreError),
+    MissingFieldTemplate(FieldIdentifier),
+    NameCollisions(vec::Vec<NameCollision>),
+    NonStandardTemplate(Template),
+    PathStripPrefix(path::StripPrefixError),
+}
+
+#[derive(Clone, cmp::PartialEq, Debug)]
+pub struct EnvironmentVariableError {
+    pub name: String,
+    pub source: env::VarError,
+}
+
+#[derive(Clone, Debug)]
+pub struct IgnoreError(pub ignore::Error);
+
+#[derive(Clone, cmp::PartialEq, Debug)]
+pub struct NameCollision {
+    pub colliding_file: File,
+    pub existing_filename: Option<String>,
+    pub identifier: String,
 }
 
 #[cfg(test)]
