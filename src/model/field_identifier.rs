@@ -15,6 +15,16 @@ impl From<&str> for main::FieldIdentifier {
     }
 }
 
+impl From<main::FieldIdentifier> for String {
+    fn from(identifier: main::FieldIdentifier) -> Self {
+        match identifier {
+            main::FieldIdentifier::Anonymous => String::from(ANONYMOUS_IDENTIFIER),
+            main::FieldIdentifier::Named(name) => name,
+            main::FieldIdentifier::Indexed(index) => index.to_string(),
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -38,5 +48,26 @@ mod tests {
         let actual = main::FieldIdentifier::from("12");
 
         assert_eq!(actual, main::FieldIdentifier::Indexed(12));
+    }
+
+    #[test]
+    fn converts_string_from_anonymous() {
+        let actual = String::from(main::FieldIdentifier::Anonymous);
+
+        assert_eq!(actual, String::from('_'));
+    }
+
+    #[test]
+    fn converts_string_from_named() {
+        let actual = String::from(main::FieldIdentifier::Named(String::from("bar")));
+
+        assert_eq!(actual, String::from("bar"));
+    }
+
+    #[test]
+    fn converts_string_from_indexed() {
+        let actual = String::from(main::FieldIdentifier::Indexed(23));
+
+        assert_eq!(actual, String::from("23"));
     }
 }
