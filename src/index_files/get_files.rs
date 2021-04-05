@@ -248,7 +248,7 @@ mod tests {
         let configuration = model::Configuration {
             field_templates: vec![
                 String::from("{{relative_path}}"),
-                String::from("include_str!({{absolute_path}})"),
+                String::from("{{absolute_path}}"),
             ]
             .into_iter()
             .enumerate()
@@ -274,7 +274,7 @@ mod tests {
                     "credits.md"
                 },
                 quote::quote! {
-                    include_str!("/resources/credits.md")
+                    "/resources/credits.md"
                 },
             ]),
         }];
