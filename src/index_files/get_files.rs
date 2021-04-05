@@ -1,5 +1,6 @@
 use super::get_field_term;
 use super::render_field_template;
+use super::try_map_abstract_resource;
 use crate::model;
 use std::path;
 use std::vec;
@@ -10,7 +11,7 @@ pub fn main(
     base_folder: &path::Path,
     paths: vec::Vec<path::PathBuf>,
 ) -> model::Result<vec::Vec<model::File>> {
-    let annotated_resource = annotate_resource(resource_structure);
+    let annotated_resource = annotate_resource(resource_structure)?;
     paths
         .into_iter()
         .map(|path| get_file(configuration, &annotated_resource, base_folder, path))
@@ -19,31 +20,39 @@ pub fn main(
 
 fn annotate_resource(
     resource_structure: &model::ResourceTypeStructure,
-) -> model::AbstractResource<model::FieldIdentifier> {
-    match resource_structure {
-        model::ResourceTypeStructure::Unit => model::AbstractResource::Unit,
+) -> model::Result<model::AbstractResource<model::FieldIdentifier>> {
+    struct TryMap;
 
-        model::ResourceTypeStructure::TypeAlias(_) => {
-            model::AbstractResource::TypeAlias(model::FieldIdentifier::Anonymous)
+    impl try_map_abstract_resource::TryMap for TryMap {
+        type Input = ();
+        type Output = model::FieldIdentifier;
+
+        fn map_unit(&self) -> model::Result<()> {
+            Ok(())
         }
 
-        model::ResourceTypeStructure::NamedFields(names) => model::AbstractResource::NamedFields(
-            names
-                .iter()
-                .map(|(name, _)| (name.clone(), model::FieldIdentifier::Named(name.clone())))
-                .collect(),
-        ),
+        fn map_type_alias(&self, _annotation: &Self::Input) -> model::Result<Self::Output> {
+            Ok(model::FieldIdentifier::Anonymous)
+        }
 
-        model::ResourceTypeStructure::TupleFields(structure) => {
-            model::AbstractResource::TupleFields(
-                structure
-                    .iter()
-                    .enumerate()
-                    .map(|(index, _)| model::FieldIdentifier::Indexed(index))
-                    .collect(),
-            )
+        fn map_named_field(
+            &self,
+            name: &str,
+            _annotation: &Self::Input,
+        ) -> model::Result<Self::Output> {
+            Ok(model::FieldIdentifier::Named(String::from(name)))
+        }
+
+        fn map_tuple_field(
+            &self,
+            index: usize,
+            _annotation: &Self::Input,
+        ) -> model::Result<Self::Output> {
+            Ok(model::FieldIdentifier::Indexed(index))
         }
     }
+
+    try_map_abstract_resource::main(&TryMap, resource_structure)
 }
 
 fn get_file(
@@ -52,6 +61,40 @@ fn get_file(
     base_folder: &path::Path,
     relative_path: path::PathBuf,
 ) -> model::Result<model::File> {
+    struct TryMap<'a> {
+        configuration: &'a model::Configuration,
+        context: render_field_template::Context<'a>,
+    }
+
+    impl try_map_abstract_resource::TryMap for TryMap<'_> {
+        type Input = model::FieldIdentifier;
+        type Output = proc_macro2::TokenStream;
+
+        fn map_unit(&self) -> model::Result<()> {
+            Ok(())
+        }
+
+        fn map_type_alias(&self, identifier: &Self::Input) -> model::Result<Self::Output> {
+            get_field_term::main(self.configuration, &self.context, identifier)
+        }
+
+        fn map_named_field(
+            &self,
+            _name: &str,
+            identifier: &Self::Input,
+        ) -> model::Result<Self::Output> {
+            get_field_term::main(self.configuration, &self.context, identifier)
+        }
+
+        fn map_tuple_field(
+            &self,
+            _index: usize,
+            identifier: &Self::Input,
+        ) -> model::Result<Self::Output> {
+            get_field_term::main(self.configuration, &self.context, identifier)
+        }
+    }
+
     let raw_relative_path = &relative_path.to_string_lossy();
     let absolute_path = base_folder.join(&relative_path);
     let absolute_path = &absolute_path.to_string_lossy();
@@ -60,32 +103,12 @@ fn get_file(
         absolute_path,
     };
 
-    let resource_term = match annotated_resource {
-        model::AbstractResource::Unit => model::ResourceTerm::Unit,
-
-        model::AbstractResource::TypeAlias(identifier) => model::ResourceTerm::TypeAlias(
-            get_field_term::main(configuration, &context, identifier)?,
-        ),
-
-        model::AbstractResource::NamedFields(named_identifiers) => {
-            model::ResourceTerm::NamedFields(
-                named_identifiers
-                    .iter()
-                    .map(|(name, identifier)| {
-                        let term = get_field_term::main(configuration, &context, identifier)?;
-                        Ok((name.clone(), term))
-                    })
-                    .collect::<model::Result<_>>()?,
-            )
-        }
-
-        model::AbstractResource::TupleFields(identifiers) => model::ResourceTerm::TupleFields(
-            identifiers
-                .iter()
-                .map(|identifier| get_field_term::main(configuration, &context, identifier))
-                .collect::<model::Result<_>>()?,
-        ),
+    let try_map = TryMap {
+        configuration,
+        context,
     };
+
+    let resource_term = try_map_abstract_resource::main(&try_map, annotated_resource)?;
 
     Ok(model::File {
         relative_path,
