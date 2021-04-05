@@ -39,14 +39,7 @@ impl<'a> de::Visitor<'a> for FieldIdentifierVisitor {
     }
 
     fn visit_str<T: de::Error>(self, string: &str) -> Result<Self::Value, T> {
-        Ok(if string == "_" {
-            model::FieldIdentifier::Anonymous
-        } else {
-            match string.parse() {
-                Err(_) => model::FieldIdentifier::Named(String::from(string)),
-                Ok(index) => model::FieldIdentifier::Indexed(index),
-            }
-        })
+        Ok(string.into())
     }
 }
 
