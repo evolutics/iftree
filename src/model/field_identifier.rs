@@ -2,13 +2,13 @@ use super::main;
 
 const ANONYMOUS_IDENTIFIER: &str = "_";
 
-impl From<&str> for main::FieldIdentifier {
-    fn from(string: &str) -> Self {
+impl From<String> for main::FieldIdentifier {
+    fn from(string: String) -> Self {
         if string == ANONYMOUS_IDENTIFIER {
             main::FieldIdentifier::Anonymous
         } else {
             match string.parse() {
-                Err(_) => main::FieldIdentifier::Named(String::from(string)),
+                Err(_) => main::FieldIdentifier::Named(string),
                 Ok(index) => main::FieldIdentifier::Indexed(index),
             }
         }
@@ -31,7 +31,7 @@ mod tests {
 
     #[test]
     fn converts_string_into_anonymous() {
-        let actual = main::FieldIdentifier::from("_");
+        let actual = main::FieldIdentifier::from(String::from("_"));
 
         let expected = main::FieldIdentifier::Anonymous;
         assert_eq!(actual, expected);
@@ -39,7 +39,7 @@ mod tests {
 
     #[test]
     fn converts_string_into_named() {
-        let actual = main::FieldIdentifier::from("foo");
+        let actual = main::FieldIdentifier::from(String::from("foo"));
 
         let expected = main::FieldIdentifier::Named(String::from("foo"));
         assert_eq!(actual, expected);
@@ -47,7 +47,7 @@ mod tests {
 
     #[test]
     fn converts_string_into_indexed() {
-        let actual = main::FieldIdentifier::from("12");
+        let actual = main::FieldIdentifier::from(String::from("12"));
 
         let expected = main::FieldIdentifier::Indexed(12);
         assert_eq!(actual, expected);

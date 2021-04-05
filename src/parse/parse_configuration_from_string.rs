@@ -25,7 +25,7 @@ impl<'a> de::Deserialize<'a> for model::FieldIdentifier {
     fn deserialize<T: de::Deserializer<'a>>(
         deserializer: T,
     ) -> Result<model::FieldIdentifier, T::Error> {
-        deserializer.deserialize_str(FieldIdentifierVisitor)
+        deserializer.deserialize_string(FieldIdentifierVisitor)
     }
 }
 
@@ -38,8 +38,12 @@ impl<'a> de::Visitor<'a> for FieldIdentifierVisitor {
         write!(formatter, "a field identifier")
     }
 
-    fn visit_str<T: de::Error>(self, string: &str) -> Result<Self::Value, T> {
+    fn visit_string<T: de::Error>(self, string: String) -> Result<Self::Value, T> {
         Ok(string.into())
+    }
+
+    fn visit_str<T: de::Error>(self, string: &str) -> Result<Self::Value, T> {
+        self.visit_string(String::from(string))
     }
 }
 
