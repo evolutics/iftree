@@ -2,7 +2,7 @@ use crate::model;
 
 pub fn main(
     resource_type: &syn::Ident,
-    resource_term: &model::ResourceTerm<proc_macro2::TokenStream>,
+    resource_term: &model::ResourceTerm,
 ) -> proc_macro2::TokenStream {
     match resource_term {
         model::ResourceTerm::Unit => quote::quote! { #resource_type },

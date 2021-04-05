@@ -39,12 +39,14 @@ pub struct ResourceType {
     pub structure: ResourceTypeStructure,
 }
 
-#[derive(Clone, cmp::PartialEq, Debug)]
-pub enum ResourceTypeStructure {
+pub type ResourceTypeStructure = AbstractResource<()>;
+
+#[derive(Clone, cmp::Eq, cmp::Ord, cmp::PartialEq, cmp::PartialOrd, Debug)]
+pub enum AbstractResource<T> {
     Unit,
-    TypeAlias,
-    NamedFields(vec::Vec<String>),
-    TupleFields(usize),
+    TypeAlias(T),
+    NamedFields(vec::Vec<(String, T)>),
+    TupleFields(vec::Vec<T>),
 }
 
 #[derive(Clone, cmp::PartialEq, Debug)]
@@ -65,16 +67,10 @@ pub enum FileTree {
 #[derive(Clone, Debug)]
 pub struct File {
     pub relative_path: path::PathBuf,
-    pub resource_term: ResourceTerm<proc_macro2::TokenStream>,
+    pub resource_term: ResourceTerm,
 }
 
-#[derive(Clone, cmp::Eq, cmp::Ord, cmp::PartialEq, cmp::PartialOrd, Debug)]
-pub enum ResourceTerm<T> {
-    Unit,
-    TypeAlias(T),
-    NamedFields(vec::Vec<(String, T)>),
-    TupleFields(vec::Vec<T>),
-}
+pub type ResourceTerm = AbstractResource<proc_macro2::TokenStream>;
 
 pub type Result<T> = result::Result<T, Error>;
 

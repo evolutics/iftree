@@ -19,30 +19,36 @@ pub fn main(
 
 fn annotate_resource(
     resource_structure: &model::ResourceTypeStructure,
-) -> model::ResourceTerm<model::FieldIdentifier> {
+) -> model::AbstractResource<model::FieldIdentifier> {
     match resource_structure {
-        model::ResourceTypeStructure::Unit => model::ResourceTerm::Unit,
+        model::ResourceTypeStructure::Unit => model::AbstractResource::Unit,
 
-        model::ResourceTypeStructure::TypeAlias => {
-            model::ResourceTerm::TypeAlias(model::FieldIdentifier::Anonymous)
+        model::ResourceTypeStructure::TypeAlias(_) => {
+            model::AbstractResource::TypeAlias(model::FieldIdentifier::Anonymous)
         }
 
-        model::ResourceTypeStructure::NamedFields(names) => model::ResourceTerm::NamedFields(
+        model::ResourceTypeStructure::NamedFields(names) => model::AbstractResource::NamedFields(
             names
                 .iter()
-                .map(|name| (name.clone(), model::FieldIdentifier::Named(name.clone())))
+                .map(|(name, _)| (name.clone(), model::FieldIdentifier::Named(name.clone())))
                 .collect(),
         ),
 
-        model::ResourceTypeStructure::TupleFields(length) => model::ResourceTerm::TupleFields(
-            (0..*length).map(model::FieldIdentifier::Indexed).collect(),
-        ),
+        model::ResourceTypeStructure::TupleFields(structure) => {
+            model::AbstractResource::TupleFields(
+                structure
+                    .iter()
+                    .enumerate()
+                    .map(|(index, _)| model::FieldIdentifier::Indexed(index))
+                    .collect(),
+            )
+        }
     }
 }
 
 fn get_file(
     configuration: &model::Configuration,
-    annotated_resource: &model::ResourceTerm<model::FieldIdentifier>,
+    annotated_resource: &model::AbstractResource<model::FieldIdentifier>,
     base_folder: &path::Path,
     relative_path: path::PathBuf,
 ) -> model::Result<model::File> {
@@ -55,23 +61,25 @@ fn get_file(
     };
 
     let resource_term = match annotated_resource {
-        model::ResourceTerm::Unit => model::ResourceTerm::Unit,
+        model::AbstractResource::Unit => model::ResourceTerm::Unit,
 
-        model::ResourceTerm::TypeAlias(identifier) => model::ResourceTerm::TypeAlias(
+        model::AbstractResource::TypeAlias(identifier) => model::ResourceTerm::TypeAlias(
             get_field_term::main(configuration, &context, identifier)?,
         ),
 
-        model::ResourceTerm::NamedFields(named_identifiers) => model::ResourceTerm::NamedFields(
-            named_identifiers
-                .iter()
-                .map(|(name, identifier)| {
-                    let term = get_field_term::main(configuration, &context, identifier)?;
-                    Ok((name.clone(), term))
-                })
-                .collect::<model::Result<_>>()?,
-        ),
+        model::AbstractResource::NamedFields(named_identifiers) => {
+            model::ResourceTerm::NamedFields(
+                named_identifiers
+                    .iter()
+                    .map(|(name, identifier)| {
+                        let term = get_field_term::main(configuration, &context, identifier)?;
+                        Ok((name.clone(), term))
+                    })
+                    .collect::<model::Result<_>>()?,
+            )
+        }
 
-        model::ResourceTerm::TupleFields(identifiers) => model::ResourceTerm::TupleFields(
+        model::AbstractResource::TupleFields(identifiers) => model::ResourceTerm::TupleFields(
             identifiers
                 .iter()
                 .map(|identifier| get_field_term::main(configuration, &context, identifier))
@@ -127,7 +135,7 @@ mod tests {
                 .collect(),
                 ..model::stubs::configuration()
             },
-            &model::ResourceTypeStructure::TypeAlias,
+            &model::ResourceTypeStructure::TypeAlias(()),
             path::Path::new("/resources"),
             vec![
                 path::PathBuf::from("world/physical_constants.json"),
@@ -165,7 +173,7 @@ mod tests {
                 .collect(),
                 ..model::stubs::configuration()
             },
-            &model::ResourceTypeStructure::NamedFields(vec![String::from("content")]),
+            &model::ResourceTypeStructure::NamedFields(vec![(String::from("content"), ())]),
             path::Path::new("/resources"),
             vec![
                 path::PathBuf::from("world/physical_constants.json"),
@@ -209,7 +217,7 @@ mod tests {
                 .collect(),
                 ..model::stubs::configuration()
             },
-            &model::ResourceTypeStructure::TupleFields(1),
+            &model::ResourceTypeStructure::TupleFields(vec![()]),
             path::Path::new("/resources"),
             vec![
                 path::PathBuf::from("world/physical_constants.json"),
@@ -251,7 +259,9 @@ mod tests {
 
         let actual = main(
             &configuration,
-            &model::ResourceTypeStructure::TupleFields(configuration.field_templates.len()),
+            &model::ResourceTypeStructure::TupleFields(
+                configuration.field_templates.iter().map(|_| ()).collect(),
+            ),
             path::Path::new("/resources"),
             vec![path::PathBuf::from("credits.md")],
         );

@@ -14,15 +14,13 @@ impl Ord for main::File {
     }
 }
 
-fn comparable_resource_term(
-    resource_term: &main::ResourceTerm<proc_macro2::TokenStream>,
-) -> main::ResourceTerm<String> {
+fn comparable_resource_term(resource_term: &main::ResourceTerm) -> main::AbstractResource<String> {
     match resource_term {
-        main::ResourceTerm::Unit => main::ResourceTerm::Unit,
+        main::ResourceTerm::Unit => main::AbstractResource::Unit,
 
-        main::ResourceTerm::TypeAlias(term) => main::ResourceTerm::TypeAlias(term.to_string()),
+        main::ResourceTerm::TypeAlias(term) => main::AbstractResource::TypeAlias(term.to_string()),
 
-        main::ResourceTerm::NamedFields(fields) => main::ResourceTerm::NamedFields(
+        main::ResourceTerm::NamedFields(fields) => main::AbstractResource::NamedFields(
             fields
                 .iter()
                 .map(|(name, term)| (name.clone(), term.to_string()))
@@ -30,7 +28,7 @@ fn comparable_resource_term(
         ),
 
         main::ResourceTerm::TupleFields(terms) => {
-            main::ResourceTerm::TupleFields(terms.iter().map(|term| term.to_string()).collect())
+            main::AbstractResource::TupleFields(terms.iter().map(|term| term.to_string()).collect())
         }
     }
 }

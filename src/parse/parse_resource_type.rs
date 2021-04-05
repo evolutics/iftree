@@ -32,12 +32,12 @@ fn parse_structure(item: parse::ParseStream) -> syn::Result<model::ResourceType>
             fields
                 .named
                 .into_iter()
-                .filter_map(|field| field.ident.map(|identifier| identifier.to_string()))
+                .filter_map(|field| field.ident.map(|identifier| (identifier.to_string(), ())))
                 .collect(),
         ),
 
         syn::Fields::Unnamed(fields) => {
-            model::ResourceTypeStructure::TupleFields(fields.unnamed.len())
+            model::ResourceTypeStructure::TupleFields(fields.unnamed.iter().map(|_| ()).collect())
         }
     };
 
@@ -56,7 +56,7 @@ fn parse_type_alias(item: parse::ParseStream) -> syn::Result<model::ResourceType
 
     Ok(model::ResourceType {
         identifier: identifier.to_string(),
-        structure: model::ResourceTypeStructure::TypeAlias,
+        structure: model::ResourceTypeStructure::TypeAlias(()),
     })
 }
 
@@ -83,7 +83,7 @@ mod tests {
         let actual = actual.unwrap();
         let expected = model::ResourceType {
             identifier: String::from("MyTypeAlias"),
-            structure: model::ResourceTypeStructure::TypeAlias,
+            structure: model::ResourceTypeStructure::TypeAlias(()),
         };
         assert_eq!(actual, expected);
     }
@@ -101,8 +101,8 @@ mod tests {
         let expected = model::ResourceType {
             identifier: String::from("MyNamedFields"),
             structure: model::ResourceTypeStructure::NamedFields(vec![
-                String::from("content"),
-                String::from("media_type"),
+                (String::from("content"), ()),
+                (String::from("media_type"), ()),
             ]),
         };
         assert_eq!(actual, expected);
@@ -116,7 +116,7 @@ mod tests {
         let actual = actual.unwrap();
         let expected = model::ResourceType {
             identifier: String::from("MyTupleFields"),
-            structure: model::ResourceTypeStructure::TupleFields(2),
+            structure: model::ResourceTypeStructure::TupleFields(vec![(), ()]),
         };
         assert_eq!(actual, expected);
     }
