@@ -9,17 +9,17 @@ pub fn main(
     if configuration.base_folder.is_absolute() {
         Ok(configuration.base_folder.clone())
     } else {
-        let mut base_folder = get_environment_base_folder(configuration, get_environment_variable)?;
+        let mut base_folder = get_root_folder(configuration, get_environment_variable)?;
         base_folder.push(&configuration.base_folder);
         Ok(base_folder)
     }
 }
 
-fn get_environment_base_folder(
+fn get_root_folder(
     configuration: &model::Configuration,
     get_environment_variable: &dyn Fn(&str) -> Result<String, env::VarError>,
 ) -> model::Result<path::PathBuf> {
-    let name = &configuration.base_folder_environment_variable;
+    let name = &configuration.root_folder_variable;
 
     match get_environment_variable(name) {
         Err(source) => Err(model::Error::EnvironmentVariable(
@@ -37,30 +37,30 @@ fn get_environment_base_folder(
 mod tests {
     use super::*;
 
-    mod given_configured_base_folder_is_absolute {
+    mod given_base_folder_is_absolute {
         use super::*;
         use std::fs;
 
         #[test]
-        fn gets_configured_base_folder() {
-            let configured_base_folder = fs::canonicalize(".").unwrap();
-            assert!(configured_base_folder.is_absolute());
+        fn gets() {
+            let base_folder = fs::canonicalize(".").unwrap();
+            assert!(base_folder.is_absolute());
 
             let actual = main(
                 &model::Configuration {
-                    base_folder: configured_base_folder.clone(),
+                    base_folder: base_folder.clone(),
                     ..model::stubs::configuration()
                 },
                 &|_| unreachable!(),
             );
 
             let actual = actual.unwrap();
-            let expected = configured_base_folder;
+            let expected = base_folder;
             assert_eq!(actual, expected);
         }
     }
 
-    mod given_configured_base_folder_is_relative {
+    mod given_base_folder_is_relative {
         use super::*;
 
         #[test]
@@ -68,11 +68,11 @@ mod tests {
             let actual = main(
                 &model::Configuration {
                     base_folder: path::PathBuf::from("b/c"),
-                    base_folder_environment_variable: String::from("BASE_FOLDER"),
+                    root_folder_variable: String::from("ROOT_FOLDER"),
                     ..model::stubs::configuration()
                 },
                 &|name| {
-                    Ok(String::from(if name == "BASE_FOLDER" {
+                    Ok(String::from(if name == "ROOT_FOLDER" {
                         "/a"
                     } else {
                         unreachable!()
@@ -90,7 +90,7 @@ mod tests {
             let actual = main(
                 &model::Configuration {
                     base_folder: path::PathBuf::from("a/b"),
-                    base_folder_environment_variable: String::from("BASE_FOLDER"),
+                    root_folder_variable: String::from("ROOT_FOLDER"),
                     ..model::stubs::configuration()
                 },
                 &|_| Err(env::VarError::NotPresent),
@@ -98,7 +98,7 @@ mod tests {
 
             let actual = actual.unwrap_err();
             let expected = model::Error::EnvironmentVariable(model::EnvironmentVariableError {
-                name: String::from("BASE_FOLDER"),
+                name: String::from("ROOT_FOLDER"),
                 source: env::VarError::NotPresent,
             });
             assert_eq!(actual, expected);

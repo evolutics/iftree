@@ -13,7 +13,7 @@ pub fn main(string: &str) -> Result<model::Configuration, toml::de::Error> {
 struct UserConfiguration {
     resource_paths: String,
     base_folder: Option<path::PathBuf>,
-    base_folder_environment_variable: Option<String>,
+    root_folder_variable: Option<String>,
 
     resolve_name_collisions: Option<bool>,
     generate_array: Option<bool>,
@@ -55,8 +55,8 @@ impl From<UserConfiguration> for model::Configuration {
         model::Configuration {
             resource_paths: configuration.resource_paths,
             base_folder: configuration.base_folder.unwrap_or_else(path::PathBuf::new),
-            base_folder_environment_variable: configuration
-                .base_folder_environment_variable
+            root_folder_variable: configuration
+                .root_folder_variable
                 .unwrap_or_else(|| String::from("CARGO_MANIFEST_DIR")),
 
             resolve_name_collisions: configuration.resolve_name_collisions.unwrap_or(false),
@@ -96,7 +96,7 @@ mod tests {
         let expected = model::Configuration {
             resource_paths: String::from("resources/**"),
             base_folder: path::PathBuf::new(),
-            base_folder_environment_variable: String::from("CARGO_MANIFEST_DIR"),
+            root_folder_variable: String::from("CARGO_MANIFEST_DIR"),
 
             resolve_name_collisions: false,
             generate_array: true,
@@ -131,7 +131,7 @@ mod tests {
             "
 resource_paths = 'my/resources/**'
 base_folder = 'base'
-base_folder_environment_variable = 'MY_BASE_FOLDER'
+root_folder_variable = 'MY_ROOT_FOLDER'
 
 resolve_name_collisions = true
 generate_array = false
@@ -147,7 +147,7 @@ custom = 'my::custom_include!({{absolute_path}})'
         let expected = model::Configuration {
             resource_paths: String::from("my/resources/**"),
             base_folder: path::PathBuf::from("base"),
-            base_folder_environment_variable: String::from("MY_BASE_FOLDER"),
+            root_folder_variable: String::from("MY_ROOT_FOLDER"),
 
             resolve_name_collisions: true,
             generate_array: false,

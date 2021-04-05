@@ -16,7 +16,7 @@ pub type Output = proc_macro::TokenStream;
 pub struct Configuration {
     pub resource_paths: String,
     pub base_folder: path::PathBuf,
-    pub base_folder_environment_variable: String,
+    pub root_folder_variable: String,
 
     pub resolve_name_collisions: bool,
     pub generate_array: bool,
@@ -112,7 +112,7 @@ pub mod stubs {
         Configuration {
             resource_paths: String::from("!*"),
             base_folder: path::PathBuf::from("foo"),
-            base_folder_environment_variable: String::from("FOO"),
+            root_folder_variable: String::from("BAR"),
 
             resolve_name_collisions: false,
             generate_array: false,
