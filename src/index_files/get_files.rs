@@ -130,7 +130,7 @@ mod tests {
     fn given_missing_field_template_it_errs() {
         let actual = main(
             &model::Configuration {
-                field_templates: Default::default(),
+                field_templates: model::FieldTemplates::new(),
                 ..model::stubs::configuration()
             },
             &model::ResourceTypeStructure::TypeAlias(()),

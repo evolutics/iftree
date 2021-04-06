@@ -115,14 +115,14 @@ pub mod stubs {
             resolve_name_collisions: false,
             generate_array: false,
 
-            field_templates: Default::default(),
+            field_templates: FieldTemplates::new(),
         }
     }
 
     pub fn file_index() -> FileIndex {
         FileIndex {
             resource_type: String::from("Foo"),
-            forest: Default::default(),
+            forest: FileForest::new(),
             generate_array: false,
         }
     }
