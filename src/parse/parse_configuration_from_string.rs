@@ -1,6 +1,5 @@
 use crate::model;
 use serde::de;
-use std::collections;
 use std::fmt;
 use std::path;
 
@@ -18,7 +17,7 @@ struct UserConfiguration {
     resolve_name_collisions: Option<bool>,
     generate_array: Option<bool>,
 
-    field_templates: Option<collections::BTreeMap<model::FieldIdentifier, model::Template>>,
+    field_templates: Option<model::FieldTemplates>,
 }
 
 impl<'a> de::Deserialize<'a> for model::FieldIdentifier {
@@ -67,9 +66,7 @@ impl From<UserConfiguration> for model::Configuration {
     }
 }
 
-fn extend_field_templates_with_defaults(
-    field_templates: &mut collections::BTreeMap<model::FieldIdentifier, model::Template>,
-) {
+fn extend_field_templates_with_defaults(field_templates: &mut model::FieldTemplates) {
     field_templates
         .entry(model::FieldIdentifier::Named(String::from("absolute_path")))
         .or_insert_with(|| String::from("{{absolute_path}}"));

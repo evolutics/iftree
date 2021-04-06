@@ -21,8 +21,10 @@ pub struct Configuration {
     pub resolve_name_collisions: bool,
     pub generate_array: bool,
 
-    pub field_templates: collections::BTreeMap<FieldIdentifier, Template>,
+    pub field_templates: FieldTemplates,
 }
+
+pub type FieldTemplates = collections::BTreeMap<FieldIdentifier, Template>;
 
 #[derive(Clone, cmp::Eq, cmp::Ord, cmp::PartialEq, cmp::PartialOrd, Debug)]
 pub enum FieldIdentifier {
