@@ -52,14 +52,14 @@ mod tests {
         let expected = quote::quote! {
             pub type Resource = &'static str;
 
-            pub mod root {
+            pub mod base {
                 use super::Resource;
 
                 pub const CREDITS_MD: Resource = include_str!("/credits.md");
             }
 
             pub const ARRAY: [&Resource; 1usize] = [
-                &root::CREDITS_MD,
+                &base::CREDITS_MD,
             ];
         }
         .to_string();

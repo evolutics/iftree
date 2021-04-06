@@ -13,7 +13,7 @@ pub struct Resource {
 }
 
 pub fn main() {
-    use root::examples::resources;
+    use base::examples::resources;
 
     assert_eq!(ARRAY.len(), 6);
     assert_eq!(ARRAY[0], &resources::_ENV);

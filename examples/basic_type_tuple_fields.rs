@@ -10,7 +10,7 @@ resource_paths = 'examples/resources/**'
 pub struct Resource(&'static str, &'static str);
 
 pub fn main() {
-    use root::examples::resources;
+    use base::examples::resources;
 
     assert_eq!(resources::_ENV.0, "examples/resources/.env");
     assert_eq!(resources::_ENV.1, "BASE=https://example.com\n");

@@ -8,7 +8,7 @@ pub struct Resource {
 }
 
 pub fn main() {
-    use root::examples::resources;
+    use base::examples::resources;
 
     assert_eq!(resources::_ENV.content, "BASE=https://example.com\n");
     assert_eq!(resources::configuration::MENU_JSON.content, "\"Start\"\n");

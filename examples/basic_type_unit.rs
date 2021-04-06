@@ -9,7 +9,7 @@ resource_paths = 'examples/resources/**'
 pub struct Resource;
 
 pub fn main() {
-    use root::examples::resources;
+    use base::examples::resources;
 
     assert_eq!(resources::_ENV, Resource);
     assert_eq!(resources::configuration::MENU_JSON, Resource);

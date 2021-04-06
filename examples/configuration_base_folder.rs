@@ -10,7 +10,7 @@ pub struct Resource {
 
 pub fn main() {
     assert_eq!(
-        root::levels::TUTORIAL_JSON.relative_path,
+        base::levels::TUTORIAL_JSON.relative_path,
         "levels/tutorial.json",
     );
 }

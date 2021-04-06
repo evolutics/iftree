@@ -50,7 +50,7 @@ impl<'a> visit_file_forest::Visitor<'a> for Visitor {
             .collect();
 
         let tokens = quote::quote! {
-            &root#path,
+            &base#path,
         };
 
         array.push(Entry { tokens, file });
@@ -114,8 +114,8 @@ mod tests {
         let actual = actual.to_string();
         let expected = quote::quote! {
             pub const ARRAY: [&Resource; 2usize] = [
-                &root::MENU_JSON,
-                &root::TRANSLATIONS_CSV,
+                &base::MENU_JSON,
+                &base::TRANSLATIONS_CSV,
             ];
         }
         .to_string();
@@ -177,9 +177,9 @@ mod tests {
         let actual = actual.to_string();
         let expected = quote::quote! {
             pub const ARRAY: [&Resource; 3usize] = [
-                &root::CREDITS_MD,
-                &root::world::levels::TUTORIAL_JSON,
-                &root::world::PHYSICAL_CONSTANTS_JSON,
+                &base::CREDITS_MD,
+                &base::world::levels::TUTORIAL_JSON,
+                &base::world::PHYSICAL_CONSTANTS_JSON,
             ];
         }
         .to_string();
@@ -223,9 +223,9 @@ mod tests {
         let actual = actual.to_string();
         let expected = quote::quote! {
             pub const ARRAY: [&Resource; 3usize] = [
-                &root::Y,
-                &root::X,
-                &root::Z,
+                &base::Y,
+                &base::X,
+                &base::Z,
             ];
         }
         .to_string();

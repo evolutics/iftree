@@ -37,7 +37,7 @@ impl visit_file_forest::Visitor<'_> for Visitor {
     }
 
     fn after_forest(&self, path: &[&str], stack: &mut Self::State) {
-        let name = path.last().unwrap_or(&"root");
+        let name = path.last().unwrap_or(&"base");
         let name = quote::format_ident!("{}", name);
         let resource_type = &self.resource_type;
         let trees = stack.pop().unwrap();
@@ -70,7 +70,7 @@ mod tests {
 
         let actual = actual.to_string();
         let expected = quote::quote! {
-            pub mod root {
+            pub mod base {
                 use super::Resource;
             }
         }
@@ -111,7 +111,7 @@ mod tests {
 
         let actual = actual.to_string();
         let expected = quote::quote! {
-            pub mod root {
+            pub mod base {
                 use super::Resource;
 
                 pub const MENU_JSON: Resource = include_str!("/menu.json");
@@ -183,7 +183,7 @@ mod tests {
 
         let actual = actual.to_string();
         let expected = quote::quote! {
-            pub mod root {
+            pub mod base {
                 use super::Resource;
 
                 pub const CREDITS_MD: Resource = include_str!("/credits.md");
@@ -236,7 +236,7 @@ mod tests {
 
         let actual = actual.to_string();
         let expected = quote::quote! {
-            pub mod root {
+            pub mod base {
                 use super::Resource;
 
                 pub mod r#match {

@@ -13,7 +13,7 @@ pub struct Resource {
 }
 
 pub fn main() {
-    use root::examples::resources;
+    use base::examples::resources;
 
     assert_eq!(
         resources::CREDITS_MD.absolute_path,

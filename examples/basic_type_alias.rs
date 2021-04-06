@@ -9,7 +9,7 @@ _ = 'include_str!({{absolute_path}})'
 pub type Resource = &'static str;
 
 pub fn main() {
-    use root::examples::resources;
+    use base::examples::resources;
 
     assert_eq!(resources::_ENV, "BASE=https://example.com\n");
     assert_eq!(resources::configuration::MENU_JSON, "\"Start\"\n");

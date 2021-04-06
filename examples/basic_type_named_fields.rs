@@ -9,7 +9,7 @@ pub struct Resource {
 }
 
 pub fn main() {
-    use root::examples::resources;
+    use base::examples::resources;
 
     assert_eq!(resources::_ENV.relative_path, "examples/resources/.env");
     assert_eq!(resources::_ENV.content, "BASE=https://example.com\n");
