@@ -16,6 +16,4 @@ pub fn main() {
     assert_eq!(resources::CREDITS_MD.content, "Foo Bar\n");
     assert_eq!(resources::world::levels::TUTORIAL_JSON.content, "\"Hi\"\n");
     assert_eq!(resources::world::PHYSICAL_CONSTANTS_JSON.content, "7e-3\n");
-
-    assert_eq!(ARRAY.len(), 6);
 }

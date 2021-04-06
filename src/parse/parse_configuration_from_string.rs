@@ -60,7 +60,7 @@ impl From<UserConfiguration> for model::Configuration {
                 .unwrap_or_else(|| String::from("CARGO_MANIFEST_DIR")),
 
             resolve_name_collisions: configuration.resolve_name_collisions.unwrap_or(false),
-            generate_array: configuration.generate_array.unwrap_or(true),
+            generate_array: configuration.generate_array.unwrap_or(false),
 
             field_templates,
         }
@@ -99,7 +99,7 @@ mod tests {
             root_folder_variable: String::from("CARGO_MANIFEST_DIR"),
 
             resolve_name_collisions: false,
-            generate_array: true,
+            generate_array: false,
 
             field_templates: vec![
                 (
@@ -134,7 +134,7 @@ base_folder = 'base'
 root_folder_variable = 'MY_ROOT_FOLDER'
 
 resolve_name_collisions = true
-generate_array = false
+generate_array = true
 
 [field_templates]
 _ = 'my::include!({{absolute_path}})'
@@ -150,7 +150,7 @@ custom = 'my::custom_include!({{absolute_path}})'
             root_folder_variable: String::from("MY_ROOT_FOLDER"),
 
             resolve_name_collisions: true,
-            generate_array: false,
+            generate_array: true,
 
             field_templates: vec![
                 (
