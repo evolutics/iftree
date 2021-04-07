@@ -26,7 +26,8 @@ pub struct Configuration {
 
 pub type FieldTemplates = collections::BTreeMap<FieldIdentifier, Template>;
 
-#[derive(Clone, cmp::Eq, cmp::Ord, cmp::PartialEq, cmp::PartialOrd, Debug)]
+#[derive(Clone, cmp::Eq, cmp::Ord, cmp::PartialEq, cmp::PartialOrd, Debug, serde::Deserialize)]
+#[serde(from = "String")]
 pub enum FieldIdentifier {
     Anonymous,
     Named(String),

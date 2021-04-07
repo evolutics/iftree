@@ -1,9 +1,8 @@
 use crate::model;
-use serde::de;
-use std::fmt;
 use std::path;
+use toml::de;
 
-pub fn main(string: &str) -> Result<model::Configuration, toml::de::Error> {
+pub fn main(string: &str) -> Result<model::Configuration, de::Error> {
     let configuration: UserConfiguration = toml::from_str(string)?;
     Ok(configuration.into())
 }
@@ -18,32 +17,6 @@ struct UserConfiguration {
     generate_array: Option<bool>,
 
     field_templates: Option<model::FieldTemplates>,
-}
-
-impl<'a> de::Deserialize<'a> for model::FieldIdentifier {
-    fn deserialize<T: de::Deserializer<'a>>(
-        deserializer: T,
-    ) -> Result<model::FieldIdentifier, T::Error> {
-        deserializer.deserialize_string(FieldIdentifierVisitor)
-    }
-}
-
-struct FieldIdentifierVisitor;
-
-impl<'a> de::Visitor<'a> for FieldIdentifierVisitor {
-    type Value = model::FieldIdentifier;
-
-    fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-        write!(formatter, "a field identifier")
-    }
-
-    fn visit_string<T: de::Error>(self, string: String) -> Result<Self::Value, T> {
-        Ok(string.into())
-    }
-
-    fn visit_str<T: de::Error>(self, string: &str) -> Result<Self::Value, T> {
-        self.visit_string(String::from(string))
-    }
 }
 
 impl From<UserConfiguration> for model::Configuration {
