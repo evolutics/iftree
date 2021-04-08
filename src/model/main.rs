@@ -34,7 +34,15 @@ pub enum FieldIdentifier {
     Indexed(usize),
 }
 
-pub type Template = String;
+#[derive(Clone, cmp::PartialEq, Debug)]
+pub enum Template {
+    AbsolutePath,
+    Content,
+    RawContent,
+    RelativePath,
+
+    Custom(String),
+}
 
 #[derive(Clone, cmp::PartialEq, Debug)]
 pub struct ResourceType {
@@ -83,7 +91,6 @@ pub enum Error {
     Ignore(IgnoreError),
     MissingFieldTemplate(FieldIdentifier),
     NameCollisions(vec::Vec<NameCollision>),
-    NonStandardTemplate(Template),
     PathStripPrefix(path::StripPrefixError),
 }
 

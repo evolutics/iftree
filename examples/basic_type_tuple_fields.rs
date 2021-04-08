@@ -3,8 +3,8 @@
 resource_paths = 'examples/resources/**'
 
 [field_templates]
-0 = '{{relative_path}}'
-1 = 'include_str!({{absolute_path}})'
+0 = 'relative_path'
+1 = 'content'
 "
 )]
 pub struct Resource(&'static str, &'static str);

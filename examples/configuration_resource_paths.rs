@@ -10,7 +10,7 @@ resource_paths = '''
 generate_array = true
 
 [field_templates]
-_ = '{{relative_path}}'
+_ = 'relative_path'
 "
 )]
 pub type Resource = &'static str;

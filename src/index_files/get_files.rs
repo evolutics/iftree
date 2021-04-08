@@ -11,19 +11,19 @@ pub fn main(
     paths: vec::Vec<path::PathBuf>,
 ) -> model::Result<vec::Vec<model::File>> {
     let annotated_resource = annotate_resource(configuration, resource_structure)?;
-    paths
+    Ok(paths
         .into_iter()
         .map(|path| get_file(&annotated_resource, base_folder, path))
-        .collect()
+        .collect())
 }
 
 fn annotate_resource<'a>(
     configuration: &'a model::Configuration,
     resource_structure: &model::ResourceTypeStructure,
-) -> model::Result<model::AbstractResource<IdentifiedTemplate<'a>>> {
+) -> model::Result<model::AbstractResource<&'a model::Template>> {
     impl<'a> try_map_abstract_resource::TryMap for &'a model::Configuration {
         type Input = ();
-        type Output = IdentifiedTemplate<'a>;
+        type Output = &'a model::Template;
 
         fn map_unit(&self) -> model::Result<()> {
             Ok(())
@@ -53,59 +53,21 @@ fn annotate_resource<'a>(
     try_map_abstract_resource::main(&configuration, resource_structure)
 }
 
-pub struct IdentifiedTemplate<'a> {
-    #[allow(dead_code)]
-    identifier: model::FieldIdentifier,
-    template: &'a str,
-}
-
 fn get_template(
     configuration: &model::Configuration,
     identifier: model::FieldIdentifier,
-) -> model::Result<IdentifiedTemplate> {
+) -> model::Result<&model::Template> {
     match configuration.field_templates.get(&identifier) {
         None => Err(model::Error::MissingFieldTemplate(identifier)),
-        Some(template) => Ok(IdentifiedTemplate {
-            identifier,
-            template,
-        }),
+        Some(template) => Ok(template),
     }
 }
 
 fn get_file(
-    annotated_resource: &model::AbstractResource<IdentifiedTemplate>,
+    annotated_resource: &model::AbstractResource<&model::Template>,
     base_folder: &path::Path,
     relative_path: path::PathBuf,
-) -> model::Result<model::File> {
-    impl<'a> try_map_abstract_resource::TryMap for render_field_template::Context<'a> {
-        type Input = IdentifiedTemplate<'a>;
-        type Output = proc_macro2::TokenStream;
-
-        fn map_unit(&self) -> model::Result<()> {
-            Ok(())
-        }
-
-        fn map_type_alias(&self, identified_template: &Self::Input) -> model::Result<Self::Output> {
-            render_field_template::main(identified_template.template, &self)
-        }
-
-        fn map_named_field(
-            &self,
-            _name: &str,
-            identified_template: &Self::Input,
-        ) -> model::Result<Self::Output> {
-            render_field_template::main(identified_template.template, &self)
-        }
-
-        fn map_tuple_field(
-            &self,
-            _index: usize,
-            identified_template: &Self::Input,
-        ) -> model::Result<Self::Output> {
-            render_field_template::main(identified_template.template, &self)
-        }
-    }
-
+) -> model::File {
     let raw_relative_path = &relative_path.to_string_lossy();
     let absolute_path = base_folder.join(&relative_path);
     let absolute_path = &absolute_path.to_string_lossy();
@@ -114,12 +76,39 @@ fn get_file(
         absolute_path,
     };
 
-    let resource_term = try_map_abstract_resource::main(&context, annotated_resource)?;
+    let resource_term = match annotated_resource {
+        model::AbstractResource::Unit => model::AbstractResource::Unit,
 
-    Ok(model::File {
+        model::AbstractResource::TypeAlias(template) => {
+            model::AbstractResource::TypeAlias(render_field_template::main(template, &context))
+        }
+
+        model::AbstractResource::NamedFields(named_templates) => {
+            model::AbstractResource::NamedFields(
+                named_templates
+                    .iter()
+                    .map(|(name, template)| {
+                        (
+                            name.clone(),
+                            render_field_template::main(template, &context),
+                        )
+                    })
+                    .collect(),
+            )
+        }
+
+        model::AbstractResource::TupleFields(templates) => model::AbstractResource::TupleFields(
+            templates
+                .iter()
+                .map(|template| render_field_template::main(template, &context))
+                .collect(),
+        ),
+    };
+
+    model::File {
         relative_path,
         resource_term,
-    })
+    }
 }
 
 #[cfg(test)]
@@ -175,7 +164,7 @@ mod tests {
             &model::Configuration {
                 field_templates: vec![(
                     model::FieldIdentifier::Anonymous,
-                    String::from("include_str!({{absolute_path}})"),
+                    model::Template::Content,
                 )]
                 .into_iter()
                 .collect(),
@@ -213,7 +202,7 @@ mod tests {
             &model::Configuration {
                 field_templates: vec![(
                     model::FieldIdentifier::Named(String::from("content")),
-                    String::from("include_str!({{absolute_path}})"),
+                    model::Template::Content,
                 )]
                 .into_iter()
                 .collect(),
@@ -257,7 +246,7 @@ mod tests {
             &model::Configuration {
                 field_templates: vec![(
                     model::FieldIdentifier::Indexed(0),
-                    String::from("include_str!({{absolute_path}})"),
+                    model::Template::Content,
                 )]
                 .into_iter()
                 .collect(),
@@ -292,14 +281,11 @@ mod tests {
     #[test]
     fn gets_template_context() {
         let configuration = model::Configuration {
-            field_templates: vec![
-                String::from("{{relative_path}}"),
-                String::from("{{absolute_path}}"),
-            ]
-            .into_iter()
-            .enumerate()
-            .map(|(index, template)| (model::FieldIdentifier::Indexed(index), template))
-            .collect(),
+            field_templates: vec![model::Template::RelativePath, model::Template::AbsolutePath]
+                .into_iter()
+                .enumerate()
+                .map(|(index, template)| (model::FieldIdentifier::Indexed(index), template))
+                .collect(),
             ..model::stubs::configuration()
         };
 

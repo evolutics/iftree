@@ -1,8 +1,10 @@
 use crate::model;
+use serde::de;
+use std::fmt;
 use std::path;
-use toml::de;
+use std::vec;
 
-pub fn main(string: &str) -> Result<model::Configuration, de::Error> {
+pub fn main(string: &str) -> Result<model::Configuration, toml::de::Error> {
     let configuration: UserConfiguration = toml::from_str(string)?;
     Ok(configuration.into())
 }
@@ -19,10 +21,55 @@ struct UserConfiguration {
     field_templates: Option<model::FieldTemplates>,
 }
 
+impl<'a> de::Deserialize<'a> for model::Template {
+    fn deserialize<T: de::Deserializer<'a>>(deserializer: T) -> Result<model::Template, T::Error> {
+        deserializer.deserialize_string(TemplateVisitor)
+    }
+}
+
+struct TemplateVisitor;
+
+impl de::Visitor<'_> for TemplateVisitor {
+    type Value = model::Template;
+
+    fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            formatter,
+            "one of {}, or a macro name followed by `!`",
+            PREDEFINED_TEMPLATES
+                .iter()
+                .map(|(name, _)| format!("{:?}", name))
+                .collect::<vec::Vec<_>>()
+                .join(", "),
+        )
+    }
+
+    fn visit_str<T: de::Error>(self, string: &str) -> Result<Self::Value, T> {
+        match string.strip_suffix('!') {
+            None => match PREDEFINED_TEMPLATES
+                .iter()
+                .find(|(name, _)| *name == string)
+            {
+                None => Err(de::Error::invalid_value(de::Unexpected::Str(string), &self)),
+                Some((_, template)) => Ok(template.clone()),
+            },
+
+            Some(macro_name) => Ok(model::Template::Custom(String::from(macro_name))),
+        }
+    }
+}
+
+static PREDEFINED_TEMPLATES: &[(&str, model::Template)] = &[
+    ("absolute_path", model::Template::AbsolutePath),
+    ("content", model::Template::Content),
+    ("raw_content", model::Template::RawContent),
+    ("relative_path", model::Template::RelativePath),
+];
+
 impl From<UserConfiguration> for model::Configuration {
     fn from(configuration: UserConfiguration) -> Self {
         let mut field_templates = configuration.field_templates.unwrap_or_default();
-        extend_field_templates_with_defaults(&mut field_templates);
+        extend_field_templates_with_predefined(&mut field_templates);
 
         model::Configuration {
             resource_paths: configuration.resource_paths,
@@ -39,19 +86,12 @@ impl From<UserConfiguration> for model::Configuration {
     }
 }
 
-fn extend_field_templates_with_defaults(field_templates: &mut model::FieldTemplates) {
-    field_templates
-        .entry(model::FieldIdentifier::Named(String::from("absolute_path")))
-        .or_insert_with(|| String::from("{{absolute_path}}"));
-    field_templates
-        .entry(model::FieldIdentifier::Named(String::from("content")))
-        .or_insert_with(|| String::from("include_str!({{absolute_path}})"));
-    field_templates
-        .entry(model::FieldIdentifier::Named(String::from("raw_content")))
-        .or_insert_with(|| String::from("include_bytes!({{absolute_path}})"));
-    field_templates
-        .entry(model::FieldIdentifier::Named(String::from("relative_path")))
-        .or_insert_with(|| String::from("{{relative_path}}"));
+fn extend_field_templates_with_predefined(field_templates: &mut model::FieldTemplates) {
+    for (name, template) in PREDEFINED_TEMPLATES {
+        field_templates
+            .entry(model::FieldIdentifier::Named(String::from(*name)))
+            .or_insert_with(|| template.clone());
+    }
 }
 
 #[cfg(test)]
@@ -74,19 +114,19 @@ mod tests {
             field_templates: vec![
                 (
                     model::FieldIdentifier::Named(String::from("absolute_path")),
-                    String::from("{{absolute_path}}"),
+                    model::Template::AbsolutePath,
                 ),
                 (
                     model::FieldIdentifier::Named(String::from("content")),
-                    String::from("include_str!({{absolute_path}})"),
+                    model::Template::Content,
                 ),
                 (
                     model::FieldIdentifier::Named(String::from("raw_content")),
-                    String::from("include_bytes!({{absolute_path}})"),
+                    model::Template::RawContent,
                 ),
                 (
                     model::FieldIdentifier::Named(String::from("relative_path")),
-                    String::from("{{relative_path}}"),
+                    model::Template::RelativePath,
                 ),
             ]
             .into_iter()
@@ -107,9 +147,10 @@ resolve_name_collisions = true
 generate_array = true
 
 [field_templates]
-_ = 'my::include!({{absolute_path}})'
-custom = 'my::custom_include!({{absolute_path}})'
-3 = 'my::another_include!({{absolute_path}})'
+_ = 'my::include!'
+custom = 'my::custom_include!'
+3 = 'my::another_include!'
+4 = 'raw_content'
 ",
         );
 
@@ -125,31 +166,35 @@ custom = 'my::custom_include!({{absolute_path}})'
             field_templates: vec![
                 (
                     model::FieldIdentifier::Anonymous,
-                    String::from("my::include!({{absolute_path}})"),
+                    model::Template::Custom(String::from("my::include")),
                 ),
                 (
                     model::FieldIdentifier::Named(String::from("absolute_path")),
-                    String::from("{{absolute_path}}"),
+                    model::Template::AbsolutePath,
                 ),
                 (
                     model::FieldIdentifier::Named(String::from("content")),
-                    String::from("include_str!({{absolute_path}})"),
+                    model::Template::Content,
                 ),
                 (
                     model::FieldIdentifier::Named(String::from("custom")),
-                    String::from("my::custom_include!({{absolute_path}})"),
+                    model::Template::Custom(String::from("my::custom_include")),
                 ),
                 (
                     model::FieldIdentifier::Named(String::from("raw_content")),
-                    String::from("include_bytes!({{absolute_path}})"),
+                    model::Template::RawContent,
                 ),
                 (
                     model::FieldIdentifier::Named(String::from("relative_path")),
-                    String::from("{{relative_path}}"),
+                    model::Template::RelativePath,
                 ),
                 (
                     model::FieldIdentifier::Indexed(3),
-                    String::from("my::another_include!({{absolute_path}})"),
+                    model::Template::Custom(String::from("my::another_include")),
+                ),
+                (
+                    model::FieldIdentifier::Indexed(4),
+                    model::Template::RawContent,
                 ),
             ]
             .into_iter()

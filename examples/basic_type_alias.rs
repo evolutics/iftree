@@ -3,7 +3,7 @@
 resource_paths = 'examples/resources/**'
 
 [field_templates]
-_ = 'include_str!({{absolute_path}})'
+_ = 'content'
 "
 )]
 pub type Resource = &'static str;

@@ -41,7 +41,7 @@ mod tests {
                 generate_array: true,
                 field_templates: vec![(
                     model::FieldIdentifier::Anonymous,
-                    String::from("include_str!({{absolute_path}})"),
+                    model::Template::Content,
                 )]
                 .into_iter()
                 .collect(),
