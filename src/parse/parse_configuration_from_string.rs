@@ -1,3 +1,4 @@
+use crate::data;
 use crate::model;
 use serde::de;
 use std::fmt;
@@ -36,7 +37,7 @@ impl de::Visitor<'_> for TemplateVisitor {
         write!(
             formatter,
             "one of {}, or a macro name followed by `!`",
-            PREDEFINED_TEMPLATES
+            data::PREDEFINED_TEMPLATES
                 .iter()
                 .map(|(name, _)| format!("{:?}", name))
                 .collect::<vec::Vec<_>>()
@@ -46,7 +47,7 @@ impl de::Visitor<'_> for TemplateVisitor {
 
     fn visit_str<T: de::Error>(self, string: &str) -> Result<Self::Value, T> {
         match string.strip_suffix('!') {
-            None => match PREDEFINED_TEMPLATES
+            None => match data::PREDEFINED_TEMPLATES
                 .iter()
                 .find(|(name, _)| *name == string)
             {
@@ -58,13 +59,6 @@ impl de::Visitor<'_> for TemplateVisitor {
         }
     }
 }
-
-static PREDEFINED_TEMPLATES: &[(&str, model::Template)] = &[
-    ("absolute_path", model::Template::AbsolutePath),
-    ("content", model::Template::Content),
-    ("raw_content", model::Template::RawContent),
-    ("relative_path", model::Template::RelativePath),
-];
 
 impl From<UserConfiguration> for model::Configuration {
     fn from(configuration: UserConfiguration) -> Self {
@@ -87,7 +81,7 @@ impl From<UserConfiguration> for model::Configuration {
 }
 
 fn extend_field_templates_with_predefined(field_templates: &mut model::FieldTemplates) {
-    for (name, template) in PREDEFINED_TEMPLATES {
+    for (name, template) in data::PREDEFINED_TEMPLATES {
         field_templates
             .entry(model::FieldIdentifier::Named(String::from(*name)))
             .or_insert_with(|| template.clone());
