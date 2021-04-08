@@ -14,10 +14,13 @@ path_length = 'string_length!'
 )]
 pub struct Resource {
     path_length: usize,
+    content: &'static str,
 }
 
 pub fn main() {
     use base::examples::resources;
 
     assert_eq!(resources::CREDITS_MD.path_length, 29);
+
+    assert_eq!(resources::CREDITS_MD.content, "Foo Bar\n");
 }
