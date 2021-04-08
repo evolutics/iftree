@@ -26,7 +26,7 @@ impl visit_file_forest::Visitor<'_> for Visitor {
         let term = print_resource_term::main(resource_type, &file.resource_term);
 
         let tokens = quote::quote! {
-            pub const #name: #resource_type = #term;
+            pub static #name: #resource_type = #term;
         };
 
         stack.last_mut().unwrap().extend(tokens);
@@ -114,9 +114,9 @@ mod tests {
             pub mod base {
                 use super::Resource;
 
-                pub const MENU_JSON: Resource = include_str!("/menu.json");
+                pub static MENU_JSON: Resource = include_str!("/menu.json");
 
-                pub const TRANSLATIONS_CSV: Resource = include_str!("/translations.csv");
+                pub static TRANSLATIONS_CSV: Resource = include_str!("/translations.csv");
             }
         }
         .to_string();
@@ -186,18 +186,18 @@ mod tests {
             pub mod base {
                 use super::Resource;
 
-                pub const CREDITS_MD: Resource = include_str!("/credits.md");
+                pub static CREDITS_MD: Resource = include_str!("/credits.md");
 
                 pub mod world {
                     use super::Resource;
 
-                    pub const PHYSICAL_CONSTANTS_JSON: Resource =
+                    pub static PHYSICAL_CONSTANTS_JSON: Resource =
                         include_str!("/world/physical_constants.json");
 
                     pub mod levels {
                         use super::Resource;
 
-                        pub const TUTORIAL_JSON: Resource =
+                        pub static TUTORIAL_JSON: Resource =
                             include_str!("/world/levels/tutorial.json");
                     }
                 }
@@ -242,7 +242,7 @@ mod tests {
                 pub mod r#match {
                     use super::Resource;
 
-                    pub const NORMAL: Resource = include_str!("/normal");
+                    pub static NORMAL: Resource = include_str!("/normal");
                 }
             }
         }
