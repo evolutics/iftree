@@ -37,7 +37,7 @@ impl de::Visitor<'_> for TemplateVisitor {
         write!(
             formatter,
             "one of {}, or a macro name followed by `!`",
-            data::PREDEFINED_TEMPLATES
+            data::PREDEFINED_TEMPLATES_ORDERED
                 .iter()
                 .map(|(name, _)| format!("{:?}", name))
                 .collect::<vec::Vec<_>>()
@@ -47,12 +47,11 @@ impl de::Visitor<'_> for TemplateVisitor {
 
     fn visit_str<T: de::Error>(self, string: &str) -> Result<Self::Value, T> {
         match string.strip_suffix('!') {
-            None => match data::PREDEFINED_TEMPLATES
-                .iter()
-                .find(|(name, _)| *name == string)
+            None => match data::PREDEFINED_TEMPLATES_ORDERED
+                .binary_search_by_key(&string, |entry| entry.0)
             {
-                None => Err(de::Error::invalid_value(de::Unexpected::Str(string), &self)),
-                Some((_, template)) => Ok(template.clone()),
+                Err(_) => Err(de::Error::invalid_value(de::Unexpected::Str(string), &self)),
+                Ok(index) => Ok(data::PREDEFINED_TEMPLATES_ORDERED[index].1.clone()),
             },
 
             Some(macro_name) => Ok(model::Template::Custom(String::from(macro_name))),
@@ -81,7 +80,7 @@ impl From<UserConfiguration> for model::Configuration {
 }
 
 fn extend_field_templates_with_predefined(field_templates: &mut model::FieldTemplates) {
-    for (name, template) in data::PREDEFINED_TEMPLATES {
+    for (name, template) in data::PREDEFINED_TEMPLATES_ORDERED {
         field_templates
             .entry(model::FieldIdentifier::Named(String::from(*name)))
             .or_insert_with(|| template.clone());
