@@ -58,7 +58,7 @@ mod tests {
                 pub const CREDITS_MD: Resource = include_str!("/credits.md");
             }
 
-            pub const ARRAY: [&Resource; 1usize] = [
+            pub static ARRAY: [&Resource; 1usize] = [
                 &base::CREDITS_MD,
             ];
         }

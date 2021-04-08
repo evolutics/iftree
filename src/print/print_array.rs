@@ -22,7 +22,7 @@ fn generate(file_index: &model::FileIndex) -> proc_macro2::TokenStream {
     let content: proc_macro2::TokenStream = array.into_iter().map(|entry| entry.tokens).collect();
 
     quote::quote! {
-        pub const ARRAY: [&#resource_type; #length] = [
+        pub static ARRAY: [&#resource_type; #length] = [
             #content
         ];
     }
@@ -78,7 +78,7 @@ mod tests {
 
         let actual = actual.to_string();
         let expected = quote::quote! {
-            pub const ARRAY: [&Resource; 0usize] = [];
+            pub static ARRAY: [&Resource; 0usize] = [];
         }
         .to_string();
         assert_eq!(actual, expected);
@@ -113,7 +113,7 @@ mod tests {
 
         let actual = actual.to_string();
         let expected = quote::quote! {
-            pub const ARRAY: [&Resource; 2usize] = [
+            pub static ARRAY: [&Resource; 2usize] = [
                 &base::MENU_JSON,
                 &base::TRANSLATIONS_CSV,
             ];
@@ -176,7 +176,7 @@ mod tests {
 
         let actual = actual.to_string();
         let expected = quote::quote! {
-            pub const ARRAY: [&Resource; 3usize] = [
+            pub static ARRAY: [&Resource; 3usize] = [
                 &base::CREDITS_MD,
                 &base::world::levels::TUTORIAL_JSON,
                 &base::world::PHYSICAL_CONSTANTS_JSON,
@@ -222,7 +222,7 @@ mod tests {
 
         let actual = actual.to_string();
         let expected = quote::quote! {
-            pub const ARRAY: [&Resource; 3usize] = [
+            pub static ARRAY: [&Resource; 3usize] = [
                 &base::Y,
                 &base::X,
                 &base::Z,
