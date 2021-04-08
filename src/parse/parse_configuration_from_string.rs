@@ -61,9 +61,6 @@ impl de::Visitor<'_> for TemplateVisitor {
 
 impl From<UserConfiguration> for model::Configuration {
     fn from(configuration: UserConfiguration) -> Self {
-        let mut field_templates = configuration.field_templates.unwrap_or_default();
-        extend_field_templates_with_predefined(&mut field_templates);
-
         model::Configuration {
             resource_paths: configuration.resource_paths,
             base_folder: configuration.base_folder.unwrap_or_else(path::PathBuf::new),
@@ -74,16 +71,8 @@ impl From<UserConfiguration> for model::Configuration {
             resolve_name_collisions: configuration.resolve_name_collisions.unwrap_or(false),
             generate_array: configuration.generate_array.unwrap_or(false),
 
-            field_templates,
+            field_templates: configuration.field_templates.unwrap_or_default(),
         }
-    }
-}
-
-fn extend_field_templates_with_predefined(field_templates: &mut model::FieldTemplates) {
-    for (name, template) in data::PREDEFINED_TEMPLATES_ORDERED {
-        field_templates
-            .entry(model::FieldIdentifier::Named(String::from(*name)))
-            .or_insert_with(|| template.clone());
     }
 }
 
@@ -104,26 +93,7 @@ mod tests {
             resolve_name_collisions: false,
             generate_array: false,
 
-            field_templates: vec![
-                (
-                    model::FieldIdentifier::Named(String::from("absolute_path")),
-                    model::Template::AbsolutePath,
-                ),
-                (
-                    model::FieldIdentifier::Named(String::from("content")),
-                    model::Template::Content,
-                ),
-                (
-                    model::FieldIdentifier::Named(String::from("raw_content")),
-                    model::Template::RawContent,
-                ),
-                (
-                    model::FieldIdentifier::Named(String::from("relative_path")),
-                    model::Template::RelativePath,
-                ),
-            ]
-            .into_iter()
-            .collect(),
+            field_templates: model::FieldTemplates::new(),
         };
         assert_eq!(actual, expected);
     }
@@ -142,8 +112,7 @@ generate_array = true
 [field_templates]
 _ = 'my::include!'
 custom = 'my::custom_include!'
-3 = 'my::another_include!'
-4 = 'raw_content'
+3 = 'raw_content'
 ",
         );
 
@@ -162,31 +131,11 @@ custom = 'my::custom_include!'
                     model::Template::Custom(String::from("my::include")),
                 ),
                 (
-                    model::FieldIdentifier::Named(String::from("absolute_path")),
-                    model::Template::AbsolutePath,
-                ),
-                (
-                    model::FieldIdentifier::Named(String::from("content")),
-                    model::Template::Content,
-                ),
-                (
                     model::FieldIdentifier::Named(String::from("custom")),
                     model::Template::Custom(String::from("my::custom_include")),
                 ),
                 (
-                    model::FieldIdentifier::Named(String::from("raw_content")),
-                    model::Template::RawContent,
-                ),
-                (
-                    model::FieldIdentifier::Named(String::from("relative_path")),
-                    model::Template::RelativePath,
-                ),
-                (
                     model::FieldIdentifier::Indexed(3),
-                    model::Template::Custom(String::from("my::another_include")),
-                ),
-                (
-                    model::FieldIdentifier::Indexed(4),
                     model::Template::RawContent,
                 ),
             ]

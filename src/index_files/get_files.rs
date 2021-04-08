@@ -1,5 +1,6 @@
 use super::render_field_template;
 use super::try_map_abstract_resource;
+use crate::data;
 use crate::model;
 use std::path;
 use std::vec;
@@ -58,7 +59,14 @@ fn get_template(
     identifier: model::FieldIdentifier,
 ) -> model::Result<&model::Template> {
     match configuration.field_templates.get(&identifier) {
-        None => Err(model::Error::MissingFieldTemplate(identifier)),
+        None => {
+            let name = String::from(identifier.clone());
+            match data::PREDEFINED_TEMPLATES_ORDERED.binary_search_by(|entry| entry.0.cmp(&name)) {
+                Err(_) => Err(model::Error::MissingFieldTemplate(identifier)),
+                Ok(index) => Ok(&data::PREDEFINED_TEMPLATES_ORDERED[index].1),
+            }
+        }
+
         Some(template) => Ok(template),
     }
 }
@@ -116,7 +124,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn given_missing_field_template_it_errs() {
+    fn given_no_field_template_at_all_it_errs() {
         let actual = main(
             &model::Configuration {
                 field_templates: model::FieldTemplates::new(),
@@ -129,6 +137,31 @@ mod tests {
 
         let actual = actual.unwrap_err();
         let expected = model::Error::MissingFieldTemplate(model::FieldIdentifier::Anonymous);
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn given_no_custom_field_template_it_defaults_to_predefined() {
+        let actual = main(
+            &model::Configuration {
+                field_templates: model::FieldTemplates::new(),
+                ..model::stubs::configuration()
+            },
+            &model::ResourceTypeStructure::NamedFields(vec![(String::from("raw_content"), ())]),
+            path::Path::new("/resources"),
+            vec![path::PathBuf::from("credits.md")],
+        );
+
+        let actual = actual.unwrap();
+        let expected = vec![model::File {
+            relative_path: path::PathBuf::from("credits.md"),
+            resource_term: model::ResourceTerm::NamedFields(vec![(
+                String::from("raw_content"),
+                quote::quote! {
+                    include_bytes!("/resources/credits.md")
+                },
+            )]),
+        }];
         assert_eq!(actual, expected);
     }
 
