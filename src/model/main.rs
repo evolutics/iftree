@@ -38,6 +38,7 @@ pub enum FieldIdentifier {
 pub enum Template {
     AbsolutePath,
     Content,
+    GetContent,
     RawContent,
     RelativePath,
 

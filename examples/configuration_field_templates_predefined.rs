@@ -1,9 +1,11 @@
+use std::borrow;
 use std::fs;
 
 #[iftree::include_file_tree("resource_paths = 'examples/resources/credits.md'")]
 pub struct Resource {
     absolute_path: &'static str,
     content: &'static str,
+    get_content: fn() -> borrow::Cow<'static, str>,
     raw_content: &'static [u8],
     relative_path: &'static str,
 }
@@ -19,6 +21,8 @@ pub fn main() {
     );
 
     assert_eq!(resources::CREDITS_MD.content, "Foo Bar\n");
+
+    assert_eq!((resources::CREDITS_MD.get_content)(), "Foo Bar\n");
 
     assert_eq!(resources::CREDITS_MD.raw_content, "Foo Bar\n".as_bytes());
 

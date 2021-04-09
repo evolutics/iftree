@@ -3,6 +3,7 @@ use crate::model;
 pub static PREDEFINED_TEMPLATES_ORDERED: &[(&str, model::Template)] = &[
     ("absolute_path", model::Template::AbsolutePath),
     ("content", model::Template::Content),
+    ("get_content", model::Template::GetContent),
     ("raw_content", model::Template::RawContent),
     ("relative_path", model::Template::RelativePath),
 ];

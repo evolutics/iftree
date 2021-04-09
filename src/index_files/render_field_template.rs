@@ -9,12 +9,27 @@ pub fn main(template: &model::Template, context: &Context) -> proc_macro2::Token
         model::Template::AbsolutePath => quote::quote! {
             #absolute_path
         },
+
         model::Template::Content => quote::quote! {
             include_str!(#absolute_path)
         },
+
+        model::Template::GetContent => quote::quote! {{
+            fn get() -> std::borrow::Cow<'static, str> {
+                if cfg!(debug_assertions) {
+                    std::borrow::Cow::from(std::fs::read_to_string(#absolute_path).unwrap())
+                } else {
+                    std::borrow::Cow::from(include_str!(#absolute_path))
+                }
+            }
+
+            get
+        }},
+
         model::Template::RawContent => quote::quote! {
             include_bytes!(#absolute_path)
         },
+
         model::Template::RelativePath => quote::quote! {
             #relative_path
         },
@@ -85,6 +100,32 @@ mod tests {
             let expected = quote::quote! {
                 include_str!("/credits.md")
             }
+            .to_string();
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn renders_get_content() {
+            let actual = main(
+                &model::Template::GetContent,
+                &Context {
+                    absolute_path: "/credits.md",
+                    ..stubs::context()
+                },
+            );
+
+            let actual = actual.to_string();
+            let expected = quote::quote! {{
+                fn get() -> std::borrow::Cow<'static, str> {
+                    if cfg!(debug_assertions) {
+                        std::borrow::Cow::from(std::fs::read_to_string("/credits.md").unwrap())
+                    } else {
+                        std::borrow::Cow::from(include_str!("/credits.md"))
+                    }
+                }
+
+                get
+            }}
             .to_string();
             assert_eq!(actual, expected);
         }
