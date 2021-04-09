@@ -10,7 +10,7 @@ macro_rules! filename_extension {
     };
 }
 
-#[files_embedded_as_modules::embed_files_as_modules(
+#[iftree::include_file_tree(
     "
 resource_paths = 'examples/resources/credits.md'
 

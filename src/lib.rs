@@ -5,7 +5,7 @@ mod parse;
 mod print;
 
 #[proc_macro_attribute]
-pub fn embed_files_as_modules(
+pub fn include_file_tree(
     parameters: proc_macro::TokenStream,
     item: proc_macro::TokenStream,
 ) -> proc_macro::TokenStream {
