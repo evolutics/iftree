@@ -1,14 +1,10 @@
-#[cfg(debug_assertions)]
 macro_rules! load {
     ($relative_path:literal, $absolute_path:literal) => {
-        concat!("Debug: ", include_str!($absolute_path))
-    };
-}
-
-#[cfg(not(debug_assertions))]
-macro_rules! load {
-    ($relative_path:literal, $absolute_path:literal) => {
-        concat!("Release: ", include_str!($absolute_path))
+        if cfg!(debug_assertions) {
+            concat!("Debug: ", include_str!($absolute_path))
+        } else {
+            concat!("Release: ", include_str!($absolute_path))
+        }
     };
 }
 
