@@ -1,10 +1,6 @@
 use std::fs;
 
-#[iftree::include_file_tree(
-    "
-resource_paths = 'examples/resources/credits.md'
-"
-)]
+#[iftree::include_file_tree("resource_paths = 'examples/resources/credits.md'")]
 pub struct Resource {
     absolute_path: &'static str,
     content: &'static str,

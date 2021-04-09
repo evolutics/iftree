@@ -1,8 +1,4 @@
-#[iftree::include_file_tree(
-    "
-resource_paths = 'examples/resources/**'
-"
-)]
+#[iftree::include_file_tree("resource_paths = 'examples/resources/**'")]
 pub struct Resource {
     relative_path: &'static str,
     content: &'static str,
