@@ -27,8 +27,9 @@ pub struct Resource {
 pub fn main() {
     use base::examples::resources;
 
-    assert!(
-        (resources::CREDITS_MD.data == "Debug: Foo Bar\n")
-            || (resources::CREDITS_MD.data == "Release: Foo Bar\n")
-    );
+    if cfg!(debug_assertions) {
+        assert_eq!(resources::CREDITS_MD.data, "Debug: Foo Bar\n");
+    } else {
+        assert_eq!(resources::CREDITS_MD.data, "Release: Foo Bar\n");
+    }
 }
