@@ -39,6 +39,7 @@ pub enum Template {
     AbsolutePath,
     Content,
     GetContent,
+    GetRawContent,
     RawContent,
     RelativePath,
 
