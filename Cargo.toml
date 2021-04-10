@@ -4,6 +4,9 @@ version = "0.1.0"
 authors = ["Benjamin Fischer <benjamin.fischer@evolutics.info>"]
 edition = "2018"
 license = "MIT"
+homepage = "https://github.com/evolutics/iftree"
+repository = "https://github.com/evolutics/iftree"
+readme = true
 
 [lib]
 proc-macro = true
