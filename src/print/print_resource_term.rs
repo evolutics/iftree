@@ -42,80 +42,85 @@ pub fn main(
 mod tests {
     use super::*;
 
-    #[test]
-    fn prints_unit() {
-        let actual = main(
-            &quote::format_ident!("Resource"),
-            &model::ResourceTerm::Unit,
-        );
+    #[cfg(test)]
+    mod resource_cases {
+        use super::*;
 
-        let actual = actual.to_string();
-        let expected = quote::quote! { Resource }.to_string();
-        assert_eq!(actual, expected);
-    }
+        #[test]
+        fn prints_unit() {
+            let actual = main(
+                &quote::format_ident!("Resource"),
+                &model::ResourceTerm::Unit,
+            );
 
-    #[test]
-    fn prints_type_alias() {
-        let actual = main(
-            &quote::format_ident!("Foo"),
-            &model::ResourceTerm::TypeAlias(quote::quote! {
+            let actual = actual.to_string();
+            let expected = quote::quote! { Resource }.to_string();
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn prints_type_alias() {
+            let actual = main(
+                &quote::format_ident!("Foo"),
+                &model::ResourceTerm::TypeAlias(quote::quote! {
+                    include_str!("/credits.md")
+                }),
+            );
+
+            let actual = actual.to_string();
+            let expected = quote::quote! {
                 include_str!("/credits.md")
-            }),
-        );
-
-        let actual = actual.to_string();
-        let expected = quote::quote! {
-            include_str!("/credits.md")
-        }
-        .to_string();
-        assert_eq!(actual, expected);
-    }
-
-    #[test]
-    fn prints_named_fields() {
-        let actual = main(
-            &quote::format_ident!("Resource"),
-            &model::ResourceTerm::NamedFields(vec![
-                (
-                    String::from("content"),
-                    quote::quote! { include_str!("/credits.md") },
-                ),
-                (
-                    String::from("media_type"),
-                    quote::quote! { "text/markdown" },
-                ),
-            ]),
-        );
-
-        let actual = actual.to_string();
-        let expected = quote::quote! {
-            Resource {
-                content: include_str!("/credits.md"),
-                media_type: "text/markdown",
             }
+            .to_string();
+            assert_eq!(actual, expected);
         }
-        .to_string();
-        assert_eq!(actual, expected);
-    }
 
-    #[test]
-    fn prints_tuple_fields() {
-        let actual = main(
-            &quote::format_ident!("Resource"),
-            &model::ResourceTerm::TupleFields(vec![
-                quote::quote! { include_str!("/credits.md") },
-                quote::quote! { "text/markdown" },
-            ]),
-        );
+        #[test]
+        fn prints_named_fields() {
+            let actual = main(
+                &quote::format_ident!("Resource"),
+                &model::ResourceTerm::NamedFields(vec![
+                    (
+                        String::from("content"),
+                        quote::quote! { include_str!("/credits.md") },
+                    ),
+                    (
+                        String::from("media_type"),
+                        quote::quote! { "text/markdown" },
+                    ),
+                ]),
+            );
 
-        let actual = actual.to_string();
-        let expected = quote::quote! {
-            Resource(
-                include_str!("/credits.md"),
-                "text/markdown",
-            )
+            let actual = actual.to_string();
+            let expected = quote::quote! {
+                Resource {
+                    content: include_str!("/credits.md"),
+                    media_type: "text/markdown",
+                }
+            }
+            .to_string();
+            assert_eq!(actual, expected);
         }
-        .to_string();
-        assert_eq!(actual, expected);
+
+        #[test]
+        fn prints_tuple_fields() {
+            let actual = main(
+                &quote::format_ident!("Resource"),
+                &model::ResourceTerm::TupleFields(vec![
+                    quote::quote! { include_str!("/credits.md") },
+                    quote::quote! { "text/markdown" },
+                ]),
+            );
+
+            let actual = actual.to_string();
+            let expected = quote::quote! {
+                Resource(
+                    include_str!("/credits.md"),
+                    "text/markdown",
+                )
+            }
+            .to_string();
+            assert_eq!(actual, expected);
+        }
     }
 }

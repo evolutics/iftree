@@ -121,77 +121,86 @@ mod tests {
         assert_eq!(actual, expected);
     }
 
-    #[test]
-    fn gets_type_unit() {
-        let configuration = model::stubs::configuration();
+    #[cfg(test)]
+    mod resource_cases {
+        use super::*;
 
-        let actual = main(&configuration, &model::ResourceTypeStructure::Unit);
+        #[test]
+        fn gets_unit() {
+            let configuration = model::stubs::configuration();
 
-        let actual = actual.unwrap();
-        let expected = model::AbstractResource::Unit;
-        assert_eq!(actual, expected);
-    }
+            let actual = main(&configuration, &model::ResourceTypeStructure::Unit);
 
-    #[test]
-    fn gets_type_alias() {
-        let configuration = model::Configuration {
-            field_templates: vec![(model::FieldIdentifier::Anonymous, model::Template::Content)]
+            let actual = actual.unwrap();
+            let expected = model::AbstractResource::Unit;
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn gets_type_alias() {
+            let configuration = model::Configuration {
+                field_templates: vec![(
+                    model::FieldIdentifier::Anonymous,
+                    model::Template::Content,
+                )]
                 .into_iter()
                 .collect(),
-            ..model::stubs::configuration()
-        };
+                ..model::stubs::configuration()
+            };
 
-        let actual = main(&configuration, &model::ResourceTypeStructure::TypeAlias(()));
+            let actual = main(&configuration, &model::ResourceTypeStructure::TypeAlias(()));
 
-        let actual = actual.unwrap();
-        let expected = model::AbstractResource::TypeAlias(&model::Template::Content);
-        assert_eq!(actual, expected);
-    }
+            let actual = actual.unwrap();
+            let expected = model::AbstractResource::TypeAlias(&model::Template::Content);
+            assert_eq!(actual, expected);
+        }
 
-    #[test]
-    fn gets_type_named_fields() {
-        let configuration = model::Configuration {
-            field_templates: vec![(
-                model::FieldIdentifier::Named(String::from("my_content")),
-                model::Template::RawContent,
-            )]
-            .into_iter()
-            .collect(),
-            ..model::stubs::configuration()
-        };
+        #[test]
+        fn gets_named_fields() {
+            let configuration = model::Configuration {
+                field_templates: vec![(
+                    model::FieldIdentifier::Named(String::from("my_content")),
+                    model::Template::RawContent,
+                )]
+                .into_iter()
+                .collect(),
+                ..model::stubs::configuration()
+            };
 
-        let actual = main(
-            &configuration,
-            &model::ResourceTypeStructure::NamedFields(vec![(String::from("my_content"), ())]),
-        );
+            let actual = main(
+                &configuration,
+                &model::ResourceTypeStructure::NamedFields(vec![(String::from("my_content"), ())]),
+            );
 
-        let actual = actual.unwrap();
-        let expected = model::AbstractResource::NamedFields(vec![(
-            String::from("my_content"),
-            &model::Template::RawContent,
-        )]);
-        assert_eq!(actual, expected);
-    }
+            let actual = actual.unwrap();
+            let expected = model::AbstractResource::NamedFields(vec![(
+                String::from("my_content"),
+                &model::Template::RawContent,
+            )]);
+            assert_eq!(actual, expected);
+        }
 
-    #[test]
-    fn gets_type_tuple_fields() {
-        let configuration = model::Configuration {
-            field_templates: vec![(
-                model::FieldIdentifier::Indexed(0),
-                model::Template::RelativePath,
-            )]
-            .into_iter()
-            .collect(),
-            ..model::stubs::configuration()
-        };
+        #[test]
+        fn gets_tuple_fields() {
+            let configuration = model::Configuration {
+                field_templates: vec![(
+                    model::FieldIdentifier::Indexed(0),
+                    model::Template::RelativePath,
+                )]
+                .into_iter()
+                .collect(),
+                ..model::stubs::configuration()
+            };
 
-        let actual = main(
-            &configuration,
-            &model::ResourceTypeStructure::TupleFields(vec![()]),
-        );
+            let actual = main(
+                &configuration,
+                &model::ResourceTypeStructure::TupleFields(vec![()]),
+            );
 
-        let actual = actual.unwrap();
-        let expected = model::AbstractResource::TupleFields(vec![&model::Template::RelativePath]);
-        assert_eq!(actual, expected);
+            let actual = actual.unwrap();
+            let expected =
+                model::AbstractResource::TupleFields(vec![&model::Template::RelativePath]);
+            assert_eq!(actual, expected);
+        }
     }
 }

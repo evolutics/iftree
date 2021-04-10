@@ -92,124 +92,129 @@ mod tests {
         assert_eq!(actual, expected);
     }
 
-    #[test]
-    fn gets_type_unit() {
-        let actual = main(
-            &model::AbstractResource::Unit,
-            path::Path::new("/resources"),
-            vec![
-                path::PathBuf::from("world/physical_constants.json"),
-                path::PathBuf::from("configuration/menu.json"),
-            ],
-        );
+    #[cfg(test)]
+    mod resource_cases {
+        use super::*;
 
-        let actual = actual.unwrap();
-        let expected = vec![
-            model::File {
-                relative_path: path::PathBuf::from("world/physical_constants.json"),
-                resource_term: model::ResourceTerm::Unit,
-            },
-            model::File {
-                relative_path: path::PathBuf::from("configuration/menu.json"),
-                resource_term: model::ResourceTerm::Unit,
-            },
-        ];
-        assert_eq!(actual, expected);
-    }
+        #[test]
+        fn gets_unit() {
+            let actual = main(
+                &model::AbstractResource::Unit,
+                path::Path::new("/resources"),
+                vec![
+                    path::PathBuf::from("world/physical_constants.json"),
+                    path::PathBuf::from("configuration/menu.json"),
+                ],
+            );
 
-    #[test]
-    fn gets_type_alias() {
-        let actual = main(
-            &model::AbstractResource::TypeAlias(&model::Template::Content),
-            path::Path::new("/resources"),
-            vec![
-                path::PathBuf::from("world/physical_constants.json"),
-                path::PathBuf::from("configuration/menu.json"),
-            ],
-        );
+            let actual = actual.unwrap();
+            let expected = vec![
+                model::File {
+                    relative_path: path::PathBuf::from("world/physical_constants.json"),
+                    resource_term: model::ResourceTerm::Unit,
+                },
+                model::File {
+                    relative_path: path::PathBuf::from("configuration/menu.json"),
+                    resource_term: model::ResourceTerm::Unit,
+                },
+            ];
+            assert_eq!(actual, expected);
+        }
 
-        let actual = actual.unwrap();
-        let expected = vec![
-            model::File {
-                relative_path: path::PathBuf::from("world/physical_constants.json"),
-                resource_term: model::ResourceTerm::TypeAlias(quote::quote! {
-                    include_str!("/resources/world/physical_constants.json")
-                }),
-            },
-            model::File {
-                relative_path: path::PathBuf::from("configuration/menu.json"),
-                resource_term: model::ResourceTerm::TypeAlias(quote::quote! {
-                    include_str!("/resources/configuration/menu.json")
-                }),
-            },
-        ];
-        assert_eq!(actual, expected);
-    }
+        #[test]
+        fn gets_type_alias() {
+            let actual = main(
+                &model::AbstractResource::TypeAlias(&model::Template::Content),
+                path::Path::new("/resources"),
+                vec![
+                    path::PathBuf::from("world/physical_constants.json"),
+                    path::PathBuf::from("configuration/menu.json"),
+                ],
+            );
 
-    #[test]
-    fn gets_type_named_fields() {
-        let actual = main(
-            &model::AbstractResource::NamedFields(vec![(
-                String::from("content"),
-                &model::Template::Content,
-            )]),
-            path::Path::new("/resources"),
-            vec![
-                path::PathBuf::from("world/physical_constants.json"),
-                path::PathBuf::from("configuration/menu.json"),
-            ],
-        );
-
-        let actual = actual.unwrap();
-        let expected = vec![
-            model::File {
-                relative_path: path::PathBuf::from("world/physical_constants.json"),
-                resource_term: model::ResourceTerm::NamedFields(vec![(
-                    String::from("content"),
-                    quote::quote! {
+            let actual = actual.unwrap();
+            let expected = vec![
+                model::File {
+                    relative_path: path::PathBuf::from("world/physical_constants.json"),
+                    resource_term: model::ResourceTerm::TypeAlias(quote::quote! {
                         include_str!("/resources/world/physical_constants.json")
-                    },
-                )]),
-            },
-            model::File {
-                relative_path: path::PathBuf::from("configuration/menu.json"),
-                resource_term: model::ResourceTerm::NamedFields(vec![(
-                    String::from("content"),
-                    quote::quote! {
+                    }),
+                },
+                model::File {
+                    relative_path: path::PathBuf::from("configuration/menu.json"),
+                    resource_term: model::ResourceTerm::TypeAlias(quote::quote! {
                         include_str!("/resources/configuration/menu.json")
-                    },
+                    }),
+                },
+            ];
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn gets_named_fields() {
+            let actual = main(
+                &model::AbstractResource::NamedFields(vec![(
+                    String::from("content"),
+                    &model::Template::Content,
                 )]),
-            },
-        ];
-        assert_eq!(actual, expected);
-    }
+                path::Path::new("/resources"),
+                vec![
+                    path::PathBuf::from("world/physical_constants.json"),
+                    path::PathBuf::from("configuration/menu.json"),
+                ],
+            );
 
-    #[test]
-    fn gets_type_tuple_fields() {
-        let actual = main(
-            &model::AbstractResource::TupleFields(vec![&model::Template::Content]),
-            path::Path::new("/resources"),
-            vec![
-                path::PathBuf::from("world/physical_constants.json"),
-                path::PathBuf::from("configuration/menu.json"),
-            ],
-        );
+            let actual = actual.unwrap();
+            let expected = vec![
+                model::File {
+                    relative_path: path::PathBuf::from("world/physical_constants.json"),
+                    resource_term: model::ResourceTerm::NamedFields(vec![(
+                        String::from("content"),
+                        quote::quote! {
+                            include_str!("/resources/world/physical_constants.json")
+                        },
+                    )]),
+                },
+                model::File {
+                    relative_path: path::PathBuf::from("configuration/menu.json"),
+                    resource_term: model::ResourceTerm::NamedFields(vec![(
+                        String::from("content"),
+                        quote::quote! {
+                            include_str!("/resources/configuration/menu.json")
+                        },
+                    )]),
+                },
+            ];
+            assert_eq!(actual, expected);
+        }
 
-        let actual = actual.unwrap();
-        let expected = vec![
-            model::File {
-                relative_path: path::PathBuf::from("world/physical_constants.json"),
-                resource_term: model::ResourceTerm::TupleFields(vec![quote::quote! {
-                    include_str!("/resources/world/physical_constants.json")
-                }]),
-            },
-            model::File {
-                relative_path: path::PathBuf::from("configuration/menu.json"),
-                resource_term: model::ResourceTerm::TupleFields(vec![quote::quote! {
-                    include_str!("/resources/configuration/menu.json")
-                }]),
-            },
-        ];
-        assert_eq!(actual, expected);
+        #[test]
+        fn gets_tuple_fields() {
+            let actual = main(
+                &model::AbstractResource::TupleFields(vec![&model::Template::Content]),
+                path::Path::new("/resources"),
+                vec![
+                    path::PathBuf::from("world/physical_constants.json"),
+                    path::PathBuf::from("configuration/menu.json"),
+                ],
+            );
+
+            let actual = actual.unwrap();
+            let expected = vec![
+                model::File {
+                    relative_path: path::PathBuf::from("world/physical_constants.json"),
+                    resource_term: model::ResourceTerm::TupleFields(vec![quote::quote! {
+                        include_str!("/resources/world/physical_constants.json")
+                    }]),
+                },
+                model::File {
+                    relative_path: path::PathBuf::from("configuration/menu.json"),
+                    resource_term: model::ResourceTerm::TupleFields(vec![quote::quote! {
+                        include_str!("/resources/configuration/menu.json")
+                    }]),
+                },
+            ];
+            assert_eq!(actual, expected);
+        }
     }
 }
