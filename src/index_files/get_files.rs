@@ -192,7 +192,7 @@ mod tests {
         let actual = main(
             &model::AbstractResource::TupleFields(vec![
                 &model::Template::RelativePath,
-                &model::Template::AbsolutePath,
+                &model::Template::Content,
             ]),
             path::Path::new("/resources"),
             vec![path::PathBuf::from("credits.md")],
@@ -206,7 +206,7 @@ mod tests {
                     "credits.md"
                 },
                 quote::quote! {
-                    "/resources/credits.md"
+                    include_str!("/resources/credits.md")
                 },
             ]),
         }];

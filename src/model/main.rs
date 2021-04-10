@@ -36,7 +36,6 @@ pub enum FieldIdentifier {
 
 #[derive(Clone, cmp::PartialEq, Debug)]
 pub enum Template {
-    AbsolutePath,
     Content,
     GetContent,
     GetRawContent,

@@ -6,10 +6,6 @@ pub fn main(template: &model::Template, context: &Context) -> proc_macro2::Token
     let absolute_path = context.absolute_path;
 
     match template {
-        model::Template::AbsolutePath => quote::quote! {
-            #absolute_path
-        },
-
         model::Template::Content => quote::quote! {
             include_str!(#absolute_path)
         },
@@ -79,24 +75,6 @@ mod tests {
 
     mod given_predefined_template {
         use super::*;
-
-        #[test]
-        fn renders_absolute_path() {
-            let actual = main(
-                &model::Template::AbsolutePath,
-                &Context {
-                    absolute_path: "/credits.md",
-                    ..stubs::context()
-                },
-            );
-
-            let actual = actual.to_string();
-            let expected = quote::quote! {
-                "/credits.md"
-            }
-            .to_string();
-            assert_eq!(actual, expected);
-        }
 
         #[test]
         fn renders_content() {
