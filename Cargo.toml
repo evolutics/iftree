@@ -9,6 +9,9 @@ repository = "https://github.com/evolutics/iftree"
 readme = true
 keywords = ["include", "file", "tree", "static", "embed"]
 categories = ["filesystem", "web-programming"]
+description = """
+Include a file tree in your code. Like `include_bytes!` and `include_str!` \
+for arbitrary path patterns and custom file metadata."""
 
 [lib]
 proc-macro = true
