@@ -85,13 +85,13 @@ mod tests {
 
         let actual = main(
             &configuration,
-            &model::ResourceTypeStructure::NamedFields(vec![(String::from("raw_content"), ())]),
+            &model::ResourceTypeStructure::NamedFields(vec![(String::from("content"), ())]),
         );
 
         let actual = actual.unwrap();
         let expected = model::AbstractResource::NamedFields(vec![(
-            String::from("raw_content"),
-            &model::Template::RawContent,
+            String::from("content"),
+            &model::Template::Content,
         )]);
         assert_eq!(actual, expected);
     }
@@ -100,8 +100,8 @@ mod tests {
     fn given_configured_field_template_it_gets_it() {
         let configuration = model::Configuration {
             field_templates: vec![(
-                model::FieldIdentifier::Named(String::from("my_content")),
-                model::Template::Content,
+                model::FieldIdentifier::Named(String::from("content")),
+                model::Template::RawContent,
             )]
             .into_iter()
             .collect(),
@@ -110,13 +110,13 @@ mod tests {
 
         let actual = main(
             &configuration,
-            &model::ResourceTypeStructure::NamedFields(vec![(String::from("my_content"), ())]),
+            &model::ResourceTypeStructure::NamedFields(vec![(String::from("content"), ())]),
         );
 
         let actual = actual.unwrap();
         let expected = model::AbstractResource::NamedFields(vec![(
-            String::from("my_content"),
-            &model::Template::Content,
+            String::from("content"),
+            &model::Template::RawContent,
         )]);
         assert_eq!(actual, expected);
     }
