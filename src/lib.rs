@@ -74,6 +74,19 @@ fn process(input: model::Input) -> model::Output {
 #[cfg(test)]
 mod tests {
     #[test]
+    fn readme_includes_manifest_description() {
+        let manifest = include_str!("../Cargo.toml")
+            .parse::<toml::Value>()
+            .unwrap();
+        let description = manifest["package"]["description"].as_str().unwrap();
+        let embedded_description = format!("\n\n{}\n\n", description.replace(" but ", "\nbut "));
+
+        let actual = include_str!("../README.md").contains(&embedded_description);
+
+        assert!(actual);
+    }
+
+    #[test]
     fn module_documentation_corresponds_to_readme() {
         let mut actual = String::from("# Iftree: Include File Tree\n\n");
         let mut is_empty = true;
