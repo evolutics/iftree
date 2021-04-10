@@ -7,6 +7,5 @@ mod get_templates;
 mod main;
 mod render_field_template;
 mod sanitize_to_identifier;
-mod try_map_abstract_resource;
 
 pub use main::main;
