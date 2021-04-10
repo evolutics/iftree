@@ -1,5 +1,5 @@
-//! Include file trees in your code, like `include_bytes!` and `include_str!`,
-//! but for arbitrary path patterns and custom file metadata.
+//! Include file trees in your code, like `include_bytes!` and `include_str!`
+//! for path patterns, with support for custom macros.
 //!
 //! This is useful for self-contained binaries that are easy to ship, as they
 //! include any file data such as web templates, game assets, etc.
@@ -41,7 +41,7 @@
 //! this case the files in the folder `my_resources` and its subfolders. For each
 //! such file, an instance of `Resource` is initialized with the fields given by
 //! `Resource`. The well-known field `content` is initialized with a call to
-//! `include_str!`, but you can provide your own templates to initialize a field.
+//! `include_str!`, but you can provide your own macros to initialize a field.
 //!
 //! # Feature overview
 //!
@@ -109,7 +109,10 @@ mod tests {
             .parse::<toml::Value>()
             .unwrap();
         let description = manifest["package"]["description"].as_str().unwrap();
-        let embedded_description = format!("\n\n{}\n\n", description.replace(" but ", "\nbut "));
+        let embedded_description = format!(
+            "\n\n{}\n\n",
+            description.replace(" `include_str!` ", " `include_str!`\n"),
+        );
 
         let actual = include_str!("../README.md").contains(&embedded_description);
 

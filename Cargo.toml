@@ -10,8 +10,8 @@ readme = true
 keywords = ["include", "file", "tree", "static", "embed"]
 categories = ["filesystem", "web-programming"]
 description = """
-Include file trees in your code, like `include_bytes!` and `include_str!`, \
-but for arbitrary path patterns and custom file metadata."""
+Include file trees in your code, like `include_bytes!` and `include_str!` for \
+path patterns, with support for custom macros."""
 
 [lib]
 proc-macro = true
