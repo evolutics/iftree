@@ -67,6 +67,32 @@ mod tests {
     use super::*;
 
     #[test]
+    fn gets_template_context() {
+        let actual = main(
+            &model::AbstractResource::TupleFields(vec![
+                &model::Template::RelativePath,
+                &model::Template::Content,
+            ]),
+            path::Path::new("/resources"),
+            vec![path::PathBuf::from("credits.md")],
+        );
+
+        let actual = actual.unwrap();
+        let expected = vec![model::File {
+            relative_path: path::PathBuf::from("credits.md"),
+            resource_term: model::ResourceTerm::TupleFields(vec![
+                quote::quote! {
+                    "credits.md"
+                },
+                quote::quote! {
+                    include_str!("/resources/credits.md")
+                },
+            ]),
+        }];
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
     fn gets_type_unit() {
         let actual = main(
             &model::AbstractResource::Unit,
@@ -184,32 +210,6 @@ mod tests {
                 }]),
             },
         ];
-        assert_eq!(actual, expected);
-    }
-
-    #[test]
-    fn gets_template_context() {
-        let actual = main(
-            &model::AbstractResource::TupleFields(vec![
-                &model::Template::RelativePath,
-                &model::Template::Content,
-            ]),
-            path::Path::new("/resources"),
-            vec![path::PathBuf::from("credits.md")],
-        );
-
-        let actual = actual.unwrap();
-        let expected = vec![model::File {
-            relative_path: path::PathBuf::from("credits.md"),
-            resource_term: model::ResourceTerm::TupleFields(vec![
-                quote::quote! {
-                    "credits.md"
-                },
-                quote::quote! {
-                    include_str!("/resources/credits.md")
-                },
-            ]),
-        }];
         assert_eq!(actual, expected);
     }
 }
