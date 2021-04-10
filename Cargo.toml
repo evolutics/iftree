@@ -7,6 +7,8 @@ license = "MIT"
 homepage = "https://github.com/evolutics/iftree"
 repository = "https://github.com/evolutics/iftree"
 readme = true
+keywords = ["include", "file", "tree", "static", "embed"]
+categories = ["filesystem", "web-programming"]
 
 [lib]
 proc-macro = true
