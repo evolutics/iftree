@@ -1,11 +1,12 @@
 use once_cell::sync;
 
-macro_rules! filename_extension {
+macro_rules! is_read_only {
     ($relative_path:literal, $absolute_path:literal) => {
         once_cell::sync::Lazy::new(|| {
-            std::path::Path::new($relative_path)
-                .extension()
-                .and_then(|extension| extension.to_str())
+            std::path::Path::new($absolute_path)
+                .metadata()
+                .map(|metadata| metadata.permissions().readonly())
+                .ok()
         })
     };
 }
@@ -15,15 +16,15 @@ macro_rules! filename_extension {
 resource_paths = 'examples/resources/credits.md'
 
 [field_templates]
-extension = 'filename_extension!'
+is_read_only = 'is_read_only!'
 "
 )]
-pub struct Resource<'a> {
-    extension: sync::Lazy<Option<&'a str>>,
+pub struct Resource {
+    is_read_only: sync::Lazy<Option<bool>>,
 }
 
 pub fn main() {
     use base::examples::resources;
 
-    assert_eq!(*resources::CREDITS_MD.extension, Some("md"));
+    assert_eq!(*resources::CREDITS_MD.is_read_only, Some(false));
 }
