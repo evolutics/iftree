@@ -11,6 +11,7 @@ pub fn main(string: &str) -> Result<model::Configuration, toml::de::Error> {
 }
 
 #[derive(serde::Deserialize)]
+#[serde(deny_unknown_fields)]
 struct UserConfiguration {
     resource_paths: String,
     base_folder: Option<path::PathBuf>,
@@ -148,6 +149,19 @@ custom = 'my::custom_include!'
     #[test]
     fn parses_invalid_configuration() {
         let actual = main("resource_paths = #");
+
+        let actual = actual.is_err();
+        assert!(actual);
+    }
+
+    #[test]
+    fn given_unknown_field_it_errs() {
+        let actual = main(
+            "
+resource_paths = 'abc'
+unknown = ''
+",
+        );
 
         let actual = actual.is_err();
         assert!(actual);
