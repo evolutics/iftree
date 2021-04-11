@@ -27,7 +27,8 @@
 //! As you can see, folders are mapped to (nested) modules, which are rooted at a
 //! top-level module `base`.
 //!
-//! For this to work, you can call the library as in
+//! For this to work, you attach the macro `iftree::include_file_tree` to a custom
+//! type as in
 //!
 //! ```ignore
 //! #[iftree::include_file_tree("resource_paths = 'my_resources/**'")]
@@ -36,12 +37,11 @@
 //! }
 //! ```
 //!
-//! This calls the macro `iftree::include_file_tree` on a custom type `Resource`.
-//! The argument defines a path pattern that configures which files to include, in
-//! this case the files in the folder `my_resources` and its subfolders. For each
-//! such file, an instance of `Resource` is initialized with the fields given by
-//! `Resource`. The well-known field `content` is initialized with a call to
-//! `include_str!`, but you can provide your own macros to initialize a field.
+//! We just configure a path pattern that filters the files to include, in this case
+//! the files in `my_resources` and its subfolders. These paths are relative to the
+//! folder with your manifest (`Cargo.toml`) by default. For each filtered file, an
+//! instance of `Resource` is initialized. Here the well-known field `content` is
+//! initialized with a call to `include_str!`, but you can plug in your own macros.
 //!
 //! # Feature overview
 //!
