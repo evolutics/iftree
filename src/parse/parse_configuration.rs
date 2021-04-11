@@ -51,7 +51,7 @@ mod tests {
     }
 
     #[test]
-    fn parses_invalid_configuration() {
+    fn given_invalid_configuration_it_errs() {
         let actual = syn::parse_str::<model::Configuration>(r#""resource_paths = #""#);
 
         let actual = actual.unwrap_err().to_string();

@@ -147,7 +147,7 @@ custom = 'my::custom_include!'
     }
 
     #[test]
-    fn parses_invalid_configuration() {
+    fn given_invalid_configuration_it_errs() {
         let actual = main("resource_paths = #");
 
         let actual = actual.is_err();
