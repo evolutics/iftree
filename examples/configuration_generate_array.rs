@@ -2,7 +2,7 @@ use std::cmp;
 
 #[iftree::include_file_tree(
     "
-resource_paths = 'examples/resources/**'
+resource_paths = '/examples/resources/**'
 generate_array = true
 "
 )]

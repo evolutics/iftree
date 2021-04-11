@@ -31,7 +31,7 @@
 //! type as in
 //!
 //! ```ignore
-//! #[iftree::include_file_tree("resource_paths = 'my_resources/**'")]
+//! #[iftree::include_file_tree("resource_paths = '/my_resources/**'")]
 //! pub struct MyResource {
 //!     content: &'static str,
 //! }

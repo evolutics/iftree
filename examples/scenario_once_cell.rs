@@ -13,7 +13,7 @@ macro_rules! is_read_only {
 
 #[iftree::include_file_tree(
     "
-resource_paths = 'examples/resources/credits.md'
+resource_paths = '/examples/resources/credits.md'
 
 [field_templates]
 is_read_only = 'is_read_only!'

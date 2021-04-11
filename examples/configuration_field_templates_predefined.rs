@@ -1,6 +1,6 @@
 use std::borrow;
 
-#[iftree::include_file_tree("resource_paths = 'examples/resources/credits.md'")]
+#[iftree::include_file_tree("resource_paths = '/examples/resources/credits.md'")]
 pub struct Resource {
     content: &'static str,
     get_content: fn() -> borrow::Cow<'static, str>,

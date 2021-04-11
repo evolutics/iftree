@@ -82,11 +82,11 @@ mod tests {
 
     #[test]
     fn parses_valid_configuration_with_required_fields_only_using_defaults() {
-        let actual = main("resource_paths = 'resources/**'");
+        let actual = main("resource_paths = '/resources/**'");
 
         let actual = actual.unwrap();
         let expected = model::Configuration {
-            resource_paths: String::from("resources/**"),
+            resource_paths: String::from("/resources/**"),
             base_folder: path::PathBuf::new(),
             root_folder_variable: String::from("CARGO_MANIFEST_DIR"),
 
@@ -102,7 +102,7 @@ mod tests {
     fn parses_valid_configuration_with_optional_fields() {
         let actual = main(
             "
-resource_paths = 'my/resources/**'
+resource_paths = '/my/resources/**'
 base_folder = 'base'
 root_folder_variable = 'MY_ROOT_FOLDER'
 
@@ -118,7 +118,7 @@ custom = 'my::custom_include!'
 
         let actual = actual.unwrap();
         let expected = model::Configuration {
-            resource_paths: String::from("my/resources/**"),
+            resource_paths: String::from("/my/resources/**"),
             base_folder: path::PathBuf::from("base"),
             root_folder_variable: String::from("MY_ROOT_FOLDER"),
 

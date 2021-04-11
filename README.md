@@ -33,7 +33,7 @@ For this to work, you attach the macro `iftree::include_file_tree` to a custom
 type as in
 
 ```rust
-#[iftree::include_file_tree("resource_paths = 'my_resources/**'")]
+#[iftree::include_file_tree("resource_paths = '/my_resources/**'")]
 pub struct MyResource {
     content: &'static str,
 }

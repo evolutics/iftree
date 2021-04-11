@@ -1,6 +1,6 @@
 #[iftree::include_file_tree(
     "
-resource_paths = 'examples/resources/**'
+resource_paths = '/examples/resources/**'
 
 [field_templates]
 _ = 'content'

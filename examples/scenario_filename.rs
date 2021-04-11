@@ -12,7 +12,7 @@ macro_rules! filename {
 
 #[iftree::include_file_tree(
     "
-resource_paths = 'examples/resources/credits.md'
+resource_paths = '/examples/resources/credits.md'
 
 [field_templates]
 filename = 'filename!'
