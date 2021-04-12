@@ -5,11 +5,7 @@ impl Eq for main::File {}
 
 impl Ord for main::File {
     fn cmp(&self, other: &Self) -> cmp::Ordering {
-        match self
-            .relative_path
-            .to_string_lossy()
-            .cmp(&other.relative_path.to_string_lossy())
-        {
+        match self.relative_path.cmp(&other.relative_path) {
             cmp::Ordering::Equal => comparable_resource_term(&self.resource_term)
                 .cmp(&comparable_resource_term(&other.resource_term)),
             cmp::Ordering::Greater => cmp::Ordering::Greater,
@@ -52,16 +48,15 @@ impl PartialOrd for main::File {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::path;
 
     #[test]
     fn compares_equal() {
         let one = main::File {
-            relative_path: path::PathBuf::from("abc"),
+            relative_path: main::RelativePath::from("abc"),
             resource_term: main::ResourceTerm::TypeAlias(quote::quote! { println!("Hi"); }),
         };
         let another = main::File {
-            relative_path: path::PathBuf::from("abc"),
+            relative_path: main::RelativePath::from("abc"),
             resource_term: main::ResourceTerm::TypeAlias(quote::quote! { println!("Hi"); }),
         };
 
@@ -73,11 +68,11 @@ mod tests {
     #[test]
     fn compares_greater() {
         let high = main::File {
-            relative_path: path::PathBuf::from("a/b"),
+            relative_path: main::RelativePath::from("a/b"),
             ..main::stubs::file()
         };
         let low = main::File {
-            relative_path: path::PathBuf::from("a.b"),
+            relative_path: main::RelativePath::from("a.b"),
             ..main::stubs::file()
         };
 
@@ -89,11 +84,11 @@ mod tests {
     #[test]
     fn compares_less() {
         let low = main::File {
-            relative_path: path::PathBuf::from("a.b"),
+            relative_path: main::RelativePath::from("a.b"),
             ..main::stubs::file()
         };
         let high = main::File {
-            relative_path: path::PathBuf::from("a/b"),
+            relative_path: main::RelativePath::from("a/b"),
             ..main::stubs::file()
         };
 
@@ -105,11 +100,11 @@ mod tests {
     #[test]
     fn gets_equality() {
         let one = main::File {
-            relative_path: path::PathBuf::from("abc"),
+            relative_path: main::RelativePath::from("abc"),
             resource_term: main::ResourceTerm::TypeAlias(quote::quote! { println!("Hi"); }),
         };
         let another = main::File {
-            relative_path: path::PathBuf::from("abc"),
+            relative_path: main::RelativePath::from("abc"),
             resource_term: main::ResourceTerm::TypeAlias(quote::quote! { println!("Hi"); }),
         };
 
@@ -121,11 +116,11 @@ mod tests {
     #[test]
     fn gets_inequality() {
         let one = main::File {
-            relative_path: path::PathBuf::from("abc"),
+            relative_path: main::RelativePath::from("abc"),
             resource_term: main::ResourceTerm::TypeAlias(quote::quote! { println!("Hi A"); }),
         };
         let another = main::File {
-            relative_path: path::PathBuf::from("abc"),
+            relative_path: main::RelativePath::from("abc"),
             resource_term: main::ResourceTerm::TypeAlias(quote::quote! { println!("Hi B"); }),
         };
 

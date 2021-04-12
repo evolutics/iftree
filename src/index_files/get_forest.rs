@@ -1,6 +1,7 @@
 use super::generate_identifier;
 use super::sanitize_to_identifier;
 use crate::model;
+use std::path;
 use std::vec;
 
 pub fn main(
@@ -36,7 +37,7 @@ fn add_file(
 }
 
 fn get_reverse_file_path(file: &model::File) -> vec::Vec<String> {
-    file.relative_path
+    path::Path::new(&file.relative_path.0)
         .iter()
         .rev()
         .enumerate()
@@ -77,8 +78,7 @@ fn add_file_recursively(
                 } else {
                     Some(model::NameCollision {
                         colliding_file: file,
-                        existing_filename: existing_file
-                            .relative_path
+                        existing_filename: path::Path::new(&existing_file.relative_path.0)
                             .file_name()
                             .map(|filename| String::from(filename.to_string_lossy())),
                         identifier: name,
@@ -106,7 +106,6 @@ fn get_singleton_tree(reverse_file_path: vec::Vec<String>, file: model::File) ->
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::path;
 
     #[test]
     fn gets_empty_set() {
@@ -120,11 +119,11 @@ mod tests {
     #[test]
     fn gets_files() {
         let menu_json = model::File {
-            relative_path: path::PathBuf::from("menu.json"),
+            relative_path: model::RelativePath::from("menu.json"),
             ..model::stubs::file()
         };
         let translations_csv = model::File {
-            relative_path: path::PathBuf::from("translations.csv"),
+            relative_path: model::RelativePath::from("translations.csv"),
             ..model::stubs::file()
         };
         let files = vec![menu_json.clone(), translations_csv.clone()];
@@ -150,15 +149,15 @@ mod tests {
     #[test]
     fn gets_folders() {
         let credits_md = model::File {
-            relative_path: path::PathBuf::from("credits.md"),
+            relative_path: model::RelativePath::from("credits.md"),
             ..model::stubs::file()
         };
         let tutorial_json = model::File {
-            relative_path: path::PathBuf::from("world/levels/tutorial.json"),
+            relative_path: model::RelativePath::from("world/levels/tutorial.json"),
             ..model::stubs::file()
         };
         let physical_constants_json = model::File {
-            relative_path: path::PathBuf::from("world/physical_constants.json"),
+            relative_path: model::RelativePath::from("world/physical_constants.json"),
             ..model::stubs::file()
         };
         let files = vec![
@@ -208,11 +207,11 @@ mod tests {
     #[test]
     fn given_resolve_name_collisions_is_disabled_it_reports_collisions() {
         let credits_md_0 = model::File {
-            relative_path: path::PathBuf::from("CREDITS.md"),
+            relative_path: model::RelativePath::from("CREDITS.md"),
             ..model::stubs::file()
         };
         let credits_md_1 = model::File {
-            relative_path: path::PathBuf::from("credits.md"),
+            relative_path: model::RelativePath::from("credits.md"),
             ..model::stubs::file()
         };
         let files = vec![credits_md_0, credits_md_1.clone()];
@@ -237,19 +236,19 @@ mod tests {
     #[test]
     fn given_resolve_name_collisions_is_enabled_it_resolves_collisions_in_order() {
         let credits_md_0 = model::File {
-            relative_path: path::PathBuf::from("credits.md"),
+            relative_path: model::RelativePath::from("credits.md"),
             ..model::stubs::file()
         };
         let credits_md_1 = model::File {
-            relative_path: path::PathBuf::from("CREDITS.md"),
+            relative_path: model::RelativePath::from("CREDITS.md"),
             ..model::stubs::file()
         };
         let credits_md_2 = model::File {
-            relative_path: path::PathBuf::from("Credits.md"),
+            relative_path: model::RelativePath::from("Credits.md"),
             ..model::stubs::file()
         };
         let credits_md_3 = model::File {
-            relative_path: path::PathBuf::from("credits.md0"),
+            relative_path: model::RelativePath::from("credits.md0"),
             ..model::stubs::file()
         };
         let files = vec![

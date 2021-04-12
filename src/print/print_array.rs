@@ -64,7 +64,6 @@ impl<'a> visit_file_forest::Visitor<'a> for Visitor {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::path;
 
     #[test]
     fn prints_empty_set() {
@@ -90,14 +89,14 @@ mod tests {
             (
                 String::from("MENU_JSON"),
                 model::FileTree::File(model::File {
-                    relative_path: path::PathBuf::from("menu.json"),
+                    relative_path: model::RelativePath::from("menu.json"),
                     ..model::stubs::file()
                 }),
             ),
             (
                 String::from("TRANSLATIONS_CSV"),
                 model::FileTree::File(model::File {
-                    relative_path: path::PathBuf::from("translations.csv"),
+                    relative_path: model::RelativePath::from("translations.csv"),
                     ..model::stubs::file()
                 }),
             ),
@@ -128,7 +127,7 @@ mod tests {
             (
                 String::from("CREDITS_MD"),
                 model::FileTree::File(model::File {
-                    relative_path: path::PathBuf::from("credits.md"),
+                    relative_path: model::RelativePath::from("credits.md"),
                     ..model::stubs::file()
                 }),
             ),
@@ -142,7 +141,7 @@ mod tests {
                                 vec![(
                                     String::from("TUTORIAL_JSON"),
                                     model::FileTree::File(model::File {
-                                        relative_path: path::PathBuf::from(
+                                        relative_path: model::RelativePath::from(
                                             "world/levels/tutorial.json",
                                         ),
                                         ..model::stubs::file()
@@ -155,7 +154,9 @@ mod tests {
                         (
                             String::from("PHYSICAL_CONSTANTS_JSON"),
                             model::FileTree::File(model::File {
-                                relative_path: path::PathBuf::from("world/physical_constants.json"),
+                                relative_path: model::RelativePath::from(
+                                    "world/physical_constants.json",
+                                ),
                                 ..model::stubs::file()
                             }),
                         ),
@@ -192,21 +193,21 @@ mod tests {
             (
                 String::from('X'),
                 model::FileTree::File(model::File {
-                    relative_path: path::PathBuf::from("B"),
+                    relative_path: model::RelativePath::from("B"),
                     ..model::stubs::file()
                 }),
             ),
             (
                 String::from('Y'),
                 model::FileTree::File(model::File {
-                    relative_path: path::PathBuf::from("A"),
+                    relative_path: model::RelativePath::from("A"),
                     ..model::stubs::file()
                 }),
             ),
             (
                 String::from('Z'),
                 model::FileTree::File(model::File {
-                    relative_path: path::PathBuf::from("a"),
+                    relative_path: model::RelativePath::from("a"),
                     ..model::stubs::file()
                 }),
             ),

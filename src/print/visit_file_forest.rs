@@ -44,7 +44,6 @@ fn recursive_main<'a, T>(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::path;
 
     struct Indenter {
         length: usize,
@@ -61,7 +60,7 @@ mod tests {
 
         fn file(&self, file: &model::File, path: &[&str], text: &mut Self::State) {
             let key = path.last().unwrap();
-            let value = file.relative_path.to_string_lossy();
+            let value = &file.relative_path.0;
             text.push_str(&self.format(path.len(), &format!("{}: {}", key, value)));
         }
 
@@ -87,7 +86,7 @@ mod tests {
                         vec![(
                             String::from("Grandchild"),
                             model::FileTree::File(model::File {
-                                relative_path: path::PathBuf::from("abc"),
+                                relative_path: model::RelativePath::from("abc"),
                                 ..model::stubs::file()
                             }),
                         )]

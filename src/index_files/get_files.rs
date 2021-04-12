@@ -19,9 +19,11 @@ fn get_file(
     base_folder: &path::Path,
     absolute_path: path::PathBuf,
 ) -> model::Result<model::File> {
-    let relative_path = absolute_path.strip_prefix(base_folder)?.to_path_buf();
+    let relative_path = model::RelativePath(String::from(
+        absolute_path.strip_prefix(base_folder)?.to_string_lossy(),
+    ));
     let context = render_field_template::Context {
-        relative_path: &relative_path.to_string_lossy(),
+        relative_path: &relative_path.0,
         absolute_path: &absolute_path.to_string_lossy(),
     };
 
@@ -77,7 +79,7 @@ mod tests {
 
         let actual = actual.unwrap();
         let expected = vec![model::File {
-            relative_path: path::PathBuf::from("credits.md"),
+            relative_path: model::RelativePath::from("credits.md"),
             resource_term: model::ResourceTerm::TupleFields(vec![
                 quote::quote! {
                     "credits.md"
@@ -108,11 +110,11 @@ mod tests {
             let actual = actual.unwrap();
             let expected = vec![
                 model::File {
-                    relative_path: path::PathBuf::from("world/physical_constants.json"),
+                    relative_path: model::RelativePath::from("world/physical_constants.json"),
                     resource_term: model::ResourceTerm::Unit,
                 },
                 model::File {
-                    relative_path: path::PathBuf::from("configuration/menu.json"),
+                    relative_path: model::RelativePath::from("configuration/menu.json"),
                     resource_term: model::ResourceTerm::Unit,
                 },
             ];
@@ -133,13 +135,13 @@ mod tests {
             let actual = actual.unwrap();
             let expected = vec![
                 model::File {
-                    relative_path: path::PathBuf::from("world/physical_constants.json"),
+                    relative_path: model::RelativePath::from("world/physical_constants.json"),
                     resource_term: model::ResourceTerm::TypeAlias(quote::quote! {
                         include_str!("/resources/world/physical_constants.json")
                     }),
                 },
                 model::File {
-                    relative_path: path::PathBuf::from("configuration/menu.json"),
+                    relative_path: model::RelativePath::from("configuration/menu.json"),
                     resource_term: model::ResourceTerm::TypeAlias(quote::quote! {
                         include_str!("/resources/configuration/menu.json")
                     }),
@@ -165,7 +167,7 @@ mod tests {
             let actual = actual.unwrap();
             let expected = vec![
                 model::File {
-                    relative_path: path::PathBuf::from("world/physical_constants.json"),
+                    relative_path: model::RelativePath::from("world/physical_constants.json"),
                     resource_term: model::ResourceTerm::NamedFields(vec![(
                         String::from("content"),
                         quote::quote! {
@@ -174,7 +176,7 @@ mod tests {
                     )]),
                 },
                 model::File {
-                    relative_path: path::PathBuf::from("configuration/menu.json"),
+                    relative_path: model::RelativePath::from("configuration/menu.json"),
                     resource_term: model::ResourceTerm::NamedFields(vec![(
                         String::from("content"),
                         quote::quote! {
@@ -200,13 +202,13 @@ mod tests {
             let actual = actual.unwrap();
             let expected = vec![
                 model::File {
-                    relative_path: path::PathBuf::from("world/physical_constants.json"),
+                    relative_path: model::RelativePath::from("world/physical_constants.json"),
                     resource_term: model::ResourceTerm::TupleFields(vec![quote::quote! {
                         include_str!("/resources/world/physical_constants.json")
                     }]),
                 },
                 model::File {
-                    relative_path: path::PathBuf::from("configuration/menu.json"),
+                    relative_path: model::RelativePath::from("configuration/menu.json"),
                     resource_term: model::ResourceTerm::TupleFields(vec![quote::quote! {
                         include_str!("/resources/configuration/menu.json")
                     }]),

@@ -66,7 +66,7 @@ mod tests {
                             vec![(
                                 String::from("r#CREDITS_MD"),
                                 model::FileTree::File(model::File {
-                                    relative_path: path::PathBuf::from(
+                                    relative_path: model::RelativePath::from(
                                         "examples/resources/credits.md",
                                     ),
                                     resource_term: model::ResourceTerm::TypeAlias(quote::quote! {

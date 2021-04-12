@@ -78,9 +78,12 @@ pub enum FileTree {
 
 #[derive(Clone, Debug)]
 pub struct File {
-    pub relative_path: path::PathBuf,
+    pub relative_path: RelativePath,
     pub resource_term: ResourceTerm,
 }
+
+#[derive(Clone, cmp::Eq, cmp::Ord, cmp::PartialEq, cmp::PartialOrd, Debug)]
+pub struct RelativePath(pub String);
 
 pub type ResourceTerm = AbstractResource<proc_macro2::TokenStream>;
 
@@ -138,7 +141,7 @@ pub mod stubs {
 
     pub fn file() -> File {
         File {
-            relative_path: path::PathBuf::from("bar"),
+            relative_path: RelativePath::from("bar"),
             resource_term: ResourceTerm::Unit,
         }
     }
