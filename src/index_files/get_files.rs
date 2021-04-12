@@ -8,23 +8,21 @@ pub fn main(
     base_folder: &path::Path,
     paths: vec::Vec<path::PathBuf>,
 ) -> model::Result<vec::Vec<model::File>> {
-    Ok(paths
+    paths
         .into_iter()
         .map(|path| get_file(templates, base_folder, path))
-        .collect())
+        .collect()
 }
 
 fn get_file(
     templates: &model::AbstractResource<&model::Template>,
     base_folder: &path::Path,
-    relative_path: path::PathBuf,
-) -> model::File {
-    let raw_relative_path = &relative_path.to_string_lossy();
-    let absolute_path = base_folder.join(&relative_path);
-    let absolute_path = &absolute_path.to_string_lossy();
+    absolute_path: path::PathBuf,
+) -> model::Result<model::File> {
+    let relative_path = absolute_path.strip_prefix(base_folder)?.to_path_buf();
     let context = render_field_template::Context {
-        relative_path: raw_relative_path,
-        absolute_path,
+        relative_path: &relative_path.to_string_lossy(),
+        absolute_path: &absolute_path.to_string_lossy(),
     };
 
     let resource_term = match templates {
@@ -56,10 +54,10 @@ fn get_file(
         ),
     };
 
-    model::File {
+    Ok(model::File {
         relative_path,
         resource_term,
-    }
+    })
 }
 
 #[cfg(test)]
@@ -74,7 +72,7 @@ mod tests {
                 &model::Template::Content,
             ]),
             path::Path::new("/resources"),
-            vec![path::PathBuf::from("credits.md")],
+            vec![path::PathBuf::from("/resources/credits.md")],
         );
 
         let actual = actual.unwrap();
@@ -102,8 +100,8 @@ mod tests {
                 &model::AbstractResource::Unit,
                 path::Path::new("/resources"),
                 vec![
-                    path::PathBuf::from("world/physical_constants.json"),
-                    path::PathBuf::from("configuration/menu.json"),
+                    path::PathBuf::from("/resources/world/physical_constants.json"),
+                    path::PathBuf::from("/resources/configuration/menu.json"),
                 ],
             );
 
@@ -127,8 +125,8 @@ mod tests {
                 &model::AbstractResource::TypeAlias(&model::Template::Content),
                 path::Path::new("/resources"),
                 vec![
-                    path::PathBuf::from("world/physical_constants.json"),
-                    path::PathBuf::from("configuration/menu.json"),
+                    path::PathBuf::from("/resources/world/physical_constants.json"),
+                    path::PathBuf::from("/resources/configuration/menu.json"),
                 ],
             );
 
@@ -159,8 +157,8 @@ mod tests {
                 )]),
                 path::Path::new("/resources"),
                 vec![
-                    path::PathBuf::from("world/physical_constants.json"),
-                    path::PathBuf::from("configuration/menu.json"),
+                    path::PathBuf::from("/resources/world/physical_constants.json"),
+                    path::PathBuf::from("/resources/configuration/menu.json"),
                 ],
             );
 
@@ -194,8 +192,8 @@ mod tests {
                 &model::AbstractResource::TupleFields(vec![&model::Template::Content]),
                 path::Path::new("/resources"),
                 vec![
-                    path::PathBuf::from("world/physical_constants.json"),
-                    path::PathBuf::from("configuration/menu.json"),
+                    path::PathBuf::from("/resources/world/physical_constants.json"),
+                    path::PathBuf::from("/resources/configuration/menu.json"),
                 ],
             );
 

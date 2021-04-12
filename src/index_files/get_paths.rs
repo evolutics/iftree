@@ -17,7 +17,7 @@ pub fn main(
                     if metadata.is_dir() {
                         None
                     } else {
-                        Some(relativize_path(base_folder, entry))
+                        Some(Ok(entry.into_path()))
                     }
                 }
             },
@@ -47,14 +47,6 @@ fn get_filter(
     Ok(builder.build()?)
 }
 
-fn relativize_path(
-    base_folder: &path::Path,
-    entry: ignore::DirEntry,
-) -> model::Result<path::PathBuf> {
-    let relative_path = entry.path().strip_prefix(base_folder)?;
-    Ok(relative_path.to_path_buf())
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -72,12 +64,12 @@ mod tests {
         let mut actual = actual.unwrap();
         actual.sort();
         let expected = vec![
-            path::PathBuf::from("examples/resources/.env"),
-            path::PathBuf::from("examples/resources/configuration/menu.json"),
-            path::PathBuf::from("examples/resources/configuration/translations.csv"),
-            path::PathBuf::from("examples/resources/credits.md"),
-            path::PathBuf::from("examples/resources/world/levels/tutorial.json"),
-            path::PathBuf::from("examples/resources/world/physical_constants.json"),
+            path::PathBuf::from("./examples/resources/.env"),
+            path::PathBuf::from("./examples/resources/configuration/menu.json"),
+            path::PathBuf::from("./examples/resources/configuration/translations.csv"),
+            path::PathBuf::from("./examples/resources/credits.md"),
+            path::PathBuf::from("./examples/resources/world/levels/tutorial.json"),
+            path::PathBuf::from("./examples/resources/world/physical_constants.json"),
         ];
         assert_eq!(actual, expected);
     }
@@ -98,10 +90,10 @@ mod tests {
         let mut actual = actual.unwrap();
         actual.sort();
         let expected = vec![
-            path::PathBuf::from("examples/resources/configuration/menu.json"),
-            path::PathBuf::from("examples/resources/configuration/translations.csv"),
-            path::PathBuf::from("examples/resources/world/levels/tutorial.json"),
-            path::PathBuf::from("examples/resources/world/physical_constants.json"),
+            path::PathBuf::from("./examples/resources/configuration/menu.json"),
+            path::PathBuf::from("./examples/resources/configuration/translations.csv"),
+            path::PathBuf::from("./examples/resources/world/levels/tutorial.json"),
+            path::PathBuf::from("./examples/resources/world/physical_constants.json"),
         ];
         assert_eq!(actual, expected);
     }
@@ -122,8 +114,8 @@ mod tests {
         let mut actual = actual.unwrap();
         actual.sort();
         let expected = vec![
-            path::PathBuf::from("examples/resources/configuration/menu.json"),
-            path::PathBuf::from("examples/resources/world/physical_constants.json"),
+            path::PathBuf::from("./examples/resources/configuration/menu.json"),
+            path::PathBuf::from("./examples/resources/world/physical_constants.json"),
         ];
         assert_eq!(actual, expected);
     }
@@ -143,7 +135,7 @@ mod tests {
 
         let mut actual = actual.unwrap();
         actual.sort();
-        let expected = vec![path::PathBuf::from("examples/resources/credits.md")];
+        let expected = vec![path::PathBuf::from("./examples/resources/credits.md")];
         assert_eq!(actual, expected);
     }
 }
