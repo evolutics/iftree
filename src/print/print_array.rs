@@ -17,7 +17,7 @@ fn generate(file_index: &model::FileIndex) -> proc_macro2::TokenStream {
 
     let resource_type = &file_index.resource_type;
     let resource_type = quote::format_ident!("{}", resource_type);
-    array.sort_unstable_by_key(|entry| entry.file);
+    array.sort_unstable_by_key(|entry| entry.relative_path);
     let length = array.len();
     let content: proc_macro2::TokenStream = array.into_iter().map(|entry| entry.tokens).collect();
 
@@ -32,7 +32,7 @@ struct Visitor;
 
 struct Entry<'a> {
     tokens: proc_macro2::TokenStream,
-    file: &'a model::File,
+    relative_path: &'a model::RelativePath,
 }
 
 impl<'a> visit_file_forest::Visitor<'a> for Visitor {
@@ -53,7 +53,10 @@ impl<'a> visit_file_forest::Visitor<'a> for Visitor {
             &base#path,
         };
 
-        array.push(Entry { tokens, file });
+        array.push(Entry {
+            tokens,
+            relative_path: &file.relative_path,
+        });
     }
 
     fn before_forest(&self, _path: &[&str], _array: &mut Self::State) {}

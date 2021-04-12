@@ -8,7 +8,7 @@ pub fn main(
     configuration: &model::Configuration,
     mut files: vec::Vec<model::File>,
 ) -> model::Result<model::FileForest> {
-    files.sort_unstable();
+    files.sort_unstable_by(|left, right| left.relative_path.cmp(&right.relative_path));
 
     let mut forest = model::FileForest::new();
 

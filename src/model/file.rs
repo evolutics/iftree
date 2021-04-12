@@ -1,16 +1,10 @@
 use super::main;
-use std::cmp;
 
-impl Eq for main::File {}
-
-impl Ord for main::File {
-    fn cmp(&self, other: &Self) -> cmp::Ordering {
-        match self.relative_path.cmp(&other.relative_path) {
-            cmp::Ordering::Equal => comparable_resource_term(&self.resource_term)
-                .cmp(&comparable_resource_term(&other.resource_term)),
-            cmp::Ordering::Greater => cmp::Ordering::Greater,
-            cmp::Ordering::Less => cmp::Ordering::Less,
-        }
+impl PartialEq for main::File {
+    fn eq(&self, other: &Self) -> bool {
+        self.relative_path == other.relative_path
+            && comparable_resource_term(&self.resource_term)
+                == comparable_resource_term(&other.resource_term)
     }
 }
 
@@ -33,69 +27,9 @@ fn comparable_resource_term(resource_term: &main::ResourceTerm) -> main::Abstrac
     }
 }
 
-impl PartialEq for main::File {
-    fn eq(&self, other: &Self) -> bool {
-        self.cmp(other) == cmp::Ordering::Equal
-    }
-}
-
-impl PartialOrd for main::File {
-    fn partial_cmp(&self, other: &Self) -> Option<cmp::Ordering> {
-        Some(self.cmp(other))
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn compares_equal() {
-        let one = main::File {
-            relative_path: main::RelativePath::from("abc"),
-            resource_term: main::ResourceTerm::TypeAlias(quote::quote! { println!("Hi"); }),
-        };
-        let another = main::File {
-            relative_path: main::RelativePath::from("abc"),
-            resource_term: main::ResourceTerm::TypeAlias(quote::quote! { println!("Hi"); }),
-        };
-
-        let actual = one.cmp(&another);
-
-        assert_eq!(actual, cmp::Ordering::Equal);
-    }
-
-    #[test]
-    fn compares_greater() {
-        let high = main::File {
-            relative_path: main::RelativePath::from("a/b"),
-            ..main::stubs::file()
-        };
-        let low = main::File {
-            relative_path: main::RelativePath::from("a.b"),
-            ..main::stubs::file()
-        };
-
-        let actual = high.cmp(&low);
-
-        assert_eq!(actual, cmp::Ordering::Greater);
-    }
-
-    #[test]
-    fn compares_less() {
-        let low = main::File {
-            relative_path: main::RelativePath::from("a.b"),
-            ..main::stubs::file()
-        };
-        let high = main::File {
-            relative_path: main::RelativePath::from("a/b"),
-            ..main::stubs::file()
-        };
-
-        let actual = low.cmp(&high);
-
-        assert_eq!(actual, cmp::Ordering::Less);
-    }
 
     #[test]
     fn gets_equality() {
