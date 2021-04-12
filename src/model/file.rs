@@ -5,7 +5,11 @@ impl Eq for main::File {}
 
 impl Ord for main::File {
     fn cmp(&self, other: &Self) -> cmp::Ordering {
-        match self.relative_path.cmp(&other.relative_path) {
+        match self
+            .relative_path
+            .to_string_lossy()
+            .cmp(&other.relative_path.to_string_lossy())
+        {
             cmp::Ordering::Equal => comparable_resource_term(&self.resource_term)
                 .cmp(&comparable_resource_term(&other.resource_term)),
             cmp::Ordering::Greater => cmp::Ordering::Greater,
@@ -69,11 +73,11 @@ mod tests {
     #[test]
     fn compares_greater() {
         let high = main::File {
-            relative_path: path::PathBuf::from("b"),
+            relative_path: path::PathBuf::from("a/b"),
             ..main::stubs::file()
         };
         let low = main::File {
-            relative_path: path::PathBuf::from("a"),
+            relative_path: path::PathBuf::from("a.b"),
             ..main::stubs::file()
         };
 
@@ -85,11 +89,11 @@ mod tests {
     #[test]
     fn compares_less() {
         let low = main::File {
-            relative_path: path::PathBuf::from("a"),
+            relative_path: path::PathBuf::from("a.b"),
             ..main::stubs::file()
         };
         let high = main::File {
-            relative_path: path::PathBuf::from("b"),
+            relative_path: path::PathBuf::from("a/b"),
             ..main::stubs::file()
         };
 
