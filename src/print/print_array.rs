@@ -31,8 +31,8 @@ fn generate(file_index: &model::FileIndex) -> proc_macro2::TokenStream {
 struct Visitor;
 
 struct Entry<'a> {
-    tokens: proc_macro2::TokenStream,
     relative_path: &'a model::RelativePath,
+    tokens: proc_macro2::TokenStream,
 }
 
 impl<'a> visit_file_forest::Visitor<'a> for Visitor {
@@ -54,8 +54,8 @@ impl<'a> visit_file_forest::Visitor<'a> for Visitor {
         };
 
         array.push(Entry {
-            tokens,
             relative_path: &file.relative_path,
+            tokens,
         });
     }
 
