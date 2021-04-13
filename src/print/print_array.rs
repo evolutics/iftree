@@ -16,7 +16,6 @@ fn generate(file_index: &model::FileIndex) -> proc_macro2::TokenStream {
     visit_file_forest::main(&visitor, &file_index.forest, &mut array);
 
     let resource_type = &file_index.resource_type;
-    let resource_type = quote::format_ident!("{}", resource_type);
     array.sort_unstable_by_key(|entry| entry.relative_path);
     let length = array.len();
     let content: proc_macro2::TokenStream = array.into_iter().map(|entry| entry.tokens).collect();
@@ -73,7 +72,7 @@ mod tests {
         let forest = model::FileForest::new();
 
         let actual = main(&model::FileIndex {
-            resource_type: String::from("Resource"),
+            resource_type: quote::format_ident!("Resource"),
             forest,
             generate_array: true,
         });
@@ -108,7 +107,7 @@ mod tests {
         .collect();
 
         let actual = main(&model::FileIndex {
-            resource_type: String::from("Resource"),
+            resource_type: quote::format_ident!("Resource"),
             forest,
             generate_array: true,
         });
@@ -173,7 +172,7 @@ mod tests {
         .collect();
 
         let actual = main(&model::FileIndex {
-            resource_type: String::from("Resource"),
+            resource_type: quote::format_ident!("Resource"),
             forest,
             generate_array: true,
         });
@@ -219,7 +218,7 @@ mod tests {
         .collect();
 
         let actual = main(&model::FileIndex {
-            resource_type: String::from("Resource"),
+            resource_type: quote::format_ident!("Resource"),
             forest,
             generate_array: true,
         });

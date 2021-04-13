@@ -42,7 +42,7 @@ fn parse_structure(item: parse::ParseStream) -> syn::Result<model::ResourceType<
     };
 
     Ok(model::ResourceType {
-        identifier: derive_input.ident.to_string(),
+        identifier: derive_input.ident,
         structure: resource_structure,
     })
 }
@@ -55,7 +55,7 @@ fn parse_type_alias(item: parse::ParseStream) -> syn::Result<model::ResourceType
     item.parse::<syn::Token![;]>()?;
 
     Ok(model::ResourceType {
-        identifier: identifier.to_string(),
+        identifier,
         structure: model::ResourceStructure::TypeAlias(()),
     })
 }
@@ -70,7 +70,7 @@ mod tests {
 
         let actual = actual.unwrap();
         let expected = model::ResourceType {
-            identifier: String::from("MyUnit"),
+            identifier: quote::format_ident!("MyUnit"),
             structure: model::ResourceStructure::Unit,
         };
         assert_eq!(actual, expected);
@@ -83,7 +83,7 @@ mod tests {
 
         let actual = actual.unwrap();
         let expected = model::ResourceType {
-            identifier: String::from("MyTypeAlias"),
+            identifier: quote::format_ident!("MyTypeAlias"),
             structure: model::ResourceStructure::TypeAlias(()),
         };
         assert_eq!(actual, expected);
@@ -100,7 +100,7 @@ mod tests {
 
         let actual = actual.unwrap();
         let expected = model::ResourceType {
-            identifier: String::from("MyNamedFields"),
+            identifier: quote::format_ident!("MyNamedFields"),
             structure: model::ResourceStructure::NamedFields(vec![
                 (String::from("content"), ()),
                 (String::from("media_type"), ()),
@@ -117,7 +117,7 @@ mod tests {
 
         let actual = actual.unwrap();
         let expected = model::ResourceType {
-            identifier: String::from("MyTupleFields"),
+            identifier: quote::format_ident!("MyTupleFields"),
             structure: model::ResourceStructure::TupleFields(vec![(), ()]),
         };
         assert_eq!(actual, expected);

@@ -42,7 +42,7 @@ mod tests {
         let actual = main(
             item,
             model::FileIndex {
-                resource_type: String::from("Resource"),
+                resource_type: quote::format_ident!("Resource"),
                 forest,
                 generate_array: true,
             },

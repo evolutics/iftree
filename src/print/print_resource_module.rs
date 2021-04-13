@@ -63,7 +63,7 @@ mod tests {
         let forest = model::FileForest::new();
 
         let actual = main(&model::FileIndex {
-            resource_type: String::from("Resource"),
+            resource_type: quote::format_ident!("Resource"),
             forest,
             ..model::stubs::file_index()
         });
@@ -104,7 +104,7 @@ mod tests {
         .collect();
 
         let actual = main(&model::FileIndex {
-            resource_type: String::from("Resource"),
+            resource_type: quote::format_ident!("Resource"),
             forest,
             ..model::stubs::file_index()
         });
@@ -176,7 +176,7 @@ mod tests {
         .collect();
 
         let actual = main(&model::FileIndex {
-            resource_type: String::from("Resource"),
+            resource_type: quote::format_ident!("Resource"),
             forest,
             ..model::stubs::file_index()
         });
@@ -229,7 +229,7 @@ mod tests {
         .collect();
 
         let actual = main(&model::FileIndex {
-            resource_type: String::from("Resource"),
+            resource_type: quote::format_ident!("Resource"),
             forest,
             ..model::stubs::file_index()
         });

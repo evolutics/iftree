@@ -45,7 +45,7 @@ mod tests {
                 ..model::stubs::configuration()
             },
             model::ResourceType {
-                identifier: String::from("Resource"),
+                identifier: quote::format_ident!("Resource"),
                 structure: model::ResourceStructure::TypeAlias(()),
             },
         );
@@ -56,7 +56,7 @@ mod tests {
             .to_string_lossy()
             .into_owned();
         let expected = model::FileIndex {
-            resource_type: String::from("Resource"),
+            resource_type: quote::format_ident!("Resource"),
             forest: vec![(
                 String::from("r#examples"),
                 model::FileTree::Folder(

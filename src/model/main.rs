@@ -47,7 +47,7 @@ pub enum Template {
 
 #[derive(Clone, cmp::PartialEq, Debug)]
 pub struct ResourceType<T> {
-    pub identifier: String,
+    pub identifier: syn::Ident,
     pub structure: ResourceStructure<T>,
 }
 
@@ -61,7 +61,7 @@ pub enum ResourceStructure<T> {
 
 #[derive(Clone, cmp::PartialEq, Debug)]
 pub struct FileIndex {
-    pub resource_type: String,
+    pub resource_type: syn::Ident,
     pub forest: FileForest,
     pub generate_array: bool,
 }
@@ -131,7 +131,7 @@ pub mod stubs {
 
     pub fn file_index() -> FileIndex {
         FileIndex {
-            resource_type: String::from("Foo"),
+            resource_type: quote::format_ident!("Foo"),
             forest: FileForest::new(),
             generate_array: false,
         }
