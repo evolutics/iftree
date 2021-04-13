@@ -61,7 +61,7 @@ pub enum ResourceStructure<T> {
 
 #[derive(Clone, cmp::PartialEq, Debug)]
 pub struct FileIndex {
-    pub resource_type: syn::Ident,
+    pub resource_type: ResourceType<Template>,
     pub forest: FileForest,
     pub generate_array: bool,
 }
@@ -74,16 +74,14 @@ pub enum FileTree {
     Folder(FileForest),
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, cmp::PartialEq, Debug)]
 pub struct File {
     pub relative_path: RelativePath,
-    pub resource_term: ResourceTerm,
+    pub absolute_path: path::PathBuf,
 }
 
 #[derive(Clone, cmp::Eq, cmp::Ord, cmp::PartialEq, cmp::PartialOrd, Debug)]
 pub struct RelativePath(pub String);
-
-pub type ResourceTerm = ResourceStructure<proc_macro2::TokenStream>;
 
 pub type Result<T> = result::Result<T, Error>;
 
@@ -129,9 +127,16 @@ pub mod stubs {
         }
     }
 
+    pub fn resource_type<T>() -> ResourceType<T> {
+        ResourceType {
+            identifier: quote::format_ident!("Foo"),
+            structure: ResourceStructure::Unit,
+        }
+    }
+
     pub fn file_index() -> FileIndex {
         FileIndex {
-            resource_type: quote::format_ident!("Foo"),
+            resource_type: resource_type(),
             forest: FileForest::new(),
             generate_array: false,
         }
@@ -140,7 +145,7 @@ pub mod stubs {
     pub fn file() -> File {
         File {
             relative_path: RelativePath::from("bar"),
-            resource_term: ResourceTerm::Unit,
+            absolute_path: path::PathBuf::from("/foo/bar"),
         }
     }
 }

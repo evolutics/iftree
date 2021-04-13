@@ -1,36 +1,52 @@
+use super::print_field_term;
 use crate::model;
 
 pub fn main(
-    resource_type: &syn::Ident,
-    resource_term: &model::ResourceTerm,
+    resource_type: &model::ResourceType<model::Template>,
+    file: &model::File,
 ) -> proc_macro2::TokenStream {
-    match resource_term {
-        model::ResourceTerm::Unit => quote::quote! { #resource_type },
+    let type_identifier = &resource_type.identifier;
 
-        model::ResourceTerm::TypeAlias(term) => term.clone(),
+    let context = print_field_term::Context {
+        relative_path: &file.relative_path.0,
+        absolute_path: &file.absolute_path.to_string_lossy(),
+    };
 
-        model::ResourceTerm::NamedFields(fields) => {
-            let content: proc_macro2::TokenStream = fields
+    match &resource_type.structure {
+        model::ResourceStructure::Unit => quote::quote! { #type_identifier },
+
+        model::ResourceStructure::TypeAlias(template) => {
+            print_field_term::main(&template, &context)
+        }
+
+        model::ResourceStructure::NamedFields(named_templates) => {
+            let content: proc_macro2::TokenStream = named_templates
                 .iter()
-                .map(|(name, term)| {
+                .map(|(name, template)| {
                     let name = quote::format_ident!("{}", name);
+                    let term = print_field_term::main(template, &context);
                     quote::quote! { #name: #term, }
                 })
                 .collect();
 
             quote::quote! {
-                #resource_type {
+                #type_identifier {
                     #content
                 }
             }
         }
 
-        model::ResourceTerm::TupleFields(terms) => {
-            let content: proc_macro2::TokenStream =
-                terms.iter().map(|term| quote::quote! { #term, }).collect();
+        model::ResourceStructure::TupleFields(templates) => {
+            let content: proc_macro2::TokenStream = templates
+                .iter()
+                .map(|template| {
+                    let term = print_field_term::main(template, &context);
+                    quote::quote! { #term, }
+                })
+                .collect();
 
             quote::quote! {
-                #resource_type(
+                #type_identifier(
                     #content
                 )
             }
@@ -41,6 +57,34 @@ pub fn main(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::path;
+
+    #[test]
+    fn gets_template_context() {
+        let actual = main(
+            &model::ResourceType {
+                identifier: quote::format_ident!("Resource"),
+                structure: model::ResourceStructure::TupleFields(vec![
+                    model::Template::RelativePath,
+                    model::Template::Content,
+                ]),
+            },
+            &model::File {
+                relative_path: model::RelativePath::from("credits.md"),
+                absolute_path: path::PathBuf::from("/resources/credits.md"),
+            },
+        );
+
+        let actual = actual.to_string();
+        let expected = quote::quote! {
+            Resource(
+                "credits.md",
+                include_str!("/resources/credits.md"),
+            )
+        }
+        .to_string();
+        assert_eq!(actual, expected);
+    }
 
     #[cfg(test)]
     mod resource_cases {
@@ -49,27 +93,34 @@ mod tests {
         #[test]
         fn prints_unit() {
             let actual = main(
-                &quote::format_ident!("Resource"),
-                &model::ResourceTerm::Unit,
+                &model::ResourceType {
+                    identifier: quote::format_ident!("MyUnit"),
+                    structure: model::ResourceStructure::Unit,
+                },
+                &model::stubs::file(),
             );
 
             let actual = actual.to_string();
-            let expected = quote::quote! { Resource }.to_string();
+            let expected = quote::quote! { MyUnit }.to_string();
             assert_eq!(actual, expected);
         }
 
         #[test]
         fn prints_type_alias() {
             let actual = main(
-                &quote::format_ident!("Foo"),
-                &model::ResourceTerm::TypeAlias(quote::quote! {
-                    include_str!("/credits.md")
-                }),
+                &model::ResourceType {
+                    structure: model::ResourceStructure::TypeAlias(model::Template::Content),
+                    ..model::stubs::resource_type()
+                },
+                &model::File {
+                    absolute_path: path::PathBuf::from("/resources/credits.md"),
+                    ..model::stubs::file()
+                },
             );
 
             let actual = actual.to_string();
             let expected = quote::quote! {
-                include_str!("/credits.md")
+                include_str!("/resources/credits.md")
             }
             .to_string();
             assert_eq!(actual, expected);
@@ -78,24 +129,23 @@ mod tests {
         #[test]
         fn prints_named_fields() {
             let actual = main(
-                &quote::format_ident!("Resource"),
-                &model::ResourceTerm::NamedFields(vec![
-                    (
-                        String::from("content"),
-                        quote::quote! { include_str!("/credits.md") },
-                    ),
-                    (
-                        String::from("media_type"),
-                        quote::quote! { "text/markdown" },
-                    ),
-                ]),
+                &model::ResourceType {
+                    identifier: quote::format_ident!("MyNamedFields"),
+                    structure: model::ResourceStructure::NamedFields(vec![(
+                        String::from("raw_content"),
+                        model::Template::RawContent,
+                    )]),
+                },
+                &model::File {
+                    absolute_path: path::PathBuf::from("/resources/credits.md"),
+                    ..model::stubs::file()
+                },
             );
 
             let actual = actual.to_string();
             let expected = quote::quote! {
-                Resource {
-                    content: include_str!("/credits.md"),
-                    media_type: "text/markdown",
+                MyNamedFields {
+                    raw_content: include_bytes!("/resources/credits.md"),
                 }
             }
             .to_string();
@@ -105,18 +155,22 @@ mod tests {
         #[test]
         fn prints_tuple_fields() {
             let actual = main(
-                &quote::format_ident!("Resource"),
-                &model::ResourceTerm::TupleFields(vec![
-                    quote::quote! { include_str!("/credits.md") },
-                    quote::quote! { "text/markdown" },
-                ]),
+                &model::ResourceType {
+                    identifier: quote::format_ident!("MyTupleFields"),
+                    structure: model::ResourceStructure::TupleFields(vec![
+                        model::Template::RelativePath,
+                    ]),
+                },
+                &model::File {
+                    relative_path: model::RelativePath::from("credits.md"),
+                    ..model::stubs::file()
+                },
             );
 
             let actual = actual.to_string();
             let expected = quote::quote! {
-                Resource(
-                    include_str!("/credits.md"),
-                    "text/markdown",
+                MyTupleFields(
+                    "credits.md",
                 )
             }
             .to_string();

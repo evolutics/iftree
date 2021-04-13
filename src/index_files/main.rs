@@ -10,13 +10,13 @@ pub fn main(
     configuration: model::Configuration,
     resource_type: model::ResourceType<()>,
 ) -> model::Result<model::FileIndex> {
-    let templates = get_templates::main(&configuration, &resource_type.structure)?;
+    let resource_type = get_templates::main(&configuration, resource_type)?;
     let base_folder = get_base_folder::main(&configuration, &|name| env::var(name))?;
     let paths = get_paths::main(&configuration, &base_folder)?;
-    let files = get_files::main(&templates, &base_folder, paths)?;
+    let files = get_files::main(&base_folder, paths)?;
     let forest = get_forest::main(&configuration, files)?;
     Ok(model::FileIndex {
-        resource_type: resource_type.identifier,
+        resource_type,
         forest,
         generate_array: configuration.generate_array,
     })
@@ -51,12 +51,12 @@ mod tests {
         );
 
         let actual = actual.unwrap();
-        let absolute_path = fs::canonicalize("examples/resources/credits.md")
-            .unwrap()
-            .to_string_lossy()
-            .into_owned();
+        let absolute_path = fs::canonicalize("examples/resources/credits.md").unwrap();
         let expected = model::FileIndex {
-            resource_type: quote::format_ident!("Resource"),
+            resource_type: model::ResourceType {
+                identifier: quote::format_ident!("Resource"),
+                structure: model::ResourceStructure::TypeAlias(model::Template::Content),
+            },
             forest: vec![(
                 String::from("r#examples"),
                 model::FileTree::Folder(
@@ -69,9 +69,7 @@ mod tests {
                                     relative_path: model::RelativePath::from(
                                         "examples/resources/credits.md",
                                     ),
-                                    resource_term: model::ResourceTerm::TypeAlias(quote::quote! {
-                                        include_str!(#absolute_path)
-                                    }),
+                                    absolute_path,
                                 }),
                             )]
                             .into_iter()

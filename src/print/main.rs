@@ -21,6 +21,7 @@ pub fn main(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::path;
 
     #[test]
     fn prints() {
@@ -30,9 +31,7 @@ mod tests {
         let forest = vec![(
             String::from("CREDITS_MD"),
             model::FileTree::File(model::File {
-                resource_term: model::ResourceTerm::TypeAlias(quote::quote! {
-                    include_str!("/credits.md")
-                }),
+                absolute_path: path::PathBuf::from("/credits.md"),
                 ..model::stubs::file()
             }),
         )]
@@ -42,7 +41,10 @@ mod tests {
         let actual = main(
             item,
             model::FileIndex {
-                resource_type: quote::format_ident!("Resource"),
+                resource_type: model::ResourceType {
+                    identifier: quote::format_ident!("Resource"),
+                    structure: model::ResourceStructure::TypeAlias(model::Template::Content),
+                },
                 forest,
                 generate_array: true,
             },

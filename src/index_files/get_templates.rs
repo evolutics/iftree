@@ -1,58 +1,64 @@
 use crate::data;
 use crate::model;
 
-pub fn main<'a>(
-    configuration: &'a model::Configuration,
-    resource_structure: &model::ResourceStructure<()>,
-) -> model::Result<model::ResourceStructure<&'a model::Template>> {
-    Ok(match resource_structure {
-        model::ResourceStructure::Unit => model::ResourceStructure::Unit,
+pub fn main(
+    configuration: &model::Configuration,
+    resource_type: model::ResourceType<()>,
+) -> model::Result<model::ResourceType<model::Template>> {
+    Ok(model::ResourceType {
+        identifier: resource_type.identifier,
 
-        model::ResourceStructure::TypeAlias(_) => model::ResourceStructure::TypeAlias(
-            get_template(configuration, model::FieldIdentifier::Anonymous)?,
-        ),
+        structure: match resource_type.structure {
+            model::ResourceStructure::Unit => model::ResourceStructure::Unit,
 
-        model::ResourceStructure::NamedFields(names) => model::ResourceStructure::NamedFields(
-            names
-                .iter()
-                .map(|(name, _)| {
-                    Ok((
-                        name.clone(),
-                        get_template(
-                            configuration,
-                            model::FieldIdentifier::Named(String::from(name)),
-                        )?,
-                    ))
-                })
-                .collect::<model::Result<_>>()?,
-        ),
+            model::ResourceStructure::TypeAlias(_) => model::ResourceStructure::TypeAlias(
+                get_template(configuration, model::FieldIdentifier::Anonymous)?,
+            ),
 
-        model::ResourceStructure::TupleFields(structure) => model::ResourceStructure::TupleFields(
-            structure
-                .iter()
-                .enumerate()
-                .map(|(index, _)| {
-                    get_template(configuration, model::FieldIdentifier::Indexed(index))
-                })
-                .collect::<model::Result<_>>()?,
-        ),
+            model::ResourceStructure::NamedFields(names) => model::ResourceStructure::NamedFields(
+                names
+                    .iter()
+                    .map(|(name, _)| {
+                        Ok((
+                            name.clone(),
+                            get_template(
+                                configuration,
+                                model::FieldIdentifier::Named(String::from(name)),
+                            )?,
+                        ))
+                    })
+                    .collect::<model::Result<_>>()?,
+            ),
+
+            model::ResourceStructure::TupleFields(structure) => {
+                model::ResourceStructure::TupleFields(
+                    structure
+                        .iter()
+                        .enumerate()
+                        .map(|(index, _)| {
+                            get_template(configuration, model::FieldIdentifier::Indexed(index))
+                        })
+                        .collect::<model::Result<_>>()?,
+                )
+            }
+        },
     })
 }
 
 fn get_template(
     configuration: &model::Configuration,
     identifier: model::FieldIdentifier,
-) -> model::Result<&model::Template> {
+) -> model::Result<model::Template> {
     match configuration.field_templates.get(&identifier) {
         None => {
             let name = String::from(identifier.clone());
             match data::PREDEFINED_TEMPLATES_ORDERED.binary_search_by(|entry| entry.0.cmp(&name)) {
                 Err(_) => Err(model::Error::MissingFieldTemplate(identifier)),
-                Ok(index) => Ok(&data::PREDEFINED_TEMPLATES_ORDERED[index].1),
+                Ok(index) => Ok(data::PREDEFINED_TEMPLATES_ORDERED[index].1.clone()),
             }
         }
 
-        Some(template) => Ok(template),
+        Some(template) => Ok(template.clone()),
     }
 }
 
@@ -67,7 +73,13 @@ mod tests {
             ..model::stubs::configuration()
         };
 
-        let actual = main(&configuration, &model::ResourceStructure::TypeAlias(()));
+        let actual = main(
+            &configuration,
+            model::ResourceType {
+                structure: model::ResourceStructure::TypeAlias(()),
+                ..model::stubs::resource_type()
+            },
+        );
 
         let actual = actual.unwrap_err();
         let expected = model::Error::MissingFieldTemplate(model::FieldIdentifier::Anonymous);
@@ -83,14 +95,23 @@ mod tests {
 
         let actual = main(
             &configuration,
-            &model::ResourceStructure::NamedFields(vec![(String::from("content"), ())]),
+            model::ResourceType {
+                identifier: quote::format_ident!("Resource"),
+                structure: model::ResourceStructure::NamedFields(vec![(
+                    String::from("content"),
+                    (),
+                )]),
+            },
         );
 
         let actual = actual.unwrap();
-        let expected = model::ResourceStructure::NamedFields(vec![(
-            String::from("content"),
-            &model::Template::Content,
-        )]);
+        let expected = model::ResourceType {
+            identifier: quote::format_ident!("Resource"),
+            structure: model::ResourceStructure::NamedFields(vec![(
+                String::from("content"),
+                model::Template::Content,
+            )]),
+        };
         assert_eq!(actual, expected);
     }
 
@@ -108,14 +129,23 @@ mod tests {
 
         let actual = main(
             &configuration,
-            &model::ResourceStructure::NamedFields(vec![(String::from("content"), ())]),
+            model::ResourceType {
+                identifier: quote::format_ident!("Resource"),
+                structure: model::ResourceStructure::NamedFields(vec![(
+                    String::from("content"),
+                    (),
+                )]),
+            },
         );
 
         let actual = actual.unwrap();
-        let expected = model::ResourceStructure::NamedFields(vec![(
-            String::from("content"),
-            &model::Template::RawContent,
-        )]);
+        let expected = model::ResourceType {
+            identifier: quote::format_ident!("Resource"),
+            structure: model::ResourceStructure::NamedFields(vec![(
+                String::from("content"),
+                model::Template::RawContent,
+            )]),
+        };
         assert_eq!(actual, expected);
     }
 
@@ -127,10 +157,19 @@ mod tests {
         fn gets_unit() {
             let configuration = model::stubs::configuration();
 
-            let actual = main(&configuration, &model::ResourceStructure::Unit);
+            let actual = main(
+                &configuration,
+                model::ResourceType {
+                    identifier: quote::format_ident!("MyUnit"),
+                    structure: model::ResourceStructure::Unit,
+                },
+            );
 
             let actual = actual.unwrap();
-            let expected = model::ResourceStructure::Unit;
+            let expected = model::ResourceType {
+                identifier: quote::format_ident!("MyUnit"),
+                structure: model::ResourceStructure::Unit,
+            };
             assert_eq!(actual, expected);
         }
 
@@ -146,10 +185,19 @@ mod tests {
                 ..model::stubs::configuration()
             };
 
-            let actual = main(&configuration, &model::ResourceStructure::TypeAlias(()));
+            let actual = main(
+                &configuration,
+                model::ResourceType {
+                    identifier: quote::format_ident!("MyTypeAlias"),
+                    structure: model::ResourceStructure::TypeAlias(()),
+                },
+            );
 
             let actual = actual.unwrap();
-            let expected = model::ResourceStructure::TypeAlias(&model::Template::Content);
+            let expected = model::ResourceType {
+                identifier: quote::format_ident!("MyTypeAlias"),
+                structure: model::ResourceStructure::TypeAlias(model::Template::Content),
+            };
             assert_eq!(actual, expected);
         }
 
@@ -167,14 +215,23 @@ mod tests {
 
             let actual = main(
                 &configuration,
-                &model::ResourceStructure::NamedFields(vec![(String::from("my_content"), ())]),
+                model::ResourceType {
+                    identifier: quote::format_ident!("MyNamedFields"),
+                    structure: model::ResourceStructure::NamedFields(vec![(
+                        String::from("my_content"),
+                        (),
+                    )]),
+                },
             );
 
             let actual = actual.unwrap();
-            let expected = model::ResourceStructure::NamedFields(vec![(
-                String::from("my_content"),
-                &model::Template::RawContent,
-            )]);
+            let expected = model::ResourceType {
+                identifier: quote::format_ident!("MyNamedFields"),
+                structure: model::ResourceStructure::NamedFields(vec![(
+                    String::from("my_content"),
+                    model::Template::RawContent,
+                )]),
+            };
             assert_eq!(actual, expected);
         }
 
@@ -192,12 +249,19 @@ mod tests {
 
             let actual = main(
                 &configuration,
-                &model::ResourceStructure::TupleFields(vec![()]),
+                model::ResourceType {
+                    identifier: quote::format_ident!("MyTupleFields"),
+                    structure: model::ResourceStructure::TupleFields(vec![()]),
+                },
             );
 
             let actual = actual.unwrap();
-            let expected =
-                model::ResourceStructure::TupleFields(vec![&model::Template::RelativePath]);
+            let expected = model::ResourceType {
+                identifier: quote::format_ident!("MyTupleFields"),
+                structure: model::ResourceStructure::TupleFields(vec![
+                    model::Template::RelativePath,
+                ]),
+            };
             assert_eq!(actual, expected);
         }
     }

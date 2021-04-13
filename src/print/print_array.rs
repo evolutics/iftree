@@ -15,13 +15,13 @@ fn generate(file_index: &model::FileIndex) -> proc_macro2::TokenStream {
     let mut array = vec![];
     visit_file_forest::main(&visitor, &file_index.forest, &mut array);
 
-    let resource_type = &file_index.resource_type;
+    let type_identifier = &file_index.resource_type.identifier;
     array.sort_unstable_by_key(|entry| entry.relative_path);
     let length = array.len();
     let content: proc_macro2::TokenStream = array.into_iter().map(|entry| entry.tokens).collect();
 
     quote::quote! {
-        pub static ARRAY: [&#resource_type; #length] = [
+        pub static ARRAY: [&#type_identifier; #length] = [
             #content
         ];
     }
@@ -72,7 +72,10 @@ mod tests {
         let forest = model::FileForest::new();
 
         let actual = main(&model::FileIndex {
-            resource_type: quote::format_ident!("Resource"),
+            resource_type: model::ResourceType {
+                identifier: quote::format_ident!("Resource"),
+                ..model::stubs::resource_type()
+            },
             forest,
             generate_array: true,
         });
@@ -107,7 +110,10 @@ mod tests {
         .collect();
 
         let actual = main(&model::FileIndex {
-            resource_type: quote::format_ident!("Resource"),
+            resource_type: model::ResourceType {
+                identifier: quote::format_ident!("Resource"),
+                ..model::stubs::resource_type()
+            },
             forest,
             generate_array: true,
         });
@@ -172,7 +178,10 @@ mod tests {
         .collect();
 
         let actual = main(&model::FileIndex {
-            resource_type: quote::format_ident!("Resource"),
+            resource_type: model::ResourceType {
+                identifier: quote::format_ident!("Resource"),
+                ..model::stubs::resource_type()
+            },
             forest,
             generate_array: true,
         });
@@ -218,7 +227,10 @@ mod tests {
         .collect();
 
         let actual = main(&model::FileIndex {
-            resource_type: quote::format_ident!("Resource"),
+            resource_type: model::ResourceType {
+                identifier: quote::format_ident!("Resource"),
+                ..model::stubs::resource_type()
+            },
             forest,
             generate_array: true,
         });

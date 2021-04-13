@@ -77,7 +77,7 @@ mod tests {
         use super::*;
 
         #[test]
-        fn renders_content() {
+        fn prints_content() {
             let actual = main(
                 &model::Template::Content,
                 &Context {
@@ -95,7 +95,7 @@ mod tests {
         }
 
         #[test]
-        fn renders_get_content() {
+        fn prints_get_content() {
             let actual = main(
                 &model::Template::GetContent,
                 &Context {
@@ -121,7 +121,7 @@ mod tests {
         }
 
         #[test]
-        fn renders_get_raw_content() {
+        fn prints_get_raw_content() {
             let actual = main(
                 &model::Template::GetRawContent,
                 &Context {
@@ -147,7 +147,7 @@ mod tests {
         }
 
         #[test]
-        fn renders_raw_content() {
+        fn prints_raw_content() {
             let actual = main(
                 &model::Template::RawContent,
                 &Context {
@@ -165,7 +165,7 @@ mod tests {
         }
 
         #[test]
-        fn renders_relative_path() {
+        fn prints_relative_path() {
             let actual = main(
                 &model::Template::RelativePath,
                 &Context {
@@ -187,7 +187,7 @@ mod tests {
         use super::*;
 
         #[test]
-        fn renders_macro() {
+        fn prints_macro() {
             let actual = main(
                 &model::Template::Custom(String::from("my_include")),
                 &Context {
