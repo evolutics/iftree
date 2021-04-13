@@ -8,7 +8,7 @@ use std::env;
 
 pub fn main(
     configuration: model::Configuration,
-    resource_type: model::ResourceType,
+    resource_type: model::ResourceType<()>,
 ) -> model::Result<model::FileIndex> {
     let templates = get_templates::main(&configuration, &resource_type.structure)?;
     let base_folder = get_base_folder::main(&configuration, &|name| env::var(name))?;

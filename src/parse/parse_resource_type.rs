@@ -1,7 +1,7 @@
 use crate::model;
 use syn::parse;
 
-impl parse::Parse for model::ResourceType {
+impl parse::Parse for model::ResourceType<()> {
     fn parse(item: parse::ParseStream) -> syn::Result<Self> {
         item.call(syn::Attribute::parse_outer)?;
         item.parse::<syn::Visibility>()?;
@@ -17,7 +17,7 @@ impl parse::Parse for model::ResourceType {
     }
 }
 
-fn parse_structure(item: parse::ParseStream) -> syn::Result<model::ResourceType> {
+fn parse_structure(item: parse::ParseStream) -> syn::Result<model::ResourceType<()>> {
     let derive_input = item.parse::<syn::DeriveInput>()?;
 
     let structure = match derive_input.data {
@@ -47,7 +47,7 @@ fn parse_structure(item: parse::ParseStream) -> syn::Result<model::ResourceType>
     })
 }
 
-fn parse_type_alias(item: parse::ParseStream) -> syn::Result<model::ResourceType> {
+fn parse_type_alias(item: parse::ParseStream) -> syn::Result<model::ResourceType<()>> {
     item.parse::<syn::Token![type]>()?;
     let identifier = item.parse::<syn::Ident>()?;
     item.parse::<syn::Token![=]>()?;
@@ -66,7 +66,7 @@ mod tests {
 
     #[test]
     fn parses_unit() {
-        let actual = syn::parse_str::<model::ResourceType>("pub struct MyUnit;");
+        let actual = syn::parse_str::<model::ResourceType<()>>("pub struct MyUnit;");
 
         let actual = actual.unwrap();
         let expected = model::ResourceType {
@@ -78,7 +78,8 @@ mod tests {
 
     #[test]
     fn parses_type_alias() {
-        let actual = syn::parse_str::<model::ResourceType>("pub type MyTypeAlias = &'static str;");
+        let actual =
+            syn::parse_str::<model::ResourceType<()>>("pub type MyTypeAlias = &'static str;");
 
         let actual = actual.unwrap();
         let expected = model::ResourceType {
@@ -90,7 +91,7 @@ mod tests {
 
     #[test]
     fn parses_named_fields() {
-        let actual = syn::parse_str::<model::ResourceType>(
+        let actual = syn::parse_str::<model::ResourceType<()>>(
             "pub struct MyNamedFields {
     content: &'static str,
     media_type: &'static str,
@@ -110,8 +111,9 @@ mod tests {
 
     #[test]
     fn parses_tuple_fields() {
-        let actual =
-            syn::parse_str::<model::ResourceType>("pub struct MyTupleFields(usize, &'static str);");
+        let actual = syn::parse_str::<model::ResourceType<()>>(
+            "pub struct MyTupleFields(usize, &'static str);",
+        );
 
         let actual = actual.unwrap();
         let expected = model::ResourceType {
@@ -123,7 +125,7 @@ mod tests {
 
     #[test]
     fn given_unexpected_item_it_errs() {
-        let actual = syn::parse_str::<model::ResourceType>("pub fn do_it() {}");
+        let actual = syn::parse_str::<model::ResourceType<()>>("pub fn do_it() {}");
 
         let actual = actual.unwrap_err().to_string();
         assert_eq!(actual, "expected `struct` or `type`");
@@ -131,7 +133,7 @@ mod tests {
 
     #[test]
     fn given_valid_but_unexpected_derive_input_it_errs() {
-        let actual = syn::parse_str::<model::ResourceType>(
+        let actual = syn::parse_str::<model::ResourceType<()>>(
             "pub union MyUnion {
     integer: u32,
     floating: f32,
