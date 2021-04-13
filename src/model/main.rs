@@ -48,10 +48,8 @@ pub enum Template {
 #[derive(Clone, cmp::PartialEq, Debug)]
 pub struct ResourceType {
     pub identifier: String,
-    pub structure: ResourceTypeStructure,
+    pub structure: AbstractResource<()>,
 }
-
-pub type ResourceTypeStructure = AbstractResource<()>;
 
 #[derive(Clone, cmp::Eq, cmp::Ord, cmp::PartialEq, cmp::PartialOrd, Debug)]
 pub enum AbstractResource<T> {

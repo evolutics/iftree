@@ -3,16 +3,17 @@ use crate::model;
 
 pub fn main<'a>(
     configuration: &'a model::Configuration,
-    resource_structure: &model::ResourceTypeStructure,
+    resource_structure: &model::AbstractResource<()>,
 ) -> model::Result<model::AbstractResource<&'a model::Template>> {
     Ok(match resource_structure {
-        model::ResourceTypeStructure::Unit => model::AbstractResource::Unit,
+        model::AbstractResource::Unit => model::AbstractResource::Unit,
 
-        model::ResourceTypeStructure::TypeAlias(_) => model::AbstractResource::TypeAlias(
-            get_template(configuration, model::FieldIdentifier::Anonymous)?,
-        ),
+        model::AbstractResource::TypeAlias(_) => model::AbstractResource::TypeAlias(get_template(
+            configuration,
+            model::FieldIdentifier::Anonymous,
+        )?),
 
-        model::ResourceTypeStructure::NamedFields(names) => model::AbstractResource::NamedFields(
+        model::AbstractResource::NamedFields(names) => model::AbstractResource::NamedFields(
             names
                 .iter()
                 .map(|(name, _)| {
@@ -27,17 +28,15 @@ pub fn main<'a>(
                 .collect::<model::Result<_>>()?,
         ),
 
-        model::ResourceTypeStructure::TupleFields(structure) => {
-            model::AbstractResource::TupleFields(
-                structure
-                    .iter()
-                    .enumerate()
-                    .map(|(index, _)| {
-                        get_template(configuration, model::FieldIdentifier::Indexed(index))
-                    })
-                    .collect::<model::Result<_>>()?,
-            )
-        }
+        model::AbstractResource::TupleFields(structure) => model::AbstractResource::TupleFields(
+            structure
+                .iter()
+                .enumerate()
+                .map(|(index, _)| {
+                    get_template(configuration, model::FieldIdentifier::Indexed(index))
+                })
+                .collect::<model::Result<_>>()?,
+        ),
     })
 }
 
@@ -69,7 +68,7 @@ mod tests {
             ..model::stubs::configuration()
         };
 
-        let actual = main(&configuration, &model::ResourceTypeStructure::TypeAlias(()));
+        let actual = main(&configuration, &model::AbstractResource::TypeAlias(()));
 
         let actual = actual.unwrap_err();
         let expected = model::Error::MissingFieldTemplate(model::FieldIdentifier::Anonymous);
@@ -85,7 +84,7 @@ mod tests {
 
         let actual = main(
             &configuration,
-            &model::ResourceTypeStructure::NamedFields(vec![(String::from("content"), ())]),
+            &model::AbstractResource::NamedFields(vec![(String::from("content"), ())]),
         );
 
         let actual = actual.unwrap();
@@ -110,7 +109,7 @@ mod tests {
 
         let actual = main(
             &configuration,
-            &model::ResourceTypeStructure::NamedFields(vec![(String::from("content"), ())]),
+            &model::AbstractResource::NamedFields(vec![(String::from("content"), ())]),
         );
 
         let actual = actual.unwrap();
@@ -129,7 +128,7 @@ mod tests {
         fn gets_unit() {
             let configuration = model::stubs::configuration();
 
-            let actual = main(&configuration, &model::ResourceTypeStructure::Unit);
+            let actual = main(&configuration, &model::AbstractResource::Unit);
 
             let actual = actual.unwrap();
             let expected = model::AbstractResource::Unit;
@@ -148,7 +147,7 @@ mod tests {
                 ..model::stubs::configuration()
             };
 
-            let actual = main(&configuration, &model::ResourceTypeStructure::TypeAlias(()));
+            let actual = main(&configuration, &model::AbstractResource::TypeAlias(()));
 
             let actual = actual.unwrap();
             let expected = model::AbstractResource::TypeAlias(&model::Template::Content);
@@ -169,7 +168,7 @@ mod tests {
 
             let actual = main(
                 &configuration,
-                &model::ResourceTypeStructure::NamedFields(vec![(String::from("my_content"), ())]),
+                &model::AbstractResource::NamedFields(vec![(String::from("my_content"), ())]),
             );
 
             let actual = actual.unwrap();
@@ -194,7 +193,7 @@ mod tests {
 
             let actual = main(
                 &configuration,
-                &model::ResourceTypeStructure::TupleFields(vec![()]),
+                &model::AbstractResource::TupleFields(vec![()]),
             );
 
             let actual = actual.unwrap();
