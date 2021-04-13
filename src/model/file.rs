@@ -8,22 +8,22 @@ impl PartialEq for main::File {
     }
 }
 
-fn comparable_resource_term(resource_term: &main::ResourceTerm) -> main::AbstractResource<String> {
+fn comparable_resource_term(resource_term: &main::ResourceTerm) -> main::ResourceStructure<String> {
     match resource_term {
-        main::ResourceTerm::Unit => main::AbstractResource::Unit,
+        main::ResourceTerm::Unit => main::ResourceStructure::Unit,
 
-        main::ResourceTerm::TypeAlias(term) => main::AbstractResource::TypeAlias(term.to_string()),
+        main::ResourceTerm::TypeAlias(term) => main::ResourceStructure::TypeAlias(term.to_string()),
 
-        main::ResourceTerm::NamedFields(fields) => main::AbstractResource::NamedFields(
+        main::ResourceTerm::NamedFields(fields) => main::ResourceStructure::NamedFields(
             fields
                 .iter()
                 .map(|(name, term)| (name.clone(), term.to_string()))
                 .collect(),
         ),
 
-        main::ResourceTerm::TupleFields(terms) => {
-            main::AbstractResource::TupleFields(terms.iter().map(|term| term.to_string()).collect())
-        }
+        main::ResourceTerm::TupleFields(terms) => main::ResourceStructure::TupleFields(
+            terms.iter().map(|term| term.to_string()).collect(),
+        ),
     }
 }
 

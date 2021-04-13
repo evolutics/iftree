@@ -3,17 +3,16 @@ use crate::model;
 
 pub fn main<'a>(
     configuration: &'a model::Configuration,
-    resource_structure: &model::AbstractResource<()>,
-) -> model::Result<model::AbstractResource<&'a model::Template>> {
+    resource_structure: &model::ResourceStructure<()>,
+) -> model::Result<model::ResourceStructure<&'a model::Template>> {
     Ok(match resource_structure {
-        model::AbstractResource::Unit => model::AbstractResource::Unit,
+        model::ResourceStructure::Unit => model::ResourceStructure::Unit,
 
-        model::AbstractResource::TypeAlias(_) => model::AbstractResource::TypeAlias(get_template(
-            configuration,
-            model::FieldIdentifier::Anonymous,
-        )?),
+        model::ResourceStructure::TypeAlias(_) => model::ResourceStructure::TypeAlias(
+            get_template(configuration, model::FieldIdentifier::Anonymous)?,
+        ),
 
-        model::AbstractResource::NamedFields(names) => model::AbstractResource::NamedFields(
+        model::ResourceStructure::NamedFields(names) => model::ResourceStructure::NamedFields(
             names
                 .iter()
                 .map(|(name, _)| {
@@ -28,7 +27,7 @@ pub fn main<'a>(
                 .collect::<model::Result<_>>()?,
         ),
 
-        model::AbstractResource::TupleFields(structure) => model::AbstractResource::TupleFields(
+        model::ResourceStructure::TupleFields(structure) => model::ResourceStructure::TupleFields(
             structure
                 .iter()
                 .enumerate()
@@ -68,7 +67,7 @@ mod tests {
             ..model::stubs::configuration()
         };
 
-        let actual = main(&configuration, &model::AbstractResource::TypeAlias(()));
+        let actual = main(&configuration, &model::ResourceStructure::TypeAlias(()));
 
         let actual = actual.unwrap_err();
         let expected = model::Error::MissingFieldTemplate(model::FieldIdentifier::Anonymous);
@@ -84,11 +83,11 @@ mod tests {
 
         let actual = main(
             &configuration,
-            &model::AbstractResource::NamedFields(vec![(String::from("content"), ())]),
+            &model::ResourceStructure::NamedFields(vec![(String::from("content"), ())]),
         );
 
         let actual = actual.unwrap();
-        let expected = model::AbstractResource::NamedFields(vec![(
+        let expected = model::ResourceStructure::NamedFields(vec![(
             String::from("content"),
             &model::Template::Content,
         )]);
@@ -109,11 +108,11 @@ mod tests {
 
         let actual = main(
             &configuration,
-            &model::AbstractResource::NamedFields(vec![(String::from("content"), ())]),
+            &model::ResourceStructure::NamedFields(vec![(String::from("content"), ())]),
         );
 
         let actual = actual.unwrap();
-        let expected = model::AbstractResource::NamedFields(vec![(
+        let expected = model::ResourceStructure::NamedFields(vec![(
             String::from("content"),
             &model::Template::RawContent,
         )]);
@@ -128,10 +127,10 @@ mod tests {
         fn gets_unit() {
             let configuration = model::stubs::configuration();
 
-            let actual = main(&configuration, &model::AbstractResource::Unit);
+            let actual = main(&configuration, &model::ResourceStructure::Unit);
 
             let actual = actual.unwrap();
-            let expected = model::AbstractResource::Unit;
+            let expected = model::ResourceStructure::Unit;
             assert_eq!(actual, expected);
         }
 
@@ -147,10 +146,10 @@ mod tests {
                 ..model::stubs::configuration()
             };
 
-            let actual = main(&configuration, &model::AbstractResource::TypeAlias(()));
+            let actual = main(&configuration, &model::ResourceStructure::TypeAlias(()));
 
             let actual = actual.unwrap();
-            let expected = model::AbstractResource::TypeAlias(&model::Template::Content);
+            let expected = model::ResourceStructure::TypeAlias(&model::Template::Content);
             assert_eq!(actual, expected);
         }
 
@@ -168,11 +167,11 @@ mod tests {
 
             let actual = main(
                 &configuration,
-                &model::AbstractResource::NamedFields(vec![(String::from("my_content"), ())]),
+                &model::ResourceStructure::NamedFields(vec![(String::from("my_content"), ())]),
             );
 
             let actual = actual.unwrap();
-            let expected = model::AbstractResource::NamedFields(vec![(
+            let expected = model::ResourceStructure::NamedFields(vec![(
                 String::from("my_content"),
                 &model::Template::RawContent,
             )]);
@@ -193,12 +192,12 @@ mod tests {
 
             let actual = main(
                 &configuration,
-                &model::AbstractResource::TupleFields(vec![()]),
+                &model::ResourceStructure::TupleFields(vec![()]),
             );
 
             let actual = actual.unwrap();
             let expected =
-                model::AbstractResource::TupleFields(vec![&model::Template::RelativePath]);
+                model::ResourceStructure::TupleFields(vec![&model::Template::RelativePath]);
             assert_eq!(actual, expected);
         }
     }

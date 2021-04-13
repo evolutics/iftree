@@ -4,7 +4,7 @@ use std::path;
 use std::vec;
 
 pub fn main(
-    templates: &model::AbstractResource<&model::Template>,
+    templates: &model::ResourceStructure<&model::Template>,
     base_folder: &path::Path,
     paths: vec::Vec<path::PathBuf>,
 ) -> model::Result<vec::Vec<model::File>> {
@@ -15,7 +15,7 @@ pub fn main(
 }
 
 fn get_file(
-    templates: &model::AbstractResource<&model::Template>,
+    templates: &model::ResourceStructure<&model::Template>,
     base_folder: &path::Path,
     absolute_path: path::PathBuf,
 ) -> model::Result<model::File> {
@@ -28,14 +28,14 @@ fn get_file(
     };
 
     let resource_term = match templates {
-        model::AbstractResource::Unit => model::AbstractResource::Unit,
+        model::ResourceStructure::Unit => model::ResourceStructure::Unit,
 
-        model::AbstractResource::TypeAlias(template) => {
-            model::AbstractResource::TypeAlias(render_field_template::main(template, &context))
+        model::ResourceStructure::TypeAlias(template) => {
+            model::ResourceStructure::TypeAlias(render_field_template::main(template, &context))
         }
 
-        model::AbstractResource::NamedFields(named_templates) => {
-            model::AbstractResource::NamedFields(
+        model::ResourceStructure::NamedFields(named_templates) => {
+            model::ResourceStructure::NamedFields(
                 named_templates
                     .iter()
                     .map(|(name, template)| {
@@ -48,7 +48,7 @@ fn get_file(
             )
         }
 
-        model::AbstractResource::TupleFields(templates) => model::AbstractResource::TupleFields(
+        model::ResourceStructure::TupleFields(templates) => model::ResourceStructure::TupleFields(
             templates
                 .iter()
                 .map(|template| render_field_template::main(template, &context))
@@ -69,7 +69,7 @@ mod tests {
     #[test]
     fn gets_template_context() {
         let actual = main(
-            &model::AbstractResource::TupleFields(vec![
+            &model::ResourceStructure::TupleFields(vec![
                 &model::Template::RelativePath,
                 &model::Template::Content,
             ]),
@@ -99,7 +99,7 @@ mod tests {
         #[test]
         fn gets_unit() {
             let actual = main(
-                &model::AbstractResource::Unit,
+                &model::ResourceStructure::Unit,
                 path::Path::new("/resources"),
                 vec![
                     path::PathBuf::from("/resources/world/physical_constants.json"),
@@ -124,7 +124,7 @@ mod tests {
         #[test]
         fn gets_type_alias() {
             let actual = main(
-                &model::AbstractResource::TypeAlias(&model::Template::Content),
+                &model::ResourceStructure::TypeAlias(&model::Template::Content),
                 path::Path::new("/resources"),
                 vec![
                     path::PathBuf::from("/resources/world/physical_constants.json"),
@@ -153,7 +153,7 @@ mod tests {
         #[test]
         fn gets_named_fields() {
             let actual = main(
-                &model::AbstractResource::NamedFields(vec![(
+                &model::ResourceStructure::NamedFields(vec![(
                     String::from("content"),
                     &model::Template::Content,
                 )]),
@@ -191,7 +191,7 @@ mod tests {
         #[test]
         fn gets_tuple_fields() {
             let actual = main(
-                &model::AbstractResource::TupleFields(vec![&model::Template::Content]),
+                &model::ResourceStructure::TupleFields(vec![&model::Template::Content]),
                 path::Path::new("/resources"),
                 vec![
                     path::PathBuf::from("/resources/world/physical_constants.json"),

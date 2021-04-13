@@ -26,9 +26,9 @@ fn parse_structure(item: parse::ParseStream) -> syn::Result<model::ResourceType>
     }?;
 
     let resource_structure = match structure.fields {
-        syn::Fields::Unit => model::AbstractResource::Unit,
+        syn::Fields::Unit => model::ResourceStructure::Unit,
 
-        syn::Fields::Named(fields) => model::AbstractResource::NamedFields(
+        syn::Fields::Named(fields) => model::ResourceStructure::NamedFields(
             fields
                 .named
                 .into_iter()
@@ -37,7 +37,7 @@ fn parse_structure(item: parse::ParseStream) -> syn::Result<model::ResourceType>
         ),
 
         syn::Fields::Unnamed(fields) => {
-            model::AbstractResource::TupleFields(fields.unnamed.iter().map(|_| ()).collect())
+            model::ResourceStructure::TupleFields(fields.unnamed.iter().map(|_| ()).collect())
         }
     };
 
@@ -56,7 +56,7 @@ fn parse_type_alias(item: parse::ParseStream) -> syn::Result<model::ResourceType
 
     Ok(model::ResourceType {
         identifier: identifier.to_string(),
-        structure: model::AbstractResource::TypeAlias(()),
+        structure: model::ResourceStructure::TypeAlias(()),
     })
 }
 
@@ -71,7 +71,7 @@ mod tests {
         let actual = actual.unwrap();
         let expected = model::ResourceType {
             identifier: String::from("MyUnit"),
-            structure: model::AbstractResource::Unit,
+            structure: model::ResourceStructure::Unit,
         };
         assert_eq!(actual, expected);
     }
@@ -83,7 +83,7 @@ mod tests {
         let actual = actual.unwrap();
         let expected = model::ResourceType {
             identifier: String::from("MyTypeAlias"),
-            structure: model::AbstractResource::TypeAlias(()),
+            structure: model::ResourceStructure::TypeAlias(()),
         };
         assert_eq!(actual, expected);
     }
@@ -100,7 +100,7 @@ mod tests {
         let actual = actual.unwrap();
         let expected = model::ResourceType {
             identifier: String::from("MyNamedFields"),
-            structure: model::AbstractResource::NamedFields(vec![
+            structure: model::ResourceStructure::NamedFields(vec![
                 (String::from("content"), ()),
                 (String::from("media_type"), ()),
             ]),
@@ -116,7 +116,7 @@ mod tests {
         let actual = actual.unwrap();
         let expected = model::ResourceType {
             identifier: String::from("MyTupleFields"),
-            structure: model::AbstractResource::TupleFields(vec![(), ()]),
+            structure: model::ResourceStructure::TupleFields(vec![(), ()]),
         };
         assert_eq!(actual, expected);
     }

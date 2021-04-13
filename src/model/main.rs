@@ -48,11 +48,11 @@ pub enum Template {
 #[derive(Clone, cmp::PartialEq, Debug)]
 pub struct ResourceType {
     pub identifier: String,
-    pub structure: AbstractResource<()>,
+    pub structure: ResourceStructure<()>,
 }
 
 #[derive(Clone, cmp::Eq, cmp::Ord, cmp::PartialEq, cmp::PartialOrd, Debug)]
-pub enum AbstractResource<T> {
+pub enum ResourceStructure<T> {
     Unit,
     TypeAlias(T),
     NamedFields(vec::Vec<(String, T)>),
@@ -83,7 +83,7 @@ pub struct File {
 #[derive(Clone, cmp::Eq, cmp::Ord, cmp::PartialEq, cmp::PartialOrd, Debug)]
 pub struct RelativePath(pub String);
 
-pub type ResourceTerm = AbstractResource<proc_macro2::TokenStream>;
+pub type ResourceTerm = ResourceStructure<proc_macro2::TokenStream>;
 
 pub type Result<T> = result::Result<T, Error>;
 
