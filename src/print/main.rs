@@ -55,9 +55,7 @@ mod tests {
             pub type Resource = &'static str;
 
             pub mod base {
-                use super::Resource;
-
-                pub static CREDITS_MD: Resource = include_str!("/credits.md");
+                pub static CREDITS_MD: super::Resource = include_str!("/credits.md");
             }
 
             pub static ARRAY: [&Resource; 1usize] = [

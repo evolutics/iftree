@@ -14,11 +14,12 @@ impl visit_file_forest::Visitor<'_> for model::ResourceType<model::Template> {
 
     fn file(&self, file: &model::File, path: &[&str], stack: &mut Self::State) {
         let name = quote::format_ident!("{}", path.last().unwrap());
+        let root_path = path.iter().map(|_| quote::quote! { super:: }).collect();
         let type_identifier = &self.identifier;
-        let term = print_resource_term::main(self, file);
+        let term = print_resource_term::main(self, file, &root_path);
 
         let tokens = quote::quote! {
-            pub static #name: #type_identifier = #term;
+            pub static #name: #root_path#type_identifier = #term;
         };
 
         stack.last_mut().unwrap().extend(tokens);
@@ -31,13 +32,10 @@ impl visit_file_forest::Visitor<'_> for model::ResourceType<model::Template> {
     fn after_forest(&self, path: &[&str], stack: &mut Self::State) {
         let name = path.last().unwrap_or(&"base");
         let name = quote::format_ident!("{}", name);
-        let type_identifier = &self.identifier;
         let trees = stack.pop().unwrap();
 
         let tokens = quote::quote! {
             pub mod #name {
-                use super::#type_identifier;
-
                 #trees
             }
         };
@@ -67,7 +65,6 @@ mod tests {
         let actual = actual.to_string();
         let expected = quote::quote! {
             pub mod base {
-                use super::Resource;
             }
         }
         .to_string();
@@ -107,11 +104,9 @@ mod tests {
         let actual = actual.to_string();
         let expected = quote::quote! {
             pub mod base {
-                use super::Resource;
+                pub static MENU_JSON: super::Resource = include_str!("/menu.json");
 
-                pub static MENU_JSON: Resource = include_str!("/menu.json");
-
-                pub static TRANSLATIONS_CSV: Resource = include_str!("/translations.csv");
+                pub static TRANSLATIONS_CSV: super::Resource = include_str!("/translations.csv");
             }
         }
         .to_string();
@@ -178,20 +173,14 @@ mod tests {
         let actual = actual.to_string();
         let expected = quote::quote! {
             pub mod base {
-                use super::Resource;
-
-                pub static CREDITS_MD: Resource = include_str!("/credits.md");
+                pub static CREDITS_MD: super::Resource = include_str!("/credits.md");
 
                 pub mod world {
-                    use super::Resource;
-
-                    pub static PHYSICAL_CONSTANTS_JSON: Resource =
+                    pub static PHYSICAL_CONSTANTS_JSON: super::super::Resource =
                         include_str!("/world/physical_constants.json");
 
                     pub mod levels {
-                        use super::Resource;
-
-                        pub static TUTORIAL_JSON: Resource =
+                        pub static TUTORIAL_JSON: super::super::super::Resource =
                             include_str!("/world/levels/tutorial.json");
                     }
                 }
@@ -232,12 +221,8 @@ mod tests {
         let actual = actual.to_string();
         let expected = quote::quote! {
             pub mod base {
-                use super::Resource;
-
                 pub mod r#match {
-                    use super::Resource;
-
-                    pub static NORMAL: Resource = include_str!("/normal");
+                    pub static NORMAL: super::super::Resource = include_str!("/normal");
                 }
             }
         }
