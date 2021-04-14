@@ -1,5 +1,7 @@
 use crate::model;
 
+pub const BASE_MODULE_IDENTIFIER: &str = "base";
+
 pub static PREDEFINED_TEMPLATES_ORDERED: &[(&str, model::Template)] = &[
     ("content", model::Template::Content),
     ("get_content", model::Template::GetContent),
@@ -7,6 +9,8 @@ pub static PREDEFINED_TEMPLATES_ORDERED: &[(&str, model::Template)] = &[
     ("raw_content", model::Template::RawContent),
     ("relative_path", model::Template::RelativePath),
 ];
+
+pub const RESOURCE_ARRAY_IDENTIFIER: &str = "ARRAY";
 
 #[cfg(test)]
 mod tests {

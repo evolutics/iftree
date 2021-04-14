@@ -1,4 +1,5 @@
 use super::visit_file_forest;
+use crate::data;
 use crate::model;
 use std::vec;
 
@@ -15,13 +16,14 @@ fn generate(file_index: &model::FileIndex) -> proc_macro2::TokenStream {
     let mut array = vec![];
     visit_file_forest::main(&visitor, &file_index.forest, &mut array);
 
+    let identifier = quote::format_ident!("{}", data::RESOURCE_ARRAY_IDENTIFIER);
     let type_identifier = &file_index.resource_type.identifier;
     array.sort_unstable_by_key(|entry| entry.relative_path);
     let length = array.len();
     let content: proc_macro2::TokenStream = array.into_iter().map(|entry| entry.tokens).collect();
 
     quote::quote! {
-        pub static ARRAY: [&#type_identifier; #length] = [
+        pub static #identifier: [&#type_identifier; #length] = [
             #content
         ];
     }

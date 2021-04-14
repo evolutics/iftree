@@ -1,5 +1,6 @@
 use super::print_resource_term;
 use super::visit_file_forest;
+use crate::data;
 use crate::model;
 use std::vec;
 
@@ -30,7 +31,7 @@ impl visit_file_forest::Visitor<'_> for model::ResourceType<model::Template> {
     }
 
     fn after_forest(&self, path: &[&str], stack: &mut Self::State) {
-        let name = path.last().unwrap_or(&"base");
+        let name = path.last().unwrap_or(&data::BASE_MODULE_IDENTIFIER);
         let name = quote::format_ident!("{}", name);
         let trees = stack.pop().unwrap();
 
