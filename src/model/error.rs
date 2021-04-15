@@ -35,29 +35,15 @@ impl fmt::Display for main::Error {
                 )
             }
 
-            main::Error::NameCollisions(collisions) => {
-                let configuration = "resolve_name_collisions = true";
-                write!(
-                    formatter,
-                    "Name collisions in generated code; \
-                    rename files or configure {:?}:",
-                    configuration,
-                )?;
-                for collision in collisions {
-                    let existing_file_hint = match &collision.existing_filename {
-                        None => String::new(),
-                        Some(filename) => format!("with {:?} ", filename),
-                    };
-                    write!(
-                        formatter,
-                        "\n- {:?} collides {}on identifier {:?}.",
-                        collision.colliding_file.relative_path,
-                        existing_file_hint,
-                        collision.identifier,
-                    )?;
-                }
-                Ok(())
-            }
+            main::Error::NameCollision(main::NameCollisionError {
+                collider,
+                identifier,
+            }) => write!(
+                formatter,
+                "File {:?} collides on generated identifier {:?} \
+                with another file; rename the file or configure {:?}.",
+                collider.0, identifier, "module_tree = false",
+            ),
 
             main::Error::PathStripPrefix(error) => write!(formatter, "{}", error),
         }
@@ -72,7 +58,7 @@ impl error::Error for main::Error {
             }
             main::Error::Ignore(main::IgnoreError(error)) => Some(error),
             main::Error::MissingFieldTemplate(_) => None,
-            main::Error::NameCollisions(_) => None,
+            main::Error::NameCollision(_) => None,
             main::Error::PathStripPrefix(error) => Some(error),
         }
     }

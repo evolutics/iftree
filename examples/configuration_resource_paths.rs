@@ -7,8 +7,6 @@ resource_paths = '''
 !.*
 '''
 
-generate_array = true
-
 [field_templates]
 _ = 'relative_path'
 "
@@ -19,10 +17,10 @@ pub fn main() {
     assert_eq!(
         ARRAY,
         [
-            &"README.md",
-            &"examples/resources/configuration/menu.json",
-            &"examples/resources/configuration/translations.csv",
-            &"examples/resources/credits.md",
+            "README.md",
+            "examples/resources/configuration/menu.json",
+            "examples/resources/configuration/translations.csv",
+            "examples/resources/credits.md",
         ],
     );
 }

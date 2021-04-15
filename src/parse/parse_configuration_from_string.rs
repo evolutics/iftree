@@ -17,8 +17,7 @@ struct UserConfiguration {
     base_folder: Option<path::PathBuf>,
     root_folder_variable: Option<String>,
 
-    resolve_name_collisions: Option<bool>,
-    generate_array: Option<bool>,
+    module_tree: Option<bool>,
 
     field_templates: Option<model::FieldTemplates>,
 }
@@ -69,8 +68,7 @@ impl From<UserConfiguration> for model::Configuration {
                 .root_folder_variable
                 .unwrap_or_else(|| String::from("CARGO_MANIFEST_DIR")),
 
-            resolve_name_collisions: configuration.resolve_name_collisions.unwrap_or(false),
-            generate_array: configuration.generate_array.unwrap_or(false),
+            module_tree: configuration.module_tree.unwrap_or(true),
 
             field_templates: configuration.field_templates.unwrap_or_default(),
         }
@@ -91,8 +89,7 @@ mod tests {
             base_folder: path::PathBuf::new(),
             root_folder_variable: String::from("CARGO_MANIFEST_DIR"),
 
-            resolve_name_collisions: false,
-            generate_array: false,
+            module_tree: true,
 
             field_templates: model::FieldTemplates::new(),
         };
@@ -107,8 +104,7 @@ resource_paths = '/my/resources/**'
 base_folder = 'base'
 root_folder_variable = 'MY_ROOT_FOLDER'
 
-resolve_name_collisions = true
-generate_array = true
+module_tree = false
 
 [field_templates]
 _ = 'my::include!'
@@ -123,8 +119,7 @@ custom = 'my::custom_include!'
             base_folder: path::PathBuf::from("base"),
             root_folder_variable: String::from("MY_ROOT_FOLDER"),
 
-            resolve_name_collisions: true,
-            generate_array: true,
+            module_tree: false,
 
             field_templates: vec![
                 (

@@ -68,6 +68,3 @@ more.
 **Custom field templates** enable plugging in your own macros to initialize
 fields. With this, you could add file metadata like media types, compress a file
 when including it, etc.
-
-To **iterate** over the generated resources, see the `generate_array`
-configuration.

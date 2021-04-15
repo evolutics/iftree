@@ -4,7 +4,6 @@ use crate::model;
 pub fn main(
     resource_type: &model::ResourceType<model::Template>,
     file: &model::File,
-    root_path: &proc_macro2::TokenStream,
 ) -> proc_macro2::TokenStream {
     let type_identifier = &resource_type.identifier;
 
@@ -15,7 +14,7 @@ pub fn main(
 
     match &resource_type.structure {
         model::ResourceStructure::Unit => quote::quote! {
-            #root_path#type_identifier
+            #type_identifier
         },
 
         model::ResourceStructure::TypeAlias(template) => {
@@ -33,7 +32,7 @@ pub fn main(
                 .collect();
 
             quote::quote! {
-                #root_path#type_identifier {
+                #type_identifier {
                     #content
                 }
             }
@@ -49,7 +48,7 @@ pub fn main(
                 .collect();
 
             quote::quote! {
-                #root_path#type_identifier(
+                #type_identifier(
                     #content
                 )
             }
@@ -76,12 +75,11 @@ mod tests {
                 relative_path: model::RelativePath::from("credits.md"),
                 absolute_path: path::PathBuf::from("/resources/credits.md"),
             },
-            &quote::quote! { super::super:: },
         );
 
         let actual = actual.to_string();
         let expected = quote::quote! {
-            super::super::Resource(
+            Resource(
                 "credits.md",
                 include_str!("/resources/credits.md"),
             )
@@ -102,7 +100,6 @@ mod tests {
                     structure: model::ResourceStructure::Unit,
                 },
                 &model::stubs::file(),
-                &proc_macro2::TokenStream::new(),
             );
 
             let actual = actual.to_string();
@@ -121,7 +118,6 @@ mod tests {
                     absolute_path: path::PathBuf::from("/resources/credits.md"),
                     ..model::stubs::file()
                 },
-                &proc_macro2::TokenStream::new(),
             );
 
             let actual = actual.to_string();
@@ -146,7 +142,6 @@ mod tests {
                     absolute_path: path::PathBuf::from("/resources/credits.md"),
                     ..model::stubs::file()
                 },
-                &proc_macro2::TokenStream::new(),
             );
 
             let actual = actual.to_string();
@@ -172,7 +167,6 @@ mod tests {
                     relative_path: model::RelativePath::from("credits.md"),
                     ..model::stubs::file()
                 },
-                &proc_macro2::TokenStream::new(),
             );
 
             let actual = actual.to_string();

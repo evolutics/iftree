@@ -18,8 +18,7 @@ pub struct Configuration {
     pub base_folder: path::PathBuf,
     pub root_folder_variable: String,
 
-    pub resolve_name_collisions: bool,
-    pub generate_array: bool,
+    pub module_tree: bool,
 
     pub field_templates: FieldTemplates,
 }
@@ -62,22 +61,22 @@ pub enum ResourceStructure<T> {
 #[derive(Clone, cmp::PartialEq, Debug)]
 pub struct FileIndex {
     pub resource_type: ResourceType<Template>,
+    pub array: vec::Vec<File>,
     pub forest: FileForest,
-    pub generate_array: bool,
-}
-
-pub type FileForest = collections::BTreeMap<String, FileTree>;
-
-#[derive(Clone, cmp::PartialEq, Debug)]
-pub enum FileTree {
-    File(File),
-    Folder(FileForest),
 }
 
 #[derive(Clone, cmp::PartialEq, Debug)]
 pub struct File {
     pub relative_path: RelativePath,
     pub absolute_path: path::PathBuf,
+}
+
+pub type FileForest = collections::BTreeMap<String, FileTree>;
+
+#[derive(Clone, cmp::PartialEq, Debug)]
+pub enum FileTree {
+    File(usize),
+    Folder(FileForest),
 }
 
 #[derive(Clone, cmp::Eq, cmp::Ord, cmp::PartialEq, cmp::PartialOrd, Debug)]
@@ -90,7 +89,7 @@ pub enum Error {
     EnvironmentVariable(EnvironmentVariableError),
     Ignore(IgnoreError),
     MissingFieldTemplate(FieldIdentifier),
-    NameCollisions(vec::Vec<NameCollision>),
+    NameCollision(NameCollisionError),
     PathStripPrefix(path::StripPrefixError),
 }
 
@@ -104,9 +103,8 @@ pub struct EnvironmentVariableError {
 pub struct IgnoreError(pub ignore::Error);
 
 #[derive(Clone, cmp::PartialEq, Debug)]
-pub struct NameCollision {
-    pub colliding_file: File,
-    pub existing_filename: Option<String>,
+pub struct NameCollisionError {
+    pub collider: RelativePath,
     pub identifier: String,
 }
 
@@ -120,8 +118,7 @@ pub mod stubs {
             base_folder: path::PathBuf::from("foo"),
             root_folder_variable: String::from("BAR"),
 
-            resolve_name_collisions: false,
-            generate_array: false,
+            module_tree: false,
 
             field_templates: FieldTemplates::new(),
         }
@@ -137,8 +134,8 @@ pub mod stubs {
     pub fn file_index() -> FileIndex {
         FileIndex {
             resource_type: resource_type(),
+            array: vec![],
             forest: FileForest::new(),
-            generate_array: false,
         }
     }
 

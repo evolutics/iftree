@@ -14,11 +14,11 @@ pub fn main(
     let base_folder = get_base_folder::main(&configuration, &|name| env::var(name))?;
     let paths = get_paths::main(&configuration, &base_folder)?;
     let files = get_files::main(&base_folder, paths)?;
-    let forest = get_forest::main(&configuration, files)?;
+    let forest = get_forest::main(&configuration, &files)?;
     Ok(model::FileIndex {
         resource_type,
+        array: files,
         forest,
-        generate_array: configuration.generate_array,
     })
 }
 
@@ -35,14 +35,13 @@ mod tests {
                 resource_paths: String::from("/examples/resources/credits.md"),
                 base_folder: path::PathBuf::new(),
                 root_folder_variable: String::from("CARGO_MANIFEST_DIR"),
-                generate_array: true,
+                module_tree: true,
                 field_templates: vec![(
                     model::FieldIdentifier::Anonymous,
                     model::Template::Content,
                 )]
                 .into_iter()
                 .collect(),
-                ..model::stubs::configuration()
             },
             model::ResourceType {
                 identifier: quote::format_ident!("Resource"),
@@ -57,23 +56,19 @@ mod tests {
                 identifier: quote::format_ident!("Resource"),
                 structure: model::ResourceStructure::TypeAlias(model::Template::Content),
             },
+            array: vec![model::File {
+                relative_path: model::RelativePath::from("examples/resources/credits.md"),
+                absolute_path,
+            }],
             forest: vec![(
                 String::from("r#examples"),
                 model::FileTree::Folder(
                     vec![(
                         String::from("r#resources"),
                         model::FileTree::Folder(
-                            vec![(
-                                String::from("r#CREDITS_MD"),
-                                model::FileTree::File(model::File {
-                                    relative_path: model::RelativePath::from(
-                                        "examples/resources/credits.md",
-                                    ),
-                                    absolute_path,
-                                }),
-                            )]
-                            .into_iter()
-                            .collect(),
+                            vec![(String::from("r#CREDITS_MD"), model::FileTree::File(0))]
+                                .into_iter()
+                                .collect(),
                         ),
                     )]
                     .into_iter()
@@ -82,7 +77,6 @@ mod tests {
             )]
             .into_iter()
             .collect(),
-            generate_array: true,
         };
         assert_eq!(actual, expected);
     }
