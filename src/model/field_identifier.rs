@@ -31,7 +31,7 @@ mod tests {
 
     #[test]
     fn converts_string_into_anonymous() {
-        let actual = main::FieldIdentifier::from(String::from("_"));
+        let actual = main::FieldIdentifier::from(String::from('_'));
 
         let expected = main::FieldIdentifier::Anonymous;
         assert_eq!(actual, expected);
