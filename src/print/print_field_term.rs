@@ -81,14 +81,14 @@ mod tests {
             let actual = main(
                 &model::Template::Content,
                 &Context {
-                    absolute_path: "/credits.md",
+                    absolute_path: "/a/b",
                     ..stubs::context()
                 },
             );
 
             let actual = actual.to_string();
             let expected = quote::quote! {
-                include_str!("/credits.md")
+                include_str!("/a/b")
             }
             .to_string();
             assert_eq!(actual, expected);
@@ -99,7 +99,7 @@ mod tests {
             let actual = main(
                 &model::Template::GetContent,
                 &Context {
-                    absolute_path: "/credits.md",
+                    absolute_path: "/a/b",
                     ..stubs::context()
                 },
             );
@@ -108,9 +108,9 @@ mod tests {
             let expected = quote::quote! {{
                 fn get() -> std::borrow::Cow<'static, str> {
                     if cfg!(debug_assertions) {
-                        std::borrow::Cow::from(std::fs::read_to_string("/credits.md").unwrap())
+                        std::borrow::Cow::from(std::fs::read_to_string("/a/b").unwrap())
                     } else {
-                        std::borrow::Cow::from(include_str!("/credits.md"))
+                        std::borrow::Cow::from(include_str!("/a/b"))
                     }
                 }
 
@@ -125,7 +125,7 @@ mod tests {
             let actual = main(
                 &model::Template::GetRawContent,
                 &Context {
-                    absolute_path: "/credits.md",
+                    absolute_path: "/a/b",
                     ..stubs::context()
                 },
             );
@@ -134,9 +134,9 @@ mod tests {
             let expected = quote::quote! {{
                 fn get() -> std::borrow::Cow<'static, [u8]> {
                     if cfg!(debug_assertions) {
-                        std::borrow::Cow::from(std::fs::read("/credits.md").unwrap())
+                        std::borrow::Cow::from(std::fs::read("/a/b").unwrap())
                     } else {
-                        std::borrow::Cow::from(&include_bytes!("/credits.md")[..])
+                        std::borrow::Cow::from(&include_bytes!("/a/b")[..])
                     }
                 }
 
@@ -151,14 +151,14 @@ mod tests {
             let actual = main(
                 &model::Template::RawContent,
                 &Context {
-                    absolute_path: "/credits.md",
+                    absolute_path: "/a/b",
                     ..stubs::context()
                 },
             );
 
             let actual = actual.to_string();
             let expected = quote::quote! {
-                include_bytes!("/credits.md")
+                include_bytes!("/a/b")
             }
             .to_string();
             assert_eq!(actual, expected);
@@ -169,14 +169,14 @@ mod tests {
             let actual = main(
                 &model::Template::RelativePath,
                 &Context {
-                    relative_path: "credits.md",
+                    relative_path: "a/b",
                     ..stubs::context()
                 },
             );
 
             let actual = actual.to_string();
             let expected = quote::quote! {
-                "credits.md"
+                "a/b"
             }
             .to_string();
             assert_eq!(actual, expected);
@@ -191,14 +191,14 @@ mod tests {
             let actual = main(
                 &model::Template::Custom(String::from("my_include")),
                 &Context {
-                    relative_path: "credits.md",
-                    absolute_path: "/resources/credits.md",
+                    relative_path: "b",
+                    absolute_path: "/a/b",
                 },
             );
 
             let actual = actual.to_string();
             let expected = quote::quote! {
-                my_include!("credits.md", "/resources/credits.md")
+                my_include!("b", "/a/b")
             }
             .to_string();
             assert_eq!(actual, expected);

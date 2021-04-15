@@ -34,22 +34,22 @@ mod tests {
     #[test]
     fn gets() {
         let actual = main(
-            path::Path::new("/resources"),
+            path::Path::new("/a/b"),
             vec![
-                path::PathBuf::from("/resources/configuration/menu.json"),
-                path::PathBuf::from("/resources/world/physical_constants.json"),
+                path::PathBuf::from("/a/b/C"),
+                path::PathBuf::from("/a/b/a/b"),
             ],
         );
 
         let actual = actual.unwrap();
         let expected = vec![
             model::File {
-                relative_path: model::RelativePath::from("configuration/menu.json"),
-                absolute_path: path::PathBuf::from("/resources/configuration/menu.json"),
+                relative_path: model::RelativePath::from("C"),
+                absolute_path: path::PathBuf::from("/a/b/C"),
             },
             model::File {
-                relative_path: model::RelativePath::from("world/physical_constants.json"),
-                absolute_path: path::PathBuf::from("/resources/world/physical_constants.json"),
+                relative_path: model::RelativePath::from("a/b"),
+                absolute_path: path::PathBuf::from("/a/b/a/b"),
             },
         ];
         assert_eq!(actual, expected);

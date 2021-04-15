@@ -126,11 +126,11 @@ mod tests {
             },
             &[
                 model::File {
-                    relative_path: model::RelativePath::from("menu.json"),
+                    relative_path: model::RelativePath::from("a"),
                     ..model::stubs::file()
                 },
                 model::File {
-                    relative_path: model::RelativePath::from("translations.csv"),
+                    relative_path: model::RelativePath::from("b"),
                     ..model::stubs::file()
                 },
             ],
@@ -138,8 +138,8 @@ mod tests {
 
         let actual = actual.unwrap();
         let expected = vec![
-            (String::from("r#MENU_JSON"), model::FileTree::File(0)),
-            (String::from("r#TRANSLATIONS_CSV"), model::FileTree::File(1)),
+            (String::from("r#A"), model::FileTree::File(0)),
+            (String::from("r#B"), model::FileTree::File(1)),
         ]
         .into_iter()
         .collect();
@@ -155,15 +155,15 @@ mod tests {
             },
             &[
                 model::File {
-                    relative_path: model::RelativePath::from("credits.md"),
+                    relative_path: model::RelativePath::from("a"),
                     ..model::stubs::file()
                 },
                 model::File {
-                    relative_path: model::RelativePath::from("world/levels/tutorial.json"),
+                    relative_path: model::RelativePath::from("b/a/b"),
                     ..model::stubs::file()
                 },
                 model::File {
-                    relative_path: model::RelativePath::from("world/physical_constants.json"),
+                    relative_path: model::RelativePath::from("b/c"),
                     ..model::stubs::file()
                 },
             ],
@@ -171,23 +171,20 @@ mod tests {
 
         let actual = actual.unwrap();
         let expected = vec![
-            (String::from("r#CREDITS_MD"), model::FileTree::File(0)),
+            (String::from("r#A"), model::FileTree::File(0)),
             (
-                String::from("r#world"),
+                String::from("r#b"),
                 model::FileTree::Folder(
                     vec![
                         (
-                            String::from("r#levels"),
+                            String::from("r#a"),
                             model::FileTree::Folder(
-                                vec![(String::from("r#TUTORIAL_JSON"), model::FileTree::File(1))]
+                                vec![(String::from("r#B"), model::FileTree::File(1))]
                                     .into_iter()
                                     .collect(),
                             ),
                         ),
-                        (
-                            String::from("r#PHYSICAL_CONSTANTS_JSON"),
-                            model::FileTree::File(2),
-                        ),
+                        (String::from("r#C"), model::FileTree::File(2)),
                     ]
                     .into_iter()
                     .collect(),
@@ -208,11 +205,11 @@ mod tests {
             },
             &[
                 model::File {
-                    relative_path: model::RelativePath::from("CREDITS.md"),
+                    relative_path: model::RelativePath::from("A"),
                     ..model::stubs::file()
                 },
                 model::File {
-                    relative_path: model::RelativePath::from("credits.md"),
+                    relative_path: model::RelativePath::from("a"),
                     ..model::stubs::file()
                 },
             ],
@@ -220,8 +217,8 @@ mod tests {
 
         let actual = actual.unwrap_err();
         let expected = model::Error::NameCollision(model::NameCollisionError {
-            collider: model::RelativePath::from("credits.md"),
-            identifier: String::from("r#CREDITS_MD"),
+            collider: model::RelativePath::from("a"),
+            identifier: String::from("r#A"),
         });
         assert_eq!(actual, expected);
     }

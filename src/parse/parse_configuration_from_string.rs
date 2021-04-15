@@ -81,11 +81,11 @@ mod tests {
 
     #[test]
     fn parses_valid_configuration_with_required_fields_only_using_defaults() {
-        let actual = main("resource_paths = '/resources/**'");
+        let actual = main("resource_paths = '/a/b/**'");
 
         let actual = actual.unwrap();
         let expected = model::Configuration {
-            resource_paths: String::from("/resources/**"),
+            resource_paths: String::from("/a/b/**"),
             base_folder: path::PathBuf::new(),
             root_folder_variable: String::from("CARGO_MANIFEST_DIR"),
 
@@ -107,8 +107,8 @@ root_folder_variable = 'MY_ROOT_FOLDER'
 module_tree = false
 
 [field_templates]
-_ = 'my::include!'
-custom = 'my::custom_include!'
+_ = 'my_include!'
+custom = 'custom::include!'
 3 = 'raw_content'
 ",
         );
@@ -124,11 +124,11 @@ custom = 'my::custom_include!'
             field_templates: vec![
                 (
                     model::FieldIdentifier::Anonymous,
-                    model::Template::Custom(String::from("my::include")),
+                    model::Template::Custom(String::from("my_include")),
                 ),
                 (
                     model::FieldIdentifier::Named(String::from("custom")),
-                    model::Template::Custom(String::from("my::custom_include")),
+                    model::Template::Custom(String::from("custom::include")),
                 ),
                 (
                     model::FieldIdentifier::Indexed(3),

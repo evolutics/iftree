@@ -83,8 +83,8 @@ mod tests {
                 ..model::stubs::resource_type()
             },
             forest: vec![
-                (String::from("MENU_JSON"), model::FileTree::File(1)),
-                (String::from("TRANSLATIONS_CSV"), model::FileTree::File(0)),
+                (String::from('A'), model::FileTree::File(1)),
+                (String::from("BC"), model::FileTree::File(0)),
             ]
             .into_iter()
             .collect(),
@@ -94,9 +94,9 @@ mod tests {
         let actual = actual.to_string();
         let expected = quote::quote! {
             pub mod base {
-                pub static MENU_JSON: &super::Resource = &super::ARRAY[1usize];
+                pub static A: &super::Resource = &super::ARRAY[1usize];
 
-                pub static TRANSLATIONS_CSV: &super::Resource = &super::ARRAY[0usize];
+                pub static BC: &super::Resource = &super::ARRAY[0usize];
             }
         }
         .to_string();
@@ -111,23 +111,20 @@ mod tests {
                 ..model::stubs::resource_type()
             },
             forest: vec![
-                (String::from("CREDITS_MD"), model::FileTree::File(0)),
+                (String::from('A'), model::FileTree::File(0)),
                 (
-                    String::from("world"),
+                    String::from('b'),
                     model::FileTree::Folder(
                         vec![
                             (
-                                String::from("levels"),
+                                String::from('a'),
                                 model::FileTree::Folder(
-                                    vec![(String::from("TUTORIAL_JSON"), model::FileTree::File(1))]
+                                    vec![(String::from('B'), model::FileTree::File(1))]
                                         .into_iter()
                                         .collect(),
                                 ),
                             ),
-                            (
-                                String::from("PHYSICAL_CONSTANTS_JSON"),
-                                model::FileTree::File(2),
-                            ),
+                            (String::from('C'), model::FileTree::File(2)),
                         ]
                         .into_iter()
                         .collect(),
@@ -142,14 +139,13 @@ mod tests {
         let actual = actual.to_string();
         let expected = quote::quote! {
             pub mod base {
-                pub static CREDITS_MD: &super::Resource = &super::ARRAY[0usize];
+                pub static A: &super::Resource = &super::ARRAY[0usize];
 
-                pub mod world {
-                    pub static PHYSICAL_CONSTANTS_JSON: &super::super::Resource =
-                        &super::super::ARRAY[2usize];
+                pub mod b {
+                    pub static C: &super::super::Resource = &super::super::ARRAY[2usize];
 
-                    pub mod levels {
-                        pub static TUTORIAL_JSON: &super::super::super::Resource =
+                    pub mod a {
+                        pub static B: &super::super::super::Resource =
                             &super::super::super::ARRAY[1usize];
                     }
                 }

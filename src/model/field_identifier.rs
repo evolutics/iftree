@@ -39,9 +39,9 @@ mod tests {
 
     #[test]
     fn converts_string_into_named() {
-        let actual = main::FieldIdentifier::from(String::from("foo"));
+        let actual = main::FieldIdentifier::from(String::from("ab"));
 
-        let expected = main::FieldIdentifier::Named(String::from("foo"));
+        let expected = main::FieldIdentifier::Named(String::from("ab"));
         assert_eq!(actual, expected);
     }
 
@@ -63,9 +63,9 @@ mod tests {
 
     #[test]
     fn converts_string_from_named() {
-        let actual = String::from(main::FieldIdentifier::Named(String::from("bar")));
+        let actual = String::from(main::FieldIdentifier::Named(String::from("bc")));
 
-        let expected = String::from("bar");
+        let expected = String::from("bc");
         assert_eq!(actual, expected);
     }
 

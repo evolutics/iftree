@@ -72,16 +72,16 @@ mod tests {
                 ]),
             },
             &model::File {
-                relative_path: model::RelativePath::from("credits.md"),
-                absolute_path: path::PathBuf::from("/resources/credits.md"),
+                relative_path: model::RelativePath::from("b"),
+                absolute_path: path::PathBuf::from("/a/b"),
             },
         );
 
         let actual = actual.to_string();
         let expected = quote::quote! {
             Resource(
-                "credits.md",
-                include_str!("/resources/credits.md"),
+                "b",
+                include_str!("/a/b"),
             )
         }
         .to_string();
@@ -115,14 +115,14 @@ mod tests {
                     ..model::stubs::resource_type()
                 },
                 &model::File {
-                    absolute_path: path::PathBuf::from("/resources/credits.md"),
+                    absolute_path: path::PathBuf::from("/a/b"),
                     ..model::stubs::file()
                 },
             );
 
             let actual = actual.to_string();
             let expected = quote::quote! {
-                include_str!("/resources/credits.md")
+                include_str!("/a/b")
             }
             .to_string();
             assert_eq!(actual, expected);
@@ -139,7 +139,7 @@ mod tests {
                     )]),
                 },
                 &model::File {
-                    absolute_path: path::PathBuf::from("/resources/credits.md"),
+                    absolute_path: path::PathBuf::from("/a/b"),
                     ..model::stubs::file()
                 },
             );
@@ -147,7 +147,7 @@ mod tests {
             let actual = actual.to_string();
             let expected = quote::quote! {
                 MyNamedFields {
-                    raw_content: include_bytes!("/resources/credits.md"),
+                    raw_content: include_bytes!("/a/b"),
                 }
             }
             .to_string();
@@ -164,7 +164,7 @@ mod tests {
                     ]),
                 },
                 &model::File {
-                    relative_path: model::RelativePath::from("credits.md"),
+                    relative_path: model::RelativePath::from("b"),
                     ..model::stubs::file()
                 },
             );
@@ -172,7 +172,7 @@ mod tests {
             let actual = actual.to_string();
             let expected = quote::quote! {
                 MyTupleFields(
-                    "credits.md",
+                    "b",
                 )
             }
             .to_string();

@@ -35,10 +35,10 @@ mod tests {
                     structure: model::ResourceStructure::TypeAlias(model::Template::Content),
                 },
                 array: vec![model::File {
-                    absolute_path: path::PathBuf::from("/credits.md"),
+                    absolute_path: path::PathBuf::from("/a.b"),
                     ..model::stubs::file()
                 }],
-                forest: vec![(String::from("CREDITS_MD"), model::FileTree::File(0))]
+                forest: vec![(String::from("A_B"), model::FileTree::File(0))]
                     .into_iter()
                     .collect(),
             },
@@ -49,11 +49,11 @@ mod tests {
             pub type Resource = &'static str;
 
             pub static ARRAY: [Resource; 1usize] = [
-                include_str!("/credits.md"),
+                include_str!("/a.b"),
             ];
 
             pub mod base {
-                pub static CREDITS_MD: &super::Resource = &super::ARRAY[0usize];
+                pub static A_B: &super::Resource = &super::ARRAY[0usize];
             }
         }
         .to_string();
