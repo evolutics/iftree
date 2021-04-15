@@ -59,12 +59,10 @@ fn add_file_recursively(
                 Ok(())
             }
 
-            Some(model::FileTree::File(_)) => {
-                Err(model::Error::NameCollision(model::NameCollisionError {
-                    collider: context.file.relative_path.clone(),
-                    identifier: name,
-                }))
-            }
+            Some(model::FileTree::File(_)) => Err(model::Error::NameCollision {
+                collider: context.file.relative_path.clone(),
+                identifier: name,
+            }),
 
             Some(model::FileTree::Folder(child)) => {
                 add_file_recursively(child, reverse_file_path, context)
@@ -216,10 +214,10 @@ mod tests {
         );
 
         let actual = actual.unwrap_err();
-        let expected = model::Error::NameCollision(model::NameCollisionError {
+        let expected = model::Error::NameCollision {
             collider: model::RelativePath::from("a"),
             identifier: String::from("r#A"),
-        });
+        };
         assert_eq!(actual, expected);
     }
 }

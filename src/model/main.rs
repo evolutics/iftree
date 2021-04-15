@@ -86,27 +86,25 @@ pub type Result<T> = result::Result<T, Error>;
 
 #[derive(Clone, cmp::PartialEq, Debug)]
 pub enum Error {
-    EnvironmentVariable(EnvironmentVariableError),
-    Ignore(IgnoreError),
-    MissingFieldTemplate(FieldIdentifier),
-    NameCollision(NameCollisionError),
-    PathStripPrefix(path::StripPrefixError),
-}
+    EnvironmentVariable {
+        name: String,
+        source: env::VarError,
+    },
 
-#[derive(Clone, cmp::PartialEq, Debug)]
-pub struct EnvironmentVariableError {
-    pub name: String,
-    pub source: env::VarError,
+    Ignore(IgnoreError),
+
+    MissingFieldTemplate(FieldIdentifier),
+
+    NameCollision {
+        collider: RelativePath,
+        identifier: String,
+    },
+
+    PathStripPrefix(path::StripPrefixError),
 }
 
 #[derive(Clone, Debug)]
 pub struct IgnoreError(pub ignore::Error);
-
-#[derive(Clone, cmp::PartialEq, Debug)]
-pub struct NameCollisionError {
-    pub collider: RelativePath,
-    pub identifier: String,
-}
 
 #[cfg(test)]
 pub mod stubs {

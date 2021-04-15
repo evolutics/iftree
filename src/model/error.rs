@@ -12,13 +12,11 @@ impl PartialEq for main::IgnoreError {
 impl fmt::Display for main::Error {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            main::Error::EnvironmentVariable(main::EnvironmentVariableError { name, source }) => {
-                write!(
-                    formatter,
-                    "Unable to get environment variable {:?}: {}",
-                    name, source,
-                )
-            }
+            main::Error::EnvironmentVariable { name, source } => write!(
+                formatter,
+                "Unable to get environment variable {:?}: {}",
+                name, source,
+            ),
 
             main::Error::Ignore(main::IgnoreError(error)) => write!(formatter, "{}", error),
 
@@ -35,10 +33,10 @@ impl fmt::Display for main::Error {
                 )
             }
 
-            main::Error::NameCollision(main::NameCollisionError {
+            main::Error::NameCollision {
                 collider,
                 identifier,
-            }) => write!(
+            } => write!(
                 formatter,
                 "File {:?} collides on generated identifier {:?}  with another file. \
                 Rename one of the files or configure {:?}.",
@@ -53,12 +51,10 @@ impl fmt::Display for main::Error {
 impl error::Error for main::Error {
     fn source(&self) -> Option<&(dyn error::Error + 'static)> {
         match self {
-            main::Error::EnvironmentVariable(main::EnvironmentVariableError { source, .. }) => {
-                Some(source)
-            }
+            main::Error::EnvironmentVariable { source, .. } => Some(source),
             main::Error::Ignore(main::IgnoreError(error)) => Some(error),
             main::Error::MissingFieldTemplate(_) => None,
-            main::Error::NameCollision(_) => None,
+            main::Error::NameCollision { .. } => None,
             main::Error::PathStripPrefix(error) => Some(error),
         }
     }

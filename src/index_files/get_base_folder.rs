@@ -22,12 +22,10 @@ fn get_root_folder(
     let name = &configuration.root_folder_variable;
 
     match get_environment_variable(name) {
-        Err(source) => Err(model::Error::EnvironmentVariable(
-            model::EnvironmentVariableError {
-                name: name.clone(),
-                source,
-            },
-        )),
+        Err(source) => Err(model::Error::EnvironmentVariable {
+            name: name.clone(),
+            source,
+        }),
 
         Ok(folder) => Ok(path::PathBuf::from(folder)),
     }
@@ -97,10 +95,10 @@ mod tests {
             );
 
             let actual = actual.unwrap_err();
-            let expected = model::Error::EnvironmentVariable(model::EnvironmentVariableError {
+            let expected = model::Error::EnvironmentVariable {
                 name: String::from("ROOT_FOLDER"),
                 source: env::VarError::NotPresent,
-            });
+            };
             assert_eq!(actual, expected);
         }
     }
