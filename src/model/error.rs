@@ -40,8 +40,8 @@ impl fmt::Display for main::Error {
                 identifier,
             }) => write!(
                 formatter,
-                "File {:?} collides on generated identifier {:?} \
-                with another file; rename the file or configure {:?}.",
+                "File {:?} collides on generated identifier {:?}  with another file. \
+                Rename one of the files or configure {:?}.",
                 collider.0, identifier, "module_tree = false",
             ),
 
