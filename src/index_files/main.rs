@@ -66,9 +66,12 @@ mod tests {
                     vec![(
                         String::from("r#resources"),
                         model::FileTree::Folder(
-                            vec![(String::from("r#CREDITS_MD"), model::FileTree::File(0))]
-                                .into_iter()
-                                .collect(),
+                            vec![(
+                                String::from("r#CREDITS_MD"),
+                                model::FileTree::File { index: 0 },
+                            )]
+                            .into_iter()
+                            .collect(),
                         ),
                     )]
                     .into_iter()

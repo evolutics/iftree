@@ -41,7 +41,7 @@ pub enum Template {
     RawContent,
     RelativePath,
 
-    Custom(String),
+    Custom { macro_: String },
 }
 
 #[derive(Clone, cmp::PartialEq, Debug)]
@@ -75,7 +75,7 @@ pub type FileForest = collections::BTreeMap<String, FileTree>;
 
 #[derive(Clone, cmp::PartialEq, Debug)]
 pub enum FileTree {
-    File(usize),
+    File { index: usize },
     Folder(FileForest),
 }
 

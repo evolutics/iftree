@@ -38,7 +38,7 @@ mod tests {
                     absolute_path: path::PathBuf::from("/a.b"),
                     ..model::stubs::file()
                 }],
-                forest: vec![(String::from("A_B"), model::FileTree::File(0))]
+                forest: vec![(String::from("A_B"), model::FileTree::File { index: 0 })]
                     .into_iter()
                     .collect(),
             },

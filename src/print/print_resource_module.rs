@@ -29,7 +29,7 @@ fn print_folder(context: Context, forest: &model::FileForest) -> proc_macro2::To
                 ..context
             };
             match tree {
-                model::FileTree::File(index) => print_file(context, *index),
+                model::FileTree::File { index } => print_file(context, *index),
                 model::FileTree::Folder(forest) => print_folder(context, forest),
             }
         })
@@ -83,8 +83,8 @@ mod tests {
                 ..model::stubs::resource_type()
             },
             forest: vec![
-                (String::from('A'), model::FileTree::File(1)),
-                (String::from("BC"), model::FileTree::File(0)),
+                (String::from('A'), model::FileTree::File { index: 1 }),
+                (String::from("BC"), model::FileTree::File { index: 0 }),
             ]
             .into_iter()
             .collect(),
@@ -111,7 +111,7 @@ mod tests {
                 ..model::stubs::resource_type()
             },
             forest: vec![
-                (String::from('A'), model::FileTree::File(0)),
+                (String::from('A'), model::FileTree::File { index: 0 }),
                 (
                     String::from('b'),
                     model::FileTree::Folder(
@@ -119,12 +119,12 @@ mod tests {
                             (
                                 String::from('a'),
                                 model::FileTree::Folder(
-                                    vec![(String::from('B'), model::FileTree::File(1))]
+                                    vec![(String::from('B'), model::FileTree::File { index: 1 })]
                                         .into_iter()
                                         .collect(),
                                 ),
                             ),
-                            (String::from('C'), model::FileTree::File(2)),
+                            (String::from('C'), model::FileTree::File { index: 2 }),
                         ]
                         .into_iter()
                         .collect(),
@@ -165,7 +165,7 @@ mod tests {
             forest: vec![(
                 String::from("r#match"),
                 model::FileTree::Folder(
-                    vec![(String::from("NORMAL"), model::FileTree::File(0))]
+                    vec![(String::from("NORMAL"), model::FileTree::File { index: 0 })]
                         .into_iter()
                         .collect(),
                 ),

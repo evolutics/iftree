@@ -54,7 +54,9 @@ impl de::Visitor<'_> for TemplateVisitor {
                 Ok(index) => Ok(data::PREDEFINED_TEMPLATES_ORDERED[index].1.clone()),
             },
 
-            Some(macro_name) => Ok(model::Template::Custom(String::from(macro_name))),
+            Some(macro_) => Ok(model::Template::Custom {
+                macro_: String::from(macro_),
+            }),
         }
     }
 }
@@ -124,11 +126,15 @@ custom = 'custom::include!'
             field_templates: vec![
                 (
                     model::FieldIdentifier::Anonymous,
-                    model::Template::Custom(String::from("my_include")),
+                    model::Template::Custom {
+                        macro_: String::from("my_include"),
+                    },
                 ),
                 (
                     model::FieldIdentifier::Named(String::from("custom")),
-                    model::Template::Custom(String::from("custom::include")),
+                    model::Template::Custom {
+                        macro_: String::from("custom::include"),
+                    },
                 ),
                 (
                     model::FieldIdentifier::Indexed(3),

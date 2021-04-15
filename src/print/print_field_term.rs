@@ -42,8 +42,8 @@ pub fn main(template: &model::Template, context: &Context) -> proc_macro2::Token
             #relative_path
         },
 
-        model::Template::Custom(custom_macro) => {
-            let macro_identifier = quote::format_ident!("{}", custom_macro);
+        model::Template::Custom { macro_ } => {
+            let macro_identifier = quote::format_ident!("{}", macro_);
             quote::quote! {
                 #macro_identifier!(#relative_path, #absolute_path)
             }
@@ -189,7 +189,9 @@ mod tests {
         #[test]
         fn prints_macro() {
             let actual = main(
-                &model::Template::Custom(String::from("my_include")),
+                &model::Template::Custom {
+                    macro_: String::from("my_include"),
+                },
                 &Context {
                     relative_path: "b",
                     absolute_path: "/a/b",
