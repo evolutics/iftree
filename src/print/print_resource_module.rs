@@ -61,10 +61,8 @@ mod tests {
 
     #[test]
     fn prints_empty_set() {
-        let forest = model::FileForest::new();
-
         let actual = main(&model::FileIndex {
-            forest,
+            forest: model::FileForest::new(),
             ..model::stubs::file_index()
         });
 
@@ -79,19 +77,17 @@ mod tests {
 
     #[test]
     fn prints_files() {
-        let forest = vec![
-            (String::from("MENU_JSON"), model::FileTree::File(1)),
-            (String::from("TRANSLATIONS_CSV"), model::FileTree::File(0)),
-        ]
-        .into_iter()
-        .collect();
-
         let actual = main(&model::FileIndex {
             resource_type: model::ResourceType {
                 identifier: quote::format_ident!("Resource"),
                 ..model::stubs::resource_type()
             },
-            forest,
+            forest: vec![
+                (String::from("MENU_JSON"), model::FileTree::File(1)),
+                (String::from("TRANSLATIONS_CSV"), model::FileTree::File(0)),
+            ]
+            .into_iter()
+            .collect(),
             ..model::stubs::file_index()
         });
 
@@ -109,39 +105,37 @@ mod tests {
 
     #[test]
     fn prints_folders() {
-        let forest = vec![
-            (String::from("CREDITS_MD"), model::FileTree::File(0)),
-            (
-                String::from("world"),
-                model::FileTree::Folder(
-                    vec![
-                        (
-                            String::from("levels"),
-                            model::FileTree::Folder(
-                                vec![(String::from("TUTORIAL_JSON"), model::FileTree::File(1))]
-                                    .into_iter()
-                                    .collect(),
-                            ),
-                        ),
-                        (
-                            String::from("PHYSICAL_CONSTANTS_JSON"),
-                            model::FileTree::File(2),
-                        ),
-                    ]
-                    .into_iter()
-                    .collect(),
-                ),
-            ),
-        ]
-        .into_iter()
-        .collect();
-
         let actual = main(&model::FileIndex {
             resource_type: model::ResourceType {
                 identifier: quote::format_ident!("Resource"),
                 ..model::stubs::resource_type()
             },
-            forest,
+            forest: vec![
+                (String::from("CREDITS_MD"), model::FileTree::File(0)),
+                (
+                    String::from("world"),
+                    model::FileTree::Folder(
+                        vec![
+                            (
+                                String::from("levels"),
+                                model::FileTree::Folder(
+                                    vec![(String::from("TUTORIAL_JSON"), model::FileTree::File(1))]
+                                        .into_iter()
+                                        .collect(),
+                                ),
+                            ),
+                            (
+                                String::from("PHYSICAL_CONSTANTS_JSON"),
+                                model::FileTree::File(2),
+                            ),
+                        ]
+                        .into_iter()
+                        .collect(),
+                    ),
+                ),
+            ]
+            .into_iter()
+            .collect(),
             ..model::stubs::file_index()
         });
 
@@ -167,23 +161,21 @@ mod tests {
 
     #[test]
     fn prints_both_normal_and_raw_identifiers() {
-        let forest = vec![(
-            String::from("r#match"),
-            model::FileTree::Folder(
-                vec![(String::from("NORMAL"), model::FileTree::File(0))]
-                    .into_iter()
-                    .collect(),
-            ),
-        )]
-        .into_iter()
-        .collect();
-
         let actual = main(&model::FileIndex {
             resource_type: model::ResourceType {
                 identifier: quote::format_ident!("Resource"),
                 ..model::stubs::resource_type()
             },
-            forest,
+            forest: vec![(
+                String::from("r#match"),
+                model::FileTree::Folder(
+                    vec![(String::from("NORMAL"), model::FileTree::File(0))]
+                        .into_iter()
+                        .collect(),
+                ),
+            )]
+            .into_iter()
+            .collect(),
             ..model::stubs::file_index()
         });
 

@@ -25,12 +25,10 @@ mod tests {
 
     #[test]
     fn prints() {
-        let item = quote::quote! {
-            pub type Resource = &'static str;
-        };
-
         let actual = main(
-            item,
+            quote::quote! {
+                pub type Resource = &'static str;
+            },
             model::FileIndex {
                 resource_type: model::ResourceType {
                     identifier: quote::format_ident!("Resource"),

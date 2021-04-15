@@ -68,13 +68,11 @@ mod tests {
 
     #[test]
     fn given_no_field_template_at_all_it_errs() {
-        let configuration = model::Configuration {
-            field_templates: model::FieldTemplates::new(),
-            ..model::stubs::configuration()
-        };
-
         let actual = main(
-            &configuration,
+            &model::Configuration {
+                field_templates: model::FieldTemplates::new(),
+                ..model::stubs::configuration()
+            },
             model::ResourceType {
                 structure: model::ResourceStructure::TypeAlias(()),
                 ..model::stubs::resource_type()
@@ -88,13 +86,11 @@ mod tests {
 
     #[test]
     fn given_no_configured_field_template_it_defaults_to_predefined() {
-        let configuration = model::Configuration {
-            field_templates: model::FieldTemplates::new(),
-            ..model::stubs::configuration()
-        };
-
         let actual = main(
-            &configuration,
+            &model::Configuration {
+                field_templates: model::FieldTemplates::new(),
+                ..model::stubs::configuration()
+            },
             model::ResourceType {
                 identifier: quote::format_ident!("Resource"),
                 structure: model::ResourceStructure::NamedFields(vec![(
@@ -117,18 +113,16 @@ mod tests {
 
     #[test]
     fn given_configured_field_template_it_gets_it() {
-        let configuration = model::Configuration {
-            field_templates: vec![(
-                model::FieldIdentifier::Named(String::from("content")),
-                model::Template::RawContent,
-            )]
-            .into_iter()
-            .collect(),
-            ..model::stubs::configuration()
-        };
-
         let actual = main(
-            &configuration,
+            &model::Configuration {
+                field_templates: vec![(
+                    model::FieldIdentifier::Named(String::from("content")),
+                    model::Template::RawContent,
+                )]
+                .into_iter()
+                .collect(),
+                ..model::stubs::configuration()
+            },
             model::ResourceType {
                 identifier: quote::format_ident!("Resource"),
                 structure: model::ResourceStructure::NamedFields(vec![(
@@ -155,10 +149,8 @@ mod tests {
 
         #[test]
         fn gets_unit() {
-            let configuration = model::stubs::configuration();
-
             let actual = main(
-                &configuration,
+                &model::stubs::configuration(),
                 model::ResourceType {
                     identifier: quote::format_ident!("MyUnit"),
                     structure: model::ResourceStructure::Unit,
@@ -175,18 +167,16 @@ mod tests {
 
         #[test]
         fn gets_type_alias() {
-            let configuration = model::Configuration {
-                field_templates: vec![(
-                    model::FieldIdentifier::Anonymous,
-                    model::Template::Content,
-                )]
-                .into_iter()
-                .collect(),
-                ..model::stubs::configuration()
-            };
-
             let actual = main(
-                &configuration,
+                &model::Configuration {
+                    field_templates: vec![(
+                        model::FieldIdentifier::Anonymous,
+                        model::Template::Content,
+                    )]
+                    .into_iter()
+                    .collect(),
+                    ..model::stubs::configuration()
+                },
                 model::ResourceType {
                     identifier: quote::format_ident!("MyTypeAlias"),
                     structure: model::ResourceStructure::TypeAlias(()),
@@ -203,18 +193,16 @@ mod tests {
 
         #[test]
         fn gets_named_fields() {
-            let configuration = model::Configuration {
-                field_templates: vec![(
-                    model::FieldIdentifier::Named(String::from("my_content")),
-                    model::Template::RawContent,
-                )]
-                .into_iter()
-                .collect(),
-                ..model::stubs::configuration()
-            };
-
             let actual = main(
-                &configuration,
+                &model::Configuration {
+                    field_templates: vec![(
+                        model::FieldIdentifier::Named(String::from("my_content")),
+                        model::Template::RawContent,
+                    )]
+                    .into_iter()
+                    .collect(),
+                    ..model::stubs::configuration()
+                },
                 model::ResourceType {
                     identifier: quote::format_ident!("MyNamedFields"),
                     structure: model::ResourceStructure::NamedFields(vec![(
@@ -237,18 +225,16 @@ mod tests {
 
         #[test]
         fn gets_tuple_fields() {
-            let configuration = model::Configuration {
-                field_templates: vec![(
-                    model::FieldIdentifier::Indexed(0),
-                    model::Template::RelativePath,
-                )]
-                .into_iter()
-                .collect(),
-                ..model::stubs::configuration()
-            };
-
             let actual = main(
-                &configuration,
+                &model::Configuration {
+                    field_templates: vec![(
+                        model::FieldIdentifier::Indexed(0),
+                        model::Template::RelativePath,
+                    )]
+                    .into_iter()
+                    .collect(),
+                    ..model::stubs::configuration()
+                },
                 model::ResourceType {
                     identifier: quote::format_ident!("MyTupleFields"),
                     structure: model::ResourceStructure::TupleFields(vec![()]),
