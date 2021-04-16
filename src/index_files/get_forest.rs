@@ -8,13 +8,31 @@ pub fn main(
     files: &[model::File],
 ) -> model::Result<model::FileForest> {
     let mut forest = model::FileForest::new();
+
     if configuration.module_tree {
         for (index, file) in files.iter().enumerate() {
-            let context = Context { index, file };
-            add_file(&mut forest, context)?;
+            match add_file(&mut forest, Context { index, file }) {
+                None => Ok(()),
+                Some(Collision {
+                    identifier,
+                    competitors,
+                }) => Err(model::Error::NameCollision {
+                    identifier,
+                    competitors: competitors
+                        .into_iter()
+                        .map(|index| files[index].relative_path.clone())
+                        .collect(),
+                }),
+            }?
         }
     }
+
     Ok(forest)
+}
+
+fn add_file(forest: &mut model::FileForest, context: Context) -> Option<Collision> {
+    let mut reverse_file_path = get_reverse_file_path(&context.file);
+    add_file_recursively(forest, &mut reverse_file_path, context)
 }
 
 struct Context<'a> {
@@ -22,9 +40,9 @@ struct Context<'a> {
     file: &'a model::File,
 }
 
-fn add_file(forest: &mut model::FileForest, context: Context) -> model::Result<()> {
-    let mut reverse_file_path = get_reverse_file_path(&context.file);
-    add_file_recursively(forest, &mut reverse_file_path, context)
+struct Collision {
+    identifier: String,
+    competitors: vec::Vec<usize>,
 }
 
 fn get_reverse_file_path(file: &model::File) -> vec::Vec<String> {
@@ -48,20 +66,20 @@ fn add_file_recursively(
     parent: &mut model::FileForest,
     reverse_file_path: &mut vec::Vec<String>,
     context: Context,
-) -> model::Result<()> {
+) -> Option<Collision> {
     match reverse_file_path.pop() {
-        None => Ok(()),
+        None => None,
 
         Some(name) => match parent.get_mut(&name) {
             None => {
                 let child = get_singleton_tree(reverse_file_path.to_vec(), context.index);
                 parent.insert(name, child);
-                Ok(())
+                None
             }
 
-            Some(model::FileTree::File { .. }) => Err(model::Error::NameCollision {
-                collider: context.file.relative_path.clone(),
+            Some(model::FileTree::File { index }) => Some(Collision {
                 identifier: name,
+                competitors: vec![*index, context.index],
             }),
 
             Some(model::FileTree::Folder(child)) => {
@@ -215,8 +233,11 @@ mod tests {
 
         let actual = actual.unwrap_err();
         let expected = model::Error::NameCollision {
-            collider: model::RelativePath::from("a"),
             identifier: String::from("r#A"),
+            competitors: vec![
+                model::RelativePath::from("A"),
+                model::RelativePath::from("a"),
+            ],
         };
         assert_eq!(actual, expected);
     }

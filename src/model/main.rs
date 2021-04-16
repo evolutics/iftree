@@ -96,8 +96,8 @@ pub enum Error {
     MissingFieldTemplate(FieldIdentifier),
 
     NameCollision {
-        collider: RelativePath,
         identifier: String,
+        competitors: vec::Vec<RelativePath>,
     },
 
     PathStripPrefix(path::StripPrefixError),

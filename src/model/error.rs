@@ -34,14 +34,23 @@ impl fmt::Display for main::Error {
             }
 
             main::Error::NameCollision {
-                collider,
                 identifier,
-            } => write!(
-                formatter,
-                "File {:?} collides on generated identifier {:?}  with another file. \
-                Rename one of the files or configure {:?}.",
-                collider.0, identifier, "module_tree = false",
-            ),
+                competitors,
+            } => {
+                writeln!(
+                    formatter,
+                    "Files map to same generated identifier {:?}:",
+                    identifier,
+                )?;
+                for competitor in competitors {
+                    writeln!(formatter, "- {:?}", competitor.0)?;
+                }
+                write!(
+                    formatter,
+                    "Rename one of the files or configure {:?}.",
+                    "module_tree = false",
+                )
+            }
 
             main::Error::PathStripPrefix(error) => write!(formatter, "{}", error),
         }
