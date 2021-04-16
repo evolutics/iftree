@@ -144,7 +144,7 @@ mod tests {
     }
 
     #[cfg(test)]
-    mod resource_cases {
+    mod type_cases {
         use super::*;
 
         #[test]
