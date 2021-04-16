@@ -80,3 +80,58 @@ impl From<path::StripPrefixError> for main::Error {
         main::Error::PathStripPrefix(error)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::env;
+
+    #[cfg(test)]
+    mod display {
+        use super::*;
+
+        #[test]
+        fn handles_environment_variable() {
+            let actual = main::Error::EnvironmentVariable {
+                name: String::from("ABC"),
+                source: env::VarError::NotPresent,
+            }
+            .to_string();
+
+            let expected = "Unable to get environment variable \"ABC\": \
+            environment variable not found";
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn handles_missing_field_template() {
+            let actual =
+                main::Error::MissingFieldTemplate(main::FieldIdentifier::Anonymous).to_string();
+
+            let expected = "No template for field \"_\". Add one to your configuration as follows:
+```
+[field_templates]
+_ = …
+```";
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn handles_name_collision() {
+            let actual = main::Error::NameCollision {
+                identifier: String::from("b_c"),
+                competitors: vec![
+                    main::RelativePath::from("a/B-c"),
+                    main::RelativePath::from("a/b.c"),
+                ],
+            }
+            .to_string();
+
+            let expected = "Files map to same generated identifier \"b_c\":
+- \"a/B-c\"
+- \"a/b.c\"
+Rename one of the files or configure \"module_tree = false\".";
+            assert_eq!(actual, expected);
+        }
+    }
+}
