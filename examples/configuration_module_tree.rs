@@ -9,6 +9,6 @@ pub struct Resource;
 pub fn main() {
     assert_eq!(ARRAY.len(), 6);
 
-    #[allow(unused_imports)]
-    use base::*;
+    // No module `base` is generated.
+    // use base::*;
 }

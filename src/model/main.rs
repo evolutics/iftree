@@ -62,7 +62,7 @@ pub enum ResourceStructure<T> {
 pub struct FileIndex {
     pub resource_type: ResourceType<Template>,
     pub array: vec::Vec<File>,
-    pub forest: FileForest,
+    pub forest: Option<FileForest>,
 }
 
 #[derive(Clone, cmp::PartialEq, Debug)]
@@ -133,7 +133,7 @@ pub mod stubs {
         FileIndex {
             resource_type: resource_type(),
             array: vec![],
-            forest: FileForest::new(),
+            forest: None,
         }
     }
 

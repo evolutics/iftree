@@ -6,25 +6,31 @@ use std::vec;
 pub fn main(
     configuration: &model::Configuration,
     files: &[model::File],
-) -> model::Result<model::FileForest> {
+) -> model::Result<Option<model::FileForest>> {
+    Ok(if configuration.module_tree {
+        Some(go(files)?)
+    } else {
+        None
+    })
+}
+
+fn go(files: &[model::File]) -> model::Result<model::FileForest> {
     let mut forest = model::FileForest::new();
 
-    if configuration.module_tree {
-        for (index, file) in files.iter().enumerate() {
-            match add_file(&mut forest, Context { index, file }) {
-                None => Ok(()),
-                Some(Collision {
-                    identifier,
-                    competitors,
-                }) => Err(model::Error::NameCollision {
-                    identifier,
-                    competitors: competitors
-                        .into_iter()
-                        .map(|index| files[index].relative_path.clone())
-                        .collect(),
-                }),
-            }?
-        }
+    for (index, file) in files.iter().enumerate() {
+        match add_file(&mut forest, Context { index, file }) {
+            None => Ok(()),
+            Some(Collision {
+                identifier,
+                competitors,
+            }) => Err(model::Error::NameCollision {
+                identifier,
+                competitors: competitors
+                    .into_iter()
+                    .map(|index| files[index].relative_path.clone())
+                    .collect(),
+            }),
+        }?
     }
 
     Ok(forest)
@@ -104,7 +110,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn given_module_tree_is_not_configured_it_gets_empty() {
+    fn given_module_tree_is_not_configured_it_gets_none() {
         let actual = main(
             &model::Configuration {
                 module_tree: false,
@@ -114,7 +120,7 @@ mod tests {
         );
 
         let actual = actual.unwrap();
-        let expected = model::FileForest::new();
+        let expected = None;
         assert_eq!(actual, expected);
     }
 
@@ -129,7 +135,7 @@ mod tests {
         );
 
         let actual = actual.unwrap();
-        let expected = model::FileForest::new();
+        let expected = Some(model::FileForest::new());
         assert_eq!(actual, expected);
     }
 
@@ -153,12 +159,14 @@ mod tests {
         );
 
         let actual = actual.unwrap();
-        let expected = vec![
-            (String::from("r#A"), model::FileTree::File { index: 0 }),
-            (String::from("r#B"), model::FileTree::File { index: 1 }),
-        ]
-        .into_iter()
-        .collect();
+        let expected = Some(
+            vec![
+                (String::from("r#A"), model::FileTree::File { index: 0 }),
+                (String::from("r#B"), model::FileTree::File { index: 1 }),
+            ]
+            .into_iter()
+            .collect(),
+        );
         assert_eq!(actual, expected);
     }
 
@@ -186,29 +194,31 @@ mod tests {
         );
 
         let actual = actual.unwrap();
-        let expected = vec![
-            (String::from("r#A"), model::FileTree::File { index: 0 }),
-            (
-                String::from("r#b"),
-                model::FileTree::Folder(
-                    vec![
-                        (
-                            String::from("r#a"),
-                            model::FileTree::Folder(
-                                vec![(String::from("r#B"), model::FileTree::File { index: 1 })]
-                                    .into_iter()
-                                    .collect(),
+        let expected = Some(
+            vec![
+                (String::from("r#A"), model::FileTree::File { index: 0 }),
+                (
+                    String::from("r#b"),
+                    model::FileTree::Folder(
+                        vec![
+                            (
+                                String::from("r#a"),
+                                model::FileTree::Folder(
+                                    vec![(String::from("r#B"), model::FileTree::File { index: 1 })]
+                                        .into_iter()
+                                        .collect(),
+                                ),
                             ),
-                        ),
-                        (String::from("r#C"), model::FileTree::File { index: 2 }),
-                    ]
-                    .into_iter()
-                    .collect(),
+                            (String::from("r#C"), model::FileTree::File { index: 2 }),
+                        ]
+                        .into_iter()
+                        .collect(),
+                    ),
                 ),
-            ),
-        ]
-        .into_iter()
-        .collect();
+            ]
+            .into_iter()
+            .collect(),
+        );
         assert_eq!(actual, expected);
     }
 

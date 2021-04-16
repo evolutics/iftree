@@ -60,26 +60,28 @@ mod tests {
                 relative_path: model::RelativePath::from("examples/resources/credits.md"),
                 absolute_path,
             }],
-            forest: vec![(
-                String::from("r#examples"),
-                model::FileTree::Folder(
-                    vec![(
-                        String::from("r#resources"),
-                        model::FileTree::Folder(
-                            vec![(
-                                String::from("r#CREDITS_MD"),
-                                model::FileTree::File { index: 0 },
-                            )]
-                            .into_iter()
-                            .collect(),
-                        ),
-                    )]
-                    .into_iter()
-                    .collect(),
-                ),
-            )]
-            .into_iter()
-            .collect(),
+            forest: Some(
+                vec![(
+                    String::from("r#examples"),
+                    model::FileTree::Folder(
+                        vec![(
+                            String::from("r#resources"),
+                            model::FileTree::Folder(
+                                vec![(
+                                    String::from("r#CREDITS_MD"),
+                                    model::FileTree::File { index: 0 },
+                                )]
+                                .into_iter()
+                                .collect(),
+                            ),
+                        )]
+                        .into_iter()
+                        .collect(),
+                    ),
+                )]
+                .into_iter()
+                .collect(),
+            ),
         };
         assert_eq!(actual, expected);
     }
