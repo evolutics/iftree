@@ -52,7 +52,7 @@ mod tests {
     }
 
     #[test]
-    fn handles_files() {
+    fn handles_nonempty_set() {
         let actual = main(&model::FileIndex {
             resource_type: model::ResourceType {
                 identifier: quote::format_ident!("Resource"),
