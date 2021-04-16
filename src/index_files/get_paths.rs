@@ -52,7 +52,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn gets_from_single_resource_path() {
+    fn handles_single_resource_path() {
         let actual = main(
             &model::Configuration {
                 resource_paths: String::from("/examples/resources/**"),
@@ -75,7 +75,7 @@ mod tests {
     }
 
     #[test]
-    fn gets_from_multiple_resource_paths() {
+    fn handles_multiple_resource_paths() {
         let actual = main(
             &model::Configuration {
                 resource_paths: String::from(
@@ -99,7 +99,7 @@ mod tests {
     }
 
     #[test]
-    fn gets_from_include_and_exclude_resource_paths() {
+    fn handles_include_and_exclude_resource_paths() {
         let actual = main(
             &model::Configuration {
                 resource_paths: String::from(
@@ -121,7 +121,7 @@ mod tests {
     }
 
     #[test]
-    fn gets_without_hidden_files() {
+    fn handles_without_hidden_files() {
         let actual = main(
             &model::Configuration {
                 resource_paths: String::from(

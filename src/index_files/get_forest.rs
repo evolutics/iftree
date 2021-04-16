@@ -110,7 +110,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn given_module_tree_is_not_configured_it_gets_none() {
+    fn handles_no_module_tree() {
         let actual = main(
             &model::Configuration {
                 module_tree: false,
@@ -125,7 +125,7 @@ mod tests {
     }
 
     #[test]
-    fn gets_empty_set() {
+    fn handles_empty_set() {
         let actual = main(
             &model::Configuration {
                 module_tree: true,
@@ -140,7 +140,7 @@ mod tests {
     }
 
     #[test]
-    fn gets_files() {
+    fn handles_files() {
         let actual = main(
             &model::Configuration {
                 module_tree: true,
@@ -171,7 +171,7 @@ mod tests {
     }
 
     #[test]
-    fn gets_folders() {
+    fn handles_folders() {
         let actual = main(
             &model::Configuration {
                 module_tree: true,

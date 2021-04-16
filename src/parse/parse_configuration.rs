@@ -43,7 +43,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn parses_valid_configuration() {
+    fn handles_valid_configuration() {
         let actual = syn::parse_str::<model::Configuration>(r#""resource_paths = '/resources'""#);
 
         let actual = actual.is_ok();

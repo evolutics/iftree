@@ -11,7 +11,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn converts_from_string() {
+    fn handles_from_string() {
         let actual = main::RelativePath::from("a/bc");
 
         let expected = main::RelativePath(String::from("a/bc"));

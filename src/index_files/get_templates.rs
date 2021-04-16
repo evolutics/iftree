@@ -112,7 +112,7 @@ mod tests {
     }
 
     #[test]
-    fn given_configured_field_template_it_gets_it() {
+    fn given_configured_field_template_it_handles_it() {
         let actual = main(
             &model::Configuration {
                 field_templates: vec![(
@@ -148,7 +148,7 @@ mod tests {
         use super::*;
 
         #[test]
-        fn gets_unit() {
+        fn handles_unit() {
             let actual = main(
                 &model::stubs::configuration(),
                 model::ResourceType {
@@ -166,7 +166,7 @@ mod tests {
         }
 
         #[test]
-        fn gets_type_alias() {
+        fn handles_type_alias() {
             let actual = main(
                 &model::Configuration {
                     field_templates: vec![(
@@ -192,7 +192,7 @@ mod tests {
         }
 
         #[test]
-        fn gets_named_fields() {
+        fn handles_named_fields() {
             let actual = main(
                 &model::Configuration {
                     field_templates: vec![(
@@ -224,7 +224,7 @@ mod tests {
         }
 
         #[test]
-        fn gets_tuple_fields() {
+        fn handles_tuple_fields() {
             let actual = main(
                 &model::Configuration {
                     field_templates: vec![(

@@ -67,7 +67,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn prints_none() {
+    fn handles_none() {
         let actual = main(&model::FileIndex {
             forest: None,
             ..model::stubs::file_index()
@@ -79,7 +79,7 @@ mod tests {
     }
 
     #[test]
-    fn prints_empty_set() {
+    fn handles_empty_set() {
         let actual = main(&model::FileIndex {
             forest: Some(model::FileForest::new()),
             ..model::stubs::file_index()
@@ -95,7 +95,7 @@ mod tests {
     }
 
     #[test]
-    fn prints_files() {
+    fn handles_files() {
         let actual = main(&model::FileIndex {
             resource_type: model::ResourceType {
                 identifier: quote::format_ident!("Resource"),
@@ -125,7 +125,7 @@ mod tests {
     }
 
     #[test]
-    fn prints_folders() {
+    fn handles_folders() {
         let actual = main(&model::FileIndex {
             resource_type: model::ResourceType {
                 identifier: quote::format_ident!("Resource"),
@@ -182,7 +182,7 @@ mod tests {
     }
 
     #[test]
-    fn prints_both_normal_and_raw_identifiers() {
+    fn handles_both_normal_and_raw_identifiers() {
         let actual = main(&model::FileIndex {
             resource_type: model::ResourceType {
                 identifier: quote::format_ident!("Resource"),

@@ -32,7 +32,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn gets() {
+    fn handles() {
         let actual = main(
             path::Path::new("/a/b"),
             vec![

@@ -29,7 +29,7 @@ mod tests {
     use std::path;
 
     #[test]
-    fn indexes() {
+    fn handles() {
         let actual = main(
             model::Configuration {
                 resource_paths: String::from("/examples/resources/credits.md"),

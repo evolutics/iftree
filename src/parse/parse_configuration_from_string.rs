@@ -82,7 +82,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn parses_valid_configuration_with_required_fields_only_using_defaults() {
+    fn handles_valid_configuration_with_required_fields_only_using_defaults() {
         let actual = main("resource_paths = '/a/b/**'");
 
         let actual = actual.unwrap();
@@ -99,7 +99,7 @@ mod tests {
     }
 
     #[test]
-    fn parses_valid_configuration_with_optional_fields() {
+    fn handles_valid_configuration_with_optional_fields() {
         let actual = main(
             "
 resource_paths = '/my/resources/**'

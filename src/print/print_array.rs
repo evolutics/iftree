@@ -33,7 +33,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn prints_empty_set() {
+    fn handles_empty_set() {
         let actual = main(&model::FileIndex {
             resource_type: model::ResourceType {
                 identifier: quote::format_ident!("Resource"),
@@ -52,7 +52,7 @@ mod tests {
     }
 
     #[test]
-    fn prints_files() {
+    fn handles_files() {
         let actual = main(&model::FileIndex {
             resource_type: model::ResourceType {
                 identifier: quote::format_ident!("Resource"),

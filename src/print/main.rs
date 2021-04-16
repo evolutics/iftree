@@ -24,7 +24,7 @@ mod tests {
     use std::path;
 
     #[test]
-    fn prints() {
+    fn handles() {
         let actual = main(
             quote::quote! {
                 pub type Resource = &'static str;

@@ -65,7 +65,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn parses_unit() {
+    fn handles_unit() {
         let actual = syn::parse_str::<model::ResourceType<()>>("pub struct MyUnit;");
 
         let actual = actual.unwrap();
@@ -77,7 +77,7 @@ mod tests {
     }
 
     #[test]
-    fn parses_type_alias() {
+    fn handles_type_alias() {
         let actual =
             syn::parse_str::<model::ResourceType<()>>("pub type MyTypeAlias = &'static str;");
 
@@ -90,7 +90,7 @@ mod tests {
     }
 
     #[test]
-    fn parses_named_fields() {
+    fn handles_named_fields() {
         let actual = syn::parse_str::<model::ResourceType<()>>(
             "pub struct MyNamedFields {
     content: &'static str,
@@ -110,7 +110,7 @@ mod tests {
     }
 
     #[test]
-    fn parses_tuple_fields() {
+    fn handles_tuple_fields() {
         let actual = syn::parse_str::<model::ResourceType<()>>(
             "pub struct MyTupleFields(usize, &'static str);",
         );

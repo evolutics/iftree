@@ -40,7 +40,7 @@ mod tests {
         use std::fs;
 
         #[test]
-        fn gets() {
+        fn handles() {
             let base_folder = fs::canonicalize(".").unwrap();
             assert!(base_folder.is_absolute());
 
@@ -62,7 +62,7 @@ mod tests {
         use super::*;
 
         #[test]
-        fn given_environment_variable_it_gets_concatenation() {
+        fn given_environment_variable_it_handles_concatenation() {
             let actual = main(
                 &model::Configuration {
                     base_folder: path::PathBuf::from("b/c"),

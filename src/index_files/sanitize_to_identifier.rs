@@ -60,7 +60,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn sanitizes_by_convention_of_screaming_snake_case() {
+    fn handles_convention_of_screaming_snake_case() {
         let actual = main("README.md", Convention::ScreamingSnakeCase);
 
         let expected = "r#README_MD";
@@ -68,7 +68,7 @@ mod tests {
     }
 
     #[test]
-    fn sanitizes_by_convention_of_snake_case() {
+    fn handles_convention_of_snake_case() {
         let actual = main("README.md", Convention::SnakeCase);
 
         let expected = "r#readme_md";
@@ -76,7 +76,7 @@ mod tests {
     }
 
     #[test]
-    fn sanitizes_special_characters() {
+    fn handles_special_characters() {
         let actual = main("A B##C_D±EÅF𝟙G.H", Convention::ScreamingSnakeCase);
 
         let expected = "r#A_B__C_D_E_F_G_H";
@@ -84,7 +84,7 @@ mod tests {
     }
 
     #[test]
-    fn sanitizes_first_character() {
+    fn handles_first_character() {
         let actual = main("2a", Convention::SnakeCase);
 
         let expected = "r#_2a";
@@ -92,7 +92,7 @@ mod tests {
     }
 
     #[test]
-    fn sanitizes_empty_string() {
+    fn handles_empty_string() {
         let actual = main("", stubs::convention());
 
         let expected = "r#__";
@@ -100,7 +100,7 @@ mod tests {
     }
 
     #[test]
-    fn sanitizes_wildcard_pattern() {
+    fn handles_wildcard_pattern() {
         let actual = main("_", stubs::convention());
 
         let expected = "r#__";
@@ -108,7 +108,7 @@ mod tests {
     }
 
     #[test]
-    fn sanitizes_special_keywords() {
+    fn handles_special_keywords() {
         let actual = main("self", Convention::SnakeCase);
 
         let expected = "r#self_";
@@ -116,7 +116,7 @@ mod tests {
     }
 
     #[test]
-    fn sanitizes_other_keywords() {
+    fn handles_other_keywords() {
         let actual = main("match", Convention::SnakeCase);
 
         let expected = "r#match";

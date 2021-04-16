@@ -62,7 +62,7 @@ mod tests {
     use std::path;
 
     #[test]
-    fn gets_template_context() {
+    fn handles_template_context() {
         let actual = main(
             &model::ResourceType {
                 identifier: quote::format_ident!("Resource"),
@@ -93,7 +93,7 @@ mod tests {
         use super::*;
 
         #[test]
-        fn prints_unit() {
+        fn handles_unit() {
             let actual = main(
                 &model::ResourceType {
                     identifier: quote::format_ident!("MyUnit"),
@@ -108,7 +108,7 @@ mod tests {
         }
 
         #[test]
-        fn prints_type_alias() {
+        fn handles_type_alias() {
             let actual = main(
                 &model::ResourceType {
                     structure: model::ResourceStructure::TypeAlias(model::Template::Content),
@@ -129,7 +129,7 @@ mod tests {
         }
 
         #[test]
-        fn prints_named_fields() {
+        fn handles_named_fields() {
             let actual = main(
                 &model::ResourceType {
                     identifier: quote::format_ident!("MyNamedFields"),
@@ -155,7 +155,7 @@ mod tests {
         }
 
         #[test]
-        fn prints_tuple_fields() {
+        fn handles_tuple_fields() {
             let actual = main(
                 &model::ResourceType {
                     identifier: quote::format_ident!("MyTupleFields"),
