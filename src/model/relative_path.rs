@@ -5,16 +5,3 @@ impl From<&str> for main::RelativePath {
         main::RelativePath(String::from(string))
     }
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn handles_from_string() {
-        let actual = main::RelativePath::from("a/bc");
-
-        let expected = main::RelativePath(String::from("a/bc"));
-        assert_eq!(actual, expected);
-    }
-}
