@@ -1,10 +1,10 @@
-use super::print_field_term;
+use super::print_template;
 use crate::model;
 
 pub fn main(type_: &model::Type<model::Template>, file: &model::File) -> proc_macro2::TokenStream {
     let type_identifier = &type_.identifier;
 
-    let context = print_field_term::Context {
+    let context = print_template::Context {
         relative_path: &file.relative_path.0,
         absolute_path: &file.absolute_path.to_string_lossy(),
     };
@@ -14,14 +14,14 @@ pub fn main(type_: &model::Type<model::Template>, file: &model::File) -> proc_ma
             #type_identifier
         },
 
-        model::TypeStructure::TypeAlias(template) => print_field_term::main(&template, &context),
+        model::TypeStructure::TypeAlias(template) => print_template::main(&template, &context),
 
         model::TypeStructure::NamedFields(named_templates) => {
             let content: proc_macro2::TokenStream = named_templates
                 .iter()
                 .map(|(name, template)| {
                     let name = quote::format_ident!("{}", name);
-                    let term = print_field_term::main(template, &context);
+                    let term = print_template::main(template, &context);
                     quote::quote! { #name: #term, }
                 })
                 .collect();
@@ -37,7 +37,7 @@ pub fn main(type_: &model::Type<model::Template>, file: &model::File) -> proc_ma
             let content: proc_macro2::TokenStream = templates
                 .iter()
                 .map(|template| {
-                    let term = print_field_term::main(template, &context);
+                    let term = print_template::main(template, &context);
                     quote::quote! { #term, }
                 })
                 .collect();
