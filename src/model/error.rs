@@ -39,7 +39,7 @@ impl fmt::Display for main::Error {
             } => {
                 writeln!(
                     formatter,
-                    "Files map to same generated identifier {:?}:",
+                    "Files collide on generated identifier {:?}:",
                     identifier,
                 )?;
                 for competitor in competitors {
@@ -127,7 +127,7 @@ _ = …
             }
             .to_string();
 
-            let expected = "Files map to same generated identifier \"b_c\":
+            let expected = "Files collide on generated identifier \"b_c\":
 - \"a/B-c\"
 - \"a/b.c\"
 Rename one of the files or configure \"module_tree = false\".";

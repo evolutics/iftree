@@ -1,6 +1,7 @@
 use super::sanitize_to_identifier;
 use crate::data;
 use crate::model;
+use std::iter;
 use std::path;
 use std::vec;
 
@@ -25,7 +26,13 @@ fn get_forest(files: &[model::File]) -> model::Result<model::FileForest> {
     let mut forest = model::FileForest::new();
 
     for (index, file) in files.iter().enumerate() {
-        match add_file(&mut forest, Context { index, file }) {
+        let context = Context {
+            index,
+            file,
+            name: String::new(),
+        };
+
+        match add_file(&mut forest, context) {
             None => Ok(()),
             Some(Collision {
                 identifier,
@@ -43,14 +50,15 @@ fn get_forest(files: &[model::File]) -> model::Result<model::FileForest> {
     Ok(forest)
 }
 
-fn add_file(forest: &mut model::FileForest, context: Context) -> Option<Collision> {
-    let mut reverse_file_path = get_reverse_file_path(&context.file);
-    add_file_recursively(forest, &mut reverse_file_path, context)
-}
-
 struct Context<'a> {
     index: usize,
     file: &'a model::File,
+    name: String,
+}
+
+fn add_file(forest: &mut model::FileForest, context: Context) -> Option<Collision> {
+    let mut reverse_file_path = get_reverse_file_path(&context.file);
+    add_file_recursively(forest, &mut reverse_file_path, context)
 }
 
 struct Collision {
@@ -81,7 +89,16 @@ fn add_file_recursively(
     context: Context,
 ) -> Option<Collision> {
     match reverse_file_path.pop() {
-        None => None,
+        None => {
+            let competitors = get_simple_sample_index(parent)
+                .into_iter()
+                .chain(iter::once(context.index))
+                .collect();
+            Some(Collision {
+                identifier: context.name,
+                competitors,
+            })
+        }
 
         Some(name) => match parent.get_mut(&name) {
             None => {
@@ -96,10 +113,26 @@ fn add_file_recursively(
             }),
 
             Some(model::FileTree::Folder(child)) => {
-                add_file_recursively(child, reverse_file_path, context)
+                add_file_recursively(child, reverse_file_path, Context { name, ..context })
             }
         },
     }
+}
+
+fn get_simple_sample_index(forest: &model::FileForest) -> Option<usize> {
+    for tree in forest.values() {
+        match tree {
+            model::FileTree::File { index } => return Some(*index),
+            model::FileTree::Folder(_) => (),
+        }
+    }
+    for tree in forest.values() {
+        match tree {
+            model::FileTree::File { .. } => (),
+            model::FileTree::Folder(forest) => return get_simple_sample_index(forest),
+        }
+    }
+    None
 }
 
 fn get_singleton_tree(reverse_file_path: vec::Vec<String>, index: usize) -> model::FileTree {
@@ -247,33 +280,141 @@ mod tests {
         assert_eq!(actual, expected);
     }
 
-    #[test]
-    fn given_name_collision_it_errs() {
-        let actual = main(
-            &model::Configuration {
-                module_tree: true,
-                ..model::stubs::configuration()
-            },
-            &[
-                model::File {
-                    relative_path: model::RelativePath::from("A"),
-                    ..model::stubs::file()
-                },
-                model::File {
-                    relative_path: model::RelativePath::from("a"),
-                    ..model::stubs::file()
-                },
-            ],
-        );
+    #[cfg(test)]
+    mod name_collision {
+        use super::*;
 
-        let actual = actual.unwrap_err();
-        let expected = model::Error::NameCollision {
-            identifier: String::from("r#A"),
-            competitors: vec![
-                model::RelativePath::from("A"),
-                model::RelativePath::from("a"),
-            ],
-        };
-        assert_eq!(actual, expected);
+        #[test]
+        fn given_file_collides_with_file_it_errs() {
+            let actual = main(
+                &model::Configuration {
+                    module_tree: true,
+                    ..model::stubs::configuration()
+                },
+                &[
+                    model::File {
+                        relative_path: model::RelativePath::from("a/B"),
+                        ..model::stubs::file()
+                    },
+                    model::File {
+                        relative_path: model::RelativePath::from("a/b"),
+                        ..model::stubs::file()
+                    },
+                ],
+            );
+
+            let actual = actual.unwrap_err();
+            let expected = model::Error::NameCollision {
+                identifier: String::from("r#B"),
+                competitors: vec![
+                    model::RelativePath::from("a/B"),
+                    model::RelativePath::from("a/b"),
+                ],
+            };
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn given_file_collides_with_folder_it_errs() {
+            let actual = main(
+                &model::Configuration {
+                    module_tree: true,
+                    ..model::stubs::configuration()
+                },
+                &[
+                    model::File {
+                        relative_path: model::RelativePath::from("a/-/b"),
+                        ..model::stubs::file()
+                    },
+                    model::File {
+                        relative_path: model::RelativePath::from("a/~"),
+                        ..model::stubs::file()
+                    },
+                ],
+            );
+
+            let actual = actual.unwrap_err();
+            let expected = model::Error::NameCollision {
+                identifier: String::from("r#__"),
+                competitors: vec![
+                    model::RelativePath::from("a/-/b"),
+                    model::RelativePath::from("a/~"),
+                ],
+            };
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn given_folder_collides_with_file_it_errs() {
+            let actual = main(
+                &model::Configuration {
+                    module_tree: true,
+                    ..model::stubs::configuration()
+                },
+                &[
+                    model::File {
+                        relative_path: model::RelativePath::from("a/-"),
+                        ..model::stubs::file()
+                    },
+                    model::File {
+                        relative_path: model::RelativePath::from("a/~/b"),
+                        ..model::stubs::file()
+                    },
+                ],
+            );
+
+            let actual = actual.unwrap_err();
+            let expected = model::Error::NameCollision {
+                identifier: String::from("r#__"),
+                competitors: vec![
+                    model::RelativePath::from("a/-"),
+                    model::RelativePath::from("a/~/b"),
+                ],
+            };
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn given_folder_collides_with_folder_it_merges() {
+            let actual = main(
+                &model::Configuration {
+                    module_tree: true,
+                    ..model::stubs::configuration()
+                },
+                &[
+                    model::File {
+                        relative_path: model::RelativePath::from("A/b"),
+                        ..model::stubs::file()
+                    },
+                    model::File {
+                        relative_path: model::RelativePath::from("a/c"),
+                        ..model::stubs::file()
+                    },
+                ],
+            );
+
+            let actual = actual.unwrap();
+            let expected = vec![(
+                String::from("base"),
+                model::FileTree::Folder(
+                    vec![(
+                        String::from("r#a"),
+                        model::FileTree::Folder(
+                            vec![
+                                (String::from("r#B"), model::FileTree::File { index: 0 }),
+                                (String::from("r#C"), model::FileTree::File { index: 1 }),
+                            ]
+                            .into_iter()
+                            .collect(),
+                        ),
+                    )]
+                    .into_iter()
+                    .collect(),
+                ),
+            )]
+            .into_iter()
+            .collect();
+            assert_eq!(actual, expected);
+        }
     }
 }
