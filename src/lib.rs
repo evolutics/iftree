@@ -88,11 +88,9 @@ fn process(input: model::Input) -> model::Output {
 
     let item = input.item;
     let item2 = proc_macro2::TokenStream::from(item.clone());
-    let resource_type = syn::parse_macro_input!(item);
+    let type_ = syn::parse_macro_input!(item);
 
-    match index_files::main(configuration, resource_type)
-        .map(|file_index| print::main(item2, file_index))
-    {
+    match index_files::main(configuration, type_).map(|file_index| print::main(item2, file_index)) {
         Err(error) => panic!("{}", error),
         Ok(value) => value.into(),
     }

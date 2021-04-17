@@ -1,7 +1,7 @@
 use crate::model;
 use syn::parse;
 
-impl parse::Parse for model::ResourceType<()> {
+impl parse::Parse for model::Type<()> {
     fn parse(item: parse::ParseStream) -> syn::Result<Self> {
         item.call(syn::Attribute::parse_outer)?;
         item.parse::<syn::Visibility>()?;
@@ -17,7 +17,7 @@ impl parse::Parse for model::ResourceType<()> {
     }
 }
 
-fn parse_structure(item: parse::ParseStream) -> syn::Result<model::ResourceType<()>> {
+fn parse_structure(item: parse::ParseStream) -> syn::Result<model::Type<()>> {
     let derive_input = item.parse::<syn::DeriveInput>()?;
 
     let structure = match derive_input.data {
@@ -41,20 +41,20 @@ fn parse_structure(item: parse::ParseStream) -> syn::Result<model::ResourceType<
         }
     };
 
-    Ok(model::ResourceType {
+    Ok(model::Type {
         identifier: derive_input.ident,
         structure: resource_structure,
     })
 }
 
-fn parse_type_alias(item: parse::ParseStream) -> syn::Result<model::ResourceType<()>> {
+fn parse_type_alias(item: parse::ParseStream) -> syn::Result<model::Type<()>> {
     item.parse::<syn::Token![type]>()?;
     let identifier = item.parse::<syn::Ident>()?;
     item.parse::<syn::Token![=]>()?;
     item.parse::<syn::Type>()?;
     item.parse::<syn::Token![;]>()?;
 
-    Ok(model::ResourceType {
+    Ok(model::Type {
         identifier,
         structure: model::ResourceStructure::TypeAlias(()),
     })
@@ -66,10 +66,10 @@ mod tests {
 
     #[test]
     fn handles_unit() {
-        let actual = syn::parse_str::<model::ResourceType<()>>("pub struct MyUnit;");
+        let actual = syn::parse_str::<model::Type<()>>("pub struct MyUnit;");
 
         let actual = actual.unwrap();
-        let expected = model::ResourceType {
+        let expected = model::Type {
             identifier: quote::format_ident!("MyUnit"),
             structure: model::ResourceStructure::Unit,
         };
@@ -78,11 +78,10 @@ mod tests {
 
     #[test]
     fn handles_type_alias() {
-        let actual =
-            syn::parse_str::<model::ResourceType<()>>("pub type MyTypeAlias = &'static str;");
+        let actual = syn::parse_str::<model::Type<()>>("pub type MyTypeAlias = &'static str;");
 
         let actual = actual.unwrap();
-        let expected = model::ResourceType {
+        let expected = model::Type {
             identifier: quote::format_ident!("MyTypeAlias"),
             structure: model::ResourceStructure::TypeAlias(()),
         };
@@ -91,7 +90,7 @@ mod tests {
 
     #[test]
     fn handles_named_fields() {
-        let actual = syn::parse_str::<model::ResourceType<()>>(
+        let actual = syn::parse_str::<model::Type<()>>(
             "pub struct MyNamedFields {
     content: &'static str,
     media_type: &'static str,
@@ -99,7 +98,7 @@ mod tests {
         );
 
         let actual = actual.unwrap();
-        let expected = model::ResourceType {
+        let expected = model::Type {
             identifier: quote::format_ident!("MyNamedFields"),
             structure: model::ResourceStructure::NamedFields(vec![
                 (String::from("content"), ()),
@@ -111,12 +110,11 @@ mod tests {
 
     #[test]
     fn handles_tuple_fields() {
-        let actual = syn::parse_str::<model::ResourceType<()>>(
-            "pub struct MyTupleFields(usize, &'static str);",
-        );
+        let actual =
+            syn::parse_str::<model::Type<()>>("pub struct MyTupleFields(usize, &'static str);");
 
         let actual = actual.unwrap();
-        let expected = model::ResourceType {
+        let expected = model::Type {
             identifier: quote::format_ident!("MyTupleFields"),
             structure: model::ResourceStructure::TupleFields(vec![(), ()]),
         };
@@ -125,7 +123,7 @@ mod tests {
 
     #[test]
     fn given_unexpected_item_it_errs() {
-        let actual = syn::parse_str::<model::ResourceType<()>>("pub fn do_it() {}");
+        let actual = syn::parse_str::<model::Type<()>>("pub fn do_it() {}");
 
         let actual = actual.unwrap_err().to_string();
         assert_eq!(actual, "expected `struct` or `type`");
@@ -133,7 +131,7 @@ mod tests {
 
     #[test]
     fn given_valid_but_unexpected_derive_input_it_errs() {
-        let actual = syn::parse_str::<model::ResourceType<()>>(
+        let actual = syn::parse_str::<model::Type<()>>(
             "pub union MyUnion {
     integer: u32,
     floating: f32,

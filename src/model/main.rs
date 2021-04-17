@@ -45,7 +45,7 @@ pub enum Template {
 }
 
 #[derive(Clone, cmp::PartialEq, Debug)]
-pub struct ResourceType<T> {
+pub struct Type<T> {
     pub identifier: syn::Ident,
     pub structure: ResourceStructure<T>,
 }
@@ -60,7 +60,7 @@ pub enum ResourceStructure<T> {
 
 #[derive(Clone, cmp::PartialEq, Debug)]
 pub struct FileIndex {
-    pub resource_type: ResourceType<Template>,
+    pub type_: Type<Template>,
     pub array: vec::Vec<File>,
     pub forest: Option<FileForest>,
 }
@@ -122,8 +122,8 @@ pub mod stubs {
         }
     }
 
-    pub fn resource_type<T>() -> ResourceType<T> {
-        ResourceType {
+    pub fn type_<T>() -> Type<T> {
+        Type {
             identifier: quote::format_ident!("Foo"),
             structure: ResourceStructure::Unit,
         }
@@ -131,7 +131,7 @@ pub mod stubs {
 
     pub fn file_index() -> FileIndex {
         FileIndex {
-            resource_type: resource_type(),
+            type_: type_(),
             array: vec![],
             forest: None,
         }

@@ -4,7 +4,7 @@ use crate::model;
 
 pub fn main(file_index: &model::FileIndex) -> proc_macro2::TokenStream {
     let identifier = quote::format_ident!("{}", data::RESOURCE_ARRAY_IDENTIFIER);
-    let type_identifier = &file_index.resource_type.identifier;
+    let type_identifier = &file_index.type_.identifier;
     let length = file_index.array.len();
     let expression = print_expression(file_index);
 
@@ -18,7 +18,7 @@ fn print_expression(file_index: &model::FileIndex) -> proc_macro2::TokenStream {
         .array
         .iter()
         .map(|file| {
-            let element = print_resource_term::main(&file_index.resource_type, file);
+            let element = print_resource_term::main(&file_index.type_, file);
             quote::quote! { #element, }
         })
         .collect();
@@ -35,9 +35,9 @@ mod tests {
     #[test]
     fn handles_empty_set() {
         let actual = main(&model::FileIndex {
-            resource_type: model::ResourceType {
+            type_: model::Type {
                 identifier: quote::format_ident!("Resource"),
-                ..model::stubs::resource_type()
+                ..model::stubs::type_()
             },
             array: vec![],
             ..model::stubs::file_index()
@@ -54,7 +54,7 @@ mod tests {
     #[test]
     fn handles_nonempty_set() {
         let actual = main(&model::FileIndex {
-            resource_type: model::ResourceType {
+            type_: model::Type {
                 identifier: quote::format_ident!("Resource"),
                 structure: model::ResourceStructure::TypeAlias(model::Template::RelativePath),
             },

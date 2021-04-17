@@ -11,7 +11,7 @@ pub fn main(file_index: &model::FileIndex) -> proc_macro2::TokenStream {
 
 fn go(file_index: &model::FileIndex, forest: &model::FileForest) -> proc_macro2::TokenStream {
     let context = Context {
-        resource_type: &file_index.resource_type.identifier,
+        type_: &file_index.type_.identifier,
         name: data::BASE_MODULE_IDENTIFIER,
         depth: 0,
     };
@@ -19,7 +19,7 @@ fn go(file_index: &model::FileIndex, forest: &model::FileForest) -> proc_macro2:
 }
 
 struct Context<'a> {
-    resource_type: &'a syn::Ident,
+    type_: &'a syn::Ident,
     name: &'a str,
     depth: usize,
 }
@@ -54,11 +54,11 @@ fn print_file(context: Context, index: usize) -> proc_macro2::TokenStream {
     let root_path = iter::repeat(quote::quote! { super:: })
         .take(context.depth)
         .collect::<proc_macro2::TokenStream>();
-    let resource_type = context.resource_type;
+    let type_ = context.type_;
     let array = quote::format_ident!("{}", data::RESOURCE_ARRAY_IDENTIFIER);
 
     quote::quote! {
-        pub static #name: &#root_path#resource_type = &#root_path#array[#index];
+        pub static #name: &#root_path#type_ = &#root_path#array[#index];
     }
 }
 
@@ -97,9 +97,9 @@ mod tests {
     #[test]
     fn handles_files() {
         let actual = main(&model::FileIndex {
-            resource_type: model::ResourceType {
+            type_: model::Type {
                 identifier: quote::format_ident!("Resource"),
-                ..model::stubs::resource_type()
+                ..model::stubs::type_()
             },
             forest: Some(
                 vec![
@@ -127,9 +127,9 @@ mod tests {
     #[test]
     fn handles_folders() {
         let actual = main(&model::FileIndex {
-            resource_type: model::ResourceType {
+            type_: model::Type {
                 identifier: quote::format_ident!("Resource"),
-                ..model::stubs::resource_type()
+                ..model::stubs::type_()
             },
             forest: Some(
                 vec![
@@ -184,9 +184,9 @@ mod tests {
     #[test]
     fn handles_both_normal_and_raw_identifiers() {
         let actual = main(&model::FileIndex {
-            resource_type: model::ResourceType {
+            type_: model::Type {
                 identifier: quote::format_ident!("Resource"),
-                ..model::stubs::resource_type()
+                ..model::stubs::type_()
             },
             forest: Some(
                 vec![(

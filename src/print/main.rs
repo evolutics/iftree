@@ -30,7 +30,7 @@ mod tests {
                 pub type Resource = &'static str;
             },
             model::FileIndex {
-                resource_type: model::ResourceType {
+                type_: model::Type {
                     identifier: quote::format_ident!("Resource"),
                     structure: model::ResourceStructure::TypeAlias(model::Template::Content),
                 },

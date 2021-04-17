@@ -1,18 +1,15 @@
 use super::print_field_term;
 use crate::model;
 
-pub fn main(
-    resource_type: &model::ResourceType<model::Template>,
-    file: &model::File,
-) -> proc_macro2::TokenStream {
-    let type_identifier = &resource_type.identifier;
+pub fn main(type_: &model::Type<model::Template>, file: &model::File) -> proc_macro2::TokenStream {
+    let type_identifier = &type_.identifier;
 
     let context = print_field_term::Context {
         relative_path: &file.relative_path.0,
         absolute_path: &file.absolute_path.to_string_lossy(),
     };
 
-    match &resource_type.structure {
+    match &type_.structure {
         model::ResourceStructure::Unit => quote::quote! {
             #type_identifier
         },
@@ -64,7 +61,7 @@ mod tests {
     #[test]
     fn handles_template_context() {
         let actual = main(
-            &model::ResourceType {
+            &model::Type {
                 identifier: quote::format_ident!("Resource"),
                 structure: model::ResourceStructure::TupleFields(vec![
                     model::Template::RelativePath,
@@ -95,7 +92,7 @@ mod tests {
         #[test]
         fn handles_unit() {
             let actual = main(
-                &model::ResourceType {
+                &model::Type {
                     identifier: quote::format_ident!("MyUnit"),
                     structure: model::ResourceStructure::Unit,
                 },
@@ -110,9 +107,9 @@ mod tests {
         #[test]
         fn handles_type_alias() {
             let actual = main(
-                &model::ResourceType {
+                &model::Type {
                     structure: model::ResourceStructure::TypeAlias(model::Template::Content),
-                    ..model::stubs::resource_type()
+                    ..model::stubs::type_()
                 },
                 &model::File {
                     absolute_path: path::PathBuf::from("/a/b"),
@@ -131,7 +128,7 @@ mod tests {
         #[test]
         fn handles_named_fields() {
             let actual = main(
-                &model::ResourceType {
+                &model::Type {
                     identifier: quote::format_ident!("MyNamedFields"),
                     structure: model::ResourceStructure::NamedFields(vec![(
                         String::from("raw_content"),
@@ -157,7 +154,7 @@ mod tests {
         #[test]
         fn handles_tuple_fields() {
             let actual = main(
-                &model::ResourceType {
+                &model::Type {
                     identifier: quote::format_ident!("MyTupleFields"),
                     structure: model::ResourceStructure::TupleFields(vec![
                         model::Template::RelativePath,
