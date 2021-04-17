@@ -2,16 +2,16 @@ use crate::data;
 use crate::model;
 use std::iter;
 
-pub fn main(file_index: &model::FileIndex) -> proc_macro2::TokenStream {
-    match &file_index.forest {
+pub fn main(view: &model::View) -> proc_macro2::TokenStream {
+    match &view.forest {
         None => proc_macro2::TokenStream::new(),
-        Some(forest) => go(file_index, forest),
+        Some(forest) => go(view, forest),
     }
 }
 
-fn go(file_index: &model::FileIndex, forest: &model::FileForest) -> proc_macro2::TokenStream {
+fn go(view: &model::View, forest: &model::FileForest) -> proc_macro2::TokenStream {
     let context = Context {
-        type_: &file_index.type_.identifier,
+        type_: &view.type_.identifier,
         name: data::BASE_MODULE_IDENTIFIER,
         depth: 0,
     };
@@ -68,9 +68,9 @@ mod tests {
 
     #[test]
     fn handles_none() {
-        let actual = main(&model::FileIndex {
+        let actual = main(&model::View {
             forest: None,
-            ..model::stubs::file_index()
+            ..model::stubs::view()
         });
 
         let actual = actual.to_string();
@@ -80,9 +80,9 @@ mod tests {
 
     #[test]
     fn handles_empty_set() {
-        let actual = main(&model::FileIndex {
+        let actual = main(&model::View {
             forest: Some(model::FileForest::new()),
-            ..model::stubs::file_index()
+            ..model::stubs::view()
         });
 
         let actual = actual.to_string();
@@ -96,7 +96,7 @@ mod tests {
 
     #[test]
     fn handles_files() {
-        let actual = main(&model::FileIndex {
+        let actual = main(&model::View {
             type_: model::Type {
                 identifier: quote::format_ident!("Resource"),
                 ..model::stubs::type_()
@@ -109,7 +109,7 @@ mod tests {
                 .into_iter()
                 .collect(),
             ),
-            ..model::stubs::file_index()
+            ..model::stubs::view()
         });
 
         let actual = actual.to_string();
@@ -126,7 +126,7 @@ mod tests {
 
     #[test]
     fn handles_folders() {
-        let actual = main(&model::FileIndex {
+        let actual = main(&model::View {
             type_: model::Type {
                 identifier: quote::format_ident!("Resource"),
                 ..model::stubs::type_()
@@ -159,7 +159,7 @@ mod tests {
                 .into_iter()
                 .collect(),
             ),
-            ..model::stubs::file_index()
+            ..model::stubs::view()
         });
 
         let actual = actual.to_string();
@@ -183,7 +183,7 @@ mod tests {
 
     #[test]
     fn handles_both_normal_and_raw_identifiers() {
-        let actual = main(&model::FileIndex {
+        let actual = main(&model::View {
             type_: model::Type {
                 identifier: quote::format_ident!("Resource"),
                 ..model::stubs::type_()
@@ -200,7 +200,7 @@ mod tests {
                 .into_iter()
                 .collect(),
             ),
-            ..model::stubs::file_index()
+            ..model::stubs::view()
         });
 
         let actual = actual.to_string();

@@ -2,23 +2,23 @@ use super::print_resource_term;
 use crate::data;
 use crate::model;
 
-pub fn main(file_index: &model::FileIndex) -> proc_macro2::TokenStream {
+pub fn main(view: &model::View) -> proc_macro2::TokenStream {
     let identifier = quote::format_ident!("{}", data::RESOURCE_ARRAY_IDENTIFIER);
-    let type_identifier = &file_index.type_.identifier;
-    let length = file_index.array.len();
-    let expression = print_expression(file_index);
+    let type_identifier = &view.type_.identifier;
+    let length = view.array.len();
+    let expression = print_expression(view);
 
     quote::quote! {
         pub static #identifier: [#type_identifier; #length] = #expression;
     }
 }
 
-fn print_expression(file_index: &model::FileIndex) -> proc_macro2::TokenStream {
-    let content: proc_macro2::TokenStream = file_index
+fn print_expression(view: &model::View) -> proc_macro2::TokenStream {
+    let content: proc_macro2::TokenStream = view
         .array
         .iter()
         .map(|file| {
-            let element = print_resource_term::main(&file_index.type_, file);
+            let element = print_resource_term::main(&view.type_, file);
             quote::quote! { #element, }
         })
         .collect();
@@ -34,13 +34,13 @@ mod tests {
 
     #[test]
     fn handles_empty_set() {
-        let actual = main(&model::FileIndex {
+        let actual = main(&model::View {
             type_: model::Type {
                 identifier: quote::format_ident!("Resource"),
                 ..model::stubs::type_()
             },
             array: vec![],
-            ..model::stubs::file_index()
+            ..model::stubs::view()
         });
 
         let actual = actual.to_string();
@@ -53,7 +53,7 @@ mod tests {
 
     #[test]
     fn handles_nonempty_set() {
-        let actual = main(&model::FileIndex {
+        let actual = main(&model::View {
             type_: model::Type {
                 identifier: quote::format_ident!("Resource"),
                 structure: model::TypeStructure::TypeAlias(model::Template::RelativePath),
@@ -68,7 +68,7 @@ mod tests {
                     ..model::stubs::file()
                 },
             ],
-            ..model::stubs::file_index()
+            ..model::stubs::view()
         });
 
         let actual = actual.to_string();

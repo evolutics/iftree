@@ -68,8 +68,8 @@
 //! when including it, etc.
 
 mod data;
+mod generate_view;
 mod go;
-mod index_files;
 mod list_files;
 mod model;
 mod parse;

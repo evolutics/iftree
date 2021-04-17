@@ -1,4 +1,4 @@
-use crate::index_files;
+use crate::generate_view;
 use crate::list_files;
 use crate::model;
 use crate::print;
@@ -9,8 +9,8 @@ pub fn main(
     type_: model::Type<()>,
 ) -> model::Result<proc_macro2::TokenStream> {
     let files = list_files::main(&configuration)?;
-    let file_index = index_files::main(&configuration, type_, files)?;
-    Ok(print::main(item, file_index))
+    let view = generate_view::main(&configuration, type_, files)?;
+    Ok(print::main(item, view))
 }
 
 #[cfg(test)]

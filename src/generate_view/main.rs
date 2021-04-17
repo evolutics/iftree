@@ -8,11 +8,11 @@ pub fn main(
     configuration: &model::Configuration,
     type_: model::Type<()>,
     files: vec::Vec<model::File>,
-) -> model::Result<model::FileIndex> {
+) -> model::Result<model::View> {
     let type_ = get_templates::main(configuration, type_)?;
     let array = get_array::main(files);
     let forest = get_forest::main(configuration, &array)?;
-    Ok(model::FileIndex {
+    Ok(model::View {
         type_,
         array,
         forest,
@@ -48,7 +48,7 @@ mod tests {
         );
 
         let actual = actual.unwrap();
-        let expected = model::FileIndex {
+        let expected = model::View {
             type_: model::Type {
                 identifier: quote::format_ident!("Resource"),
                 structure: model::TypeStructure::TypeAlias(model::Template::Content),

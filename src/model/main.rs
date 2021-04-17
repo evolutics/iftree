@@ -61,7 +61,7 @@ pub struct File {
 pub struct RelativePath(pub String);
 
 #[derive(Clone, cmp::PartialEq, Debug)]
-pub struct FileIndex {
+pub struct View {
     pub type_: Type<Template>,
     pub array: vec::Vec<File>,
     pub forest: Option<FileForest>,
@@ -122,8 +122,8 @@ pub mod stubs {
         }
     }
 
-    pub fn file_index() -> FileIndex {
-        FileIndex {
+    pub fn view() -> View {
+        View {
             type_: type_(),
             array: vec![],
             forest: None,
