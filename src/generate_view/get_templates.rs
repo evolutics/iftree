@@ -13,7 +13,7 @@ pub fn main(
 
             model::TypeStructure::TypeAlias(_) => model::TypeStructure::TypeAlias(get_template(
                 configuration,
-                model::FieldIdentifier::Anonymous,
+                model::Field::Anonymous,
             )?),
 
             model::TypeStructure::NamedFields(names) => model::TypeStructure::NamedFields(
@@ -22,7 +22,7 @@ pub fn main(
                     .map(|(name, _)| {
                         Ok((
                             name.clone(),
-                            get_template(configuration, model::FieldIdentifier::Named(name))?,
+                            get_template(configuration, model::Field::Named(name))?,
                         ))
                     })
                     .collect::<model::Result<_>>()?,
@@ -32,9 +32,7 @@ pub fn main(
                 unary_length
                     .iter()
                     .enumerate()
-                    .map(|(index, _)| {
-                        get_template(configuration, model::FieldIdentifier::Indexed(index))
-                    })
+                    .map(|(index, _)| get_template(configuration, model::Field::Indexed(index)))
                     .collect::<model::Result<_>>()?,
             ),
         },
@@ -43,13 +41,13 @@ pub fn main(
 
 fn get_template(
     configuration: &model::Configuration,
-    identifier: model::FieldIdentifier,
+    field: model::Field,
 ) -> model::Result<model::Template> {
-    match configuration.field_templates.get(&identifier) {
+    match configuration.field_templates.get(&field) {
         None => {
-            let name = String::from(identifier.clone());
+            let name = String::from(field.clone());
             match data::PREDEFINED_TEMPLATES_ORDERED.binary_search_by(|entry| entry.0.cmp(&name)) {
-                Err(_) => Err(model::Error::MissingFieldTemplate(identifier)),
+                Err(_) => Err(model::Error::MissingFieldTemplate(field)),
                 Ok(index) => Ok(data::PREDEFINED_TEMPLATES_ORDERED[index].1.clone()),
             }
         }
@@ -76,7 +74,7 @@ mod tests {
         );
 
         let actual = actual.unwrap_err();
-        let expected = model::Error::MissingFieldTemplate(model::FieldIdentifier::Anonymous);
+        let expected = model::Error::MissingFieldTemplate(model::Field::Anonymous);
         assert_eq!(actual, expected);
     }
 
@@ -109,7 +107,7 @@ mod tests {
         let actual = main(
             &model::Configuration {
                 field_templates: vec![(
-                    model::FieldIdentifier::Named(String::from("content")),
+                    model::Field::Named(String::from("content")),
                     model::Template::RawContent,
                 )]
                 .into_iter()
@@ -159,12 +157,9 @@ mod tests {
         fn handles_type_alias() {
             let actual = main(
                 &model::Configuration {
-                    field_templates: vec![(
-                        model::FieldIdentifier::Anonymous,
-                        model::Template::Content,
-                    )]
-                    .into_iter()
-                    .collect(),
+                    field_templates: vec![(model::Field::Anonymous, model::Template::Content)]
+                        .into_iter()
+                        .collect(),
                     ..model::stubs::configuration()
                 },
                 model::Type {
@@ -186,7 +181,7 @@ mod tests {
             let actual = main(
                 &model::Configuration {
                     field_templates: vec![(
-                        model::FieldIdentifier::Named(String::from("my_content")),
+                        model::Field::Named(String::from("my_content")),
                         model::Template::RawContent,
                     )]
                     .into_iter()
@@ -218,7 +213,7 @@ mod tests {
             let actual = main(
                 &model::Configuration {
                     field_templates: vec![(
-                        model::FieldIdentifier::Indexed(0),
+                        model::Field::Indexed(0),
                         model::Template::RelativePath,
                     )]
                     .into_iter()

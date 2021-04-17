@@ -1,6 +1,6 @@
 use crate::model;
 
-pub const ANONYMOUS_FIELD_IDENTIFIER: &str = "_";
+pub const ANONYMOUS_FIELD: &str = "_";
 
 pub const ASSET_ARRAY_IDENTIFIER: &str = "ASSETS";
 

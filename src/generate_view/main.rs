@@ -29,12 +29,9 @@ mod tests {
         let actual = main(
             &model::Configuration {
                 identifiers: true,
-                field_templates: vec![(
-                    model::FieldIdentifier::Anonymous,
-                    model::Template::Content,
-                )]
-                .into_iter()
-                .collect(),
+                field_templates: vec![(model::Field::Anonymous, model::Template::Content)]
+                    .into_iter()
+                    .collect(),
                 ..model::stubs::configuration()
             },
             model::Type {

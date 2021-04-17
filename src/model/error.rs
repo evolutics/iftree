@@ -105,8 +105,7 @@ mod tests {
 
         #[test]
         fn handles_missing_field_template() {
-            let actual =
-                main::Error::MissingFieldTemplate(main::FieldIdentifier::Anonymous).to_string();
+            let actual = main::Error::MissingFieldTemplate(main::Field::Anonymous).to_string();
 
             let expected = "No template for field \"_\". Add one to your configuration as follows:
 ```

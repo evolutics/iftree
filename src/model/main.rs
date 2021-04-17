@@ -16,11 +16,11 @@ pub struct Configuration {
     pub field_templates: FieldTemplates,
 }
 
-pub type FieldTemplates = collections::BTreeMap<FieldIdentifier, Template>;
+pub type FieldTemplates = collections::BTreeMap<Field, Template>;
 
 #[derive(Clone, cmp::Eq, cmp::Ord, cmp::PartialEq, cmp::PartialOrd, Debug, serde::Deserialize)]
 #[serde(from = "String")]
-pub enum FieldIdentifier {
+pub enum Field {
     Anonymous,
     Named(String),
     Indexed(usize),
@@ -86,7 +86,7 @@ pub enum Error {
 
     Ignore(IgnoreError),
 
-    MissingFieldTemplate(FieldIdentifier),
+    MissingFieldTemplate(Field),
 
     NameCollision {
         identifier: String,

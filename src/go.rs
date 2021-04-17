@@ -26,12 +26,9 @@ mod tests {
                 base_folder: path::PathBuf::new(),
                 root_folder_variable: String::from("CARGO_MANIFEST_DIR"),
                 identifiers: true,
-                field_templates: vec![(
-                    model::FieldIdentifier::Anonymous,
-                    model::Template::RelativePath,
-                )]
-                .into_iter()
-                .collect(),
+                field_templates: vec![(model::Field::Anonymous, model::Template::RelativePath)]
+                    .into_iter()
+                    .collect(),
             },
             quote::quote! {
                 pub type Asset = &'static str;

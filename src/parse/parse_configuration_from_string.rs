@@ -125,21 +125,18 @@ custom = 'custom::include!'
 
             field_templates: vec![
                 (
-                    model::FieldIdentifier::Anonymous,
+                    model::Field::Anonymous,
                     model::Template::Custom {
                         macro_: String::from("my_include"),
                     },
                 ),
                 (
-                    model::FieldIdentifier::Named(String::from("custom")),
+                    model::Field::Named(String::from("custom")),
                     model::Template::Custom {
                         macro_: String::from("custom::include"),
                     },
                 ),
-                (
-                    model::FieldIdentifier::Indexed(3),
-                    model::Template::RawContent,
-                ),
+                (model::Field::Indexed(3), model::Template::RawContent),
             ]
             .into_iter()
             .collect(),
