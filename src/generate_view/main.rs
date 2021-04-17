@@ -57,11 +57,16 @@ mod tests {
                 relative_path: model::RelativePath::from("b"),
                 absolute_path: path::PathBuf::from("/a/b"),
             }],
-            forest: Some(
-                vec![(String::from("r#B"), model::FileTree::File { index: 0 })]
-                    .into_iter()
-                    .collect(),
-            ),
+            forest: vec![(
+                String::from("base"),
+                model::FileTree::Folder(
+                    vec![(String::from("r#B"), model::FileTree::File { index: 0 })]
+                        .into_iter()
+                        .collect(),
+                ),
+            )]
+            .into_iter()
+            .collect(),
         };
         assert_eq!(actual, expected);
     }

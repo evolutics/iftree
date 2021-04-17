@@ -64,7 +64,7 @@ pub struct RelativePath(pub String);
 pub struct View {
     pub type_: Type<Template>,
     pub array: vec::Vec<File>,
-    pub forest: Option<FileForest>,
+    pub forest: FileForest,
 }
 
 pub type FileForest = collections::BTreeMap<String, FileTree>;
@@ -126,7 +126,7 @@ pub mod stubs {
         View {
             type_: type_(),
             array: vec![],
-            forest: None,
+            forest: FileForest::new(),
         }
     }
 
