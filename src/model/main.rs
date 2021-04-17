@@ -5,13 +5,6 @@ use std::path;
 use std::result;
 use std::vec;
 
-pub struct Input {
-    pub parameters: proc_macro::TokenStream,
-    pub item: proc_macro::TokenStream,
-}
-
-pub type Output = proc_macro::TokenStream;
-
 #[derive(Clone, cmp::PartialEq, Debug)]
 pub struct Configuration {
     pub paths: String,

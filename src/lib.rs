@@ -68,6 +68,7 @@
 //! when including it, etc.
 
 mod data;
+mod go;
 mod index_files;
 mod model;
 mod parse;
@@ -79,18 +80,11 @@ pub fn include_file_tree(
     parameters: proc_macro::TokenStream,
     item: proc_macro::TokenStream,
 ) -> proc_macro::TokenStream {
-    process(model::Input { parameters, item })
-}
-
-fn process(input: model::Input) -> model::Output {
-    let parameters = input.parameters;
     let configuration = syn::parse_macro_input!(parameters);
-
-    let item = input.item;
     let item2 = proc_macro2::TokenStream::from(item.clone());
     let type_ = syn::parse_macro_input!(item);
 
-    match index_files::main(configuration, type_).map(|file_index| print::main(item2, file_index)) {
+    match go::main(configuration, item2, type_) {
         Err(error) => panic!("{}", error),
         Ok(value) => value.into(),
     }
