@@ -45,7 +45,7 @@ mod tests {
             },
             model::Type {
                 identifier: quote::format_ident!("Resource"),
-                structure: model::ResourceStructure::TypeAlias(()),
+                structure: model::TypeStructure::TypeAlias(()),
             },
         );
 
@@ -54,7 +54,7 @@ mod tests {
         let expected = model::FileIndex {
             type_: model::Type {
                 identifier: quote::format_ident!("Resource"),
-                structure: model::ResourceStructure::TypeAlias(model::Template::Content),
+                structure: model::TypeStructure::TypeAlias(model::Template::Content),
             },
             array: vec![model::File {
                 relative_path: model::RelativePath::from("examples/resources/credits.md"),

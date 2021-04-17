@@ -10,15 +10,13 @@ pub fn main(type_: &model::Type<model::Template>, file: &model::File) -> proc_ma
     };
 
     match &type_.structure {
-        model::ResourceStructure::Unit => quote::quote! {
+        model::TypeStructure::Unit => quote::quote! {
             #type_identifier
         },
 
-        model::ResourceStructure::TypeAlias(template) => {
-            print_field_term::main(&template, &context)
-        }
+        model::TypeStructure::TypeAlias(template) => print_field_term::main(&template, &context),
 
-        model::ResourceStructure::NamedFields(named_templates) => {
+        model::TypeStructure::NamedFields(named_templates) => {
             let content: proc_macro2::TokenStream = named_templates
                 .iter()
                 .map(|(name, template)| {
@@ -35,7 +33,7 @@ pub fn main(type_: &model::Type<model::Template>, file: &model::File) -> proc_ma
             }
         }
 
-        model::ResourceStructure::TupleFields(templates) => {
+        model::TypeStructure::TupleFields(templates) => {
             let content: proc_macro2::TokenStream = templates
                 .iter()
                 .map(|template| {
@@ -63,7 +61,7 @@ mod tests {
         let actual = main(
             &model::Type {
                 identifier: quote::format_ident!("Resource"),
-                structure: model::ResourceStructure::TupleFields(vec![
+                structure: model::TypeStructure::TupleFields(vec![
                     model::Template::RelativePath,
                     model::Template::Content,
                 ]),
@@ -94,7 +92,7 @@ mod tests {
             let actual = main(
                 &model::Type {
                     identifier: quote::format_ident!("MyUnit"),
-                    structure: model::ResourceStructure::Unit,
+                    structure: model::TypeStructure::Unit,
                 },
                 &model::stubs::file(),
             );
@@ -108,7 +106,7 @@ mod tests {
         fn handles_type_alias() {
             let actual = main(
                 &model::Type {
-                    structure: model::ResourceStructure::TypeAlias(model::Template::Content),
+                    structure: model::TypeStructure::TypeAlias(model::Template::Content),
                     ..model::stubs::type_()
                 },
                 &model::File {
@@ -130,7 +128,7 @@ mod tests {
             let actual = main(
                 &model::Type {
                     identifier: quote::format_ident!("MyNamedFields"),
-                    structure: model::ResourceStructure::NamedFields(vec![(
+                    structure: model::TypeStructure::NamedFields(vec![(
                         String::from("raw_content"),
                         model::Template::RawContent,
                     )]),
@@ -156,7 +154,7 @@ mod tests {
             let actual = main(
                 &model::Type {
                     identifier: quote::format_ident!("MyTupleFields"),
-                    structure: model::ResourceStructure::TupleFields(vec![
+                    structure: model::TypeStructure::TupleFields(vec![
                         model::Template::RelativePath,
                     ]),
                 },

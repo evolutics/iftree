@@ -47,11 +47,11 @@ pub enum Template {
 #[derive(Clone, cmp::PartialEq, Debug)]
 pub struct Type<T> {
     pub identifier: syn::Ident,
-    pub structure: ResourceStructure<T>,
+    pub structure: TypeStructure<T>,
 }
 
 #[derive(Clone, cmp::Eq, cmp::Ord, cmp::PartialEq, cmp::PartialOrd, Debug)]
-pub enum ResourceStructure<T> {
+pub enum TypeStructure<T> {
     Unit,
     TypeAlias(T),
     NamedFields(vec::Vec<(String, T)>),
@@ -125,7 +125,7 @@ pub mod stubs {
     pub fn type_<T>() -> Type<T> {
         Type {
             identifier: quote::format_ident!("Foo"),
-            structure: ResourceStructure::Unit,
+            structure: TypeStructure::Unit,
         }
     }
 

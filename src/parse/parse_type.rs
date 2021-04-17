@@ -20,15 +20,15 @@ impl parse::Parse for model::Type<()> {
 fn parse_structure(item: parse::ParseStream) -> syn::Result<model::Type<()>> {
     let derive_input = item.parse::<syn::DeriveInput>()?;
 
-    let structure = match derive_input.data {
+    let raw_structure = match derive_input.data {
         syn::Data::Struct(data) => Ok(data),
         _ => Err(item.error("expected structure")),
     }?;
 
-    let resource_structure = match structure.fields {
-        syn::Fields::Unit => model::ResourceStructure::Unit,
+    let structure = match raw_structure.fields {
+        syn::Fields::Unit => model::TypeStructure::Unit,
 
-        syn::Fields::Named(fields) => model::ResourceStructure::NamedFields(
+        syn::Fields::Named(fields) => model::TypeStructure::NamedFields(
             fields
                 .named
                 .into_iter()
@@ -37,13 +37,13 @@ fn parse_structure(item: parse::ParseStream) -> syn::Result<model::Type<()>> {
         ),
 
         syn::Fields::Unnamed(fields) => {
-            model::ResourceStructure::TupleFields(fields.unnamed.iter().map(|_| ()).collect())
+            model::TypeStructure::TupleFields(fields.unnamed.iter().map(|_| ()).collect())
         }
     };
 
     Ok(model::Type {
         identifier: derive_input.ident,
-        structure: resource_structure,
+        structure,
     })
 }
 
@@ -56,7 +56,7 @@ fn parse_type_alias(item: parse::ParseStream) -> syn::Result<model::Type<()>> {
 
     Ok(model::Type {
         identifier,
-        structure: model::ResourceStructure::TypeAlias(()),
+        structure: model::TypeStructure::TypeAlias(()),
     })
 }
 
@@ -71,7 +71,7 @@ mod tests {
         let actual = actual.unwrap();
         let expected = model::Type {
             identifier: quote::format_ident!("MyUnit"),
-            structure: model::ResourceStructure::Unit,
+            structure: model::TypeStructure::Unit,
         };
         assert_eq!(actual, expected);
     }
@@ -83,7 +83,7 @@ mod tests {
         let actual = actual.unwrap();
         let expected = model::Type {
             identifier: quote::format_ident!("MyTypeAlias"),
-            structure: model::ResourceStructure::TypeAlias(()),
+            structure: model::TypeStructure::TypeAlias(()),
         };
         assert_eq!(actual, expected);
     }
@@ -100,7 +100,7 @@ mod tests {
         let actual = actual.unwrap();
         let expected = model::Type {
             identifier: quote::format_ident!("MyNamedFields"),
-            structure: model::ResourceStructure::NamedFields(vec![
+            structure: model::TypeStructure::NamedFields(vec![
                 (String::from("content"), ()),
                 (String::from("media_type"), ()),
             ]),
@@ -116,7 +116,7 @@ mod tests {
         let actual = actual.unwrap();
         let expected = model::Type {
             identifier: quote::format_ident!("MyTupleFields"),
-            structure: model::ResourceStructure::TupleFields(vec![(), ()]),
+            structure: model::TypeStructure::TupleFields(vec![(), ()]),
         };
         assert_eq!(actual, expected);
     }

@@ -56,7 +56,7 @@ mod tests {
         let actual = main(&model::FileIndex {
             type_: model::Type {
                 identifier: quote::format_ident!("Resource"),
-                structure: model::ResourceStructure::TypeAlias(model::Template::RelativePath),
+                structure: model::TypeStructure::TypeAlias(model::Template::RelativePath),
             },
             array: vec![
                 model::File {

@@ -32,7 +32,7 @@ mod tests {
             model::FileIndex {
                 type_: model::Type {
                     identifier: quote::format_ident!("Resource"),
-                    structure: model::ResourceStructure::TypeAlias(model::Template::Content),
+                    structure: model::TypeStructure::TypeAlias(model::Template::Content),
                 },
                 array: vec![model::File {
                     absolute_path: path::PathBuf::from("/a.b"),

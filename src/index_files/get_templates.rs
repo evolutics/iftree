@@ -9,13 +9,14 @@ pub fn main(
         identifier: type_.identifier,
 
         structure: match type_.structure {
-            model::ResourceStructure::Unit => model::ResourceStructure::Unit,
+            model::TypeStructure::Unit => model::TypeStructure::Unit,
 
-            model::ResourceStructure::TypeAlias(_) => model::ResourceStructure::TypeAlias(
-                get_template(configuration, model::FieldIdentifier::Anonymous)?,
-            ),
+            model::TypeStructure::TypeAlias(_) => model::TypeStructure::TypeAlias(get_template(
+                configuration,
+                model::FieldIdentifier::Anonymous,
+            )?),
 
-            model::ResourceStructure::NamedFields(names) => model::ResourceStructure::NamedFields(
+            model::TypeStructure::NamedFields(names) => model::TypeStructure::NamedFields(
                 names
                     .into_iter()
                     .map(|(name, _)| {
@@ -27,17 +28,15 @@ pub fn main(
                     .collect::<model::Result<_>>()?,
             ),
 
-            model::ResourceStructure::TupleFields(structure) => {
-                model::ResourceStructure::TupleFields(
-                    structure
-                        .iter()
-                        .enumerate()
-                        .map(|(index, _)| {
-                            get_template(configuration, model::FieldIdentifier::Indexed(index))
-                        })
-                        .collect::<model::Result<_>>()?,
-                )
-            }
+            model::TypeStructure::TupleFields(unary_length) => model::TypeStructure::TupleFields(
+                unary_length
+                    .iter()
+                    .enumerate()
+                    .map(|(index, _)| {
+                        get_template(configuration, model::FieldIdentifier::Indexed(index))
+                    })
+                    .collect::<model::Result<_>>()?,
+            ),
         },
     })
 }
@@ -71,7 +70,7 @@ mod tests {
                 ..model::stubs::configuration()
             },
             model::Type {
-                structure: model::ResourceStructure::TypeAlias(()),
+                structure: model::TypeStructure::TypeAlias(()),
                 ..model::stubs::type_()
             },
         );
@@ -90,17 +89,14 @@ mod tests {
             },
             model::Type {
                 identifier: quote::format_ident!("Resource"),
-                structure: model::ResourceStructure::NamedFields(vec![(
-                    String::from("content"),
-                    (),
-                )]),
+                structure: model::TypeStructure::NamedFields(vec![(String::from("content"), ())]),
             },
         );
 
         let actual = actual.unwrap();
         let expected = model::Type {
             identifier: quote::format_ident!("Resource"),
-            structure: model::ResourceStructure::NamedFields(vec![(
+            structure: model::TypeStructure::NamedFields(vec![(
                 String::from("content"),
                 model::Template::Content,
             )]),
@@ -122,17 +118,14 @@ mod tests {
             },
             model::Type {
                 identifier: quote::format_ident!("Resource"),
-                structure: model::ResourceStructure::NamedFields(vec![(
-                    String::from("content"),
-                    (),
-                )]),
+                structure: model::TypeStructure::NamedFields(vec![(String::from("content"), ())]),
             },
         );
 
         let actual = actual.unwrap();
         let expected = model::Type {
             identifier: quote::format_ident!("Resource"),
-            structure: model::ResourceStructure::NamedFields(vec![(
+            structure: model::TypeStructure::NamedFields(vec![(
                 String::from("content"),
                 model::Template::RawContent,
             )]),
@@ -150,14 +143,14 @@ mod tests {
                 &model::stubs::configuration(),
                 model::Type {
                     identifier: quote::format_ident!("MyUnit"),
-                    structure: model::ResourceStructure::Unit,
+                    structure: model::TypeStructure::Unit,
                 },
             );
 
             let actual = actual.unwrap();
             let expected = model::Type {
                 identifier: quote::format_ident!("MyUnit"),
-                structure: model::ResourceStructure::Unit,
+                structure: model::TypeStructure::Unit,
             };
             assert_eq!(actual, expected);
         }
@@ -176,14 +169,14 @@ mod tests {
                 },
                 model::Type {
                     identifier: quote::format_ident!("MyTypeAlias"),
-                    structure: model::ResourceStructure::TypeAlias(()),
+                    structure: model::TypeStructure::TypeAlias(()),
                 },
             );
 
             let actual = actual.unwrap();
             let expected = model::Type {
                 identifier: quote::format_ident!("MyTypeAlias"),
-                structure: model::ResourceStructure::TypeAlias(model::Template::Content),
+                structure: model::TypeStructure::TypeAlias(model::Template::Content),
             };
             assert_eq!(actual, expected);
         }
@@ -202,7 +195,7 @@ mod tests {
                 },
                 model::Type {
                     identifier: quote::format_ident!("MyNamedFields"),
-                    structure: model::ResourceStructure::NamedFields(vec![(
+                    structure: model::TypeStructure::NamedFields(vec![(
                         String::from("my_content"),
                         (),
                     )]),
@@ -212,7 +205,7 @@ mod tests {
             let actual = actual.unwrap();
             let expected = model::Type {
                 identifier: quote::format_ident!("MyNamedFields"),
-                structure: model::ResourceStructure::NamedFields(vec![(
+                structure: model::TypeStructure::NamedFields(vec![(
                     String::from("my_content"),
                     model::Template::RawContent,
                 )]),
@@ -234,16 +227,14 @@ mod tests {
                 },
                 model::Type {
                     identifier: quote::format_ident!("MyTupleFields"),
-                    structure: model::ResourceStructure::TupleFields(vec![()]),
+                    structure: model::TypeStructure::TupleFields(vec![()]),
                 },
             );
 
             let actual = actual.unwrap();
             let expected = model::Type {
                 identifier: quote::format_ident!("MyTupleFields"),
-                structure: model::ResourceStructure::TupleFields(vec![
-                    model::Template::RelativePath,
-                ]),
+                structure: model::TypeStructure::TupleFields(vec![model::Template::RelativePath]),
             };
             assert_eq!(actual, expected);
         }
