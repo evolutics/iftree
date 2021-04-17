@@ -145,34 +145,4 @@ mod tests {
         .to_string();
         assert_eq!(actual, expected);
     }
-
-    #[test]
-    fn handles_both_normal_and_raw_identifiers() {
-        let actual = main(&model::View {
-            type_: model::Type {
-                name: quote::format_ident!("Asset"),
-                ..model::stubs::type_()
-            },
-            forest: vec![(
-                String::from("r#match"),
-                model::FileTree::Folder(
-                    vec![(String::from("NORMAL"), model::FileTree::File { index: 0 })]
-                        .into_iter()
-                        .collect(),
-                ),
-            )]
-            .into_iter()
-            .collect(),
-            ..model::stubs::view()
-        });
-
-        let actual = actual.to_string();
-        let expected = quote::quote! {
-            pub mod r#match {
-                pub static NORMAL: &super::Asset = &super::ASSETS[0usize];
-            }
-        }
-        .to_string();
-        assert_eq!(actual, expected);
-    }
 }
