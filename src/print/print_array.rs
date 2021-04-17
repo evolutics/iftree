@@ -1,4 +1,4 @@
-use super::print_resource_term;
+use super::print_instance;
 use crate::data;
 use crate::model;
 
@@ -18,7 +18,7 @@ fn print_expression(view: &model::View) -> proc_macro2::TokenStream {
         .array
         .iter()
         .map(|file| {
-            let element = print_resource_term::main(&view.type_, file);
+            let element = print_instance::main(&view.type_, file);
             quote::quote! { #element, }
         })
         .collect();
