@@ -34,7 +34,7 @@ impl fmt::Display for main::Error {
             }
 
             main::Error::NameCollision { name, competitors } => {
-                writeln!(formatter, "Files collide on generated name {:?}:", name,)?;
+                writeln!(formatter, "Files collide on generated name {:?}:", name)?;
                 for competitor in competitors {
                     writeln!(formatter, "- {:?}", competitor.0)?;
                 }
