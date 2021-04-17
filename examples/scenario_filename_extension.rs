@@ -12,18 +12,18 @@ macro_rules! filename_extension {
 
 #[iftree::include_file_tree(
     "
-paths = '/examples/resources/credits.md'
+paths = '/examples/assets/credits.md'
 
 [field_templates]
 extension = 'filename_extension!'
 "
 )]
-pub struct Resource<'a> {
+pub struct Asset<'a> {
     extension: sync::Lazy<Option<&'a str>>,
 }
 
 pub fn main() {
-    use base::examples::resources;
+    use base::examples::assets;
 
-    assert_eq!(*resources::CREDITS_MD.extension, Some("md"));
+    assert_eq!(*assets::CREDITS_MD.extension, Some("md"));
 }

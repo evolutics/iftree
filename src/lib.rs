@@ -6,10 +6,10 @@
 //!
 //! # Introduction
 //!
-//! Say you have resources in a file tree like
+//! Say you have assets in a file tree like
 //!
 //! ```text
-//! my_resources/
+//! my_assets/
 //! - file_a
 //! - file_b
 //! - subfolder/
@@ -19,9 +19,9 @@
 //! The generated code allows access to the file contents as in
 //!
 //! ```ignore
-//! assert_eq!(base::my_resources::FILE_A.content, "… contents of `file_a`\n");
-//! assert_eq!(base::my_resources::FILE_B.content, "… contents of `file_b`\n");
-//! assert_eq!(base::my_resources::subfolder::FILE_C.content, "… contents of `file_c`\n");
+//! assert_eq!(base::my_assets::FILE_A.content, "… contents of `file_a`\n");
+//! assert_eq!(base::my_assets::FILE_B.content, "… contents of `file_b`\n");
+//! assert_eq!(base::my_assets::subfolder::FILE_C.content, "… contents of `file_c`\n");
 //! ```
 //!
 //! As you can see, folders are mapped to (nested) modules, which are rooted at a
@@ -31,16 +31,16 @@
 //! type as in
 //!
 //! ```ignore
-//! #[iftree::include_file_tree("paths = '/my_resources/**'")]
-//! pub struct MyResource {
+//! #[iftree::include_file_tree("paths = '/my_assets/**'")]
+//! pub struct MyAsset {
 //!     content: &'static str,
 //! }
 //! ```
 //!
 //! We just configure a path pattern that filters the files to include, in this case
-//! the files in `my_resources` and its subfolders. These paths are relative to the
+//! the files in `my_assets` and its subfolders. These paths are relative to the
 //! folder with your manifest (`Cargo.toml`) by default. For each filtered file, an
-//! instance of `MyResource` is initialized. Here the well-known field `content` is
+//! instance of `MyAsset` is initialized. Here the well-known field `content` is
 //! initialized with a call to `include_str!`, but you can plug in your own macros.
 //!
 //! # Feature overview
@@ -49,9 +49,9 @@
 //! [**`examples` folder**](https://github.com/evolutics/iftree/tree/main/examples)
 //! with full code examples to demonstrate the following main aspects.
 //!
-//! The annotated **resource type** (`MyResource` above) can be a `struct` with any
-//! number of fields. Alternatively, it can be a type alias – especially convenient
-//! if there is only one field.
+//! The annotated **asset type** (`MyAsset` above) can be a `struct` with any number
+//! of fields. Alternatively, it can be a type alias – especially convenient if
+//! there is only one field.
 //!
 //! To **filter files,** path patterns in a `.gitignore`-like format are supported.
 //! This is useful to skip hidden files, filter by filename extension, add multiple

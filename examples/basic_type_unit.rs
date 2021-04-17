@@ -1,16 +1,16 @@
 use std::cmp;
 
-#[iftree::include_file_tree("paths = '/examples/resources/**'")]
+#[iftree::include_file_tree("paths = '/examples/assets/**'")]
 #[derive(cmp::PartialEq, Debug)]
-pub struct Resource;
+pub struct Asset;
 
 pub fn main() {
-    use base::examples::resources;
+    use base::examples::assets;
 
-    assert_eq!(resources::_ENV, &Resource);
-    assert_eq!(resources::configuration::MENU_JSON, &Resource);
-    assert_eq!(resources::configuration::TRANSLATIONS_CSV, &Resource);
-    assert_eq!(resources::CREDITS_MD, &Resource);
-    assert_eq!(resources::world::levels::TUTORIAL_JSON, &Resource);
-    assert_eq!(resources::world::PHYSICAL_CONSTANTS_JSON, &Resource);
+    assert_eq!(assets::_ENV, &Asset);
+    assert_eq!(assets::configuration::MENU_JSON, &Asset);
+    assert_eq!(assets::configuration::TRANSLATIONS_CSV, &Asset);
+    assert_eq!(assets::CREDITS_MD, &Asset);
+    assert_eq!(assets::world::levels::TUTORIAL_JSON, &Asset);
+    assert_eq!(assets::world::PHYSICAL_CONSTANTS_JSON, &Asset);
 }

@@ -13,18 +13,18 @@ macro_rules! is_read_only {
 
 #[iftree::include_file_tree(
     "
-paths = '/examples/resources/credits.md'
+paths = '/examples/assets/credits.md'
 
 [field_templates]
 is_read_only = 'is_read_only!'
 "
 )]
-pub struct Resource {
+pub struct Asset {
     is_read_only: sync::Lazy<Option<bool>>,
 }
 
 pub fn main() {
-    use base::examples::resources;
+    use base::examples::assets;
 
-    assert_eq!(*resources::CREDITS_MD.is_read_only, Some(false));
+    assert_eq!(*assets::CREDITS_MD.is_read_only, Some(false));
 }

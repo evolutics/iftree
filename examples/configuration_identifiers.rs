@@ -1,10 +1,10 @@
 #[iftree::include_file_tree(
     "
-paths = '/examples/resources/**'
+paths = '/examples/assets/**'
 identifiers = false
 "
 )]
-pub struct Resource;
+pub struct Asset;
 
 pub fn main() {
     assert_eq!(ASSETS.len(), 6);

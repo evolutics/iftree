@@ -55,7 +55,7 @@ mod tests {
     fn handles_single_path() {
         let actual = main(
             &model::Configuration {
-                paths: String::from("/examples/resources/**"),
+                paths: String::from("/examples/assets/**"),
                 ..model::stubs::configuration()
             },
             path::Path::new("."),
@@ -64,12 +64,12 @@ mod tests {
         let mut actual = actual.unwrap();
         actual.sort();
         let expected = vec![
-            path::PathBuf::from("./examples/resources/.env"),
-            path::PathBuf::from("./examples/resources/configuration/menu.json"),
-            path::PathBuf::from("./examples/resources/configuration/translations.csv"),
-            path::PathBuf::from("./examples/resources/credits.md"),
-            path::PathBuf::from("./examples/resources/world/levels/tutorial.json"),
-            path::PathBuf::from("./examples/resources/world/physical_constants.json"),
+            path::PathBuf::from("./examples/assets/.env"),
+            path::PathBuf::from("./examples/assets/configuration/menu.json"),
+            path::PathBuf::from("./examples/assets/configuration/translations.csv"),
+            path::PathBuf::from("./examples/assets/credits.md"),
+            path::PathBuf::from("./examples/assets/world/levels/tutorial.json"),
+            path::PathBuf::from("./examples/assets/world/physical_constants.json"),
         ];
         assert_eq!(actual, expected);
     }
@@ -79,8 +79,8 @@ mod tests {
         let actual = main(
             &model::Configuration {
                 paths: String::from(
-                    "/examples/resources/configuration/**
-/examples/resources/world/**",
+                    "/examples/assets/configuration/**
+/examples/assets/world/**",
                 ),
                 ..model::stubs::configuration()
             },
@@ -90,10 +90,10 @@ mod tests {
         let mut actual = actual.unwrap();
         actual.sort();
         let expected = vec![
-            path::PathBuf::from("./examples/resources/configuration/menu.json"),
-            path::PathBuf::from("./examples/resources/configuration/translations.csv"),
-            path::PathBuf::from("./examples/resources/world/levels/tutorial.json"),
-            path::PathBuf::from("./examples/resources/world/physical_constants.json"),
+            path::PathBuf::from("./examples/assets/configuration/menu.json"),
+            path::PathBuf::from("./examples/assets/configuration/translations.csv"),
+            path::PathBuf::from("./examples/assets/world/levels/tutorial.json"),
+            path::PathBuf::from("./examples/assets/world/physical_constants.json"),
         ];
         assert_eq!(actual, expected);
     }
@@ -103,8 +103,8 @@ mod tests {
         let actual = main(
             &model::Configuration {
                 paths: String::from(
-                    "/examples/resources/**/*.json
-!/examples/resources/world/levels/",
+                    "/examples/assets/**/*.json
+!/examples/assets/world/levels/",
                 ),
                 ..model::stubs::configuration()
             },
@@ -114,8 +114,8 @@ mod tests {
         let mut actual = actual.unwrap();
         actual.sort();
         let expected = vec![
-            path::PathBuf::from("./examples/resources/configuration/menu.json"),
-            path::PathBuf::from("./examples/resources/world/physical_constants.json"),
+            path::PathBuf::from("./examples/assets/configuration/menu.json"),
+            path::PathBuf::from("./examples/assets/world/physical_constants.json"),
         ];
         assert_eq!(actual, expected);
     }
@@ -125,7 +125,7 @@ mod tests {
         let actual = main(
             &model::Configuration {
                 paths: String::from(
-                    "/examples/resources/*
+                    "/examples/assets/*
 !.*",
                 ),
                 ..model::stubs::configuration()
@@ -135,7 +135,7 @@ mod tests {
 
         let mut actual = actual.unwrap();
         actual.sort();
-        let expected = vec![path::PathBuf::from("./examples/resources/credits.md")];
+        let expected = vec![path::PathBuf::from("./examples/assets/credits.md")];
         assert_eq!(actual, expected);
     }
 }

@@ -1,10 +1,10 @@
 #[iftree::include_file_tree(
     "
 paths = '/levels/**'
-base_folder = 'examples/resources/world'
+base_folder = 'examples/assets/world'
 "
 )]
-pub struct Resource {
+pub struct Asset {
     relative_path: &'static str,
 }
 

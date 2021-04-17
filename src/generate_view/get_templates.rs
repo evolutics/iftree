@@ -88,14 +88,14 @@ mod tests {
                 ..model::stubs::configuration()
             },
             model::Type {
-                identifier: quote::format_ident!("Resource"),
+                identifier: quote::format_ident!("Asset"),
                 structure: model::TypeStructure::NamedFields(vec![(String::from("content"), ())]),
             },
         );
 
         let actual = actual.unwrap();
         let expected = model::Type {
-            identifier: quote::format_ident!("Resource"),
+            identifier: quote::format_ident!("Asset"),
             structure: model::TypeStructure::NamedFields(vec![(
                 String::from("content"),
                 model::Template::Content,
@@ -117,14 +117,14 @@ mod tests {
                 ..model::stubs::configuration()
             },
             model::Type {
-                identifier: quote::format_ident!("Resource"),
+                identifier: quote::format_ident!("Asset"),
                 structure: model::TypeStructure::NamedFields(vec![(String::from("content"), ())]),
             },
         );
 
         let actual = actual.unwrap();
         let expected = model::Type {
-            identifier: quote::format_ident!("Resource"),
+            identifier: quote::format_ident!("Asset"),
             structure: model::TypeStructure::NamedFields(vec![(
                 String::from("content"),
                 model::Template::RawContent,

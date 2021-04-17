@@ -24,11 +24,11 @@ mod tests {
     fn handles() {
         let actual = main(
             quote::quote! {
-                pub type Resource = &'static str;
+                pub type Asset = &'static str;
             },
             model::View {
                 type_: model::Type {
-                    identifier: quote::format_ident!("Resource"),
+                    identifier: quote::format_ident!("Asset"),
                     structure: model::TypeStructure::TypeAlias(model::Template::Content),
                 },
                 array: vec![model::File {
@@ -50,14 +50,14 @@ mod tests {
 
         let actual = actual.to_string();
         let expected = quote::quote! {
-            pub type Resource = &'static str;
+            pub type Asset = &'static str;
 
-            pub static ASSETS: [Resource; 1usize] = [
+            pub static ASSETS: [Asset; 1usize] = [
                 include_str!("/a.b"),
             ];
 
             pub mod base {
-                pub static A_B: &super::Resource = &super::ASSETS[0usize];
+                pub static A_B: &super::Asset = &super::ASSETS[0usize];
             }
         }
         .to_string();

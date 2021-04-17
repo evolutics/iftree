@@ -20,7 +20,7 @@ mod tests {
     #[test]
     fn handles() {
         let actual = main(&model::Configuration {
-            paths: String::from("/examples/resources/credits.md"),
+            paths: String::from("/examples/assets/credits.md"),
             base_folder: path::PathBuf::new(),
             root_folder_variable: String::from("CARGO_MANIFEST_DIR"),
             ..model::stubs::configuration()
@@ -28,8 +28,8 @@ mod tests {
 
         let actual = actual.unwrap();
         let expected = vec![model::File {
-            relative_path: model::RelativePath::from("examples/resources/credits.md"),
-            absolute_path: fs::canonicalize("examples/resources/credits.md").unwrap(),
+            relative_path: model::RelativePath::from("examples/assets/credits.md"),
+            absolute_path: fs::canonicalize("examples/assets/credits.md").unwrap(),
         }];
         assert_eq!(actual, expected);
     }

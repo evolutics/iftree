@@ -102,7 +102,7 @@ mod tests {
     fn handles_valid_configuration_with_optional_fields() {
         let actual = main(
             "
-paths = '/my/resources/**'
+paths = '/my/assets/**'
 base_folder = 'base'
 root_folder_variable = 'MY_ROOT_FOLDER'
 
@@ -117,7 +117,7 @@ custom = 'custom::include!'
 
         let actual = actual.unwrap();
         let expected = model::Configuration {
-            paths: String::from("/my/resources/**"),
+            paths: String::from("/my/assets/**"),
             base_folder: path::PathBuf::from("base"),
             root_folder_variable: String::from("MY_ROOT_FOLDER"),
 

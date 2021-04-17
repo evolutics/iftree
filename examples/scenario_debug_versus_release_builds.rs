@@ -10,22 +10,22 @@ macro_rules! load {
 
 #[iftree::include_file_tree(
     "
-paths = '/examples/resources/credits.md'
+paths = '/examples/assets/credits.md'
 
 [field_templates]
 data = 'load!'
 "
 )]
-pub struct Resource {
+pub struct Asset {
     data: &'static str,
 }
 
 pub fn main() {
-    use base::examples::resources;
+    use base::examples::assets;
 
     if cfg!(debug_assertions) {
-        assert_eq!(resources::CREDITS_MD.data, "Debug: Foo Bar\n");
+        assert_eq!(assets::CREDITS_MD.data, "Debug: Foo Bar\n");
     } else {
-        assert_eq!(resources::CREDITS_MD.data, "Release: Foo Bar\n");
+        assert_eq!(assets::CREDITS_MD.data, "Release: Foo Bar\n");
     }
 }

@@ -44,7 +44,7 @@ mod tests {
 
     #[test]
     fn handles_valid_configuration() {
-        let actual = syn::parse_str::<model::Configuration>(r#""paths = '/resources'""#);
+        let actual = syn::parse_str::<model::Configuration>(r#""paths = '/assets'""#);
 
         let actual = actual.is_ok();
         assert!(actual);

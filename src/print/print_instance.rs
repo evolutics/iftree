@@ -60,7 +60,7 @@ mod tests {
     fn handles_template_context() {
         let actual = main(
             &model::Type {
-                identifier: quote::format_ident!("Resource"),
+                identifier: quote::format_ident!("Asset"),
                 structure: model::TypeStructure::TupleFields(vec![
                     model::Template::RelativePath,
                     model::Template::Content,
@@ -74,7 +74,7 @@ mod tests {
 
         let actual = actual.to_string();
         let expected = quote::quote! {
-            Resource(
+            Asset(
                 "b",
                 include_str!("/a/b"),
             )

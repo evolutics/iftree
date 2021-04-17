@@ -1,8 +1,8 @@
 #[iftree::include_file_tree(
     "
 paths = '''
-/examples/resources/**
-!/examples/resources/world/
+/examples/assets/**
+!/examples/assets/world/
 /README.md
 !.*
 '''
@@ -11,16 +11,16 @@ paths = '''
 _ = 'relative_path'
 "
 )]
-pub type Resource = &'static str;
+pub type Asset = &'static str;
 
 pub fn main() {
     assert_eq!(
         ASSETS,
         [
             "README.md",
-            "examples/resources/configuration/menu.json",
-            "examples/resources/configuration/translations.csv",
-            "examples/resources/credits.md",
+            "examples/assets/configuration/menu.json",
+            "examples/assets/configuration/translations.csv",
+            "examples/assets/credits.md",
         ],
     );
 }

@@ -22,7 +22,7 @@ mod tests {
     fn handles() {
         let actual = main(
             model::Configuration {
-                paths: String::from("/examples/resources/credits.md"),
+                paths: String::from("/examples/assets/credits.md"),
                 base_folder: path::PathBuf::new(),
                 root_folder_variable: String::from("CARGO_MANIFEST_DIR"),
                 identifiers: true,
@@ -34,26 +34,26 @@ mod tests {
                 .collect(),
             },
             quote::quote! {
-                pub type Resource = &'static str;
+                pub type Asset = &'static str;
             },
             model::Type {
-                identifier: quote::format_ident!("Resource"),
+                identifier: quote::format_ident!("Asset"),
                 structure: model::TypeStructure::TypeAlias(()),
             },
         );
 
         let actual = actual.unwrap().to_string();
         let expected = quote::quote! {
-            pub type Resource = &'static str;
+            pub type Asset = &'static str;
 
-            pub static ASSETS: [Resource; 1usize] = [
-                "examples/resources/credits.md",
+            pub static ASSETS: [Asset; 1usize] = [
+                "examples/assets/credits.md",
             ];
 
             pub mod base {
                 pub mod r#examples {
-                    pub mod r#resources {
-                        pub static r#CREDITS_MD: &super::super::super::Resource =
+                    pub mod r#assets {
+                        pub static r#CREDITS_MD: &super::super::super::Asset =
                             &super::super::super::ASSETS[0usize];
                     }
                 }

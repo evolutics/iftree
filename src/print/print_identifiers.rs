@@ -75,7 +75,7 @@ mod tests {
     fn handles_files() {
         let actual = main(&model::View {
             type_: model::Type {
-                identifier: quote::format_ident!("Resource"),
+                identifier: quote::format_ident!("Asset"),
                 ..model::stubs::type_()
             },
             forest: vec![
@@ -89,9 +89,9 @@ mod tests {
 
         let actual = actual.to_string();
         let expected = quote::quote! {
-            pub static A: &Resource = &ASSETS[1usize];
+            pub static A: &Asset = &ASSETS[1usize];
 
-            pub static BC: &Resource = &ASSETS[0usize];
+            pub static BC: &Asset = &ASSETS[0usize];
         }
         .to_string();
         assert_eq!(actual, expected);
@@ -101,7 +101,7 @@ mod tests {
     fn handles_folders() {
         let actual = main(&model::View {
             type_: model::Type {
-                identifier: quote::format_ident!("Resource"),
+                identifier: quote::format_ident!("Asset"),
                 ..model::stubs::type_()
             },
             forest: vec![
@@ -132,13 +132,13 @@ mod tests {
 
         let actual = actual.to_string();
         let expected = quote::quote! {
-            pub static A: &Resource = &ASSETS[0usize];
+            pub static A: &Asset = &ASSETS[0usize];
 
             pub mod b {
-                pub static C: &super::Resource = &super::ASSETS[2usize];
+                pub static C: &super::Asset = &super::ASSETS[2usize];
 
                 pub mod a {
-                    pub static B: &super::super::Resource = &super::super::ASSETS[1usize];
+                    pub static B: &super::super::Asset = &super::super::ASSETS[1usize];
                 }
             }
         }
@@ -150,7 +150,7 @@ mod tests {
     fn handles_both_normal_and_raw_identifiers() {
         let actual = main(&model::View {
             type_: model::Type {
-                identifier: quote::format_ident!("Resource"),
+                identifier: quote::format_ident!("Asset"),
                 ..model::stubs::type_()
             },
             forest: vec![(
@@ -169,7 +169,7 @@ mod tests {
         let actual = actual.to_string();
         let expected = quote::quote! {
             pub mod r#match {
-                pub static NORMAL: &super::Resource = &super::ASSETS[0usize];
+                pub static NORMAL: &super::Asset = &super::ASSETS[0usize];
             }
         }
         .to_string();

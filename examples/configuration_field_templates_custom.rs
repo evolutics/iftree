@@ -16,31 +16,31 @@ macro_rules! get_text_content {
 
 #[iftree::include_file_tree(
     "
-paths = '/examples/resources/credits.md'
+paths = '/examples/assets/credits.md'
 
 [field_templates]
 path_length = 'string_length!'
 get_text_content = 'get_text_content!'
 "
 )]
-pub struct Resource {
+pub struct Asset {
     path_length: usize,
     relative_path: &'static str,
     get_text_content: fn() -> Option<String>,
 }
 
 pub fn main() {
-    use base::examples::resources;
+    use base::examples::assets;
 
-    assert_eq!(resources::CREDITS_MD.path_length, 29);
+    assert_eq!(assets::CREDITS_MD.path_length, 26);
 
     assert_eq!(
-        resources::CREDITS_MD.relative_path,
-        "examples/resources/credits.md",
+        assets::CREDITS_MD.relative_path,
+        "examples/assets/credits.md",
     );
 
     assert_eq!(
-        (resources::CREDITS_MD.get_text_content)(),
+        (assets::CREDITS_MD.get_text_content)(),
         Some(String::from("Foo Bar\n")),
     );
 }

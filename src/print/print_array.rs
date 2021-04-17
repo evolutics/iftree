@@ -36,7 +36,7 @@ mod tests {
     fn handles_empty_set() {
         let actual = main(&model::View {
             type_: model::Type {
-                identifier: quote::format_ident!("Resource"),
+                identifier: quote::format_ident!("Asset"),
                 ..model::stubs::type_()
             },
             array: vec![],
@@ -45,7 +45,7 @@ mod tests {
 
         let actual = actual.to_string();
         let expected = quote::quote! {
-            pub static ASSETS: [Resource; 0usize] = [];
+            pub static ASSETS: [Asset; 0usize] = [];
         }
         .to_string();
         assert_eq!(actual, expected);
@@ -55,7 +55,7 @@ mod tests {
     fn handles_nonempty_set() {
         let actual = main(&model::View {
             type_: model::Type {
-                identifier: quote::format_ident!("Resource"),
+                identifier: quote::format_ident!("Asset"),
                 structure: model::TypeStructure::TypeAlias(model::Template::RelativePath),
             },
             array: vec![
@@ -73,7 +73,7 @@ mod tests {
 
         let actual = actual.to_string();
         let expected = quote::quote! {
-            pub static ASSETS: [Resource; 2usize] = [
+            pub static ASSETS: [Asset; 2usize] = [
                 "a",
                 "b/c",
             ];

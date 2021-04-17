@@ -38,7 +38,7 @@ mod tests {
                 ..model::stubs::configuration()
             },
             model::Type {
-                identifier: quote::format_ident!("Resource"),
+                identifier: quote::format_ident!("Asset"),
                 structure: model::TypeStructure::TypeAlias(()),
             },
             vec![model::File {
@@ -50,7 +50,7 @@ mod tests {
         let actual = actual.unwrap();
         let expected = model::View {
             type_: model::Type {
-                identifier: quote::format_ident!("Resource"),
+                identifier: quote::format_ident!("Asset"),
                 structure: model::TypeStructure::TypeAlias(model::Template::Content),
             },
             array: vec![model::File {
