@@ -11,7 +11,7 @@ pub struct Configuration {
     pub base_folder: path::PathBuf,
     pub root_folder_variable: String,
 
-    pub module_tree: bool,
+    pub identifiers: bool,
 
     pub field_templates: FieldTemplates,
 }
@@ -109,7 +109,7 @@ pub mod stubs {
             base_folder: path::PathBuf::from("foo"),
             root_folder_variable: String::from("BAR"),
 
-            module_tree: false,
+            identifiers: false,
 
             field_templates: FieldTemplates::new(),
         }

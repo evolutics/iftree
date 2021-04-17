@@ -1,17 +1,17 @@
 use super::print_array;
-use super::print_resource_module;
+use super::print_identifiers;
 use crate::model;
 
 pub fn main(item: proc_macro2::TokenStream, view: model::View) -> proc_macro2::TokenStream {
     let array = print_array::main(&view);
-    let resource_module = print_resource_module::main(&view);
+    let identifiers = print_identifiers::main(&view);
 
     quote::quote! {
         #item
 
         #array
 
-        #resource_module
+        #identifiers
     }
 }
 

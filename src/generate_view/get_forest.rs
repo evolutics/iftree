@@ -9,7 +9,7 @@ pub fn main(
     configuration: &model::Configuration,
     files: &[model::File],
 ) -> model::Result<model::FileForest> {
-    Ok(if configuration.module_tree {
+    Ok(if configuration.identifiers {
         let forest = get_forest(files)?;
         vec![(
             String::from(data::BASE_MODULE_IDENTIFIER),
@@ -150,10 +150,10 @@ mod tests {
     use super::*;
 
     #[test]
-    fn handles_no_module_tree() {
+    fn handles_no_identifiers() {
         let actual = main(
             &model::Configuration {
-                module_tree: false,
+                identifiers: false,
                 ..model::stubs::configuration()
             },
             &[model::stubs::file()],
@@ -168,7 +168,7 @@ mod tests {
     fn handles_empty_set() {
         let actual = main(
             &model::Configuration {
-                module_tree: true,
+                identifiers: true,
                 ..model::stubs::configuration()
             },
             &[],
@@ -188,7 +188,7 @@ mod tests {
     fn handles_files() {
         let actual = main(
             &model::Configuration {
-                module_tree: true,
+                identifiers: true,
                 ..model::stubs::configuration()
             },
             &[
@@ -224,7 +224,7 @@ mod tests {
     fn handles_folders() {
         let actual = main(
             &model::Configuration {
-                module_tree: true,
+                identifiers: true,
                 ..model::stubs::configuration()
             },
             &[
@@ -288,7 +288,7 @@ mod tests {
         fn given_file_collides_with_file_it_errs() {
             let actual = main(
                 &model::Configuration {
-                    module_tree: true,
+                    identifiers: true,
                     ..model::stubs::configuration()
                 },
                 &[
@@ -318,7 +318,7 @@ mod tests {
         fn given_file_collides_with_folder_it_errs() {
             let actual = main(
                 &model::Configuration {
-                    module_tree: true,
+                    identifiers: true,
                     ..model::stubs::configuration()
                 },
                 &[
@@ -348,7 +348,7 @@ mod tests {
         fn given_folder_collides_with_file_it_errs() {
             let actual = main(
                 &model::Configuration {
-                    module_tree: true,
+                    identifiers: true,
                     ..model::stubs::configuration()
                 },
                 &[
@@ -378,7 +378,7 @@ mod tests {
         fn given_folder_collides_with_folder_it_merges() {
             let actual = main(
                 &model::Configuration {
-                    module_tree: true,
+                    identifiers: true,
                     ..model::stubs::configuration()
                 },
                 &[

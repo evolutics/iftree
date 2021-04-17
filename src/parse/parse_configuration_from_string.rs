@@ -17,7 +17,7 @@ struct UserConfiguration {
     base_folder: Option<path::PathBuf>,
     root_folder_variable: Option<String>,
 
-    module_tree: Option<bool>,
+    identifiers: Option<bool>,
 
     field_templates: Option<model::FieldTemplates>,
 }
@@ -70,7 +70,7 @@ impl From<UserConfiguration> for model::Configuration {
                 .root_folder_variable
                 .unwrap_or_else(|| String::from("CARGO_MANIFEST_DIR")),
 
-            module_tree: configuration.module_tree.unwrap_or(true),
+            identifiers: configuration.identifiers.unwrap_or(true),
 
             field_templates: configuration.field_templates.unwrap_or_default(),
         }
@@ -91,7 +91,7 @@ mod tests {
             base_folder: path::PathBuf::new(),
             root_folder_variable: String::from("CARGO_MANIFEST_DIR"),
 
-            module_tree: true,
+            identifiers: true,
 
             field_templates: model::FieldTemplates::new(),
         };
@@ -106,7 +106,7 @@ paths = '/my/resources/**'
 base_folder = 'base'
 root_folder_variable = 'MY_ROOT_FOLDER'
 
-module_tree = false
+identifiers = false
 
 [field_templates]
 _ = 'my_include!'
@@ -121,7 +121,7 @@ custom = 'custom::include!'
             base_folder: path::PathBuf::from("base"),
             root_folder_variable: String::from("MY_ROOT_FOLDER"),
 
-            module_tree: false,
+            identifiers: false,
 
             field_templates: vec![
                 (

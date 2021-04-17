@@ -25,7 +25,7 @@ mod tests {
                 paths: String::from("/examples/resources/credits.md"),
                 base_folder: path::PathBuf::new(),
                 root_folder_variable: String::from("CARGO_MANIFEST_DIR"),
-                module_tree: true,
+                identifiers: true,
                 field_templates: vec![(
                     model::FieldIdentifier::Anonymous,
                     model::Template::RelativePath,

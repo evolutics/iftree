@@ -48,7 +48,7 @@ impl fmt::Display for main::Error {
                 write!(
                     formatter,
                     "Rename one of the files or configure {:?}.",
-                    "module_tree = false",
+                    "identifiers = false",
                 )
             }
 
@@ -130,7 +130,7 @@ _ = …
             let expected = "Files collide on generated identifier \"b_c\":
 - \"a/B-c\"
 - \"a/b.c\"
-Rename one of the files or configure \"module_tree = false\".";
+Rename one of the files or configure \"identifiers = false\".";
             assert_eq!(actual, expected);
         }
     }

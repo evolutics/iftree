@@ -28,7 +28,7 @@ mod tests {
     fn handles() {
         let actual = main(
             &model::Configuration {
-                module_tree: true,
+                identifiers: true,
                 field_templates: vec![(
                     model::FieldIdentifier::Anonymous,
                     model::Template::Content,
