@@ -1,6 +1,6 @@
 use std::cmp;
 
-#[iftree::include_file_tree("resource_paths = '/examples/resources/**'")]
+#[iftree::include_file_tree("paths = '/examples/resources/**'")]
 #[derive(cmp::PartialEq, Debug)]
 pub struct Resource {
     relative_path: &'static str,

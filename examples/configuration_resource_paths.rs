@@ -1,6 +1,6 @@
 #[iftree::include_file_tree(
     "
-resource_paths = '''
+paths = '''
 /examples/resources/**
 !/examples/resources/world/
 /README.md

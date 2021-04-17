@@ -13,7 +13,7 @@ pub fn main(string: &str) -> Result<model::Configuration, toml::de::Error> {
 #[derive(serde::Deserialize)]
 #[serde(deny_unknown_fields)]
 struct UserConfiguration {
-    resource_paths: String,
+    paths: String,
     base_folder: Option<path::PathBuf>,
     root_folder_variable: Option<String>,
 
@@ -64,7 +64,7 @@ impl de::Visitor<'_> for TemplateVisitor {
 impl From<UserConfiguration> for model::Configuration {
     fn from(configuration: UserConfiguration) -> Self {
         model::Configuration {
-            resource_paths: configuration.resource_paths,
+            paths: configuration.paths,
             base_folder: configuration.base_folder.unwrap_or_else(path::PathBuf::new),
             root_folder_variable: configuration
                 .root_folder_variable
@@ -83,11 +83,11 @@ mod tests {
 
     #[test]
     fn handles_valid_configuration_with_required_fields_only_using_defaults() {
-        let actual = main("resource_paths = '/a/b/**'");
+        let actual = main("paths = '/a/b/**'");
 
         let actual = actual.unwrap();
         let expected = model::Configuration {
-            resource_paths: String::from("/a/b/**"),
+            paths: String::from("/a/b/**"),
             base_folder: path::PathBuf::new(),
             root_folder_variable: String::from("CARGO_MANIFEST_DIR"),
 
@@ -102,7 +102,7 @@ mod tests {
     fn handles_valid_configuration_with_optional_fields() {
         let actual = main(
             "
-resource_paths = '/my/resources/**'
+paths = '/my/resources/**'
 base_folder = 'base'
 root_folder_variable = 'MY_ROOT_FOLDER'
 
@@ -117,7 +117,7 @@ custom = 'custom::include!'
 
         let actual = actual.unwrap();
         let expected = model::Configuration {
-            resource_paths: String::from("/my/resources/**"),
+            paths: String::from("/my/resources/**"),
             base_folder: path::PathBuf::from("base"),
             root_folder_variable: String::from("MY_ROOT_FOLDER"),
 
@@ -149,7 +149,7 @@ custom = 'custom::include!'
 
     #[test]
     fn given_invalid_configuration_it_errs() {
-        let actual = main("resource_paths = #");
+        let actual = main("paths = #");
 
         let actual = actual.is_err();
         assert!(actual);
@@ -159,7 +159,7 @@ custom = 'custom::include!'
     fn given_unknown_field_it_errs() {
         let actual = main(
             "
-resource_paths = 'abc'
+paths = 'abc'
 unknown = ''
 ",
         );

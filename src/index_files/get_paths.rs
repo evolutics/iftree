@@ -41,7 +41,7 @@ fn get_filter(
     base_folder: &path::Path,
 ) -> model::Result<overrides::Override> {
     let mut builder = overrides::OverrideBuilder::new(base_folder);
-    for pattern in configuration.resource_paths.lines() {
+    for pattern in configuration.paths.lines() {
         builder.add(pattern)?;
     }
     Ok(builder.build()?)
@@ -52,10 +52,10 @@ mod tests {
     use super::*;
 
     #[test]
-    fn handles_single_resource_path() {
+    fn handles_single_path() {
         let actual = main(
             &model::Configuration {
-                resource_paths: String::from("/examples/resources/**"),
+                paths: String::from("/examples/resources/**"),
                 ..model::stubs::configuration()
             },
             path::Path::new("."),
@@ -75,10 +75,10 @@ mod tests {
     }
 
     #[test]
-    fn handles_multiple_resource_paths() {
+    fn handles_multiple_paths() {
         let actual = main(
             &model::Configuration {
-                resource_paths: String::from(
+                paths: String::from(
                     "/examples/resources/configuration/**
 /examples/resources/world/**",
                 ),
@@ -99,10 +99,10 @@ mod tests {
     }
 
     #[test]
-    fn handles_include_and_exclude_resource_paths() {
+    fn handles_include_and_exclude_paths() {
         let actual = main(
             &model::Configuration {
-                resource_paths: String::from(
+                paths: String::from(
                     "/examples/resources/**/*.json
 !/examples/resources/world/levels/",
                 ),
@@ -124,7 +124,7 @@ mod tests {
     fn handles_without_hidden_files() {
         let actual = main(
             &model::Configuration {
-                resource_paths: String::from(
+                paths: String::from(
                     "/examples/resources/*
 !.*",
                 ),

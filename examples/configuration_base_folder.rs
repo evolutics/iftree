@@ -1,6 +1,6 @@
 #[iftree::include_file_tree(
     "
-resource_paths = '/levels/**'
+paths = '/levels/**'
 base_folder = 'examples/resources/world'
 "
 )]

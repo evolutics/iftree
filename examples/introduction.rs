@@ -1,6 +1,6 @@
 // Introductory example of `README.md`.
 
-#[iftree::include_file_tree("resource_paths = '/my_resources/**'")]
+#[iftree::include_file_tree("paths = '/my_resources/**'")]
 pub struct Resource {
     content: &'static str,
 }

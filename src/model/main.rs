@@ -14,7 +14,7 @@ pub type Output = proc_macro::TokenStream;
 
 #[derive(Clone, cmp::PartialEq, Debug)]
 pub struct Configuration {
-    pub resource_paths: String,
+    pub paths: String,
     pub base_folder: path::PathBuf,
     pub root_folder_variable: String,
 
@@ -112,7 +112,7 @@ pub mod stubs {
 
     pub fn configuration() -> Configuration {
         Configuration {
-            resource_paths: String::from("!*"),
+            paths: String::from("!*"),
             base_folder: path::PathBuf::from("foo"),
             root_folder_variable: String::from("BAR"),
 

@@ -16,7 +16,7 @@ macro_rules! get_text_content {
 
 #[iftree::include_file_tree(
     "
-resource_paths = '/examples/resources/credits.md'
+paths = '/examples/resources/credits.md'
 
 [field_templates]
 path_length = 'string_length!'

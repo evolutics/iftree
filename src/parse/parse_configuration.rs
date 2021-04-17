@@ -44,7 +44,7 @@ mod tests {
 
     #[test]
     fn handles_valid_configuration() {
-        let actual = syn::parse_str::<model::Configuration>(r#""resource_paths = '/resources'""#);
+        let actual = syn::parse_str::<model::Configuration>(r#""paths = '/resources'""#);
 
         let actual = actual.is_ok();
         assert!(actual);
@@ -52,13 +52,13 @@ mod tests {
 
     #[test]
     fn given_invalid_configuration_it_errs() {
-        let actual = syn::parse_str::<model::Configuration>(r#""resource_paths = #""#);
+        let actual = syn::parse_str::<model::Configuration>(r#""paths = #""#);
 
         let actual = actual.unwrap_err().to_string();
         let expected = String::from(
-            "expected a value, found a comment at line 1 column 18 (in the string) here:
-resource_paths = #
-                 ▲",
+            "expected a value, found a comment at line 1 column 9 (in the string) here:
+paths = #
+        ▲",
         );
         assert_eq!(actual, expected);
     }

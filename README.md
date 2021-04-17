@@ -33,7 +33,7 @@ For this to work, you attach the macro `iftree::include_file_tree` to a custom
 type as in
 
 ```rust
-#[iftree::include_file_tree("resource_paths = '/my_resources/**'")]
+#[iftree::include_file_tree("paths = '/my_resources/**'")]
 pub struct MyResource {
     content: &'static str,
 }
@@ -57,7 +57,7 @@ if there is only one field.
 
 To **filter files,** path patterns in a `.gitignore`-like format are supported.
 This is useful to skip hidden files, filter by filename extension, add multiple
-folders, etc. See the `resource_paths` configuration for more.
+folders, etc. See the `paths` configuration for more.
 
 **Field templates** are applied to initialize fields. The standard case is to
 include the file contents as code. Among other predefined templates there is one

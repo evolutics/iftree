@@ -32,7 +32,7 @@ mod tests {
     fn handles() {
         let actual = main(
             model::Configuration {
-                resource_paths: String::from("/examples/resources/credits.md"),
+                paths: String::from("/examples/resources/credits.md"),
                 base_folder: path::PathBuf::new(),
                 root_folder_variable: String::from("CARGO_MANIFEST_DIR"),
                 module_tree: true,
