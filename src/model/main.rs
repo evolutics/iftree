@@ -122,18 +122,18 @@ pub mod stubs {
         }
     }
 
+    pub fn file() -> File {
+        File {
+            relative_path: RelativePath::from("bar"),
+            absolute_path: path::PathBuf::from("/foo/bar"),
+        }
+    }
+
     pub fn view() -> View {
         View {
             type_: type_(),
             array: vec![],
             forest: FileForest::new(),
-        }
-    }
-
-    pub fn file() -> File {
-        File {
-            relative_path: RelativePath::from("bar"),
-            absolute_path: path::PathBuf::from("/foo/bar"),
         }
     }
 }
