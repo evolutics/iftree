@@ -39,7 +39,7 @@ pub enum Template {
 
 #[derive(Clone, cmp::PartialEq, Debug)]
 pub struct Type<T> {
-    pub identifier: syn::Ident,
+    pub name: syn::Ident,
     pub structure: TypeStructure<T>,
 }
 
@@ -89,7 +89,7 @@ pub enum Error {
     MissingFieldTemplate(Field),
 
     NameCollision {
-        identifier: String,
+        name: String,
         competitors: vec::Vec<RelativePath>,
     },
 
@@ -117,7 +117,7 @@ pub mod stubs {
 
     pub fn type_<T>() -> Type<T> {
         Type {
-            identifier: quote::format_ident!("Foo"),
+            name: quote::format_ident!("Foo"),
             structure: TypeStructure::Unit,
         }
     }

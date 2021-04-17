@@ -12,7 +12,7 @@ pub fn main(
     Ok(if configuration.identifiers {
         let forest = get_forest(files)?;
         vec![(
-            String::from(data::BASE_MODULE_IDENTIFIER),
+            String::from(data::BASE_MODULE_NAME),
             model::FileTree::Folder(forest),
         )]
         .into_iter()
@@ -34,11 +34,8 @@ fn get_forest(files: &[model::File]) -> model::Result<model::FileForest> {
 
         match add_file(&mut forest, context) {
             None => Ok(()),
-            Some(Collision {
-                identifier,
-                competitors,
-            }) => Err(model::Error::NameCollision {
-                identifier,
+            Some(Collision { name, competitors }) => Err(model::Error::NameCollision {
+                name,
                 competitors: competitors
                     .into_iter()
                     .map(|index| files[index].relative_path.clone())
@@ -62,7 +59,7 @@ fn add_file(forest: &mut model::FileForest, context: Context) -> Option<Collisio
 }
 
 struct Collision {
-    identifier: String,
+    name: String,
     competitors: vec::Vec<usize>,
 }
 
@@ -95,7 +92,7 @@ fn add_file_recursively(
                 .chain(iter::once(context.index))
                 .collect();
             Some(Collision {
-                identifier: context.name,
+                name: context.name,
                 competitors,
             })
         }
@@ -108,7 +105,7 @@ fn add_file_recursively(
             }
 
             Some(model::FileTree::File { index }) => Some(Collision {
-                identifier: name,
+                name,
                 competitors: vec![*index, context.index],
             }),
 
@@ -305,7 +302,7 @@ mod tests {
 
             let actual = actual.unwrap_err();
             let expected = model::Error::NameCollision {
-                identifier: String::from("r#B"),
+                name: String::from("r#B"),
                 competitors: vec![
                     model::RelativePath::from("a/B"),
                     model::RelativePath::from("a/b"),
@@ -335,7 +332,7 @@ mod tests {
 
             let actual = actual.unwrap_err();
             let expected = model::Error::NameCollision {
-                identifier: String::from("r#__"),
+                name: String::from("r#__"),
                 competitors: vec![
                     model::RelativePath::from("a/-/b"),
                     model::RelativePath::from("a/~"),
@@ -365,7 +362,7 @@ mod tests {
 
             let actual = actual.unwrap_err();
             let expected = model::Error::NameCollision {
-                identifier: String::from("r#__"),
+                name: String::from("r#__"),
                 competitors: vec![
                     model::RelativePath::from("a/-"),
                     model::RelativePath::from("a/~/b"),

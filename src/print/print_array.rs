@@ -3,13 +3,13 @@ use crate::data;
 use crate::model;
 
 pub fn main(view: &model::View) -> proc_macro2::TokenStream {
-    let identifier = quote::format_ident!("{}", data::ASSET_ARRAY_IDENTIFIER);
-    let type_identifier = &view.type_.identifier;
+    let name = quote::format_ident!("{}", data::ASSET_ARRAY_NAME);
+    let type_name = &view.type_.name;
     let length = view.array.len();
     let expression = print_expression(view);
 
     quote::quote! {
-        pub static #identifier: [#type_identifier; #length] = #expression;
+        pub static #name: [#type_name; #length] = #expression;
     }
 }
 
@@ -36,7 +36,7 @@ mod tests {
     fn handles_empty_set() {
         let actual = main(&model::View {
             type_: model::Type {
-                identifier: quote::format_ident!("Asset"),
+                name: quote::format_ident!("Asset"),
                 ..model::stubs::type_()
             },
             array: vec![],
@@ -55,7 +55,7 @@ mod tests {
     fn handles_nonempty_set() {
         let actual = main(&model::View {
             type_: model::Type {
-                identifier: quote::format_ident!("Asset"),
+                name: quote::format_ident!("Asset"),
                 structure: model::TypeStructure::TypeAlias(model::Template::RelativePath),
             },
             array: vec![

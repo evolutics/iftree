@@ -34,7 +34,7 @@ mod tests {
                 pub type Asset = &'static str;
             },
             model::Type {
-                identifier: quote::format_ident!("Asset"),
+                name: quote::format_ident!("Asset"),
                 structure: model::TypeStructure::TypeAlias(()),
             },
         );

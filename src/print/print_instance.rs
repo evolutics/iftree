@@ -2,7 +2,7 @@ use super::print_template;
 use crate::model;
 
 pub fn main(type_: &model::Type<model::Template>, file: &model::File) -> proc_macro2::TokenStream {
-    let type_identifier = &type_.identifier;
+    let type_name = &type_.name;
 
     let context = print_template::Context {
         relative_path: &file.relative_path.0,
@@ -11,7 +11,7 @@ pub fn main(type_: &model::Type<model::Template>, file: &model::File) -> proc_ma
 
     match &type_.structure {
         model::TypeStructure::Unit => quote::quote! {
-            #type_identifier
+            #type_name
         },
 
         model::TypeStructure::TypeAlias(template) => print_template::main(&template, &context),
@@ -27,7 +27,7 @@ pub fn main(type_: &model::Type<model::Template>, file: &model::File) -> proc_ma
                 .collect();
 
             quote::quote! {
-                #type_identifier {
+                #type_name {
                     #content
                 }
             }
@@ -43,7 +43,7 @@ pub fn main(type_: &model::Type<model::Template>, file: &model::File) -> proc_ma
                 .collect();
 
             quote::quote! {
-                #type_identifier(
+                #type_name(
                     #content
                 )
             }
@@ -60,7 +60,7 @@ mod tests {
     fn handles_template_context() {
         let actual = main(
             &model::Type {
-                identifier: quote::format_ident!("Asset"),
+                name: quote::format_ident!("Asset"),
                 structure: model::TypeStructure::TupleFields(vec![
                     model::Template::RelativePath,
                     model::Template::Content,
@@ -91,7 +91,7 @@ mod tests {
         fn handles_unit() {
             let actual = main(
                 &model::Type {
-                    identifier: quote::format_ident!("MyUnit"),
+                    name: quote::format_ident!("MyUnit"),
                     structure: model::TypeStructure::Unit,
                 },
                 &model::stubs::file(),
@@ -127,7 +127,7 @@ mod tests {
         fn handles_named_fields() {
             let actual = main(
                 &model::Type {
-                    identifier: quote::format_ident!("MyNamedFields"),
+                    name: quote::format_ident!("MyNamedFields"),
                     structure: model::TypeStructure::NamedFields(vec![(
                         String::from("raw_content"),
                         model::Template::RawContent,
@@ -153,7 +153,7 @@ mod tests {
         fn handles_tuple_fields() {
             let actual = main(
                 &model::Type {
-                    identifier: quote::format_ident!("MyTupleFields"),
+                    name: quote::format_ident!("MyTupleFields"),
                     structure: model::TypeStructure::TupleFields(vec![
                         model::Template::RelativePath,
                     ]),

@@ -28,7 +28,7 @@ mod tests {
             },
             model::View {
                 type_: model::Type {
-                    identifier: quote::format_ident!("Asset"),
+                    name: quote::format_ident!("Asset"),
                     structure: model::TypeStructure::TypeAlias(model::Template::Content),
                 },
                 array: vec![model::File {

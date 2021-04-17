@@ -4,7 +4,7 @@ use std::iter;
 
 pub fn main(view: &model::View) -> proc_macro2::TokenStream {
     let context = Context {
-        type_: &view.type_.identifier,
+        type_: &view.type_.name,
         depth: 0,
     };
     print_forest(context, &view.forest)
@@ -48,7 +48,7 @@ fn print_file(context: &Context, name: syn::Ident, index: usize) -> proc_macro2:
         .take(context.depth)
         .collect::<proc_macro2::TokenStream>();
     let type_ = context.type_;
-    let array = quote::format_ident!("{}", data::ASSET_ARRAY_IDENTIFIER);
+    let array = quote::format_ident!("{}", data::ASSET_ARRAY_NAME);
 
     quote::quote! {
         pub static #name: &#root_path#type_ = &#root_path#array[#index];
@@ -75,7 +75,7 @@ mod tests {
     fn handles_files() {
         let actual = main(&model::View {
             type_: model::Type {
-                identifier: quote::format_ident!("Asset"),
+                name: quote::format_ident!("Asset"),
                 ..model::stubs::type_()
             },
             forest: vec![
@@ -101,7 +101,7 @@ mod tests {
     fn handles_folders() {
         let actual = main(&model::View {
             type_: model::Type {
-                identifier: quote::format_ident!("Asset"),
+                name: quote::format_ident!("Asset"),
                 ..model::stubs::type_()
             },
             forest: vec![
@@ -150,7 +150,7 @@ mod tests {
     fn handles_both_normal_and_raw_identifiers() {
         let actual = main(&model::View {
             type_: model::Type {
-                identifier: quote::format_ident!("Asset"),
+                name: quote::format_ident!("Asset"),
                 ..model::stubs::type_()
             },
             forest: vec![(

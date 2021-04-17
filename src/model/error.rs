@@ -33,15 +33,8 @@ impl fmt::Display for main::Error {
                 )
             }
 
-            main::Error::NameCollision {
-                identifier,
-                competitors,
-            } => {
-                writeln!(
-                    formatter,
-                    "Files collide on generated identifier {:?}:",
-                    identifier,
-                )?;
+            main::Error::NameCollision { name, competitors } => {
+                writeln!(formatter, "Files collide on generated name {:?}:", name,)?;
                 for competitor in competitors {
                     writeln!(formatter, "- {:?}", competitor.0)?;
                 }
@@ -118,7 +111,7 @@ _ = …
         #[test]
         fn handles_name_collision() {
             let actual = main::Error::NameCollision {
-                identifier: String::from("b_c"),
+                name: String::from("b_c"),
                 competitors: vec![
                     main::RelativePath::from("a/B-c"),
                     main::RelativePath::from("a/b.c"),
@@ -126,7 +119,7 @@ _ = …
             }
             .to_string();
 
-            let expected = "Files collide on generated identifier \"b_c\":
+            let expected = "Files collide on generated name \"b_c\":
 - \"a/B-c\"
 - \"a/b.c\"
 Rename one of the files or configure \"identifiers = false\".";

@@ -2,9 +2,9 @@ use crate::model;
 
 pub const ANONYMOUS_FIELD: &str = "_";
 
-pub const ASSET_ARRAY_IDENTIFIER: &str = "ASSETS";
+pub const ASSET_ARRAY_NAME: &str = "ASSETS";
 
-pub const BASE_MODULE_IDENTIFIER: &str = "base";
+pub const BASE_MODULE_NAME: &str = "base";
 
 pub static PREDEFINED_TEMPLATES_ORDERED: &[(&str, model::Template)] = &[
     ("content", model::Template::Content),

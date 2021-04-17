@@ -6,7 +6,7 @@ pub fn main(
     type_: model::Type<()>,
 ) -> model::Result<model::Type<model::Template>> {
     Ok(model::Type {
-        identifier: type_.identifier,
+        name: type_.name,
 
         structure: match type_.structure {
             model::TypeStructure::Unit => model::TypeStructure::Unit,
@@ -86,14 +86,14 @@ mod tests {
                 ..model::stubs::configuration()
             },
             model::Type {
-                identifier: quote::format_ident!("Asset"),
+                name: quote::format_ident!("Asset"),
                 structure: model::TypeStructure::NamedFields(vec![(String::from("content"), ())]),
             },
         );
 
         let actual = actual.unwrap();
         let expected = model::Type {
-            identifier: quote::format_ident!("Asset"),
+            name: quote::format_ident!("Asset"),
             structure: model::TypeStructure::NamedFields(vec![(
                 String::from("content"),
                 model::Template::Content,
@@ -115,14 +115,14 @@ mod tests {
                 ..model::stubs::configuration()
             },
             model::Type {
-                identifier: quote::format_ident!("Asset"),
+                name: quote::format_ident!("Asset"),
                 structure: model::TypeStructure::NamedFields(vec![(String::from("content"), ())]),
             },
         );
 
         let actual = actual.unwrap();
         let expected = model::Type {
-            identifier: quote::format_ident!("Asset"),
+            name: quote::format_ident!("Asset"),
             structure: model::TypeStructure::NamedFields(vec![(
                 String::from("content"),
                 model::Template::RawContent,
@@ -140,14 +140,14 @@ mod tests {
             let actual = main(
                 &model::stubs::configuration(),
                 model::Type {
-                    identifier: quote::format_ident!("MyUnit"),
+                    name: quote::format_ident!("MyUnit"),
                     structure: model::TypeStructure::Unit,
                 },
             );
 
             let actual = actual.unwrap();
             let expected = model::Type {
-                identifier: quote::format_ident!("MyUnit"),
+                name: quote::format_ident!("MyUnit"),
                 structure: model::TypeStructure::Unit,
             };
             assert_eq!(actual, expected);
@@ -163,14 +163,14 @@ mod tests {
                     ..model::stubs::configuration()
                 },
                 model::Type {
-                    identifier: quote::format_ident!("MyTypeAlias"),
+                    name: quote::format_ident!("MyTypeAlias"),
                     structure: model::TypeStructure::TypeAlias(()),
                 },
             );
 
             let actual = actual.unwrap();
             let expected = model::Type {
-                identifier: quote::format_ident!("MyTypeAlias"),
+                name: quote::format_ident!("MyTypeAlias"),
                 structure: model::TypeStructure::TypeAlias(model::Template::Content),
             };
             assert_eq!(actual, expected);
@@ -189,7 +189,7 @@ mod tests {
                     ..model::stubs::configuration()
                 },
                 model::Type {
-                    identifier: quote::format_ident!("MyNamedFields"),
+                    name: quote::format_ident!("MyNamedFields"),
                     structure: model::TypeStructure::NamedFields(vec![(
                         String::from("my_content"),
                         (),
@@ -199,7 +199,7 @@ mod tests {
 
             let actual = actual.unwrap();
             let expected = model::Type {
-                identifier: quote::format_ident!("MyNamedFields"),
+                name: quote::format_ident!("MyNamedFields"),
                 structure: model::TypeStructure::NamedFields(vec![(
                     String::from("my_content"),
                     model::Template::RawContent,
@@ -221,14 +221,14 @@ mod tests {
                     ..model::stubs::configuration()
                 },
                 model::Type {
-                    identifier: quote::format_ident!("MyTupleFields"),
+                    name: quote::format_ident!("MyTupleFields"),
                     structure: model::TypeStructure::TupleFields(vec![()]),
                 },
             );
 
             let actual = actual.unwrap();
             let expected = model::Type {
-                identifier: quote::format_ident!("MyTupleFields"),
+                name: quote::format_ident!("MyTupleFields"),
                 structure: model::TypeStructure::TupleFields(vec![model::Template::RelativePath]),
             };
             assert_eq!(actual, expected);

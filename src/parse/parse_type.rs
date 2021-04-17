@@ -32,7 +32,7 @@ fn parse_structure(item: parse::ParseStream) -> syn::Result<model::Type<()>> {
             fields
                 .named
                 .into_iter()
-                .filter_map(|field| field.ident.map(|identifier| (identifier.to_string(), ())))
+                .filter_map(|field| field.ident.map(|name| (name.to_string(), ())))
                 .collect(),
         ),
 
@@ -42,20 +42,20 @@ fn parse_structure(item: parse::ParseStream) -> syn::Result<model::Type<()>> {
     };
 
     Ok(model::Type {
-        identifier: derive_input.ident,
+        name: derive_input.ident,
         structure,
     })
 }
 
 fn parse_type_alias(item: parse::ParseStream) -> syn::Result<model::Type<()>> {
     item.parse::<syn::Token![type]>()?;
-    let identifier = item.parse::<syn::Ident>()?;
+    let name = item.parse::<syn::Ident>()?;
     item.parse::<syn::Token![=]>()?;
     item.parse::<syn::Type>()?;
     item.parse::<syn::Token![;]>()?;
 
     Ok(model::Type {
-        identifier,
+        name,
         structure: model::TypeStructure::TypeAlias(()),
     })
 }
@@ -70,7 +70,7 @@ mod tests {
 
         let actual = actual.unwrap();
         let expected = model::Type {
-            identifier: quote::format_ident!("MyUnit"),
+            name: quote::format_ident!("MyUnit"),
             structure: model::TypeStructure::Unit,
         };
         assert_eq!(actual, expected);
@@ -82,7 +82,7 @@ mod tests {
 
         let actual = actual.unwrap();
         let expected = model::Type {
-            identifier: quote::format_ident!("MyTypeAlias"),
+            name: quote::format_ident!("MyTypeAlias"),
             structure: model::TypeStructure::TypeAlias(()),
         };
         assert_eq!(actual, expected);
@@ -99,7 +99,7 @@ mod tests {
 
         let actual = actual.unwrap();
         let expected = model::Type {
-            identifier: quote::format_ident!("MyNamedFields"),
+            name: quote::format_ident!("MyNamedFields"),
             structure: model::TypeStructure::NamedFields(vec![
                 (String::from("content"), ()),
                 (String::from("media_type"), ()),
@@ -115,7 +115,7 @@ mod tests {
 
         let actual = actual.unwrap();
         let expected = model::Type {
-            identifier: quote::format_ident!("MyTupleFields"),
+            name: quote::format_ident!("MyTupleFields"),
             structure: model::TypeStructure::TupleFields(vec![(), ()]),
         };
         assert_eq!(actual, expected);

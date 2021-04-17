@@ -43,9 +43,9 @@ pub fn main(template: &model::Template, context: &Context) -> proc_macro2::Token
         },
 
         model::Template::Custom { macro_ } => {
-            let macro_identifier = quote::format_ident!("{}", macro_);
+            let macro_name = quote::format_ident!("{}", macro_);
             quote::quote! {
-                #macro_identifier!(#relative_path, #absolute_path)
+                #macro_name!(#relative_path, #absolute_path)
             }
         }
     }
