@@ -1,5 +1,7 @@
 use crate::model;
 
+pub const ANONYMOUS_FIELD_IDENTIFIER: &str = "_";
+
 pub const BASE_MODULE_IDENTIFIER: &str = "base";
 
 pub static PREDEFINED_TEMPLATES_ORDERED: &[(&str, model::Template)] = &[

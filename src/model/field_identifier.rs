@@ -1,10 +1,9 @@
 use super::main;
-
-const ANONYMOUS_IDENTIFIER: &str = "_";
+use crate::data;
 
 impl From<String> for main::FieldIdentifier {
     fn from(string: String) -> Self {
-        if string == ANONYMOUS_IDENTIFIER {
+        if string == data::ANONYMOUS_FIELD_IDENTIFIER {
             main::FieldIdentifier::Anonymous
         } else {
             match string.parse() {
@@ -18,7 +17,7 @@ impl From<String> for main::FieldIdentifier {
 impl From<main::FieldIdentifier> for String {
     fn from(identifier: main::FieldIdentifier) -> Self {
         match identifier {
-            main::FieldIdentifier::Anonymous => String::from(ANONYMOUS_IDENTIFIER),
+            main::FieldIdentifier::Anonymous => String::from(data::ANONYMOUS_FIELD_IDENTIFIER),
             main::FieldIdentifier::Named(name) => name,
             main::FieldIdentifier::Indexed(index) => index.to_string(),
         }
