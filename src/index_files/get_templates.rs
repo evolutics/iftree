@@ -17,14 +17,11 @@ pub fn main(
 
             model::ResourceStructure::NamedFields(names) => model::ResourceStructure::NamedFields(
                 names
-                    .iter()
+                    .into_iter()
                     .map(|(name, _)| {
                         Ok((
                             name.clone(),
-                            get_template(
-                                configuration,
-                                model::FieldIdentifier::Named(String::from(name)),
-                            )?,
+                            get_template(configuration, model::FieldIdentifier::Named(name))?,
                         ))
                     })
                     .collect::<model::Result<_>>()?,
