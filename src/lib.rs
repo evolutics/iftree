@@ -70,7 +70,7 @@
 mod data;
 mod go;
 mod index_files;
-mod inspect_system;
+mod list_files;
 mod model;
 mod parse;
 mod print;

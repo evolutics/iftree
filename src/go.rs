@@ -1,5 +1,5 @@
 use crate::index_files;
-use crate::inspect_system;
+use crate::list_files;
 use crate::model;
 use crate::print;
 
@@ -8,8 +8,8 @@ pub fn main(
     item: proc_macro2::TokenStream,
     type_: model::Type<()>,
 ) -> model::Result<proc_macro2::TokenStream> {
-    let system_data = inspect_system::main(&configuration)?;
-    let file_index = index_files::main(&configuration, type_, system_data)?;
+    let files = list_files::main(&configuration)?;
+    let file_index = index_files::main(&configuration, type_, files)?;
     Ok(print::main(item, file_index))
 }
 

@@ -1,4 +1,4 @@
-mod get_files;
+mod get_array;
 mod get_forest;
 mod get_templates;
 mod main;

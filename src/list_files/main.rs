@@ -1,12 +1,14 @@
 use super::get_base_folder;
+use super::get_files;
 use super::get_paths;
 use crate::model;
 use std::env;
+use std::vec;
 
-pub fn main(configuration: &model::Configuration) -> model::Result<model::SystemData> {
+pub fn main(configuration: &model::Configuration) -> model::Result<vec::Vec<model::File>> {
     let base_folder = get_base_folder::main(configuration, &|name| env::var(name))?;
     let paths = get_paths::main(configuration, &base_folder)?;
-    Ok(model::SystemData { base_folder, paths })
+    get_files::main(base_folder, paths)
 }
 
 #[cfg(test)]
@@ -25,9 +27,10 @@ mod tests {
         });
 
         let actual = actual.unwrap();
-        let base_folder = fs::canonicalize(".").unwrap();
-        let paths = vec![base_folder.join("examples/resources/credits.md")];
-        let expected = model::SystemData { base_folder, paths };
+        let expected = vec![model::File {
+            relative_path: model::RelativePath::from("examples/resources/credits.md"),
+            absolute_path: fs::canonicalize("examples/resources/credits.md").unwrap(),
+        }];
         assert_eq!(actual, expected);
     }
 }

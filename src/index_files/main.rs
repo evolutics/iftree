@@ -1,19 +1,20 @@
-use super::get_files;
+use super::get_array;
 use super::get_forest;
 use super::get_templates;
 use crate::model;
+use std::vec;
 
 pub fn main(
     configuration: &model::Configuration,
     type_: model::Type<()>,
-    system_data: model::SystemData,
+    files: vec::Vec<model::File>,
 ) -> model::Result<model::FileIndex> {
     let type_ = get_templates::main(configuration, type_)?;
-    let files = get_files::main(&system_data.base_folder, system_data.paths)?;
-    let forest = get_forest::main(configuration, &files)?;
+    let array = get_array::main(files);
+    let forest = get_forest::main(configuration, &array)?;
     Ok(model::FileIndex {
         type_,
-        array: files,
+        array,
         forest,
     })
 }
@@ -40,10 +41,10 @@ mod tests {
                 identifier: quote::format_ident!("Resource"),
                 structure: model::TypeStructure::TypeAlias(()),
             },
-            model::SystemData {
-                base_folder: path::PathBuf::from("/a"),
-                paths: vec![path::PathBuf::from("/a/b")],
-            },
+            vec![model::File {
+                relative_path: model::RelativePath::from("b"),
+                absolute_path: path::PathBuf::from("/a/b"),
+            }],
         );
 
         let actual = actual.unwrap();

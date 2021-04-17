@@ -52,22 +52,19 @@ pub enum TypeStructure<T> {
 }
 
 #[derive(Clone, cmp::PartialEq, Debug)]
-pub struct SystemData {
-    pub base_folder: path::PathBuf,
-    pub paths: vec::Vec<path::PathBuf>,
+pub struct File {
+    pub relative_path: RelativePath,
+    pub absolute_path: path::PathBuf,
 }
+
+#[derive(Clone, cmp::Eq, cmp::Ord, cmp::PartialEq, cmp::PartialOrd, Debug)]
+pub struct RelativePath(pub String);
 
 #[derive(Clone, cmp::PartialEq, Debug)]
 pub struct FileIndex {
     pub type_: Type<Template>,
     pub array: vec::Vec<File>,
     pub forest: Option<FileForest>,
-}
-
-#[derive(Clone, cmp::PartialEq, Debug)]
-pub struct File {
-    pub relative_path: RelativePath,
-    pub absolute_path: path::PathBuf,
 }
 
 pub type FileForest = collections::BTreeMap<String, FileTree>;
@@ -77,9 +74,6 @@ pub enum FileTree {
     File { index: usize },
     Folder(FileForest),
 }
-
-#[derive(Clone, cmp::Eq, cmp::Ord, cmp::PartialEq, cmp::PartialOrd, Debug)]
-pub struct RelativePath(pub String);
 
 pub type Result<T> = result::Result<T, Error>;
 
