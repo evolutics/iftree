@@ -46,7 +46,7 @@ mod tests {
         let expected = quote::quote! {
             pub type Resource = &'static str;
 
-            pub static ARRAY: [Resource; 1usize] = [
+            pub static ASSETS: [Resource; 1usize] = [
                 "examples/resources/credits.md",
             ];
 
@@ -54,7 +54,7 @@ mod tests {
                 pub mod r#examples {
                     pub mod r#resources {
                         pub static r#CREDITS_MD: &super::super::super::Resource =
-                            &super::super::super::ARRAY[0usize];
+                            &super::super::super::ASSETS[0usize];
                     }
                 }
             }

@@ -15,7 +15,7 @@ pub type Resource = &'static str;
 
 pub fn main() {
     assert_eq!(
-        ARRAY,
+        ASSETS,
         [
             "README.md",
             "examples/resources/configuration/menu.json",

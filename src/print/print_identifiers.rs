@@ -48,7 +48,7 @@ fn print_file(context: &Context, name: syn::Ident, index: usize) -> proc_macro2:
         .take(context.depth)
         .collect::<proc_macro2::TokenStream>();
     let type_ = context.type_;
-    let array = quote::format_ident!("{}", data::RESOURCE_ARRAY_IDENTIFIER);
+    let array = quote::format_ident!("{}", data::ASSET_ARRAY_IDENTIFIER);
 
     quote::quote! {
         pub static #name: &#root_path#type_ = &#root_path#array[#index];
@@ -89,9 +89,9 @@ mod tests {
 
         let actual = actual.to_string();
         let expected = quote::quote! {
-            pub static A: &Resource = &ARRAY[1usize];
+            pub static A: &Resource = &ASSETS[1usize];
 
-            pub static BC: &Resource = &ARRAY[0usize];
+            pub static BC: &Resource = &ASSETS[0usize];
         }
         .to_string();
         assert_eq!(actual, expected);
@@ -132,13 +132,13 @@ mod tests {
 
         let actual = actual.to_string();
         let expected = quote::quote! {
-            pub static A: &Resource = &ARRAY[0usize];
+            pub static A: &Resource = &ASSETS[0usize];
 
             pub mod b {
-                pub static C: &super::Resource = &super::ARRAY[2usize];
+                pub static C: &super::Resource = &super::ASSETS[2usize];
 
                 pub mod a {
-                    pub static B: &super::super::Resource = &super::super::ARRAY[1usize];
+                    pub static B: &super::super::Resource = &super::super::ASSETS[1usize];
                 }
             }
         }
@@ -169,7 +169,7 @@ mod tests {
         let actual = actual.to_string();
         let expected = quote::quote! {
             pub mod r#match {
-                pub static NORMAL: &super::Resource = &super::ARRAY[0usize];
+                pub static NORMAL: &super::Resource = &super::ASSETS[0usize];
             }
         }
         .to_string();

@@ -3,7 +3,7 @@ use crate::data;
 use crate::model;
 
 pub fn main(view: &model::View) -> proc_macro2::TokenStream {
-    let identifier = quote::format_ident!("{}", data::RESOURCE_ARRAY_IDENTIFIER);
+    let identifier = quote::format_ident!("{}", data::ASSET_ARRAY_IDENTIFIER);
     let type_identifier = &view.type_.identifier;
     let length = view.array.len();
     let expression = print_expression(view);
@@ -45,7 +45,7 @@ mod tests {
 
         let actual = actual.to_string();
         let expected = quote::quote! {
-            pub static ARRAY: [Resource; 0usize] = [];
+            pub static ASSETS: [Resource; 0usize] = [];
         }
         .to_string();
         assert_eq!(actual, expected);
@@ -73,7 +73,7 @@ mod tests {
 
         let actual = actual.to_string();
         let expected = quote::quote! {
-            pub static ARRAY: [Resource; 2usize] = [
+            pub static ASSETS: [Resource; 2usize] = [
                 "a",
                 "b/c",
             ];

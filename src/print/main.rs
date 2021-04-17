@@ -52,12 +52,12 @@ mod tests {
         let expected = quote::quote! {
             pub type Resource = &'static str;
 
-            pub static ARRAY: [Resource; 1usize] = [
+            pub static ASSETS: [Resource; 1usize] = [
                 include_str!("/a.b"),
             ];
 
             pub mod base {
-                pub static A_B: &super::Resource = &super::ARRAY[0usize];
+                pub static A_B: &super::Resource = &super::ASSETS[0usize];
             }
         }
         .to_string();

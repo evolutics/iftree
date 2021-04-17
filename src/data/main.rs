@@ -2,6 +2,8 @@ use crate::model;
 
 pub const ANONYMOUS_FIELD_IDENTIFIER: &str = "_";
 
+pub const ASSET_ARRAY_IDENTIFIER: &str = "ASSETS";
+
 pub const BASE_MODULE_IDENTIFIER: &str = "base";
 
 pub static PREDEFINED_TEMPLATES_ORDERED: &[(&str, model::Template)] = &[
@@ -11,8 +13,6 @@ pub static PREDEFINED_TEMPLATES_ORDERED: &[(&str, model::Template)] = &[
     ("raw_content", model::Template::RawContent),
     ("relative_path", model::Template::RelativePath),
 ];
-
-pub const RESOURCE_ARRAY_IDENTIFIER: &str = "ARRAY";
 
 #[cfg(test)]
 mod tests {
