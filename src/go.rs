@@ -10,7 +10,7 @@ pub fn main(
 ) -> model::Result<proc_macro2::TokenStream> {
     let files = list_files::main(&configuration)?;
     let view = generate_view::main(&configuration, type_, files)?;
-    Ok(print::main(item, view))
+    Ok(print::main(&configuration, item, view))
 }
 
 #[cfg(test)]
@@ -26,6 +26,7 @@ mod tests {
                 base_folder: path::PathBuf::new(),
                 root_folder_variable: String::from("CARGO_MANIFEST_DIR"),
                 identifiers: true,
+                debug: false,
                 field_templates: vec![(model::Field::Anonymous, model::Template::RelativePath)]
                     .into_iter()
                     .collect(),

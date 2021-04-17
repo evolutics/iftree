@@ -1,18 +1,25 @@
 use super::print_array;
 use super::print_identifiers;
+use super::print_with_debug;
 use crate::model;
 
-pub fn main(item: proc_macro2::TokenStream, view: model::View) -> proc_macro2::TokenStream {
+pub fn main(
+    configuration: &model::Configuration,
+    item: proc_macro2::TokenStream,
+    view: model::View,
+) -> proc_macro2::TokenStream {
     let array = print_array::main(&view);
     let identifiers = print_identifiers::main(&view);
 
-    quote::quote! {
+    let code = quote::quote! {
         #item
 
         #array
 
         #identifiers
-    }
+    };
+
+    print_with_debug::main(configuration, code)
 }
 
 #[cfg(test)]
@@ -23,6 +30,10 @@ mod tests {
     #[test]
     fn handles() {
         let actual = main(
+            &model::Configuration {
+                debug: false,
+                ..model::stubs::configuration()
+            },
             quote::quote! {
                 pub type Asset = &'static str;
             },

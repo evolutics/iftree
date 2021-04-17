@@ -18,6 +18,7 @@ struct UserConfiguration {
     root_folder_variable: Option<String>,
 
     identifiers: Option<bool>,
+    debug: Option<bool>,
 
     field_templates: Option<model::FieldTemplates>,
 }
@@ -71,6 +72,7 @@ impl From<UserConfiguration> for model::Configuration {
                 .unwrap_or_else(|| String::from("CARGO_MANIFEST_DIR")),
 
             identifiers: configuration.identifiers.unwrap_or(true),
+            debug: configuration.debug.unwrap_or(false),
 
             field_templates: configuration.field_templates.unwrap_or_default(),
         }
@@ -92,6 +94,7 @@ mod tests {
             root_folder_variable: String::from("CARGO_MANIFEST_DIR"),
 
             identifiers: true,
+            debug: false,
 
             field_templates: model::FieldTemplates::new(),
         };
@@ -107,6 +110,7 @@ base_folder = 'base'
 root_folder_variable = 'MY_ROOT_FOLDER'
 
 identifiers = false
+debug = true
 
 [field_templates]
 _ = 'my_include!'
@@ -122,6 +126,7 @@ custom = 'custom::include!'
             root_folder_variable: String::from("MY_ROOT_FOLDER"),
 
             identifiers: false,
+            debug: true,
 
             field_templates: vec![
                 (

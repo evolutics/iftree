@@ -12,6 +12,7 @@ pub struct Configuration {
     pub root_folder_variable: String,
 
     pub identifiers: bool,
+    pub debug: bool,
 
     pub field_templates: FieldTemplates,
 }
@@ -110,6 +111,7 @@ pub mod stubs {
             root_folder_variable: String::from("BAR"),
 
             identifiers: false,
+            debug: false,
 
             field_templates: FieldTemplates::new(),
         }
