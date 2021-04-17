@@ -52,6 +52,12 @@ pub enum TypeStructure<T> {
 }
 
 #[derive(Clone, cmp::PartialEq, Debug)]
+pub struct SystemData {
+    pub base_folder: path::PathBuf,
+    pub paths: vec::Vec<path::PathBuf>,
+}
+
+#[derive(Clone, cmp::PartialEq, Debug)]
 pub struct FileIndex {
     pub type_: Type<Template>,
     pub array: vec::Vec<File>,

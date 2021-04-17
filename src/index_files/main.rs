@@ -1,20 +1,16 @@
-use super::get_base_folder;
 use super::get_files;
 use super::get_forest;
-use super::get_paths;
 use super::get_templates;
 use crate::model;
-use std::env;
 
 pub fn main(
-    configuration: model::Configuration,
+    configuration: &model::Configuration,
     type_: model::Type<()>,
+    system_data: model::SystemData,
 ) -> model::Result<model::FileIndex> {
-    let type_ = get_templates::main(&configuration, type_)?;
-    let base_folder = get_base_folder::main(&configuration, &|name| env::var(name))?;
-    let paths = get_paths::main(&configuration, &base_folder)?;
-    let files = get_files::main(&base_folder, paths)?;
-    let forest = get_forest::main(&configuration, &files)?;
+    let type_ = get_templates::main(configuration, type_)?;
+    let files = get_files::main(&system_data.base_folder, system_data.paths)?;
+    let forest = get_forest::main(configuration, &files)?;
     Ok(model::FileIndex {
         type_,
         array: files,
@@ -25,16 +21,12 @@ pub fn main(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::fs;
     use std::path;
 
     #[test]
     fn handles() {
         let actual = main(
-            model::Configuration {
-                paths: String::from("/examples/resources/credits.md"),
-                base_folder: path::PathBuf::new(),
-                root_folder_variable: String::from("CARGO_MANIFEST_DIR"),
+            &model::Configuration {
                 module_tree: true,
                 field_templates: vec![(
                     model::FieldIdentifier::Anonymous,
@@ -42,45 +34,32 @@ mod tests {
                 )]
                 .into_iter()
                 .collect(),
+                ..model::stubs::configuration()
             },
             model::Type {
                 identifier: quote::format_ident!("Resource"),
                 structure: model::TypeStructure::TypeAlias(()),
             },
+            model::SystemData {
+                base_folder: path::PathBuf::from("/a"),
+                paths: vec![path::PathBuf::from("/a/b")],
+            },
         );
 
         let actual = actual.unwrap();
-        let absolute_path = fs::canonicalize("examples/resources/credits.md").unwrap();
         let expected = model::FileIndex {
             type_: model::Type {
                 identifier: quote::format_ident!("Resource"),
                 structure: model::TypeStructure::TypeAlias(model::Template::Content),
             },
             array: vec![model::File {
-                relative_path: model::RelativePath::from("examples/resources/credits.md"),
-                absolute_path,
+                relative_path: model::RelativePath::from("b"),
+                absolute_path: path::PathBuf::from("/a/b"),
             }],
             forest: Some(
-                vec![(
-                    String::from("r#examples"),
-                    model::FileTree::Folder(
-                        vec![(
-                            String::from("r#resources"),
-                            model::FileTree::Folder(
-                                vec![(
-                                    String::from("r#CREDITS_MD"),
-                                    model::FileTree::File { index: 0 },
-                                )]
-                                .into_iter()
-                                .collect(),
-                            ),
-                        )]
-                        .into_iter()
-                        .collect(),
-                    ),
-                )]
-                .into_iter()
-                .collect(),
+                vec![(String::from("r#B"), model::FileTree::File { index: 0 })]
+                    .into_iter()
+                    .collect(),
             ),
         };
         assert_eq!(actual, expected);
