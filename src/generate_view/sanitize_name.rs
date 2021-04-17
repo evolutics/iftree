@@ -1,9 +1,9 @@
 pub fn main(original: &str, convention: Convention) -> String {
-    let identifier = sanitize_by_convention(original, convention);
-    let identifier = sanitize_special_characters(&identifier);
-    let identifier = sanitize_first_character(identifier);
-    let identifier = sanitize_special_cases(identifier);
-    return format!("r#{}", identifier);
+    let name = sanitize_by_convention(original, convention);
+    let name = sanitize_special_characters(&name);
+    let name = sanitize_first_character(name);
+    let name = sanitize_special_cases(name);
+    return format!("r#{}", name);
 }
 
 pub enum Convention {
@@ -11,16 +11,15 @@ pub enum Convention {
     SnakeCase,
 }
 
-fn sanitize_by_convention(identifier: &str, convention: Convention) -> String {
+fn sanitize_by_convention(name: &str, convention: Convention) -> String {
     match convention {
-        Convention::ScreamingSnakeCase => identifier.to_uppercase(),
-        Convention::SnakeCase => identifier.to_lowercase(),
+        Convention::ScreamingSnakeCase => name.to_uppercase(),
+        Convention::SnakeCase => name.to_lowercase(),
     }
 }
 
-fn sanitize_special_characters(identifier: &str) -> String {
-    identifier
-        .chars()
+fn sanitize_special_characters(name: &str) -> String {
+    name.chars()
         .map(|character| {
             if character.is_ascii_alphanumeric() {
                 character
@@ -31,18 +30,18 @@ fn sanitize_special_characters(identifier: &str) -> String {
         .collect()
 }
 
-fn sanitize_first_character(identifier: String) -> String {
-    match identifier.chars().next() {
-        Some(first_character) if first_character.is_numeric() => format!("_{}", identifier),
-        _ => identifier,
+fn sanitize_first_character(name: String) -> String {
+    match name.chars().next() {
+        Some(first_character) if first_character.is_numeric() => format!("_{}", name),
+        _ => name,
     }
 }
 
-fn sanitize_special_cases(identifier: String) -> String {
-    match identifier.as_ref() {
+fn sanitize_special_cases(name: String) -> String {
+    match name.as_ref() {
         "" => String::from("__"),
-        "_" | "crate" | "self" | "Self" | "super" => format!("{}_", identifier),
-        _ => identifier,
+        "_" | "crate" | "self" | "Self" | "super" => format!("{}_", name),
+        _ => name,
     }
 }
 

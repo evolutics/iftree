@@ -1,4 +1,4 @@
-use super::sanitize_to_identifier;
+use super::sanitize_name;
 use crate::data;
 use crate::model;
 use std::iter;
@@ -74,11 +74,11 @@ fn get_reverse_file_path(file: &model::File) -> vec::Vec<String> {
         .map(|(index, name)| {
             let name = name.to_string_lossy();
             let convention = if index == 0 {
-                sanitize_to_identifier::Convention::ScreamingSnakeCase
+                sanitize_name::Convention::ScreamingSnakeCase
             } else {
-                sanitize_to_identifier::Convention::SnakeCase
+                sanitize_name::Convention::SnakeCase
             };
-            sanitize_to_identifier::main(&name, convention)
+            sanitize_name::main(&name, convention)
         })
         .collect()
 }
