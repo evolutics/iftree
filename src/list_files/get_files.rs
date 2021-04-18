@@ -12,10 +12,11 @@ pub fn main(
         .collect()
 }
 
-fn get_file(base_folder: &path::Path, absolute_path: path::PathBuf) -> model::Result<model::File> {
+fn get_file(base_folder: &path::Path, path: path::PathBuf) -> model::Result<model::File> {
     let relative_path = model::RelativePath(String::from(
-        absolute_path.strip_prefix(base_folder)?.to_string_lossy(),
+        path.strip_prefix(base_folder)?.to_string_lossy(),
     ));
+    let absolute_path = String::from(path.to_string_lossy());
 
     Ok(model::File {
         relative_path,
@@ -41,11 +42,11 @@ mod tests {
         let expected = vec![
             model::File {
                 relative_path: model::RelativePath::from("c"),
-                absolute_path: path::PathBuf::from("/a/b/c"),
+                absolute_path: String::from("/a/b/c"),
             },
             model::File {
                 relative_path: model::RelativePath::from("a/b"),
-                absolute_path: path::PathBuf::from("/a/b/a/b"),
+                absolute_path: String::from("/a/b/a/b"),
             },
         ];
         assert_eq!(actual, expected);

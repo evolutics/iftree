@@ -22,7 +22,6 @@ pub fn main(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::path;
 
     #[test]
     fn handles() {
@@ -40,7 +39,7 @@ mod tests {
             },
             vec![model::File {
                 relative_path: model::RelativePath::from("b"),
-                absolute_path: path::PathBuf::from("/a/b"),
+                absolute_path: String::from("/a/b"),
             }],
         );
 
@@ -52,7 +51,7 @@ mod tests {
             },
             array: vec![model::File {
                 relative_path: model::RelativePath::from("b"),
-                absolute_path: path::PathBuf::from("/a/b"),
+                absolute_path: String::from("/a/b"),
             }],
             forest: vec![(
                 String::from("base"),

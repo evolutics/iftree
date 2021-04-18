@@ -10,53 +10,52 @@ pub fn main(files: vec::Vec<model::File>) -> vec::Vec<model::File> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::path;
 
     #[test]
     fn handles() {
         let actual = main(vec![
             model::File {
                 relative_path: model::RelativePath::from("B"),
-                absolute_path: path::PathBuf::from("one"),
+                absolute_path: String::from("one"),
             },
             model::File {
                 relative_path: model::RelativePath::from("A"),
-                absolute_path: path::PathBuf::from("zero"),
+                absolute_path: String::from("zero"),
             },
             model::File {
                 relative_path: model::RelativePath::from("a"),
-                absolute_path: path::PathBuf::from("two"),
+                absolute_path: String::from("two"),
             },
             model::File {
                 relative_path: model::RelativePath::from("a/b"),
-                absolute_path: path::PathBuf::from("four"),
+                absolute_path: String::from("four"),
             },
             model::File {
                 relative_path: model::RelativePath::from("a.c"),
-                absolute_path: path::PathBuf::from("three"),
+                absolute_path: String::from("three"),
             },
         ]);
 
         let expected = vec![
             model::File {
                 relative_path: model::RelativePath::from("A"),
-                absolute_path: path::PathBuf::from("zero"),
+                absolute_path: String::from("zero"),
             },
             model::File {
                 relative_path: model::RelativePath::from("B"),
-                absolute_path: path::PathBuf::from("one"),
+                absolute_path: String::from("one"),
             },
             model::File {
                 relative_path: model::RelativePath::from("a"),
-                absolute_path: path::PathBuf::from("two"),
+                absolute_path: String::from("two"),
             },
             model::File {
                 relative_path: model::RelativePath::from("a.c"),
-                absolute_path: path::PathBuf::from("three"),
+                absolute_path: String::from("three"),
             },
             model::File {
                 relative_path: model::RelativePath::from("a/b"),
-                absolute_path: path::PathBuf::from("four"),
+                absolute_path: String::from("four"),
             },
         ];
         assert_eq!(actual, expected);

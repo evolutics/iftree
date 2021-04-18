@@ -25,7 +25,6 @@ pub fn main(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::path;
 
     #[test]
     fn handles() {
@@ -43,7 +42,7 @@ mod tests {
                     structure: model::TypeStructure::TypeAlias(model::Template::Content),
                 },
                 array: vec![model::File {
-                    absolute_path: path::PathBuf::from("/a.b"),
+                    absolute_path: String::from("/a.b"),
                     ..model::stubs::file()
                 }],
                 forest: vec![(

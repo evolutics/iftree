@@ -29,7 +29,12 @@ mod tests {
         let actual = actual.unwrap();
         let expected = vec![model::File {
             relative_path: model::RelativePath::from("examples/assets/credits.md"),
-            absolute_path: fs::canonicalize("examples/assets/credits.md").unwrap(),
+            absolute_path: String::from(
+                fs::canonicalize("examples/assets/credits.md")
+                    .unwrap()
+                    .to_str()
+                    .unwrap(),
+            ),
         }];
         assert_eq!(actual, expected);
     }

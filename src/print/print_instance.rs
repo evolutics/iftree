@@ -6,7 +6,7 @@ pub fn main(type_: &model::Type<model::Template>, file: &model::File) -> proc_ma
 
     let context = print_template::Context {
         relative_path: &file.relative_path.0,
-        absolute_path: &file.absolute_path.to_string_lossy(),
+        absolute_path: &file.absolute_path,
     };
 
     match &type_.structure {
@@ -54,7 +54,6 @@ pub fn main(type_: &model::Type<model::Template>, file: &model::File) -> proc_ma
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::path;
 
     #[test]
     fn handles_template_context() {
@@ -68,7 +67,7 @@ mod tests {
             },
             &model::File {
                 relative_path: model::RelativePath::from("b"),
-                absolute_path: path::PathBuf::from("/a/b"),
+                absolute_path: String::from("/a/b"),
             },
         );
 
@@ -110,7 +109,7 @@ mod tests {
                     ..model::stubs::type_()
                 },
                 &model::File {
-                    absolute_path: path::PathBuf::from("/a/b"),
+                    absolute_path: String::from("/a/b"),
                     ..model::stubs::file()
                 },
             );
@@ -134,7 +133,7 @@ mod tests {
                     )]),
                 },
                 &model::File {
-                    absolute_path: path::PathBuf::from("/a/b"),
+                    absolute_path: String::from("/a/b"),
                     ..model::stubs::file()
                 },
             );
