@@ -14,4 +14,5 @@ pub fn main() {
     assert_eq!(assets::world::PHYSICAL_CONSTANTS_JSON.content, "7e-3\n");
 
     assert_eq!(ASSETS.len(), 6);
+    assert_eq!(ASSETS[3].content, "Boo Far\n");
 }
