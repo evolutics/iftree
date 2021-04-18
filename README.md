@@ -79,12 +79,29 @@ The `iftree::include_file_tree` macro is configured via a
 
 ### `paths`
 
+**Example:**
+[`configuration_paths`](https://github.com/evolutics/iftree/blob/main/examples/configuration_paths.rs)
+
 ### `base_folder`
+
+**Example:**
+[`configuration_base_folder`](https://github.com/evolutics/iftree/blob/main/examples/configuration_base_folder.rs)
 
 ### `root_folder_variable`
 
 ### `identifiers`
 
+**Examples:**
+[`basic_main`](https://github.com/evolutics/iftree/blob/main/examples/basic_main.rs),
+[`configuration_identifiers`](https://github.com/evolutics/iftree/blob/main/examples/configuration_identifiers.rs)
+
 ### `debug`
 
+**Example:**
+[`configuration_debug`](https://github.com/evolutics/iftree/blob/main/examples/configuration_debug.rs)
+
 ### `field_templates`
+
+**Examples:**
+[`configuration_field_templates_predefined`](https://github.com/evolutics/iftree/blob/main/examples/configuration_field_templates_predefined.rs),
+[`configuration_field_templates_custom`](https://github.com/evolutics/iftree/blob/main/examples/configuration_field_templates_custom.rs)
