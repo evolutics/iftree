@@ -26,7 +26,7 @@ pub fn main() {
         assets::CREDITS_MD.relative_path,
         "examples/assets/credits.md",
     );
-    assert_eq!(assets::CREDITS_MD.content, "Foo Bar\n");
+    assert_eq!(assets::CREDITS_MD.content, "Boo Far\n");
 
     assert_eq!(
         assets::world::levels::TUTORIAL_JSON.relative_path,

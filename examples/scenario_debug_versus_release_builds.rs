@@ -24,8 +24,8 @@ pub fn main() {
     use base::examples::assets;
 
     if cfg!(debug_assertions) {
-        assert_eq!(assets::CREDITS_MD.data, "Debug: Foo Bar\n");
+        assert_eq!(assets::CREDITS_MD.data, "Debug: Boo Far\n");
     } else {
-        assert_eq!(assets::CREDITS_MD.data, "Release: Foo Bar\n");
+        assert_eq!(assets::CREDITS_MD.data, "Release: Boo Far\n");
     }
 }

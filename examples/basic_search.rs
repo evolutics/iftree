@@ -22,7 +22,7 @@ pub fn main() {
 
     let index = ASSETS.binary_search_by_key(&"examples/assets/credits.md", key_function);
     assert_eq!(index, Ok(3));
-    assert_eq!(ASSETS[index.unwrap()].content, "Foo Bar\n");
+    assert_eq!(ASSETS[index.unwrap()].content, "Boo Far\n");
 
     assert_eq!(
         ASSETS.binary_search_by_key(&"examples/assets/seed.json", key_function),

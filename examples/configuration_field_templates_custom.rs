@@ -41,6 +41,6 @@ pub fn main() {
 
     assert_eq!(
         (assets::CREDITS_MD.get_text_content)(),
-        Some(String::from("Foo Bar\n")),
+        Some(String::from("Boo Far\n")),
     );
 }
