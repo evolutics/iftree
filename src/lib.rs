@@ -57,17 +57,35 @@
 //!
 //! To **filter files,** path patterns in a `.gitignore`-like format are supported.
 //! This is useful to skip hidden files, filter by filename extension, add multiple
-//! folders, use a fixed list of files, etc. See the `paths` configuration for more.
+//! folders, use a fixed list of files, etc. See the [`paths` configuration](#paths)
+//! for more.
 //!
 //! **Field templates** are applied to initialize fields. The standard case is to
 //! include the file contents as code. Among other predefined templates there is one
 //! that includes the file contents only in release builds, while in debug builds it
-//! reads a file afresh on each access. See the `field_templates` configuration for
-//! more.
+//! reads a file afresh on each access. See the
+//! [`field_templates` configuration](#field_templates) for more.
 //!
 //! **Custom field templates** enable plugging in your own macros to initialize
 //! fields. With this, you could add file metadata like media types, compress a file
 //! when including it, etc.
+//!
+//! # Configuration
+//!
+//! The `iftree::include_file_tree` macro is configured via a
+//! [TOML](https://toml.io) string with the following fields.
+//!
+//! ## `paths`
+//!
+//! ## `base_folder`
+//!
+//! ## `root_folder_variable`
+//!
+//! ## `identifiers`
+//!
+//! ## `debug`
+//!
+//! ## `field_templates`
 
 mod data;
 mod generate_view;
