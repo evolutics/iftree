@@ -94,6 +94,8 @@ pub enum Error {
         competitors: vec::Vec<RelativePath>,
     },
 
+    PathInvalidUnicode(path::PathBuf),
+
     PathStripPrefix(path::StripPrefixError),
 }
 

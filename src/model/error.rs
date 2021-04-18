@@ -45,6 +45,14 @@ impl fmt::Display for main::Error {
                 )
             }
 
+            main::Error::PathInvalidUnicode(path) => {
+                write!(
+                    formatter,
+                    "Path is not valid Unicode, consider renaming it: {:?}",
+                    path,
+                )
+            }
+
             main::Error::PathStripPrefix(error) => write!(formatter, "{}", error),
         }
     }
@@ -57,6 +65,7 @@ impl error::Error for main::Error {
             main::Error::Ignore(main::IgnoreError(error)) => Some(error),
             main::Error::MissingFieldTemplate(_) => None,
             main::Error::NameCollision { .. } => None,
+            main::Error::PathInvalidUnicode(_) => None,
             main::Error::PathStripPrefix(error) => Some(error),
         }
     }
@@ -123,6 +132,14 @@ _ = …
 - \"a/B-c\"
 - \"a/b.c\"
 Rename one of the files or configure \"identifiers = false\".";
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn handles_path_invalid_unicode() {
+            let actual = main::Error::PathInvalidUnicode(path::PathBuf::from("a/b")).to_string();
+
+            let expected = "Path is not valid Unicode, consider renaming it: \"a/b\"";
             assert_eq!(actual, expected);
         }
     }

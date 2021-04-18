@@ -13,15 +13,20 @@ pub fn main(
 }
 
 fn get_file(base_folder: &path::Path, path: path::PathBuf) -> model::Result<model::File> {
-    let relative_path = model::RelativePath(String::from(
-        path.strip_prefix(base_folder)?.to_string_lossy(),
-    ));
-    let absolute_path = String::from(path.to_string_lossy());
+    let relative_path = model::RelativePath(get_path_string(path.strip_prefix(base_folder)?)?);
+    let absolute_path = get_path_string(&path)?;
 
     Ok(model::File {
         relative_path,
         absolute_path,
     })
+}
+
+fn get_path_string(path: &path::Path) -> model::Result<String> {
+    match path.to_str() {
+        None => Err(model::Error::PathInvalidUnicode(path.to_path_buf())),
+        Some(string) => Ok(String::from(string)),
+    }
 }
 
 #[cfg(test)]
