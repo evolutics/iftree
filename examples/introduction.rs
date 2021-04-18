@@ -10,7 +10,7 @@ pub fn main() {
     assert_eq!(base::my_assets::FILE_B.content, "… contents of `file_b`\n");
     assert_eq!(
         base::my_assets::subfolder::FILE_C.content,
-        "… contents of `file_c`\n",
+        "… and of `file_c`\n",
     );
     assert_eq!(ASSETS.len(), 3);
     assert_eq!(ASSETS[0].content, "… contents of `file_a`\n");
