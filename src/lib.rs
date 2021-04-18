@@ -16,16 +16,18 @@
 //!   - file_c
 //! ```
 //!
-//! The generated code allows access to the file contents as in
+//! The generated code allows access to file data as in
 //!
 //! ```ignore
 //! assert_eq!(base::my_assets::FILE_A.content, "… contents of `file_a`\n");
 //! assert_eq!(base::my_assets::FILE_B.content, "… contents of `file_b`\n");
 //! assert_eq!(base::my_assets::subfolder::FILE_C.content, "… contents of `file_c`\n");
+//! assert_eq!(ASSETS.len(), 3);
+//! assert_eq!(ASSETS[0].content, "… contents of `file_a`\n");
 //! ```
 //!
-//! As you can see, folders are mapped to (nested) modules, which are rooted at a
-//! top-level module `base`.
+//! As you can see, access happens via variables `base::path::to::MY_FILE` or via
+//! the `ASSETS` array.
 //!
 //! For this to work, you attach the macro `iftree::include_file_tree` to a custom
 //! type as in
