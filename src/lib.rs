@@ -82,18 +82,26 @@
 //!
 //! ## `base_folder`
 //!
+//! **Default:** `""`
+//!
 //! **Example:**
 //! [`configuration_base_folder`](https://github.com/evolutics/iftree/blob/main/examples/configuration_base_folder.rs)
 //!
 //! ## `root_folder_variable`
 //!
+//! **Default:** `"CARGO_MANIFEST_DIR"`
+//!
 //! ## `identifiers`
+//!
+//! **Default:** `true`
 //!
 //! **Examples:**
 //! [`basic_main`](https://github.com/evolutics/iftree/blob/main/examples/basic_main.rs),
 //! [`configuration_identifiers`](https://github.com/evolutics/iftree/blob/main/examples/configuration_identifiers.rs)
 //!
 //! ## `debug`
+//!
+//! **Default:** `false`
 //!
 //! **Example:**
 //! [`configuration_debug`](https://github.com/evolutics/iftree/blob/main/examples/configuration_debug.rs)
