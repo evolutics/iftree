@@ -150,8 +150,16 @@ custom = 'custom::include!'
     }
 
     #[test]
-    fn given_invalid_configuration_it_errs() {
+    fn given_ill_formed_configuration_it_errs() {
         let actual = main("paths = #");
+
+        let actual = actual.is_err();
+        assert!(actual);
+    }
+
+    #[test]
+    fn given_required_field_is_missing_it_errs() {
+        let actual = main("");
 
         let actual = actual.is_err();
         assert!(actual);
