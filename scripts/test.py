@@ -74,7 +74,7 @@ def _run_example(name, extra_arguments):
         pass
 
 
-_EXAMPLE_TIMEOUT_IN_SECONDS = {"library_actix": 2}
+_EXAMPLE_TIMEOUT_IN_SECONDS = {"library_actix": 2, "showcase": 2}
 
 if __name__ == "__main__":
     main()
