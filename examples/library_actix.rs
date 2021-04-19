@@ -14,17 +14,15 @@ pub struct Asset {
 
 #[actix_web::main]
 async fn main() -> io::Result<()> {
-    actix_web::HttpServer::new(|| {
-        actix_web::App::new().route("/{path:.*}", web::get().to(get_asset))
-    })
-    .bind("127.0.0.1:8080")?
-    .run()
-    .await
+    actix_web::HttpServer::new(|| actix_web::App::new().route("/{_:.*}", web::get().to(get_asset)))
+        .bind("127.0.0.1:8080")?
+        .run()
+        .await
 }
 
-async fn get_asset(request: actix_web::HttpRequest) -> impl actix_web::Responder {
-    let path = request.match_info().query("path");
-    match ASSETS.binary_search_by_key(&path, |asset| asset.relative_path) {
+async fn get_asset(path: web::Path<String>) -> impl actix_web::Responder {
+    let path = path.into_inner();
+    match ASSETS.binary_search_by(|asset| asset.relative_path.cmp(&path)) {
         Err(_) => actix_web::HttpResponse::NotFound().finish(),
         Ok(index) => actix_web::HttpResponse::Ok().body(ASSETS[index].content),
     }
