@@ -54,9 +54,27 @@ def _test_rust():
 
     examples = [path.stem for path in pathlib.Path("examples").glob("*.rs")]
     for example in sorted(examples):
-        subprocess.run(["cargo", "run", "--example", example], check=True)
-        subprocess.run(["cargo", "run", "--example", example, "--release"], check=True)
+        _run_example(example, [])
+        _run_example(example, ["--release"])
 
+
+def _run_example(name, extra_arguments):
+    subprocess.run(
+        ["cargo", "build", "--example", name] + extra_arguments,
+        check=True,
+    )
+
+    try:
+        subprocess.run(
+            ["cargo", "run", "--example", name] + extra_arguments,
+            check=True,
+            timeout=_EXAMPLE_TIMEOUT_IN_SECONDS.get(name),
+        )
+    except subprocess.TimeoutExpired:
+        pass
+
+
+_EXAMPLE_TIMEOUT_IN_SECONDS = {}
 
 if __name__ == "__main__":
     main()
