@@ -1,4 +1,4 @@
-// Introductory example of `README.md`.
+// This example is explained in the introduction of `../README.md`.
 
 #[iftree::include_file_tree("paths = '/my_assets/**'")]
 pub struct Asset {
