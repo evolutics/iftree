@@ -1,5 +1,7 @@
 //! Include file data from many files in your Rust code for self-contained binaries.
 //!
+//! # Motivation
+//!
 //! Self-contained binaries are easy to ship, as they come with any required file
 //! data such as game assets, web templates, etc.
 //!
@@ -156,10 +158,7 @@ mod tests {
             .parse::<toml::Value>()
             .unwrap();
         let description = manifest["package"]["description"].as_str().unwrap();
-        let embedded_description = format!(
-            "\n\n{}\n\n",
-            description.replace(" `include_str!` ", " `include_str!`\n"),
-        );
+        let embedded_description = format!("\n\n{}\n\n", description);
 
         let actual = include_str!("../README.md").contains(&embedded_description);
 

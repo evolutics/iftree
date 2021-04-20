@@ -2,6 +2,8 @@
 
 Include file data from many files in your Rust code for self-contained binaries.
 
+## Motivation
+
 Self-contained binaries are easy to ship, as they come with any required file
 data such as game assets, web templates, etc.
 
