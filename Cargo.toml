@@ -10,8 +10,7 @@ readme = true
 keywords = ["include", "file", "tree", "static", "embed"]
 categories = ["filesystem", "web-programming"]
 description = """
-Include file trees in your code, like `include_bytes!` and `include_str!` for \
-path patterns, with support for custom macros."""
+Include file data from many files in your Rust code for self-contained binaries."""
 
 [lib]
 proc-macro = true

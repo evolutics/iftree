@@ -1,8 +1,20 @@
-//! Include file trees in your code, like `include_bytes!` and `include_str!`
-//! for path patterns, with support for custom macros.
+//! Include file data from many files in your Rust code for self-contained binaries.
 //!
-//! This is useful for self-contained binaries that are easy to ship, as they
-//! include any file data such as web templates, game assets, etc.
+//! Self-contained binaries are easy to ship, as they come with any required file
+//! data such as game assets, web templates, etc.
+//!
+//! You can think of Iftree as a generalization of `std::include_str!` in two ways:
+//! first, `.gitignore`-like **path patterns** select files from a file tree;
+//! second, files can be associated with **any data** like file contents,
+//! media type, compiled template, etc. Conceptually:
+//!
+//! ```text
+//! std::include_str!("my_file")
+//!    ↓
+//!    ↓   Iftree
+//!    ↓
+//! any_macros!("my_files/**")
+//! ```
 //!
 //! # Introduction
 //!
