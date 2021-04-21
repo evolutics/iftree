@@ -40,8 +40,7 @@ impl fmt::Display for main::Error {
                 }
                 write!(
                     formatter,
-                    "Rename one of the files or configure {:?}.",
-                    "identifiers = false",
+                    "Rename one of the files or configure \"identifiers = false\".",
                 )
             }
 
