@@ -42,17 +42,17 @@ impl fmt::Display for main::Error {
                 )
             }
 
-            main::Error::NonstandardField { name } => {
+            main::Error::NonstandardField { field } => {
                 write!(
                     formatter,
                     "Default initializer cannot be generated \
                     as field {:?} is not standard. \
                     Configure an initializer with \"initializer = 'a_macro'\" or \
                     use standard fields only ({}).",
-                    name,
+                    field,
                     data::STANDARD_FIELD_TEMPLATES_ORDERED
                         .iter()
-                        .map(|(name, _)| format!("{:?}", name))
+                        .map(|(field, _)| format!("{:?}", field))
                         .collect::<vec::Vec<_>>()
                         .join(", "),
                 )
@@ -150,7 +150,7 @@ use named fields to generate a default initializer.";
         #[test]
         fn handles_nonstandard_field() {
             let actual = main::Error::NonstandardField {
-                name: String::from("abc"),
+                field: String::from("abc"),
             }
             .to_string();
 

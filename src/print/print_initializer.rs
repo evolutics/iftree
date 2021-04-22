@@ -23,13 +23,13 @@ fn print_default(
 
         model::TypeStructure::TypeAlias(template) => print_template::main(template, &context),
 
-        model::TypeStructure::NamedFields(named_templates) => {
-            let content: proc_macro2::TokenStream = named_templates
+        model::TypeStructure::NamedFields(field_templates) => {
+            let content: proc_macro2::TokenStream = field_templates
                 .iter()
-                .map(|(name, template)| {
-                    let name = quote::format_ident!("{}", name);
+                .map(|(field, template)| {
+                    let field = quote::format_ident!("{}", field);
                     let term = print_template::main(template, &context);
-                    quote::quote! { #name: #term, }
+                    quote::quote! { #field: #term, }
                 })
                 .collect();
 

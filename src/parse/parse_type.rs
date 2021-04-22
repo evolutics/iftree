@@ -28,11 +28,11 @@ fn parse_structure(item: parse::ParseStream) -> syn::Result<model::Type<()>> {
     let structure = match raw_structure.fields {
         syn::Fields::Unit => model::TypeStructure::Unit,
 
-        syn::Fields::Named(fields) => model::TypeStructure::NamedFields(
-            fields
+        syn::Fields::Named(named_fields) => model::TypeStructure::NamedFields(
+            named_fields
                 .named
                 .into_iter()
-                .filter_map(|field| field.ident.map(|name| (name.to_string(), ())))
+                .filter_map(|named_field| named_field.ident.map(|field| (field.to_string(), ())))
                 .collect(),
         ),
 

@@ -88,7 +88,7 @@ pub enum Error {
     NoInitializer,
 
     NonstandardField {
-        name: String,
+        field: String,
     },
 
     PathInvalidUnicode(path::PathBuf),

@@ -19,12 +19,12 @@ fn get_templates(
 
         model::TypeStructure::TypeAlias(_) => Err(model::Error::NoInitializer),
 
-        model::TypeStructure::NamedFields(names) => Ok(model::TypeStructure::NamedFields(
-            names
+        model::TypeStructure::NamedFields(fields) => Ok(model::TypeStructure::NamedFields(
+            fields
                 .into_iter()
-                .map(|(name, _)| {
-                    let template = get_template(&name)?;
-                    Ok((name, template))
+                .map(|(field, _)| {
+                    let template = get_template(&field)?;
+                    Ok((field, template))
                 })
                 .collect::<model::Result<_>>()?,
         )),
@@ -33,10 +33,10 @@ fn get_templates(
     }
 }
 
-fn get_template(name: &str) -> model::Result<model::Template> {
-    match data::STANDARD_FIELD_TEMPLATES_ORDERED.binary_search_by_key(&name, |entry| entry.0) {
+fn get_template(field: &str) -> model::Result<model::Template> {
+    match data::STANDARD_FIELD_TEMPLATES_ORDERED.binary_search_by_key(&field, |entry| entry.0) {
         Err(_) => Err(model::Error::NonstandardField {
-            name: String::from(name),
+            field: String::from(field),
         }),
         Ok(index) => Ok(data::STANDARD_FIELD_TEMPLATES_ORDERED[index].1.clone()),
     }
@@ -121,7 +121,7 @@ mod tests {
 
                 let actual = actual.unwrap_err();
                 let expected = model::Error::NonstandardField {
-                    name: String::from("abc"),
+                    field: String::from("abc"),
                 };
                 assert_eq!(actual, expected);
             }
