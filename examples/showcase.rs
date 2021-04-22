@@ -2,6 +2,8 @@ use actix_web::web;
 use once_cell::sync;
 use std::io;
 
+const SOCKET_ADDRESS: &str = "127.0.0.1:8080";
+
 macro_rules! initialize {
     ($relative_path:literal, $absolute_path:literal) => {
         Asset {
@@ -34,10 +36,18 @@ pub struct Asset {
 
 #[actix_web::main]
 async fn main() -> io::Result<()> {
+    print_index();
+
     actix_web::HttpServer::new(|| actix_web::App::new().route("/{_:.*}", web::get().to(get_asset)))
-        .bind("127.0.0.1:8080")?
+        .bind(SOCKET_ADDRESS)?
         .run()
         .await
+}
+
+fn print_index() {
+    for asset in &ASSETS {
+        eprintln!("See: http://{}/{}", SOCKET_ADDRESS, asset.relative_path);
+    }
 }
 
 async fn get_asset(path: web::Path<String>) -> impl actix_web::Responder {
