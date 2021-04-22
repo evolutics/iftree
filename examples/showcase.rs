@@ -1,6 +1,5 @@
 use actix_web::web;
 use once_cell::sync;
-use std::collections;
 use std::io;
 
 macro_rules! initialize {
@@ -35,37 +34,21 @@ pub struct Asset {
 
 #[actix_web::main]
 async fn main() -> io::Result<()> {
-    actix_web::HttpServer::new(|| {
-        actix_web::App::new()
-            .data(map_url_path_to_asset())
-            .route("/{_:.*}", web::get().to(get_asset))
-    })
-    .bind("127.0.0.1:8080")?
-    .run()
-    .await
+    actix_web::HttpServer::new(|| actix_web::App::new().route("/{_:.*}", web::get().to(get_asset)))
+        .bind("127.0.0.1:8080")?
+        .run()
+        .await
 }
 
-fn map_url_path_to_asset() -> collections::HashMap<String, &'static Asset> {
-    ASSETS
-        .iter()
-        .map(|asset| {
-            let url_path = std::path::Path::new(asset.relative_path)
-                .with_extension("")
-                .to_string_lossy()
-                .into_owned();
-            (url_path, asset)
-        })
-        .collect()
-}
-
-async fn get_asset(
-    assets: web::Data<collections::HashMap<String, &'static Asset>>,
-    path: web::Path<String>,
-) -> impl actix_web::Responder {
-    match assets.get(&path.into_inner()) {
-        None => actix_web::HttpResponse::NotFound().finish(),
-        Some(asset) => actix_web::HttpResponse::Ok()
-            .content_type(&*asset.media_type)
-            .body(asset.content),
+async fn get_asset(path: web::Path<String>) -> impl actix_web::Responder {
+    let path = path.into_inner();
+    match ASSETS.binary_search_by(|asset| asset.relative_path.cmp(&path)) {
+        Err(_) => actix_web::HttpResponse::NotFound().finish(),
+        Ok(index) => {
+            let asset = &ASSETS[index];
+            actix_web::HttpResponse::Ok()
+                .content_type(&*asset.media_type)
+                .body(asset.content)
+        }
     }
 }
