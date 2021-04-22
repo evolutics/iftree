@@ -37,10 +37,10 @@ mod tests {
                 pub type Asset = &'static str;
             },
             model::View {
-                type_: model::Type {
-                    name: quote::format_ident!("Asset"),
-                    structure: model::TypeStructure::TypeAlias(model::Template::Content),
-                },
+                type_: quote::format_ident!("Asset"),
+                initializer: model::Initializer::Default(model::TypeStructure::TypeAlias(
+                    model::Template::Content,
+                )),
                 array: vec![model::File {
                     absolute_path: String::from("/a.b"),
                     ..model::stubs::file()

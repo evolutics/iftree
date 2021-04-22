@@ -3,12 +3,16 @@ use once_cell::sync;
 use std::collections;
 use std::io;
 
-macro_rules! best_media_type_guess {
+macro_rules! initialize {
     ($relative_path:literal, $absolute_path:literal) => {
-        once_cell::sync::Lazy::new(|| {
-            let media_type = mime_guess::from_path($relative_path).first_or_octet_stream();
-            String::from(media_type.essence_str())
-        })
+        Asset {
+            relative_path: $relative_path,
+            media_type: once_cell::sync::Lazy::new(|| {
+                let media_type = mime_guess::from_path($relative_path).first_or_octet_stream();
+                String::from(media_type.essence_str())
+            }),
+            content: include_str!($absolute_path),
+        }
     };
 }
 
@@ -20,9 +24,7 @@ paths = '''
 '''
 
 base_folder = 'examples/assets'
-
-[field_templates]
-media_type = 'best_media_type_guess!'
+initializer = 'initialize'
 "
 )]
 pub struct Asset {

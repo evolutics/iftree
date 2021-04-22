@@ -25,27 +25,34 @@ mod tests {
                 paths: String::from("/examples/assets/credits.md"),
                 base_folder: path::PathBuf::new(),
                 root_folder_variable: String::from("CARGO_MANIFEST_DIR"),
+                initializer: None,
                 identifiers: true,
                 debug: false,
-                field_templates: vec![(model::Field::Anonymous, model::Template::RelativePath)]
-                    .into_iter()
-                    .collect(),
             },
             quote::quote! {
-                pub type Asset = &'static str;
+                pub struct Asset {
+                    relative_path: &'static str,
+                }
             },
             model::Type {
                 name: quote::format_ident!("Asset"),
-                structure: model::TypeStructure::TypeAlias(()),
+                structure: model::TypeStructure::NamedFields(vec![(
+                    String::from("relative_path"),
+                    (),
+                )]),
             },
         );
 
         let actual = actual.unwrap().to_string();
         let expected = quote::quote! {
-            pub type Asset = &'static str;
+            pub struct Asset {
+                relative_path: &'static str,
+            }
 
             pub static ASSETS: [Asset; 1usize] = [
-                "examples/assets/credits.md",
+                Asset {
+                    relative_path: "examples/assets/credits.md",
+                },
             ];
 
             pub mod base {

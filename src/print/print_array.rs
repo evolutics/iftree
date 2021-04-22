@@ -1,15 +1,15 @@
-use super::print_instance;
+use super::print_initializer;
 use crate::data;
 use crate::model;
 
 pub fn main(view: &model::View) -> proc_macro2::TokenStream {
     let name = quote::format_ident!("{}", data::ASSET_ARRAY_NAME);
-    let type_name = &view.type_.name;
+    let type_ = &view.type_;
     let length = view.array.len();
     let expression = print_expression(view);
 
     quote::quote! {
-        pub static #name: [#type_name; #length] = #expression;
+        pub static #name: [#type_; #length] = #expression;
     }
 }
 
@@ -18,7 +18,7 @@ fn print_expression(view: &model::View) -> proc_macro2::TokenStream {
         .array
         .iter()
         .map(|file| {
-            let element = print_instance::main(&view.type_, file);
+            let element = print_initializer::main(view, file);
             quote::quote! { #element, }
         })
         .collect();
@@ -35,10 +35,7 @@ mod tests {
     #[test]
     fn handles_empty_set() {
         let actual = main(&model::View {
-            type_: model::Type {
-                name: quote::format_ident!("Asset"),
-                ..model::stubs::type_()
-            },
+            type_: quote::format_ident!("Asset"),
             array: vec![],
             ..model::stubs::view()
         });
@@ -54,10 +51,10 @@ mod tests {
     #[test]
     fn handles_nonempty_set() {
         let actual = main(&model::View {
-            type_: model::Type {
-                name: quote::format_ident!("Asset"),
-                structure: model::TypeStructure::TypeAlias(model::Template::RelativePath),
-            },
+            type_: quote::format_ident!("Asset"),
+            initializer: model::Initializer::Default(model::TypeStructure::TypeAlias(
+                model::Template::RelativePath,
+            )),
             array: vec![
                 model::File {
                     relative_path: model::RelativePath::from("a"),

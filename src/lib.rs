@@ -15,7 +15,7 @@
 //!    ↓
 //!    ↓   Iftree
 //!    ↓
-//! any_macros!("my_files/**")
+//! any_macro!("my_files/**")
 //! ```
 //!
 //! # Introduction
@@ -56,7 +56,7 @@
 //! We just configure a path pattern that filters the files to include, in this case
 //! the files in `my_assets` and its subfolders. These paths are relative to the
 //! folder with your manifest (`Cargo.toml`) by default. For each filtered file, an
-//! instance of `MyAsset` is initialized. Here the well-known field `content` is
+//! instance of `MyAsset` is initialized. Here the standard field `content` is
 //! initialized with a call to `include_str!`, but you can plug in your own macros.
 //!
 //! # Feature overview
@@ -74,15 +74,12 @@
 //! folders, use a fixed list of files, etc. See the [`paths` configuration](#paths)
 //! for more.
 //!
-//! **Field templates** are applied to initialize fields. The standard case is to
-//! include the file contents as code. Among other predefined templates there is one
-//! that includes the file contents only in release builds, while in debug builds it
-//! reads a file afresh on each access. See the
-//! [`field_templates` configuration](#field_templates) for more.
-//!
-//! **Custom field templates** enable plugging in your own macros to initialize
-//! fields. With this, you could add file metadata like media types, compress a file
-//! when including it, etc.
+//! An **initializer** is applied to instantiate the asset type once for each file.
+//! The standard case is to include the file contents as code. Among other standard
+//! fields there is one that includes the file contents only in release builds,
+//! while in debug builds it reads a file afresh on each access. You can plug in
+//! your own macros as initializers. See the
+//! [`initializer` configuration](#initializer) for more.
 //!
 //! # Configuration
 //!
@@ -105,6 +102,11 @@
 //!
 //! **Default:** `"CARGO_MANIFEST_DIR"`
 //!
+//! ## `initializer`
+//!
+//! **Examples:**
+//! [`configuration_initializer`](https://github.com/evolutics/iftree/blob/main/examples/configuration_initializer.rs)
+//!
 //! ## `identifiers`
 //!
 //! **Default:** `true`
@@ -119,12 +121,6 @@
 //!
 //! **Example:**
 //! [`configuration_debug`](https://github.com/evolutics/iftree/blob/main/examples/configuration_debug.rs)
-//!
-//! ## `field_templates`
-//!
-//! **Examples:**
-//! [`configuration_field_templates_predefined`](https://github.com/evolutics/iftree/blob/main/examples/configuration_field_templates_predefined.rs),
-//! [`configuration_field_templates_custom`](https://github.com/evolutics/iftree/blob/main/examples/configuration_field_templates_custom.rs)
 
 mod data;
 mod generate_view;

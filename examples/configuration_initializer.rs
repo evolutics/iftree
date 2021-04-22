@@ -1,26 +1,22 @@
-macro_rules! string_length {
+macro_rules! my_initialize {
     ($relative_path:literal, $absolute_path:literal) => {
-        $relative_path.len()
-    };
-}
-
-macro_rules! get_text_content {
-    ($relative_path:literal, $absolute_path:literal) => {{
-        fn get() -> Option<String> {
-            std::fs::read_to_string($absolute_path).ok()
+        Asset {
+            path_length: $relative_path.len(),
+            relative_path: $relative_path,
+            get_text_content: {
+                fn get() -> Option<String> {
+                    std::fs::read_to_string($absolute_path).ok()
+                }
+                get
+            },
         }
-
-        get
-    }};
+    };
 }
 
 #[iftree::include_file_tree(
     "
 paths = '/examples/assets/credits.md'
-
-[field_templates]
-path_length = 'string_length!'
-get_text_content = 'get_text_content!'
+initializer = 'my_initialize'
 "
 )]
 pub struct Asset {

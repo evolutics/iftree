@@ -1,9 +1,11 @@
-macro_rules! load {
+macro_rules! initialize {
     ($relative_path:literal, $absolute_path:literal) => {
-        if cfg!(debug_assertions) {
-            concat!("Debug: ", include_str!($absolute_path))
-        } else {
-            concat!("Release: ", include_str!($absolute_path))
+        Asset {
+            data: if cfg!(debug_assertions) {
+                concat!("Debug: ", include_str!($absolute_path))
+            } else {
+                concat!("Release: ", include_str!($absolute_path))
+            },
         }
     };
 }
@@ -11,9 +13,7 @@ macro_rules! load {
 #[iftree::include_file_tree(
     "
 paths = '/examples/assets/credits.md'
-
-[field_templates]
-data = 'load!'
+initializer = 'initialize'
 "
 )]
 pub struct Asset {

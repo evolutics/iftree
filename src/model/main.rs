@@ -10,32 +10,9 @@ pub struct Configuration {
     pub paths: String,
     pub base_folder: path::PathBuf,
     pub root_folder_variable: String,
-
+    pub initializer: Option<String>,
     pub identifiers: bool,
     pub debug: bool,
-
-    pub field_templates: FieldTemplates,
-}
-
-pub type FieldTemplates = collections::BTreeMap<Field, Template>;
-
-#[derive(Clone, cmp::Eq, cmp::Ord, cmp::PartialEq, cmp::PartialOrd, Debug, serde::Deserialize)]
-#[serde(from = "String")]
-pub enum Field {
-    Anonymous,
-    Named(String),
-    Indexed(usize),
-}
-
-#[derive(Clone, cmp::PartialEq, Debug)]
-pub enum Template {
-    Content,
-    GetContent,
-    GetRawContent,
-    RawContent,
-    RelativePath,
-
-    Custom { macro_: String },
 }
 
 #[derive(Clone, cmp::PartialEq, Debug)]
@@ -63,9 +40,25 @@ pub struct RelativePath(pub String);
 
 #[derive(Clone, cmp::PartialEq, Debug)]
 pub struct View {
-    pub type_: Type<Template>,
+    pub type_: syn::Ident,
+    pub initializer: Initializer,
     pub array: vec::Vec<File>,
     pub forest: FileForest,
+}
+
+#[derive(Clone, cmp::PartialEq, Debug)]
+pub enum Initializer {
+    Default(TypeStructure<Template>),
+    Macro(String),
+}
+
+#[derive(Clone, cmp::PartialEq, Debug)]
+pub enum Template {
+    Content,
+    GetContent,
+    GetRawContent,
+    RawContent,
+    RelativePath,
 }
 
 pub type FileForest = collections::BTreeMap<String, FileTree>;
@@ -87,11 +80,15 @@ pub enum Error {
 
     Ignore(IgnoreError),
 
-    MissingFieldTemplate(Field),
-
     NameCollision {
         name: String,
         competitors: vec::Vec<RelativePath>,
+    },
+
+    NoInitializer,
+
+    NonstandardField {
+        name: String,
     },
 
     PathInvalidUnicode(path::PathBuf),
@@ -111,19 +108,21 @@ pub mod stubs {
             paths: String::from("!*"),
             base_folder: path::PathBuf::from("foo"),
             root_folder_variable: String::from("BAR"),
-
+            initializer: None,
             identifiers: false,
             debug: false,
-
-            field_templates: FieldTemplates::new(),
         }
     }
 
     pub fn type_<T>() -> Type<T> {
         Type {
             name: quote::format_ident!("Foo"),
-            structure: TypeStructure::Unit,
+            structure: type_structure(),
         }
+    }
+
+    pub fn type_structure<T>() -> TypeStructure<T> {
+        TypeStructure::Unit
     }
 
     pub fn file() -> File {
@@ -135,9 +134,14 @@ pub mod stubs {
 
     pub fn view() -> View {
         View {
-            type_: type_(),
+            type_: quote::format_ident!("Foo"),
+            initializer: initializer(),
             array: vec![],
             forest: FileForest::new(),
         }
+    }
+
+    pub fn initializer() -> Initializer {
+        Initializer::Default(type_structure())
     }
 }

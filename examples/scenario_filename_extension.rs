@@ -1,21 +1,21 @@
 use once_cell::sync;
 
-macro_rules! filename_extension {
+macro_rules! initialize {
     ($relative_path:literal, $absolute_path:literal) => {
-        once_cell::sync::Lazy::new(|| {
-            std::path::Path::new($relative_path)
-                .extension()
-                .and_then(|extension| extension.to_str())
-        })
+        Asset {
+            extension: once_cell::sync::Lazy::new(|| {
+                std::path::Path::new($relative_path)
+                    .extension()
+                    .and_then(|extension| extension.to_str())
+            }),
+        }
     };
 }
 
 #[iftree::include_file_tree(
     "
 paths = '/examples/assets/credits.md'
-
-[field_templates]
-extension = 'filename_extension!'
+initializer = 'initialize'
 "
 )]
 pub struct Asset<'a> {

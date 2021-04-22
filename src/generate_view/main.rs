@@ -1,6 +1,6 @@
 use super::get_array;
 use super::get_forest;
-use super::get_templates;
+use super::get_initializer;
 use crate::model;
 use std::vec;
 
@@ -9,11 +9,12 @@ pub fn main(
     type_: model::Type<()>,
     files: vec::Vec<model::File>,
 ) -> model::Result<model::View> {
-    let type_ = get_templates::main(configuration, type_)?;
+    let initializer = get_initializer::main(configuration, type_.structure)?;
     let array = get_array::main(files);
     let forest = get_forest::main(configuration, &array)?;
     Ok(model::View {
-        type_,
+        type_: type_.name,
+        initializer,
         array,
         forest,
     })
@@ -27,15 +28,13 @@ mod tests {
     fn handles() {
         let actual = main(
             &model::Configuration {
+                initializer: Some(String::from("abc")),
                 identifiers: true,
-                field_templates: vec![(model::Field::Anonymous, model::Template::Content)]
-                    .into_iter()
-                    .collect(),
                 ..model::stubs::configuration()
             },
             model::Type {
                 name: quote::format_ident!("Asset"),
-                structure: model::TypeStructure::TypeAlias(()),
+                ..model::stubs::type_()
             },
             vec![model::File {
                 relative_path: model::RelativePath::from("b"),
@@ -45,10 +44,8 @@ mod tests {
 
         let actual = actual.unwrap();
         let expected = model::View {
-            type_: model::Type {
-                name: quote::format_ident!("Asset"),
-                structure: model::TypeStructure::TypeAlias(model::Template::Content),
-            },
+            type_: quote::format_ident!("Asset"),
+            initializer: model::Initializer::Macro(String::from("abc")),
             array: vec![model::File {
                 relative_path: model::RelativePath::from("b"),
                 absolute_path: String::from("/a/b"),

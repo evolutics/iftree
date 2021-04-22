@@ -1,7 +1,9 @@
 use super::main;
+use crate::data;
 use std::error;
 use std::fmt;
 use std::path;
+use std::vec;
 
 impl PartialEq for main::IgnoreError {
     fn eq(&self, other: &Self) -> bool {
@@ -20,19 +22,6 @@ impl fmt::Display for main::Error {
 
             main::Error::Ignore(main::IgnoreError(error)) => write!(formatter, "{}", error),
 
-            main::Error::MissingFieldTemplate(field) => {
-                let field = String::from(field.clone());
-                write!(
-                    formatter,
-                    "No template for field {:?}. Add one to your configuration as follows:
-```
-[field_templates]
-{} = …
-```",
-                    field, field,
-                )
-            }
-
             main::Error::NameCollision { name, competitors } => {
                 writeln!(formatter, "Files collide on generated name {:?}:", name)?;
                 for competitor in competitors {
@@ -41,6 +30,31 @@ impl fmt::Display for main::Error {
                 write!(
                     formatter,
                     "Rename one of the files or configure \"identifiers = false\".",
+                )
+            }
+
+            main::Error::NoInitializer => {
+                write!(
+                    formatter,
+                    "No initializer. \
+                    Configure one with \"initializer = 'a_macro'\" or \
+                    use named fields to generate a default initializer.",
+                )
+            }
+
+            main::Error::NonstandardField { name } => {
+                write!(
+                    formatter,
+                    "Default initializer cannot be generated \
+                    as field {:?} is not standard. \
+                    Configure an initializer with \"initializer = 'a_macro'\" or \
+                    use standard fields only ({}).",
+                    name,
+                    data::STANDARD_FIELD_TEMPLATES_ORDERED
+                        .iter()
+                        .map(|(name, _)| format!("{:?}", name))
+                        .collect::<vec::Vec<_>>()
+                        .join(", "),
                 )
             }
 
@@ -62,8 +76,9 @@ impl error::Error for main::Error {
         match self {
             main::Error::EnvironmentVariable { source, .. } => Some(source),
             main::Error::Ignore(main::IgnoreError(error)) => Some(error),
-            main::Error::MissingFieldTemplate(_) => None,
             main::Error::NameCollision { .. } => None,
+            main::Error::NoInitializer => None,
+            main::Error::NonstandardField { .. } => None,
             main::Error::PathInvalidUnicode(_) => None,
             main::Error::PathStripPrefix(error) => Some(error),
         }
@@ -105,18 +120,6 @@ mod tests {
         }
 
         #[test]
-        fn handles_missing_field_template() {
-            let actual = main::Error::MissingFieldTemplate(main::Field::Anonymous).to_string();
-
-            let expected = "No template for field \"_\". Add one to your configuration as follows:
-```
-[field_templates]
-_ = …
-```";
-            assert_eq!(actual, expected);
-        }
-
-        #[test]
         fn handles_name_collision() {
             let actual = main::Error::NameCollision {
                 name: String::from("b_c"),
@@ -131,6 +134,31 @@ _ = …
 - \"a/B-c\"
 - \"a/b.c\"
 Rename one of the files or configure \"identifiers = false\".";
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn handles_no_initializer() {
+            let actual = main::Error::NoInitializer.to_string();
+
+            let expected = "No initializer. \
+Configure one with \"initializer = 'a_macro'\" or \
+use named fields to generate a default initializer.";
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn handles_nonstandard_field() {
+            let actual = main::Error::NonstandardField {
+                name: String::from("abc"),
+            }
+            .to_string();
+
+            let expected = "Default initializer cannot be generated \
+as field \"abc\" is not standard. \
+Configure an initializer with \"initializer = 'a_macro'\" or \
+use standard fields only \
+(\"content\", \"get_content\", \"get_raw_content\", \"raw_content\", \"relative_path\").";
             assert_eq!(actual, expected);
         }
 

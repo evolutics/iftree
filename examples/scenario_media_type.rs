@@ -1,20 +1,20 @@
 use once_cell::sync;
 
-macro_rules! best_media_type_guess {
+macro_rules! initialize {
     ($relative_path:literal, $absolute_path:literal) => {
-        once_cell::sync::Lazy::new(|| {
-            let media_type = mime_guess::from_path($relative_path).first_or_octet_stream();
-            String::from(media_type.essence_str())
-        })
+        Asset {
+            media_type: once_cell::sync::Lazy::new(|| {
+                let media_type = mime_guess::from_path($relative_path).first_or_octet_stream();
+                String::from(media_type.essence_str())
+            }),
+        }
     };
 }
 
 #[iftree::include_file_tree(
     "
 paths = '/examples/assets/credits.md'
-
-[field_templates]
-media_type = 'best_media_type_guess!'
+initializer = 'initialize'
 "
 )]
 pub struct Asset {

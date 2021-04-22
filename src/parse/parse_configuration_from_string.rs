@@ -1,11 +1,8 @@
-use crate::data;
 use crate::model;
-use serde::de;
-use std::fmt;
 use std::path;
-use std::vec;
+use toml::de;
 
-pub fn main(string: &str) -> Result<model::Configuration, toml::de::Error> {
+pub fn main(string: &str) -> Result<model::Configuration, de::Error> {
     let configuration: UserConfiguration = toml::from_str(string)?;
     Ok(configuration.into())
 }
@@ -16,50 +13,9 @@ struct UserConfiguration {
     paths: String,
     base_folder: Option<path::PathBuf>,
     root_folder_variable: Option<String>,
-
+    initializer: Option<String>,
     identifiers: Option<bool>,
     debug: Option<bool>,
-
-    field_templates: Option<model::FieldTemplates>,
-}
-
-impl<'a> de::Deserialize<'a> for model::Template {
-    fn deserialize<T: de::Deserializer<'a>>(deserializer: T) -> Result<model::Template, T::Error> {
-        deserializer.deserialize_string(TemplateVisitor)
-    }
-}
-
-struct TemplateVisitor;
-
-impl de::Visitor<'_> for TemplateVisitor {
-    type Value = model::Template;
-
-    fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            formatter,
-            "one of {}, or a macro name followed by `!`",
-            data::PREDEFINED_TEMPLATES_ORDERED
-                .iter()
-                .map(|(name, _)| format!("{:?}", name))
-                .collect::<vec::Vec<_>>()
-                .join(", "),
-        )
-    }
-
-    fn visit_str<T: de::Error>(self, string: &str) -> Result<Self::Value, T> {
-        match string.strip_suffix('!') {
-            None => match data::PREDEFINED_TEMPLATES_ORDERED
-                .binary_search_by_key(&string, |entry| entry.0)
-            {
-                Err(_) => Err(de::Error::invalid_value(de::Unexpected::Str(string), &self)),
-                Ok(index) => Ok(data::PREDEFINED_TEMPLATES_ORDERED[index].1.clone()),
-            },
-
-            Some(macro_) => Ok(model::Template::Custom {
-                macro_: String::from(macro_),
-            }),
-        }
-    }
 }
 
 impl From<UserConfiguration> for model::Configuration {
@@ -70,11 +26,9 @@ impl From<UserConfiguration> for model::Configuration {
             root_folder_variable: configuration
                 .root_folder_variable
                 .unwrap_or_else(|| String::from("CARGO_MANIFEST_DIR")),
-
+            initializer: configuration.initializer,
             identifiers: configuration.identifiers.unwrap_or(true),
             debug: configuration.debug.unwrap_or(false),
-
-            field_templates: configuration.field_templates.unwrap_or_default(),
         }
     }
 }
@@ -92,11 +46,9 @@ mod tests {
             paths: String::from("/a/b/**"),
             base_folder: path::PathBuf::new(),
             root_folder_variable: String::from("CARGO_MANIFEST_DIR"),
-
+            initializer: None,
             identifiers: true,
             debug: false,
-
-            field_templates: model::FieldTemplates::new(),
         };
         assert_eq!(actual, expected);
     }
@@ -108,14 +60,9 @@ mod tests {
 paths = '/my/assets/**'
 base_folder = 'base'
 root_folder_variable = 'MY_ROOT_FOLDER'
-
+initializer = 'my_macro'
 identifiers = false
 debug = true
-
-[field_templates]
-_ = 'my_include!'
-custom = 'custom::include!'
-3 = 'raw_content'
 ",
         );
 
@@ -124,27 +71,9 @@ custom = 'custom::include!'
             paths: String::from("/my/assets/**"),
             base_folder: path::PathBuf::from("base"),
             root_folder_variable: String::from("MY_ROOT_FOLDER"),
-
+            initializer: Some(String::from("my_macro")),
             identifiers: false,
             debug: true,
-
-            field_templates: vec![
-                (
-                    model::Field::Anonymous,
-                    model::Template::Custom {
-                        macro_: String::from("my_include"),
-                    },
-                ),
-                (
-                    model::Field::Named(String::from("custom")),
-                    model::Template::Custom {
-                        macro_: String::from("custom::include"),
-                    },
-                ),
-                (model::Field::Indexed(3), model::Template::RawContent),
-            ]
-            .into_iter()
-            .collect(),
         };
         assert_eq!(actual, expected);
     }

@@ -1,10 +1,13 @@
+macro_rules! initialize {
+    ($relative_path:literal, $absolute_path:literal) => {
+        Asset($relative_path, include_str!($absolute_path))
+    };
+}
+
 #[iftree::include_file_tree(
     "
 paths = '/examples/assets/**'
-
-[field_templates]
-0 = 'relative_path'
-1 = 'content'
+initializer = 'initialize'
 "
 )]
 pub struct Asset(&'static str, &'static str);

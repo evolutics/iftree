@@ -4,7 +4,7 @@ use std::iter;
 
 pub fn main(view: &model::View) -> proc_macro2::TokenStream {
     let context = Context {
-        type_: &view.type_.name,
+        type_: &view.type_,
         depth: 0,
     };
     print_forest(context, &view.forest)
@@ -74,10 +74,7 @@ mod tests {
     #[test]
     fn handles_files() {
         let actual = main(&model::View {
-            type_: model::Type {
-                name: quote::format_ident!("Asset"),
-                ..model::stubs::type_()
-            },
+            type_: quote::format_ident!("Asset"),
             forest: vec![
                 (String::from('A'), model::FileTree::File { index: 1 }),
                 (String::from("BC"), model::FileTree::File { index: 0 }),
@@ -100,10 +97,7 @@ mod tests {
     #[test]
     fn handles_folders() {
         let actual = main(&model::View {
-            type_: model::Type {
-                name: quote::format_ident!("Asset"),
-                ..model::stubs::type_()
-            },
+            type_: quote::format_ident!("Asset"),
             forest: vec![
                 (String::from('A'), model::FileTree::File { index: 0 }),
                 (
