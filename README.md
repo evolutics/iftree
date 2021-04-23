@@ -13,11 +13,8 @@ second, files can be associated with **any data** like file contents,
 media type, compiled template, etc. Conceptually:
 
 ```text
-std::include_str!("my_file")
-   ↓
-   ↓   Iftree
-   ↓
-any_macro!("my_files/**")
+std:       include_str!("my_file")
+Iftree:    any_macro!("my_files/**")
 ```
 
 ## Introduction
