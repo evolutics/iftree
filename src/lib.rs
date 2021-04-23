@@ -109,7 +109,7 @@
 //! **Default:** `true`
 //!
 //! **Examples:**
-//! [`basic_main`](https://github.com/evolutics/iftree/blob/main/examples/basic_main.rs),
+//! [`basic`](https://github.com/evolutics/iftree/blob/main/examples/basic.rs),
 //! [`configuration_identifiers`](https://github.com/evolutics/iftree/blob/main/examples/configuration_identifiers.rs)
 //!
 //! ## `debug`
