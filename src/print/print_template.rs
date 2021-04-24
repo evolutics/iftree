@@ -6,9 +6,7 @@ pub fn main(template: &model::Template, context: &Context) -> proc_macro2::Token
     let absolute_path = context.absolute_path;
 
     match template {
-        model::Template::Content => quote::quote! {
-            include_str!(#absolute_path)
-        },
+        model::Template::Content => quote::quote! { include_str!(#absolute_path) },
 
         model::Template::GetContent => quote::quote! {{
             fn get() -> std::borrow::Cow<'static, str> {
@@ -34,13 +32,9 @@ pub fn main(template: &model::Template, context: &Context) -> proc_macro2::Token
             get
         }},
 
-        model::Template::RawContent => quote::quote! {
-            include_bytes!(#absolute_path)
-        },
+        model::Template::RawContent => quote::quote! { include_bytes!(#absolute_path) },
 
-        model::Template::RelativePath => quote::quote! {
-            #relative_path
-        },
+        model::Template::RelativePath => quote::quote! { #relative_path },
     }
 }
 
@@ -77,10 +71,7 @@ mod tests {
         );
 
         let actual = actual.to_string();
-        let expected = quote::quote! {
-            include_str!("/a/b")
-        }
-        .to_string();
+        let expected = quote::quote! { include_str!("/a/b") }.to_string();
         assert_eq!(actual, expected);
     }
 
@@ -147,10 +138,7 @@ mod tests {
         );
 
         let actual = actual.to_string();
-        let expected = quote::quote! {
-            include_bytes!("/a/b")
-        }
-        .to_string();
+        let expected = quote::quote! { include_bytes!("/a/b") }.to_string();
         assert_eq!(actual, expected);
     }
 
@@ -165,10 +153,7 @@ mod tests {
         );
 
         let actual = actual.to_string();
-        let expected = quote::quote! {
-            "a/b"
-        }
-        .to_string();
+        let expected = quote::quote! { "a/b" }.to_string();
         assert_eq!(actual, expected);
     }
 }

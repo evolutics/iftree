@@ -8,9 +8,7 @@ pub fn main(view: &model::View) -> proc_macro2::TokenStream {
     let length = view.array.len();
     let expression = print_expression(view);
 
-    quote::quote! {
-        pub static #name: [#type_; #length] = #expression;
-    }
+    quote::quote! { pub static #name: [#type_; #length] = #expression; }
 }
 
 fn print_expression(view: &model::View) -> proc_macro2::TokenStream {
@@ -23,9 +21,7 @@ fn print_expression(view: &model::View) -> proc_macro2::TokenStream {
         })
         .collect();
 
-    quote::quote! {
-        [#content]
-    }
+    quote::quote! { [#content] }
 }
 
 #[cfg(test)]
@@ -41,10 +37,7 @@ mod tests {
         });
 
         let actual = actual.to_string();
-        let expected = quote::quote! {
-            pub static ASSETS: [Asset; 0usize] = [];
-        }
-        .to_string();
+        let expected = quote::quote! { pub static ASSETS: [Asset; 0usize] = []; }.to_string();
         assert_eq!(actual, expected);
     }
 

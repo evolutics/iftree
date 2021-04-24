@@ -34,16 +34,11 @@ mod tests {
                 debug: false,
                 ..model::stubs::configuration()
             },
-            quote::quote! {
-                const CHEAT: &str = "abc";
-            },
+            quote::quote! { const CHEAT: &str = "abc"; },
         );
 
         let actual = actual.to_string();
-        let expected = quote::quote! {
-            const CHEAT: &str = "abc";
-        }
-        .to_string();
+        let expected = quote::quote! { const CHEAT: &str = "abc"; }.to_string();
         assert_eq!(actual, expected);
     }
 
@@ -54,9 +49,7 @@ mod tests {
                 debug: true,
                 ..model::stubs::configuration()
             },
-            quote::quote! {
-                const CHEAT: &str = "abc";
-            },
+            quote::quote! { const CHEAT: &str = "abc"; },
         );
 
         let actual = actual.to_string();

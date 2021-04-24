@@ -50,9 +50,7 @@ fn print_file(context: &Context, name: syn::Ident, index: usize) -> proc_macro2:
     let type_ = context.type_;
     let array = quote::format_ident!("{}", data::ASSET_ARRAY_NAME);
 
-    quote::quote! {
-        pub static #name: &#root_path#type_ = &#root_path#array[#index];
-    }
+    quote::quote! { pub static #name: &#root_path#type_ = &#root_path#array[#index]; }
 }
 
 #[cfg(test)]

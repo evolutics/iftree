@@ -33,9 +33,7 @@ mod tests {
                 debug: false,
                 ..model::stubs::configuration()
             },
-            quote::quote! {
-                pub type Asset = &'static str;
-            },
+            quote::quote! { pub type Asset = &'static str; },
             model::View {
                 type_: quote::format_ident!("Asset"),
                 initializer: model::Initializer::Default(model::TypeStructure::TypeAlias(
