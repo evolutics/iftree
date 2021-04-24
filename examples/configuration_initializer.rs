@@ -2,12 +2,20 @@ macro_rules! my_initialize {
     ($relative_path:literal, $absolute_path:literal) => {
         Asset {
             path_length: $relative_path.len(),
+
             relative_path: $relative_path,
+
             get_text_content: {
                 fn get() -> Option<String> {
                     std::fs::read_to_string($absolute_path).ok()
                 }
                 get
+            },
+
+            version: if cfg!(debug_assertions) {
+                "debug"
+            } else {
+                "release"
             },
         }
     };
@@ -23,6 +31,7 @@ pub struct Asset {
     path_length: usize,
     relative_path: &'static str,
     get_text_content: fn() -> Option<String>,
+    version: &'static str,
 }
 
 pub fn main() {
@@ -39,4 +48,10 @@ pub fn main() {
         (assets::CREDITS_MD.get_text_content)(),
         Some(String::from("Boo Far\n")),
     );
+
+    if cfg!(debug_assertions) {
+        assert_eq!(assets::CREDITS_MD.version, "debug");
+    } else {
+        assert_eq!(assets::CREDITS_MD.version, "release");
+    }
 }
