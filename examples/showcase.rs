@@ -5,7 +5,7 @@ use std::io;
 macro_rules! initialize {
     ($relative_path:literal, $absolute_path:literal) => {
         Asset {
-            relative_path: $relative_path,
+            path: $relative_path,
             media_type: once_cell::sync::Lazy::new(|| {
                 let media_type = mime_guess::from_path($relative_path).first_or_octet_stream();
                 String::from(media_type.essence_str())
@@ -27,7 +27,7 @@ initializer = 'initialize'
 "
 )]
 pub struct Asset {
-    relative_path: &'static str,
+    path: &'static str,
     media_type: sync::Lazy<String>,
     content: &'static str,
 }
@@ -46,13 +46,13 @@ async fn main() -> io::Result<()> {
 
 fn print_index(socket_address: &str) {
     for asset in &ASSETS {
-        eprintln!("See: http://{}/{}", socket_address, asset.relative_path);
+        eprintln!("See: http://{}/{}", socket_address, asset.path);
     }
 }
 
 async fn get_asset(path: web::Path<String>) -> impl actix_web::Responder {
     let path = path.into_inner();
-    match ASSETS.binary_search_by(|asset| asset.relative_path.cmp(&path)) {
+    match ASSETS.binary_search_by(|asset| asset.path.cmp(&path)) {
         Err(_) => actix_web::HttpResponse::NotFound().finish(),
         Ok(index) => {
             let asset = &ASSETS[index];
