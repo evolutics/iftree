@@ -12,4 +12,6 @@ jobs:
           profile: minimal
           toolchain: stable
           override: true
+      # See also https://github.com/actions-rs/meta/issues/21.
+      - uses: Swatinem/rust-cache@v1
       - run: scripts/test.py
