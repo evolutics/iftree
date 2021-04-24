@@ -26,8 +26,8 @@ mod tests {
     fn handles() {
         let actual = main(
             model::Configuration {
-                paths: String::from("/examples/assets/credits.md"),
-                base_folder: path::PathBuf::new(),
+                paths: String::from("/assets/*.md"),
+                base_folder: path::PathBuf::from("examples"),
                 root_folder_variable: String::from("CARGO_MANIFEST_DIR"),
                 initializer: None,
                 identifiers: true,
@@ -55,16 +55,13 @@ mod tests {
 
             pub static ASSETS: [Asset; 1usize] = [
                 Asset {
-                    relative_path: "examples/assets/credits.md",
+                    relative_path: "assets/credits.md",
                 },
             ];
 
             pub mod base {
-                pub mod r#examples {
-                    pub mod r#assets {
-                        pub static r#CREDITS_MD: &super::super::super::Asset =
-                            &super::super::super::ASSETS[0usize];
-                    }
+                pub mod r#assets {
+                    pub static r#CREDITS_MD: &super::super::Asset = &super::super::ASSETS[0usize];
                 }
             }
         }

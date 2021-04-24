@@ -20,15 +20,15 @@ mod tests {
     #[test]
     fn handles() {
         let actual = main(&model::Configuration {
-            paths: String::from("/examples/assets/credits.md"),
-            base_folder: path::PathBuf::new(),
+            paths: String::from("/assets/*.md"),
+            base_folder: path::PathBuf::from("examples"),
             root_folder_variable: String::from("CARGO_MANIFEST_DIR"),
             ..model::stubs::configuration()
         });
 
         let actual = actual.unwrap();
         let expected = vec![model::File {
-            relative_path: model::RelativePath::from("examples/assets/credits.md"),
+            relative_path: model::RelativePath::from("assets/credits.md"),
             absolute_path: String::from(
                 fs::canonicalize("examples/assets/credits.md")
                     .unwrap()
