@@ -1,7 +1,7 @@
-use crate::generate_view;
-use crate::list_files;
-use crate::model;
-use crate::print;
+use super::generate_view;
+use super::list_files;
+use super::model;
+use super::print;
 
 pub fn main(
     configuration: model::Configuration,
