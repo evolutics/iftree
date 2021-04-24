@@ -1,4 +1,4 @@
-# Iftree: Include File Tree
+# Iftree: Include File Tree 🌳
 
 Include file data from many files in your Rust code for self-contained binaries.
 

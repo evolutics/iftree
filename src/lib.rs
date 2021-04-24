@@ -160,7 +160,7 @@ mod tests {
 
     #[test]
     fn module_documentation_corresponds_to_readme() {
-        let mut actual = String::from("# Iftree: Include File Tree\n\n");
+        let mut actual = String::from("# Iftree: Include File Tree 🌳\n\n");
         let mut is_empty = true;
         for line in include_str!("lib.rs").lines() {
             match line.strip_prefix("//!") {
