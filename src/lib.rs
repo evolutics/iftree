@@ -139,7 +139,7 @@ pub fn include_file_tree(
 
     match go::main(configuration, item2, type_) {
         Err(error) => panic!("{}", error),
-        Ok(value) => value.into(),
+        Ok(code) => code.into(),
     }
 }
 
