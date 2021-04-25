@@ -24,7 +24,7 @@ fn print_default(
         model::TypeStructure::TypeAlias(template) => print_template::main(template, &context),
 
         model::TypeStructure::NamedFields(field_templates) => {
-            let content: proc_macro2::TokenStream = field_templates
+            let contents: proc_macro2::TokenStream = field_templates
                 .iter()
                 .map(|(field, template)| {
                     let field = quote::format_ident!("{}", field);
@@ -33,11 +33,11 @@ fn print_default(
                 })
                 .collect();
 
-            quote::quote! { #type_ { #content } }
+            quote::quote! { #type_ { #contents } }
         }
 
         model::TypeStructure::TupleFields(templates) => {
-            let content: proc_macro2::TokenStream = templates
+            let contents: proc_macro2::TokenStream = templates
                 .iter()
                 .map(|template| {
                     let term = print_template::main(template, &context);
@@ -45,7 +45,7 @@ fn print_default(
                 })
                 .collect();
 
-            quote::quote! { #type_(#content) }
+            quote::quote! { #type_(#contents) }
         }
     }
 }

@@ -12,7 +12,7 @@ pub fn main(view: &model::View) -> proc_macro2::TokenStream {
 }
 
 fn print_expression(view: &model::View) -> proc_macro2::TokenStream {
-    let content: proc_macro2::TokenStream = view
+    let contents: proc_macro2::TokenStream = view
         .array
         .iter()
         .map(|file| {
@@ -21,7 +21,7 @@ fn print_expression(view: &model::View) -> proc_macro2::TokenStream {
         })
         .collect();
 
-    quote::quote! { [#content] }
+    quote::quote! { [#contents] }
 }
 
 #[cfg(test)]

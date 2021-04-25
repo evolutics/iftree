@@ -25,7 +25,7 @@ fn print_forest(context: Context, forest: &model::FileForest) -> proc_macro2::To
                 model::FileTree::File { index } => print_file(&context, name, *index),
 
                 model::FileTree::Folder(forest) => {
-                    let content = print_forest(
+                    let contents = print_forest(
                         Context {
                             depth: context.depth + 1,
                             ..context
@@ -34,7 +34,7 @@ fn print_forest(context: Context, forest: &model::FileForest) -> proc_macro2::To
                     );
                     quote::quote! {
                         pub mod #name {
-                            #content
+                            #contents
                         }
                     }
                 }

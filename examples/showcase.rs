@@ -19,7 +19,7 @@ macro_rules! initialize {
                 String::from(media_type.essence_str())
             }),
 
-            content: include_str!($absolute_path),
+            contents: include_str!($absolute_path),
         }
     };
 }
@@ -45,7 +45,7 @@ initializer = 'initialize'
 pub struct Asset {
     path: &'static str,
     media_type: sync::Lazy<String>,
-    content: &'static str,
+    contents: &'static str,
 }
 
 #[actix_web::main]
@@ -77,7 +77,7 @@ async fn get_asset(path: web::Path<String>) -> impl actix_web::Responder {
             let asset = &ASSETS[index];
             actix_web::HttpResponse::Ok()
                 .content_type(&*asset.media_type)
-                .body(asset.content)
+                .body(asset.contents)
         }
     }
 }
