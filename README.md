@@ -24,9 +24,7 @@ Iftree:    any_macro!("my_files/**")
 
 ## Introduction
 
-Let's explore the basic functionality with a first example.
-
-Say you have the following files in a folder `my_assets`:
+The basic functionality is simple. Say you have the following files:
 
 ```text
 my_assets/
@@ -36,26 +34,8 @@ my_assets/
   - file_c
 ```
 
-To include data from these files in your code, Iftree generates an array
-`ASSETS` with an element per included file:
-
-```rust
-assert_eq!(ASSETS.len(), 3);
-assert_eq!(ASSETS[0].contents_str, "… contents `file_a`\n");
-assert_eq!(ASSETS[1].contents_str, "… contents `file_b`\n");
-assert_eq!(ASSETS[2].contents_str, "… and `file_c`\n");
-```
-
-Furthermore, variables `base::path::to::MY_FILE` are generated:
-
-```rust
-assert_eq!(base::my_assets::FILE_A.contents_str, "… contents `file_a`\n");
-assert_eq!(base::my_assets::FILE_B.contents_str, "… contents `file_b`\n");
-assert_eq!(base::my_assets::subfolder::FILE_C.contents_str, "… and `file_c`\n");
-```
-
-For this to work, you just attach the macro `iftree::include_file_tree` to a
-custom type like so:
+To include these files in your code, the macro `iftree::include_file_tree` is
+attached to a custom type like so:
 
 ```rust
 #[iftree::include_file_tree("paths = '/my_assets/**'")]
@@ -64,16 +44,35 @@ pub struct MyAsset {
 }
 ```
 
-Here we configure a path pattern that filters the files to include, in this case
-the files in `my_assets` and its subfolders. These paths are relative to the
-folder with your manifest (`Cargo.toml`) by default. For each selected file, an
-instance of `MyAsset` is initialized. The standard field `contents_str` is
-automatically populated with a call to `include_str!`, but you can plug in your
-own initializer.
+Here we configure a path pattern to filter the files in `my_assets/` and its
+subfolders. For each selected file, an instance of `MyAsset` is initialized. The
+standard field `contents_str` is automatically populated with a call to
+`include_str!`, but you can plug in your own initializer.
+
+Based on this, Iftree generates an array `ASSETS` with the desired file data.
+You can use it like this:
+
+```rust
+assert_eq!(ASSETS.len(), 3);
+assert_eq!(ASSETS[0].contents_str, "… contents `file_a`\n");
+assert_eq!(ASSETS[1].contents_str, "… contents `file_b`\n");
+assert_eq!(ASSETS[2].contents_str, "… and `file_c`\n");
+```
+
+Furthermore, variables `base::x::y::MY_FILE` are generated (named by file path):
+
+```rust
+assert_eq!(base::my_assets::FILE_A.contents_str, "… contents `file_a`\n");
+assert_eq!(base::my_assets::FILE_B.contents_str, "… contents `file_b`\n");
+assert_eq!(base::my_assets::subfolder::FILE_C.contents_str, "… and `file_c`\n");
+```
 
 ## Usage
 
-See also the
+Now that you have a general idea of the library, learn how to integrate it with
+your project.
+
+By the way, there is an
 [**`examples` folder**](https://github.com/evolutics/iftree/tree/main/examples)
 if you like to explore by example.
 
@@ -85,9 +84,11 @@ if you like to explore by example.
    be a type alias, which may be convenient if you have a exactly one field.
 1. Next, **filter files** to be included by annotating your asset type with
    `#[iftree::include_file_tree("paths = '…'")]`. Path patterns in a
-   `.gitignore`-like format are supported. This is useful to skip hidden files,
-   filter by filename extension, add multiple folders, use a fixed list of
-   files, etc. See the [`paths` configuration](#paths) for more.
+   `.gitignore`-like format are supported, with one pattern per line. The paths
+   are relative to the folder with your `Cargo.toml` by default. Patterns are
+   flexible: you can skip hidden files, filter by filename extension, add
+   multiple folders, select a fixed list of files, etc. See the
+   [`paths` configuration](#paths) for more.
 1. The generated code then uses an **initializer** to instantiate the asset type
    once per file. By default, a field `contents_str` (if any) is populated with
    `include_str!`, a field `contents_bytes` is populated with `include_bytes!`,
