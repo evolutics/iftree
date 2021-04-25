@@ -7,10 +7,11 @@ Include file data from many files in your Rust code for self-contained binaries.
 Self-contained binaries are easy to ship, as they come with any required file
 data such as game assets, web templates, etc.
 
-You can think of Iftree as a generalization of `std::include_str!` in two ways:
+The standard library's `std::include_str!` includes the contents of a given
+file. Iftree generalizes this in two ways:
 
-1. Instead of including a single file, many files can be included with
-   **path patterns** in a `.gitignore`-like format.
+1. Not just one, but many files can be included at once with **path patterns**
+   in a `.gitignore`-like format.
 1. Instead of including the file contents only, files can be associated with
    **any data** such as their media type, a compiled template, etc.
 
