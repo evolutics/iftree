@@ -120,6 +120,18 @@ mod tests {
         }
 
         #[test]
+        fn handles_ignore() {
+            let actual = main::Error::Ignore(main::IgnoreError(ignore::Error::Glob {
+                glob: Some(String::from("[")),
+                err: String::from("abc"),
+            }))
+            .to_string();
+
+            let expected = "error parsing glob '[': abc";
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
         fn handles_name_collision() {
             let actual = main::Error::NameCollision {
                 name: String::from("b_c"),
@@ -167,6 +179,16 @@ use standard fields only \
             let actual = main::Error::PathInvalidUnicode(path::PathBuf::from("a/b")).to_string();
 
             let expected = "Path is not valid Unicode, consider renaming it: \"a/b\"";
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn handles_path_strip_prefix() {
+            let actual =
+                main::Error::PathStripPrefix(path::Path::new("ab").strip_prefix("bc").unwrap_err())
+                    .to_string();
+
+            let expected = "prefix not found";
             assert_eq!(actual, expected);
         }
     }
