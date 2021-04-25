@@ -16,9 +16,9 @@ pub fn main() {
 
     assert_eq!(assets::CREDITS_MD.contents_str, "Boo Far\n");
 
-    assert_eq!((assets::CREDITS_MD.get_str)(), "Boo Far\n");
-
     assert_eq!((assets::CREDITS_MD.get_bytes)(), "Boo Far\n".as_bytes());
+
+    assert_eq!((assets::CREDITS_MD.get_str)(), "Boo Far\n");
 
     assert_eq!(
         assets::CREDITS_MD.relative_path,
