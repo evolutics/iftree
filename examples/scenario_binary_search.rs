@@ -7,10 +7,13 @@ pub struct Asset {
 }
 
 pub fn main() {
-    let key_function = |asset: &Asset| asset.relative_path;
+    let get_relative_path = |asset: &Asset| asset.relative_path;
 
     assert_eq!(
-        ASSETS.iter().map(key_function).collect::<vec::Vec<_>>(),
+        ASSETS
+            .iter()
+            .map(get_relative_path)
+            .collect::<vec::Vec<_>>(),
         vec![
             "examples/assets/.env",
             "examples/assets/configuration/menu.json",
@@ -21,12 +24,12 @@ pub fn main() {
         ],
     );
 
-    let index = ASSETS.binary_search_by_key(&"examples/assets/credits.md", key_function);
+    let index = ASSETS.binary_search_by_key(&"examples/assets/credits.md", get_relative_path);
     assert_eq!(index, Ok(3));
     assert_eq!(ASSETS[index.unwrap()].contents_str, "Boo Far\n");
 
     assert_eq!(
-        ASSETS.binary_search_by_key(&"examples/assets/seed.json", key_function),
+        ASSETS.binary_search_by_key(&"examples/assets/seed.json", get_relative_path),
         Err(4),
     );
 }
