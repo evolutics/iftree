@@ -54,7 +54,7 @@ struct Context<'a> {
 }
 
 fn add_file(forest: &mut model::FileForest, context: Context) -> Option<Collision> {
-    let mut reverse_file_path = get_reverse_file_path(&context.file);
+    let mut reverse_file_path = get_reverse_file_path(context.file);
     add_file_recursively(forest, &mut reverse_file_path, context)
 }
 
