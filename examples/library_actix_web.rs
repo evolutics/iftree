@@ -9,7 +9,7 @@ base_folder = 'examples/assets'
 )]
 pub struct Asset {
     relative_path: &'static str,
-    content: &'static str,
+    contents_str: &'static str,
 }
 
 #[actix_web::main]
@@ -24,6 +24,6 @@ async fn get_asset(path: web::Path<String>) -> impl actix_web::Responder {
     let path = path.into_inner();
     match ASSETS.binary_search_by(|asset| asset.relative_path.cmp(&path)) {
         Err(_) => actix_web::HttpResponse::NotFound().finish(),
-        Ok(index) => actix_web::HttpResponse::Ok().body(ASSETS[index].content),
+        Ok(index) => actix_web::HttpResponse::Ok().body(ASSETS[index].contents_str),
     }
 }

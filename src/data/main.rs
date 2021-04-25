@@ -7,10 +7,10 @@ pub const BASE_MODULE_NAME: &str = "base";
 pub const DEBUG_NAME: &str = "DEBUG";
 
 pub static STANDARD_FIELD_TEMPLATES_ORDERED: &[(&str, model::Template)] = &[
-    ("content", model::Template::Content),
-    ("get_content", model::Template::GetContent),
-    ("get_raw_content", model::Template::GetRawContent),
-    ("raw_content", model::Template::RawContent),
+    ("contents_bytes", model::Template::ContentsBytes),
+    ("contents_str", model::Template::ContentsStr),
+    ("get_bytes", model::Template::GetBytes),
+    ("get_str", model::Template::GetStr),
     ("relative_path", model::Template::RelativePath),
 ];
 

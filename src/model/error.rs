@@ -170,7 +170,7 @@ use standard fields to generate a default initializer.";
 as field \"abc\" is not standard. \
 Configure an initializer with \"initializer = 'a_macro'\" or \
 use standard fields only \
-(\"content\", \"get_content\", \"get_raw_content\", \"raw_content\", \"relative_path\").";
+(\"contents_bytes\", \"contents_str\", \"get_bytes\", \"get_str\", \"relative_path\").";
             assert_eq!(actual, expected);
         }
 

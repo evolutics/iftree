@@ -6,21 +6,11 @@ pub fn main(template: &model::Template, context: &Context) -> proc_macro2::Token
     let absolute_path = context.absolute_path;
 
     match template {
-        model::Template::Content => quote::quote! { include_str!(#absolute_path) },
+        model::Template::ContentsBytes => quote::quote! { include_bytes!(#absolute_path) },
 
-        model::Template::GetContent => quote::quote! {{
-            fn get() -> std::borrow::Cow<'static, str> {
-                if cfg!(debug_assertions) {
-                    std::borrow::Cow::from(std::fs::read_to_string(#absolute_path).unwrap())
-                } else {
-                    std::borrow::Cow::from(include_str!(#absolute_path))
-                }
-            }
+        model::Template::ContentsStr => quote::quote! { include_str!(#absolute_path) },
 
-            get
-        }},
-
-        model::Template::GetRawContent => quote::quote! {{
+        model::Template::GetBytes => quote::quote! {{
             fn get() -> std::borrow::Cow<'static, [u8]> {
                 if cfg!(debug_assertions) {
                     std::borrow::Cow::from(std::fs::read(#absolute_path).unwrap())
@@ -32,7 +22,17 @@ pub fn main(template: &model::Template, context: &Context) -> proc_macro2::Token
             get
         }},
 
-        model::Template::RawContent => quote::quote! { include_bytes!(#absolute_path) },
+        model::Template::GetStr => quote::quote! {{
+            fn get() -> std::borrow::Cow<'static, str> {
+                if cfg!(debug_assertions) {
+                    std::borrow::Cow::from(std::fs::read_to_string(#absolute_path).unwrap())
+                } else {
+                    std::borrow::Cow::from(include_str!(#absolute_path))
+                }
+            }
+
+            get
+        }},
 
         model::Template::RelativePath => quote::quote! { #relative_path },
     }
@@ -61,9 +61,24 @@ mod tests {
     use super::*;
 
     #[test]
-    fn handles_content() {
+    fn handles_contents_bytes() {
         let actual = main(
-            &model::Template::Content,
+            &model::Template::ContentsBytes,
+            &Context {
+                absolute_path: "/a/b",
+                ..stubs::context()
+            },
+        );
+
+        let actual = actual.to_string();
+        let expected = quote::quote! { include_bytes!("/a/b") }.to_string();
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn handles_contents_str() {
+        let actual = main(
+            &model::Template::ContentsStr,
             &Context {
                 absolute_path: "/a/b",
                 ..stubs::context()
@@ -76,35 +91,9 @@ mod tests {
     }
 
     #[test]
-    fn handles_get_content() {
+    fn handles_get_bytes() {
         let actual = main(
-            &model::Template::GetContent,
-            &Context {
-                absolute_path: "/a/b",
-                ..stubs::context()
-            },
-        );
-
-        let actual = actual.to_string();
-        let expected = quote::quote! {{
-            fn get() -> std::borrow::Cow<'static, str> {
-                if cfg!(debug_assertions) {
-                    std::borrow::Cow::from(std::fs::read_to_string("/a/b").unwrap())
-                } else {
-                    std::borrow::Cow::from(include_str!("/a/b"))
-                }
-            }
-
-            get
-        }}
-        .to_string();
-        assert_eq!(actual, expected);
-    }
-
-    #[test]
-    fn handles_get_raw_content() {
-        let actual = main(
-            &model::Template::GetRawContent,
+            &model::Template::GetBytes,
             &Context {
                 absolute_path: "/a/b",
                 ..stubs::context()
@@ -128,9 +117,9 @@ mod tests {
     }
 
     #[test]
-    fn handles_raw_content() {
+    fn handles_get_str() {
         let actual = main(
-            &model::Template::RawContent,
+            &model::Template::GetStr,
             &Context {
                 absolute_path: "/a/b",
                 ..stubs::context()
@@ -138,7 +127,18 @@ mod tests {
         );
 
         let actual = actual.to_string();
-        let expected = quote::quote! { include_bytes!("/a/b") }.to_string();
+        let expected = quote::quote! {{
+            fn get() -> std::borrow::Cow<'static, str> {
+                if cfg!(debug_assertions) {
+                    std::borrow::Cow::from(std::fs::read_to_string("/a/b").unwrap())
+                } else {
+                    std::borrow::Cow::from(include_str!("/a/b"))
+                }
+            }
+
+            get
+        }}
+        .to_string();
         assert_eq!(actual, expected);
     }
 

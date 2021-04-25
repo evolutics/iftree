@@ -72,7 +72,7 @@ mod tests {
                 &model::View {
                     type_: quote::format_ident!("Asset"),
                     initializer: model::Initializer::Default(model::TypeStructure::TupleFields(
-                        vec![model::Template::RelativePath, model::Template::Content],
+                        vec![model::Template::RelativePath, model::Template::ContentsStr],
                     )),
                     ..model::stubs::view()
                 },
@@ -118,7 +118,7 @@ mod tests {
                 let actual = main(
                     &model::View {
                         initializer: model::Initializer::Default(model::TypeStructure::TypeAlias(
-                            model::Template::Content,
+                            model::Template::ContentsBytes,
                         )),
                         ..model::stubs::view()
                     },
@@ -129,7 +129,7 @@ mod tests {
                 );
 
                 let actual = actual.to_string();
-                let expected = quote::quote! { include_str!("/a/b") }.to_string();
+                let expected = quote::quote! { include_bytes!("/a/b") }.to_string();
                 assert_eq!(actual, expected);
             }
 
@@ -141,7 +141,7 @@ mod tests {
                         initializer: model::Initializer::Default(
                             model::TypeStructure::NamedFields(vec![(
                                 String::from("abc"),
-                                model::Template::RawContent,
+                                model::Template::ContentsStr,
                             )]),
                         ),
                         ..model::stubs::view()
@@ -155,7 +155,7 @@ mod tests {
                 let actual = actual.to_string();
                 let expected = quote::quote! {
                     MyNamedFields {
-                        abc: include_bytes!("/a/b"),
+                        abc: include_str!("/a/b"),
                     }
                 }
                 .to_string();

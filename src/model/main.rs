@@ -54,10 +54,10 @@ pub enum Initializer {
 
 #[derive(Clone, cmp::PartialEq, Debug)]
 pub enum Template {
-    Content,
-    GetContent,
-    GetRawContent,
-    RawContent,
+    ContentsBytes,
+    ContentsStr,
+    GetBytes,
+    GetStr,
     RelativePath,
 }
 

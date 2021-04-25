@@ -99,7 +99,7 @@ mod tests {
                     },
                     model::TypeStructure::NamedFields(vec![
                         (String::from("relative_path"), ()),
-                        (String::from("content"), ()),
+                        (String::from("contents_str"), ()),
                     ]),
                 );
 
@@ -107,7 +107,7 @@ mod tests {
                 let expected =
                     model::Initializer::Default(model::TypeStructure::NamedFields(vec![
                         (String::from("relative_path"), model::Template::RelativePath),
-                        (String::from("content"), model::Template::Content),
+                        (String::from("contents_str"), model::Template::ContentsStr),
                     ]));
                 assert_eq!(actual, expected);
             }
