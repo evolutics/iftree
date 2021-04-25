@@ -30,11 +30,11 @@
 //! The generated code allows access to file data as in
 //!
 //! ```ignore
-//! assert_eq!(base::my_assets::FILE_A.contents_str, "… contents of `file_a`\n");
-//! assert_eq!(base::my_assets::FILE_B.contents_str, "… contents of `file_b`\n");
-//! assert_eq!(base::my_assets::subfolder::FILE_C.contents_str, "… and of `file_c`\n");
+//! assert_eq!(base::my_assets::FILE_A.contents_str, "… contents A\n");
+//! assert_eq!(base::my_assets::FILE_B.contents_str, "… contents B\n");
+//! assert_eq!(base::my_assets::subfolder::FILE_C.contents_str, "… and C\n");
 //! assert_eq!(ASSETS.len(), 3);
-//! assert_eq!(ASSETS[0].contents_str, "… contents of `file_a`\n");
+//! assert_eq!(ASSETS[0].contents_str, "… contents A\n");
 //! ```
 //!
 //! As you can see, access happens via variables `base::path::to::MY_FILE` or via
