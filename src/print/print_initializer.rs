@@ -140,7 +140,7 @@ mod tests {
                         type_: quote::format_ident!("MyNamedFields"),
                         initializer: model::Initializer::Default(
                             model::TypeStructure::NamedFields(vec![(
-                                String::from("raw_content"),
+                                String::from("abc"),
                                 model::Template::RawContent,
                             )]),
                         ),
@@ -155,7 +155,7 @@ mod tests {
                 let actual = actual.to_string();
                 let expected = quote::quote! {
                     MyNamedFields {
-                        raw_content: include_bytes!("/a/b"),
+                        abc: include_bytes!("/a/b"),
                     }
                 }
                 .to_string();
