@@ -29,7 +29,13 @@ fn get_templates(
                 .collect::<model::Result<_>>()?,
         )),
 
-        model::TypeStructure::TupleFields(_) => Err(model::Error::NoInitializer),
+        model::TypeStructure::TupleFields(unary_length) => {
+            if unary_length.is_empty() {
+                Ok(model::TypeStructure::TupleFields(vec![]))
+            } else {
+                Err(model::Error::NoInitializer)
+            }
+        }
     }
 }
 
@@ -127,19 +133,40 @@ mod tests {
             }
         }
 
-        #[test]
-        fn handles_tuple_fields() {
-            let actual = main(
-                &model::Configuration {
-                    initializer: None,
-                    ..model::stubs::configuration()
-                },
-                model::TypeStructure::TupleFields(vec![]),
-            );
+        #[cfg(test)]
+        mod handles_tuple_fields {
+            use super::*;
 
-            let actual = actual.unwrap_err();
-            let expected = model::Error::NoInitializer;
-            assert_eq!(actual, expected);
+            #[test]
+            fn given_no_fields_it_handles() {
+                let actual = main(
+                    &model::Configuration {
+                        initializer: None,
+                        ..model::stubs::configuration()
+                    },
+                    model::TypeStructure::TupleFields(vec![]),
+                );
+
+                let actual = actual.unwrap();
+                let expected =
+                    model::Initializer::Default(model::TypeStructure::TupleFields(vec![]));
+                assert_eq!(actual, expected);
+            }
+
+            #[test]
+            fn given_fields_it_errs() {
+                let actual = main(
+                    &model::Configuration {
+                        initializer: None,
+                        ..model::stubs::configuration()
+                    },
+                    model::TypeStructure::TupleFields(vec![()]),
+                );
+
+                let actual = actual.unwrap_err();
+                let expected = model::Error::NoInitializer;
+                assert_eq!(actual, expected);
+            }
         }
     }
 
