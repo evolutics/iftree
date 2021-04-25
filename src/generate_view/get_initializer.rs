@@ -131,6 +131,31 @@ mod tests {
                 };
                 assert_eq!(actual, expected);
             }
+
+            #[test]
+            fn handles_each_standard_field() {
+                let actual = main(
+                    &model::Configuration {
+                        initializer: None,
+                        ..model::stubs::configuration()
+                    },
+                    model::TypeStructure::NamedFields(
+                        data::STANDARD_FIELD_TEMPLATES_ORDERED
+                            .iter()
+                            .map(|(field, _)| (String::from(*field), ()))
+                            .collect(),
+                    ),
+                );
+
+                let actual = actual.unwrap();
+                let expected = model::Initializer::Default(model::TypeStructure::NamedFields(
+                    data::STANDARD_FIELD_TEMPLATES_ORDERED
+                        .iter()
+                        .map(|(field, template)| (String::from(*field), template.clone()))
+                        .collect(),
+                ));
+                assert_eq!(actual, expected);
+            }
         }
 
         #[cfg(test)]
