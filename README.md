@@ -70,27 +70,92 @@ instance of `MyAsset` is initialized. The standard field `contents_str` is
 automatically populated with a call to `include_str!`, but you can plug in your
 own initializer.
 
-## Feature overview
+## Usage
 
-There is an
+See also the
 [**`examples` folder**](https://github.com/evolutics/iftree/tree/main/examples)
-with full code examples to demonstrate the following main aspects.
+if you like to explore by example.
 
-The annotated **asset type** (`MyAsset` above) can be a `struct` with any number
-of fields. Alternatively, it can be a type alias – especially convenient if
-there is only one field.
+### Getting started
 
-To **filter files,** path patterns in a `.gitignore`-like format are supported.
-This is useful to skip hidden files, filter by filename extension, add multiple
-folders, use a fixed list of files, etc. See the [`paths` configuration](#paths)
-for more.
+1. Add the dependency `iftree = "0.1"` to your manifest (`Cargo.toml`).
+1. Define your **asset type.** This is a `struct` with the fields you need per
+   file (`MyAsset` in the [introduction](#introduction)). Alternatively, it can
+   be a type alias, which may be convenient if you have a exactly one field.
+1. Next, **filter files** to be included by annotating your asset type with
+   `#[iftree::include_file_tree("paths = '…'")]`. Path patterns in a
+   `.gitignore`-like format are supported. This is useful to skip hidden files,
+   filter by filename extension, add multiple folders, use a fixed list of
+   files, etc. See the [`paths` configuration](#paths) for more.
+1. The generated code then uses an **initializer** to instantiate the asset type
+   once per file. By default, a field `contents_str` (if any) is populated with
+   `include_str!`, a field `contents_bytes` is populated with `include_bytes!`,
+   and a couple of other [standard fields](#standard-fields) are recognized.
+   However, you can plug in your own macro to fully customize the initialization
+   by [configuring an `initializer`](#initializer).
 
-An **initializer** is applied to instantiate the asset type once for each file.
-The standard case is to include the file contents as code. Among other standard
-fields there is one that includes the file contents only in release builds,
-while in debug builds it reads a file afresh on each access. You can plug in
-your own macros as initializers. See the
-[`initializer` configuration](#initializer) for more.
+The
+[showcase example](https://github.com/evolutics/iftree/blob/main/examples/showcase.rs)
+combines these things.
+
+### Standard fields
+
+When you use fields from the following list only, an initializer for your asset
+type is generated without further configuration. You can still override these
+field names with a [custom `initializer`](#initializer).
+
+- **`contents_bytes:`** `&'static [u8]`
+
+  File contents as a byte array, using
+  [`std::include_bytes`](https://doc.rust-lang.org/std/macro.include_bytes.html).
+
+- **`contents_str:`** `&'static str`
+
+  File contents interpreted as a UTF-8 string, using
+  [`std::include_str`](https://doc.rust-lang.org/std/macro.include_str.html).
+
+- **`get_bytes:`** `fn() -> std::borrow::Cow<'static, [u8]>`
+
+  In debug builds (that is, when
+  [`debug_assertions`](https://doc.rust-lang.org/reference/conditional-compilation.html#debug_assertions)
+  is enabled), this function reads the file afresh on each call at runtime. It
+  panics if there is any error such as if the file does not exist. This helps
+  with faster development, as it avoids rebuilding if asset file contents are
+  changed only (note that you still need to rebuild if assets are added,
+  renamed, or removed).
+
+  In release builds, it returns the file contents included at compile time,
+  using
+  [`std::include_bytes`](https://doc.rust-lang.org/std/macro.include_bytes.html).
+
+- **`get_str:`** `fn() -> std::borrow::Cow<'static, str>`
+
+  Same as `get_bytes` but for the file contents interpreted as a UTF-8 string,
+  using
+  [`std::include_str`](https://doc.rust-lang.org/std/macro.include_str.html).
+
+- **`relative_path:`** `&'static str`
+
+  File path relative to the base folder, which is the folder with your manifest
+  (`Cargo.toml`) by default.
+
+See
+[example](https://github.com/evolutics/iftree/blob/main/examples/basics_standard_fields.rs).
+
+### Asset lookup
+
+The generated `ASSETS` array is ordered by the relative path strings, in their
+Unicode code point order. This means you can do a binary search for dynamic
+lookup (see
+[example](https://github.com/evolutics/iftree/blob/main/examples/scenario_binary_search.rs)).
+
+If you know the path at compile time, a static lookup is possible via identifier
+`base::path::to::MY_FILE` in constant time. For more, see the
+[`identifiers` configuration](#identifiers).
+
+### Troubleshooting
+
+To inspect the generated code, there is a [`debug` configuration](#debug).
 
 ## Configuration
 
