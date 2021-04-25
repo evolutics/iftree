@@ -38,7 +38,7 @@ impl fmt::Display for main::Error {
                     formatter,
                     "No initializer. \
                     Configure one with \"initializer = 'a_macro'\" or \
-                    use named fields to generate a default initializer.",
+                    use standard fields to generate a default initializer.",
                 )
             }
 
@@ -143,7 +143,7 @@ Rename one of the files or configure \"identifiers = false\".";
 
             let expected = "No initializer. \
 Configure one with \"initializer = 'a_macro'\" or \
-use named fields to generate a default initializer.";
+use standard fields to generate a default initializer.";
             assert_eq!(actual, expected);
         }
 
