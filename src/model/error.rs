@@ -122,7 +122,7 @@ mod tests {
         #[test]
         fn handles_ignore() {
             let actual = main::Error::Ignore(main::IgnoreError(ignore::Error::Glob {
-                glob: Some(String::from("[")),
+                glob: Some(String::from('[')),
                 err: String::from("abc"),
             }))
             .to_string();
