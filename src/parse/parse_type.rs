@@ -92,8 +92,8 @@ mod tests {
     fn handles_named_fields() {
         let actual = syn::parse_str::<model::Type<()>>(
             "pub struct MyNamedFields {
-    content: &'static str,
-    media_type: &'static str,
+    ab: String,
+    bc: &'static str,
 }",
         );
 
@@ -101,8 +101,8 @@ mod tests {
         let expected = model::Type {
             name: quote::format_ident!("MyNamedFields"),
             structure: model::TypeStructure::NamedFields(vec![
-                (String::from("content"), ()),
-                (String::from("media_type"), ()),
+                (String::from("ab"), ()),
+                (String::from("bc"), ()),
             ]),
         };
         assert_eq!(actual, expected);
