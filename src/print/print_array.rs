@@ -29,20 +29,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn handles_empty_set() {
-        let actual = main(&model::View {
-            type_: quote::format_ident!("Asset"),
-            array: vec![],
-            ..model::stubs::view()
-        });
-
-        let actual = actual.to_string();
-        let expected = quote::quote! { pub static ASSETS: [Asset; 0usize] = []; }.to_string();
-        assert_eq!(actual, expected);
-    }
-
-    #[test]
-    fn handles_nonempty_set() {
+    fn handles() {
         let actual = main(&model::View {
             type_: quote::format_ident!("Asset"),
             initializer: model::Initializer::Default(model::TypeStructure::TypeAlias(
