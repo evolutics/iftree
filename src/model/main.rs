@@ -21,7 +21,7 @@ pub struct Type<T> {
     pub structure: TypeStructure<T>,
 }
 
-#[derive(Clone, cmp::Eq, cmp::Ord, cmp::PartialEq, cmp::PartialOrd, Debug)]
+#[derive(Clone, cmp::PartialEq, Debug)]
 pub enum TypeStructure<T> {
     Unit,
     TypeAlias(T),
