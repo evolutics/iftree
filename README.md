@@ -8,9 +8,13 @@ Self-contained binaries are easy to ship, as they come with any required file
 data such as game assets, web templates, etc.
 
 You can think of Iftree as a generalization of `std::include_str!` in two ways:
-first, `.gitignore`-like **path patterns** select files from a file tree;
-second, files can be associated with **any data** like file contents,
-media type, compiled template, etc. Conceptually:
+
+1. Instead of including a single file, many files can be included with
+   **path patterns** in a `.gitignore`-like format.
+1. Instead of including the file contents only, files can be associated with
+   **any data** such as their media type, a compiled template, etc.
+
+Conceptually:
 
 ```text
 std:       include_str!("my_file")
