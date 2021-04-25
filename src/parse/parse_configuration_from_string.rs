@@ -58,7 +58,7 @@ mod tests {
         let actual = main(
             "
 paths = '/my/assets/**'
-base_folder = 'base'
+base_folder = 'my_base'
 root_folder_variable = 'MY_ROOT_FOLDER'
 initializer = 'my_macro'
 identifiers = false
@@ -69,7 +69,7 @@ debug = true
         let actual = actual.unwrap();
         let expected = model::Configuration {
             paths: String::from("/my/assets/**"),
-            base_folder: path::PathBuf::from("base"),
+            base_folder: path::PathBuf::from("my_base"),
             root_folder_variable: String::from("MY_ROOT_FOLDER"),
             initializer: Some(String::from("my_macro")),
             identifiers: false,
