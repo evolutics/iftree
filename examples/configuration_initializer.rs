@@ -5,7 +5,7 @@ macro_rules! my_initialize {
 
             relative_path: $relative_path,
 
-            get_text_contents: {
+            load_text_contents: {
                 fn get() -> Option<String> {
                     std::fs::read_to_string($absolute_path).ok()
                 }
@@ -30,7 +30,7 @@ initializer = 'my_initialize'
 pub struct Asset {
     path_length: usize,
     relative_path: &'static str,
-    get_text_contents: fn() -> Option<String>,
+    load_text_contents: fn() -> Option<String>,
     version: &'static str,
 }
 
@@ -45,7 +45,7 @@ pub fn main() {
     );
 
     assert_eq!(
-        (assets::CREDITS_MD.get_text_contents)(),
+        (assets::CREDITS_MD.load_text_contents)(),
         Some(String::from("Boo Far\n")),
     );
 
