@@ -162,39 +162,111 @@
 //!
 //! ## `paths`
 //!
-//! **Example:**
-//! [`configuration_paths`](https://github.com/evolutics/iftree/blob/main/examples/configuration_paths.rs)
+//! A string with a path pattern per line to filter files.
+//!
+//! It works like a `.gitignore` file with inverted meaning:
+//!
+//! - If the last matching pattern is negated (with `!`), the file is excluded.
+//! - If the last matching pattern is not negated, the file is included.
+//! - If no pattern matches, the file is excluded.
+//!
+//! Note that to you must use `a/b/*` instead of `a/b/` to include files in a folder
+//! `a/b/`. To also include subfolders (recursively), use `a/b/**`.
+//!
+//! See the [`.gitignore` reference](https://git-scm.com/docs/gitignore) for more.
+//!
+//! By default, path patterns are relative to the environment variable
+//! `CARGO_MANIFEST_DIR`, which is the folder with your manifest (`Cargo.toml`). See
+//! the [`base_folder` configuration](#base_folder) to customize this.
+//!
+//! To avoid path issues when developing on different platforms, follow these
+//! recommendations:
+//!
+//! - Always use a slash `/` as a folder separator (even on Windows).
+//! - Never use backslashes `\` in filenames (even on Linux).
+//!
+//! This is a **required** option without default.
+//!
+//! See
+//! [example](https://github.com/evolutics/iftree/blob/main/examples/configuration_paths.rs).
 //!
 //! ## `base_folder`
 //!
+//! Path patterns are interpreted as relative to this folder.
+//!
+//! If this path itself is relative, then it is joined to the folder given by the
+//! environment variable `CARGO_MANIFEST_DIR`. That is, a relative path `a/b/c` has
+//! a full path `[CARGO_MANIFEST_DIR]/[base_folder]/a/b/c`.
+//!
 //! **Default:** `""`
 //!
-//! **Example:**
-//! [`configuration_base_folder`](https://github.com/evolutics/iftree/blob/main/examples/configuration_base_folder.rs)
+//! See
+//! [example](https://github.com/evolutics/iftree/blob/main/examples/configuration_base_folder.rs).
 //!
 //! ## `root_folder_variable`
+//!
+//! The name of the environment variable to use as the root folder for the
+//! [`base_folder` configuration](#base_folder).
+//!
+//! This should be an absolute path.
 //!
 //! **Default:** `"CARGO_MANIFEST_DIR"`
 //!
 //! ## `initializer`
 //!
-//! **Examples:**
-//! [`configuration_initializer`](https://github.com/evolutics/iftree/blob/main/examples/configuration_initializer.rs)
+//! A macro name used to instantiate the asset type per file.
+//!
+//! As an input, the macro is passed the following arguments, separated by comma:
+//!
+//! 1. Relative file path as a string literal.
+//! 2. Absolute file path as a string literal.
+//!
+//! As an output, the macro must return a
+//! [constant expression](https://doc.rust-lang.org/reference/const_eval.html#constant-expressions).
+//!
+//! **Default:** A default initializer is constructed by recognizing
+//! [standard fields](#standard-fields).
+//!
+//! See
+//! [example](https://github.com/evolutics/iftree/blob/main/examples/configuration_initializer.rs).
 //!
 //! ## `identifiers`
 //!
+//! Whether to generate an identifier per file.
+//!
+//! Given a file `a/b/my_file`, a `static` variable `base::a::b::MY_FILE` is
+//! generated, nested in modules for folders. Their root module is `base`, which
+//! represents the base folder.
+//!
+//! Each variable is a reference to the corresponding element in the `ASSETS` array.
+//!
+//! Path names are sanitized as follows to ensure they are
+//! [valid identifiers](https://doc.rust-lang.org/reference/identifiers.html):
+//!
+//! - Characters other than ASCII alphanumericals are replaced by `"_"`.
+//! - If the first character is numeric, then `"_"` is prepended.
+//! - If the transformed name is `"_"`, `"crate"`, `"self"`, `"Self"`, or `"super"`,
+//!   then `"_"` is appended.
+//!
+//! Furthermore, the name is adjusted to respect these conventions:
+//!
+//! - Lowercase for module names (corresponding to folders).
+//! - Uppercase for static variable names (corresponding to files).
+//!
 //! **Default:** `true`
 //!
-//! **Examples:**
-//! [`basic`](https://github.com/evolutics/iftree/blob/main/examples/basic.rs),
-//! [`configuration_identifiers`](https://github.com/evolutics/iftree/blob/main/examples/configuration_identifiers.rs)
+//! See
+//! [example](https://github.com/evolutics/iftree/blob/main/examples/configuration_identifiers.rs).
 //!
 //! ## `debug`
 //!
+//! Whether to generate an identifier `DEBUG` with debug information such as the
+//! generated code.
+//!
 //! **Default:** `false`
 //!
-//! **Example:**
-//! [`configuration_debug`](https://github.com/evolutics/iftree/blob/main/examples/configuration_debug.rs)
+//! See
+//! [example](https://github.com/evolutics/iftree/blob/main/examples/configuration_debug.rs).
 
 mod data;
 mod generate_view;
