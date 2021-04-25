@@ -21,7 +21,9 @@
 //!
 //! # Introduction
 //!
-//! Say you have assets in a file tree like
+//! Let's explore the basic functionality with a first example.
+//!
+//! Say you have the following files in a folder `my_assets`:
 //!
 //! ```text
 //! my_assets/
@@ -31,21 +33,26 @@
 //!   - file_c
 //! ```
 //!
-//! The generated code allows access to file data as in
+//! To include data from these files in your code, Iftree generates an array
+//! `ASSETS` with an element per included file:
 //!
 //! ```ignore
-//! assert_eq!(base::my_assets::FILE_A.contents_str, "… contents A\n");
-//! assert_eq!(base::my_assets::FILE_B.contents_str, "… contents B\n");
-//! assert_eq!(base::my_assets::subfolder::FILE_C.contents_str, "… and C\n");
 //! assert_eq!(ASSETS.len(), 3);
-//! assert_eq!(ASSETS[0].contents_str, "… contents A\n");
+//! assert_eq!(ASSETS[0].contents_str, "… contents `file_a`\n");
+//! assert_eq!(ASSETS[1].contents_str, "… contents `file_b`\n");
+//! assert_eq!(ASSETS[2].contents_str, "… and `file_c`\n");
 //! ```
 //!
-//! As you can see, access happens via variables `base::path::to::MY_FILE` or via
-//! the `ASSETS` array.
+//! Furthermore, variables `base::path::to::MY_FILE` are generated:
 //!
-//! For this to work, you attach the macro `iftree::include_file_tree` to a custom
-//! type as in
+//! ```ignore
+//! assert_eq!(base::my_assets::FILE_A.contents_str, "… contents `file_a`\n");
+//! assert_eq!(base::my_assets::FILE_B.contents_str, "… contents `file_b`\n");
+//! assert_eq!(base::my_assets::subfolder::FILE_C.contents_str, "… and `file_c`\n");
+//! ```
+//!
+//! For this to work, you just attach the macro `iftree::include_file_tree` to a
+//! custom type like so:
 //!
 //! ```ignore
 //! #[iftree::include_file_tree("paths = '/my_assets/**'")]
@@ -54,11 +61,12 @@
 //! }
 //! ```
 //!
-//! We just configure a path pattern that filters the files to include, in this case
+//! Here we configure a path pattern that filters the files to include, in this case
 //! the files in `my_assets` and its subfolders. These paths are relative to the
-//! folder with your manifest (`Cargo.toml`) by default. For each filtered file, an
-//! instance of `MyAsset` is initialized. Here the standard field `contents_str` is
-//! initialized with a call to `include_str!`, but you can plug in your own macros.
+//! folder with your manifest (`Cargo.toml`) by default. For each selected file, an
+//! instance of `MyAsset` is initialized. The standard field `contents_str` is
+//! automatically populated with a call to `include_str!`, but you can plug in your
+//! own initializer.
 //!
 //! # Feature overview
 //!
