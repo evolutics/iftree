@@ -85,7 +85,7 @@ if you like to explore by example.
 1. Next, **filter files** to be included by annotating your asset type with
    `#[iftree::include_file_tree("paths = '…'")]`. Path patterns in a
    `.gitignore`-like format are supported, with one pattern per line. The paths
-   are relative to the folder with your `Cargo.toml` by default. Patterns are
+   are relative to the folder with your manifest by default. Patterns are
    flexible: you can skip hidden files, filter by filename extension, add
    multiple folders, select a fixed list of files, etc. See the
    [`paths` configuration](#paths) for more.
