@@ -1,16 +1,16 @@
 use crate::model;
 use std::cmp;
 
-pub fn main(template: &model::Template, context: &Context) -> proc_macro2::TokenStream {
+pub fn main(populator: &model::Populator, context: &Context) -> proc_macro2::TokenStream {
     let relative_path = context.relative_path;
     let absolute_path = context.absolute_path;
 
-    match template {
-        model::Template::ContentsBytes => quote::quote! { include_bytes!(#absolute_path) },
+    match populator {
+        model::Populator::ContentsBytes => quote::quote! { include_bytes!(#absolute_path) },
 
-        model::Template::ContentsStr => quote::quote! { include_str!(#absolute_path) },
+        model::Populator::ContentsStr => quote::quote! { include_str!(#absolute_path) },
 
-        model::Template::GetBytes => quote::quote! {{
+        model::Populator::GetBytes => quote::quote! {{
             fn get() -> std::borrow::Cow<'static, [u8]> {
                 if cfg!(debug_assertions) {
                     std::borrow::Cow::from(std::fs::read(#absolute_path).unwrap())
@@ -22,7 +22,7 @@ pub fn main(template: &model::Template, context: &Context) -> proc_macro2::Token
             get
         }},
 
-        model::Template::GetStr => quote::quote! {{
+        model::Populator::GetStr => quote::quote! {{
             fn get() -> std::borrow::Cow<'static, str> {
                 if cfg!(debug_assertions) {
                     std::borrow::Cow::from(std::fs::read_to_string(#absolute_path).unwrap())
@@ -34,7 +34,7 @@ pub fn main(template: &model::Template, context: &Context) -> proc_macro2::Token
             get
         }},
 
-        model::Template::RelativePath => quote::quote! { #relative_path },
+        model::Populator::RelativePath => quote::quote! { #relative_path },
     }
 }
 
@@ -63,7 +63,7 @@ mod tests {
     #[test]
     fn handles_contents_bytes() {
         let actual = main(
-            &model::Template::ContentsBytes,
+            &model::Populator::ContentsBytes,
             &Context {
                 absolute_path: "/a/b",
                 ..stubs::context()
@@ -78,7 +78,7 @@ mod tests {
     #[test]
     fn handles_contents_str() {
         let actual = main(
-            &model::Template::ContentsStr,
+            &model::Populator::ContentsStr,
             &Context {
                 absolute_path: "/a/b",
                 ..stubs::context()
@@ -93,7 +93,7 @@ mod tests {
     #[test]
     fn handles_get_bytes() {
         let actual = main(
-            &model::Template::GetBytes,
+            &model::Populator::GetBytes,
             &Context {
                 absolute_path: "/a/b",
                 ..stubs::context()
@@ -119,7 +119,7 @@ mod tests {
     #[test]
     fn handles_get_str() {
         let actual = main(
-            &model::Template::GetStr,
+            &model::Populator::GetStr,
             &Context {
                 absolute_path: "/a/b",
                 ..stubs::context()
@@ -145,7 +145,7 @@ mod tests {
     #[test]
     fn handles_relative_path() {
         let actual = main(
-            &model::Template::RelativePath,
+            &model::Populator::RelativePath,
             &Context {
                 relative_path: "a/b",
                 ..stubs::context()

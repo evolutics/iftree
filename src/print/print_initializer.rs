@@ -1,34 +1,34 @@
-use super::print_template;
+use super::print_populator;
 use crate::model;
 
 pub fn main(view: &model::View, file: &model::File) -> proc_macro2::TokenStream {
     match &view.initializer {
-        model::Initializer::Default(templates) => print_default(&view.type_, templates, file),
+        model::Initializer::Default(populators) => print_default(&view.type_, populators, file),
         model::Initializer::Macro(name) => print_macro(name, file),
     }
 }
 
 fn print_default(
     type_: &syn::Ident,
-    templates: &model::TypeStructure<model::Template>,
+    populators: &model::TypeStructure<model::Populator>,
     file: &model::File,
 ) -> proc_macro2::TokenStream {
-    let context = print_template::Context {
+    let context = print_populator::Context {
         relative_path: &file.relative_path.0,
         absolute_path: &file.absolute_path,
     };
 
-    match templates {
+    match populators {
         model::TypeStructure::Unit => quote::quote! { #type_ },
 
-        model::TypeStructure::TypeAlias(template) => print_template::main(template, &context),
+        model::TypeStructure::TypeAlias(populator) => print_populator::main(populator, &context),
 
-        model::TypeStructure::NamedFields(field_templates) => {
-            let contents: proc_macro2::TokenStream = field_templates
+        model::TypeStructure::NamedFields(field_populators) => {
+            let contents: proc_macro2::TokenStream = field_populators
                 .iter()
-                .map(|(field, template)| {
+                .map(|(field, populator)| {
                     let field = quote::format_ident!("{}", field);
-                    let term = print_template::main(template, &context);
+                    let term = print_populator::main(populator, &context);
                     quote::quote! { #field: #term, }
                 })
                 .collect();
@@ -36,11 +36,11 @@ fn print_default(
             quote::quote! { #type_ { #contents } }
         }
 
-        model::TypeStructure::TupleFields(templates) => {
-            let contents: proc_macro2::TokenStream = templates
+        model::TypeStructure::TupleFields(populators) => {
+            let contents: proc_macro2::TokenStream = populators
                 .iter()
-                .map(|template| {
-                    let term = print_template::main(template, &context);
+                .map(|populator| {
+                    let term = print_populator::main(populator, &context);
                     quote::quote! { #term, }
                 })
                 .collect();
@@ -67,12 +67,15 @@ mod tests {
         use super::*;
 
         #[test]
-        fn handles_template_context() {
+        fn handles_populator_context() {
             let actual = main(
                 &model::View {
                     type_: quote::format_ident!("Asset"),
                     initializer: model::Initializer::Default(model::TypeStructure::TupleFields(
-                        vec![model::Template::RelativePath, model::Template::ContentsStr],
+                        vec![
+                            model::Populator::RelativePath,
+                            model::Populator::ContentsStr,
+                        ],
                     )),
                     ..model::stubs::view()
                 },
@@ -118,7 +121,7 @@ mod tests {
                 let actual = main(
                     &model::View {
                         initializer: model::Initializer::Default(model::TypeStructure::TypeAlias(
-                            model::Template::ContentsBytes,
+                            model::Populator::ContentsBytes,
                         )),
                         ..model::stubs::view()
                     },
@@ -141,7 +144,7 @@ mod tests {
                         initializer: model::Initializer::Default(
                             model::TypeStructure::NamedFields(vec![(
                                 String::from("abc"),
-                                model::Template::ContentsStr,
+                                model::Populator::ContentsStr,
                             )]),
                         ),
                         ..model::stubs::view()
@@ -168,7 +171,7 @@ mod tests {
                     &model::View {
                         type_: quote::format_ident!("MyTupleFields"),
                         initializer: model::Initializer::Default(
-                            model::TypeStructure::TupleFields(vec![model::Template::RelativePath]),
+                            model::TypeStructure::TupleFields(vec![model::Populator::RelativePath]),
                         ),
                         ..model::stubs::view()
                     },

@@ -50,7 +50,7 @@ impl fmt::Display for main::Error {
                     Configure an initializer with \"initializer = 'a_macro'\" or \
                     use standard fields only ({}).",
                     field,
-                    data::STANDARD_FIELD_TEMPLATES_ORDERED
+                    data::STANDARD_FIELD_POPULATORS_ORDERED
                         .iter()
                         .map(|(field, _)| format!("{:?}", field))
                         .collect::<vec::Vec<_>>()

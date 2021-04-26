@@ -33,7 +33,7 @@ mod tests {
         let actual = main(&model::View {
             type_: quote::format_ident!("Asset"),
             initializer: model::Initializer::Default(model::TypeStructure::TypeAlias(
-                model::Template::RelativePath,
+                model::Populator::RelativePath,
             )),
             array: vec![
                 model::File {

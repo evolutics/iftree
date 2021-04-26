@@ -37,7 +37,7 @@ mod tests {
             model::View {
                 type_: quote::format_ident!("Asset"),
                 initializer: model::Initializer::Default(model::TypeStructure::TypeAlias(
-                    model::Template::ContentsStr,
+                    model::Populator::ContentsStr,
                 )),
                 array: vec![model::File {
                     absolute_path: String::from("/a.b"),

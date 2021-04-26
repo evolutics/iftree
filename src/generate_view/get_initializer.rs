@@ -6,14 +6,14 @@ pub fn main(
     structure: model::TypeStructure<()>,
 ) -> model::Result<model::Initializer> {
     Ok(match &configuration.initializer {
-        None => model::Initializer::Default(get_templates(structure)?),
+        None => model::Initializer::Default(get_populators(structure)?),
         Some(macro_) => model::Initializer::Macro(macro_.clone()),
     })
 }
 
-fn get_templates(
+fn get_populators(
     structure: model::TypeStructure<()>,
-) -> model::Result<model::TypeStructure<model::Template>> {
+) -> model::Result<model::TypeStructure<model::Populator>> {
     match structure {
         model::TypeStructure::Unit => Ok(model::TypeStructure::Unit),
 
@@ -23,8 +23,8 @@ fn get_templates(
             fields
                 .into_iter()
                 .map(|(field, _)| {
-                    let template = get_template(&field)?;
-                    Ok((field, template))
+                    let populator = get_populator(&field)?;
+                    Ok((field, populator))
                 })
                 .collect::<model::Result<_>>()?,
         )),
@@ -39,12 +39,12 @@ fn get_templates(
     }
 }
 
-fn get_template(field: &str) -> model::Result<model::Template> {
-    match data::STANDARD_FIELD_TEMPLATES_ORDERED.binary_search_by_key(&field, |entry| entry.0) {
+fn get_populator(field: &str) -> model::Result<model::Populator> {
+    match data::STANDARD_FIELD_POPULATORS_ORDERED.binary_search_by_key(&field, |entry| entry.0) {
         Err(_) => Err(model::Error::NonstandardField {
             field: String::from(field),
         }),
-        Ok(index) => Ok(data::STANDARD_FIELD_TEMPLATES_ORDERED[index].1.clone()),
+        Ok(index) => Ok(data::STANDARD_FIELD_POPULATORS_ORDERED[index].1.clone()),
     }
 }
 
@@ -106,8 +106,11 @@ mod tests {
                 let actual = actual.unwrap();
                 let expected =
                     model::Initializer::Default(model::TypeStructure::NamedFields(vec![
-                        (String::from("relative_path"), model::Template::RelativePath),
-                        (String::from("contents_str"), model::Template::ContentsStr),
+                        (
+                            String::from("relative_path"),
+                            model::Populator::RelativePath,
+                        ),
+                        (String::from("contents_str"), model::Populator::ContentsStr),
                     ]));
                 assert_eq!(actual, expected);
             }
@@ -140,7 +143,7 @@ mod tests {
                         ..model::stubs::configuration()
                     },
                     model::TypeStructure::NamedFields(
-                        data::STANDARD_FIELD_TEMPLATES_ORDERED
+                        data::STANDARD_FIELD_POPULATORS_ORDERED
                             .iter()
                             .map(|(field, _)| (String::from(*field), ()))
                             .collect(),
@@ -149,9 +152,9 @@ mod tests {
 
                 let actual = actual.unwrap();
                 let expected = model::Initializer::Default(model::TypeStructure::NamedFields(
-                    data::STANDARD_FIELD_TEMPLATES_ORDERED
+                    data::STANDARD_FIELD_POPULATORS_ORDERED
                         .iter()
-                        .map(|(field, template)| (String::from(*field), template.clone()))
+                        .map(|(field, populator)| (String::from(*field), populator.clone()))
                         .collect(),
                 ));
                 assert_eq!(actual, expected);

@@ -48,12 +48,12 @@ pub struct View {
 
 #[derive(Clone, cmp::PartialEq, Debug)]
 pub enum Initializer {
-    Default(TypeStructure<Template>),
+    Default(TypeStructure<Populator>),
     Macro(String),
 }
 
 #[derive(Clone, cmp::PartialEq, Debug)]
-pub enum Template {
+pub enum Populator {
     ContentsBytes,
     ContentsStr,
     GetBytes,
