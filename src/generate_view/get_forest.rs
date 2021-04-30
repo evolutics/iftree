@@ -7,10 +7,10 @@ use std::vec;
 
 pub fn main(
     configuration: &model::Configuration,
-    files: &[model::File],
+    paths: &[model::Path],
 ) -> model::Result<model::FileForest> {
     Ok(if configuration.identifiers {
-        let forest = get_forest(files)?;
+        let forest = get_forest(paths)?;
         vec![(
             String::from(data::BASE_MODULE_NAME),
             model::FileTree::Folder(forest),
@@ -22,13 +22,13 @@ pub fn main(
     })
 }
 
-fn get_forest(files: &[model::File]) -> model::Result<model::FileForest> {
+fn get_forest(paths: &[model::Path]) -> model::Result<model::FileForest> {
     let mut forest = model::FileForest::new();
 
-    for (index, file) in files.iter().enumerate() {
+    for (index, path) in paths.iter().enumerate() {
         let context = Context {
             index,
-            file,
+            path,
             name: String::new(),
         };
 
@@ -38,7 +38,7 @@ fn get_forest(files: &[model::File]) -> model::Result<model::FileForest> {
                 name,
                 competitors: competitors
                     .into_iter()
-                    .map(|index| files[index].relative_path.clone())
+                    .map(|index| paths[index].relative_path.clone())
                     .collect(),
             }),
         }?
@@ -49,12 +49,12 @@ fn get_forest(files: &[model::File]) -> model::Result<model::FileForest> {
 
 struct Context<'a> {
     index: usize,
-    file: &'a model::File,
+    path: &'a model::Path,
     name: String,
 }
 
 fn add_file(forest: &mut model::FileForest, context: Context) -> Option<Collision> {
-    let mut reverse_file_path = get_reverse_file_path(context.file);
+    let mut reverse_file_path = get_reverse_file_path(context.path);
     add_file_recursively(forest, &mut reverse_file_path, context)
 }
 
@@ -63,8 +63,8 @@ struct Collision {
     competitors: vec::Vec<usize>,
 }
 
-fn get_reverse_file_path(file: &model::File) -> vec::Vec<String> {
-    path::Path::new(&file.relative_path.0)
+fn get_reverse_file_path(path: &model::Path) -> vec::Vec<String> {
+    path::Path::new(&path.relative_path.0)
         .iter()
         .rev()
         .enumerate()
@@ -153,7 +153,7 @@ mod tests {
                 identifiers: false,
                 ..model::stubs::configuration()
             },
-            &[model::stubs::file()],
+            &[model::stubs::path()],
         );
 
         let actual = actual.unwrap();
@@ -189,13 +189,13 @@ mod tests {
                 ..model::stubs::configuration()
             },
             &[
-                model::File {
+                model::Path {
                     relative_path: model::RelativePath::from("a"),
-                    ..model::stubs::file()
+                    ..model::stubs::path()
                 },
-                model::File {
+                model::Path {
                     relative_path: model::RelativePath::from("b"),
-                    ..model::stubs::file()
+                    ..model::stubs::path()
                 },
             ],
         );
@@ -225,17 +225,17 @@ mod tests {
                 ..model::stubs::configuration()
             },
             &[
-                model::File {
+                model::Path {
                     relative_path: model::RelativePath::from("a"),
-                    ..model::stubs::file()
+                    ..model::stubs::path()
                 },
-                model::File {
+                model::Path {
                     relative_path: model::RelativePath::from("b/a/b"),
-                    ..model::stubs::file()
+                    ..model::stubs::path()
                 },
-                model::File {
+                model::Path {
                     relative_path: model::RelativePath::from("b/c"),
-                    ..model::stubs::file()
+                    ..model::stubs::path()
                 },
             ],
         );
@@ -289,13 +289,13 @@ mod tests {
                     ..model::stubs::configuration()
                 },
                 &[
-                    model::File {
+                    model::Path {
                         relative_path: model::RelativePath::from("a/B"),
-                        ..model::stubs::file()
+                        ..model::stubs::path()
                     },
-                    model::File {
+                    model::Path {
                         relative_path: model::RelativePath::from("a/b"),
-                        ..model::stubs::file()
+                        ..model::stubs::path()
                     },
                 ],
             );
@@ -319,13 +319,13 @@ mod tests {
                     ..model::stubs::configuration()
                 },
                 &[
-                    model::File {
+                    model::Path {
                         relative_path: model::RelativePath::from("a/-/b"),
-                        ..model::stubs::file()
+                        ..model::stubs::path()
                     },
-                    model::File {
+                    model::Path {
                         relative_path: model::RelativePath::from("a/~"),
-                        ..model::stubs::file()
+                        ..model::stubs::path()
                     },
                 ],
             );
@@ -349,13 +349,13 @@ mod tests {
                     ..model::stubs::configuration()
                 },
                 &[
-                    model::File {
+                    model::Path {
                         relative_path: model::RelativePath::from("a/-"),
-                        ..model::stubs::file()
+                        ..model::stubs::path()
                     },
-                    model::File {
+                    model::Path {
                         relative_path: model::RelativePath::from("a/~/b"),
-                        ..model::stubs::file()
+                        ..model::stubs::path()
                     },
                 ],
             );
@@ -379,13 +379,13 @@ mod tests {
                     ..model::stubs::configuration()
                 },
                 &[
-                    model::File {
+                    model::Path {
                         relative_path: model::RelativePath::from("A/b"),
-                        ..model::stubs::file()
+                        ..model::stubs::path()
                     },
-                    model::File {
+                    model::Path {
                         relative_path: model::RelativePath::from("a/c"),
-                        ..model::stubs::file()
+                        ..model::stubs::path()
                     },
                 ],
             );

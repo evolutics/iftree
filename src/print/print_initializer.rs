@@ -1,21 +1,21 @@
 use super::print_populator;
 use crate::model;
 
-pub fn main(view: &model::View, file: &model::File) -> proc_macro2::TokenStream {
+pub fn main(view: &model::View, path: &model::Path) -> proc_macro2::TokenStream {
     match &view.initializer {
-        model::Initializer::Default(populators) => print_default(&view.type_, populators, file),
-        model::Initializer::Macro(name) => print_macro(name, file),
+        model::Initializer::Default(populators) => print_default(&view.type_, populators, path),
+        model::Initializer::Macro(name) => print_macro(name, path),
     }
 }
 
 fn print_default(
     type_: &syn::Ident,
     populators: &model::TypeStructure<model::Populator>,
-    file: &model::File,
+    path: &model::Path,
 ) -> proc_macro2::TokenStream {
     let context = print_populator::Context {
-        relative_path: &file.relative_path.0,
-        absolute_path: &file.absolute_path,
+        relative_path: &path.relative_path.0,
+        absolute_path: &path.absolute_path,
     };
 
     match populators {
@@ -50,10 +50,10 @@ fn print_default(
     }
 }
 
-fn print_macro(macro_: &str, file: &model::File) -> proc_macro2::TokenStream {
+fn print_macro(macro_: &str, path: &model::Path) -> proc_macro2::TokenStream {
     let macro_name = quote::format_ident!("{}", macro_);
-    let relative_path = &file.relative_path.0;
-    let absolute_path = &file.absolute_path;
+    let relative_path = &path.relative_path.0;
+    let absolute_path = &path.absolute_path;
 
     quote::quote! { #macro_name!(#relative_path, #absolute_path) }
 }
@@ -79,7 +79,7 @@ mod tests {
                     )),
                     ..model::stubs::view()
                 },
-                &model::File {
+                &model::Path {
                     relative_path: model::RelativePath::from("b"),
                     absolute_path: String::from("/a/b"),
                 },
@@ -108,7 +108,7 @@ mod tests {
                         initializer: model::Initializer::Default(model::TypeStructure::Unit),
                         ..model::stubs::view()
                     },
-                    &model::stubs::file(),
+                    &model::stubs::path(),
                 );
 
                 let actual = actual.to_string();
@@ -125,9 +125,9 @@ mod tests {
                         )),
                         ..model::stubs::view()
                     },
-                    &model::File {
+                    &model::Path {
                         absolute_path: String::from("/a/b"),
-                        ..model::stubs::file()
+                        ..model::stubs::path()
                     },
                 );
 
@@ -149,9 +149,9 @@ mod tests {
                         ),
                         ..model::stubs::view()
                     },
-                    &model::File {
+                    &model::Path {
                         absolute_path: String::from("/a/b"),
-                        ..model::stubs::file()
+                        ..model::stubs::path()
                     },
                 );
 
@@ -175,9 +175,9 @@ mod tests {
                         ),
                         ..model::stubs::view()
                     },
-                    &model::File {
+                    &model::Path {
                         relative_path: model::RelativePath::from("b"),
-                        ..model::stubs::file()
+                        ..model::stubs::path()
                     },
                 );
 
@@ -200,7 +200,7 @@ mod tests {
                 initializer: model::Initializer::Macro(String::from("abc")),
                 ..model::stubs::view()
             },
-            &model::File {
+            &model::Path {
                 relative_path: model::RelativePath::from("b"),
                 absolute_path: String::from("/a/b"),
             },

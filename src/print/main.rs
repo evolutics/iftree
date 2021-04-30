@@ -39,9 +39,9 @@ mod tests {
                 initializer: model::Initializer::Default(model::TypeStructure::TypeAlias(
                     model::Populator::ContentsStr,
                 )),
-                array: vec![model::File {
+                array: vec![model::Path {
                     absolute_path: String::from("/a.b"),
-                    ..model::stubs::file()
+                    ..model::stubs::path()
                 }],
                 forest: vec![(
                     String::from("base"),

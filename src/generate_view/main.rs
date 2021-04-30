@@ -7,10 +7,10 @@ use std::vec;
 pub fn main(
     configuration: &model::Configuration,
     type_: model::Type<()>,
-    files: vec::Vec<model::File>,
+    paths: vec::Vec<model::Path>,
 ) -> model::Result<model::View> {
     let initializer = get_initializer::main(configuration, type_.structure)?;
-    let array = get_array::main(files);
+    let array = get_array::main(paths);
     let forest = get_forest::main(configuration, &array)?;
     Ok(model::View {
         type_: type_.name,
@@ -36,7 +36,7 @@ mod tests {
                 name: quote::format_ident!("Asset"),
                 ..model::stubs::type_()
             },
-            vec![model::File {
+            vec![model::Path {
                 relative_path: model::RelativePath::from("b"),
                 absolute_path: String::from("/a/b"),
             }],
@@ -46,7 +46,7 @@ mod tests {
         let expected = model::View {
             type_: quote::format_ident!("Asset"),
             initializer: model::Initializer::Macro(String::from("abc")),
-            array: vec![model::File {
+            array: vec![model::Path {
                 relative_path: model::RelativePath::from("b"),
                 absolute_path: String::from("/a/b"),
             }],

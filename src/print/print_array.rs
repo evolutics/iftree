@@ -15,8 +15,8 @@ fn print_expression(view: &model::View) -> proc_macro2::TokenStream {
     let contents: proc_macro2::TokenStream = view
         .array
         .iter()
-        .map(|file| {
-            let element = print_initializer::main(view, file);
+        .map(|path| {
+            let element = print_initializer::main(view, path);
             quote::quote! { #element, }
         })
         .collect();
@@ -36,13 +36,13 @@ mod tests {
                 model::Populator::RelativePath,
             )),
             array: vec![
-                model::File {
+                model::Path {
                     relative_path: model::RelativePath::from("a"),
-                    ..model::stubs::file()
+                    ..model::stubs::path()
                 },
-                model::File {
+                model::Path {
                     relative_path: model::RelativePath::from("b/c"),
-                    ..model::stubs::file()
+                    ..model::stubs::path()
                 },
             ],
             ..model::stubs::view()

@@ -30,7 +30,7 @@ pub enum TypeStructure<T> {
 }
 
 #[derive(Clone, cmp::PartialEq, Debug)]
-pub struct File {
+pub struct Path {
     pub relative_path: RelativePath,
     pub absolute_path: String,
 }
@@ -42,7 +42,7 @@ pub struct RelativePath(pub String);
 pub struct View {
     pub type_: syn::Ident,
     pub initializer: Initializer,
-    pub array: vec::Vec<File>,
+    pub array: vec::Vec<Path>,
     pub forest: FileForest,
 }
 
@@ -125,8 +125,8 @@ pub mod stubs {
         TypeStructure::Unit
     }
 
-    pub fn file() -> File {
-        File {
+    pub fn path() -> Path {
+        Path {
             relative_path: RelativePath::from("bar"),
             absolute_path: String::from("/foo/bar"),
         }

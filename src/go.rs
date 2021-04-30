@@ -10,9 +10,9 @@ pub fn main(
 ) -> model::Result<proc_macro2::TokenStream> {
     // Pipeline overview:
     // 1. I/O only happens here.
-    let files = list_files::main(&configuration)?;
+    let paths = list_files::main(&configuration)?;
     // 2. Construct a view model.
-    let view = generate_view::main(&configuration, type_, files)?;
+    let view = generate_view::main(&configuration, type_, paths)?;
     // 3. Generate code ("view").
     Ok(print::main(&configuration, item, view))
 }

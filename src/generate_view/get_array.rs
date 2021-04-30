@@ -1,8 +1,8 @@
 use crate::model;
 use std::vec;
 
-pub fn main(files: vec::Vec<model::File>) -> vec::Vec<model::File> {
-    let mut array = files;
+pub fn main(paths: vec::Vec<model::Path>) -> vec::Vec<model::Path> {
+    let mut array = paths;
     array.sort_unstable_by(|left, right| left.relative_path.cmp(&right.relative_path));
     array
 }
@@ -14,46 +14,46 @@ mod tests {
     #[test]
     fn handles() {
         let actual = main(vec![
-            model::File {
+            model::Path {
                 relative_path: model::RelativePath::from("B"),
                 absolute_path: String::from("one"),
             },
-            model::File {
+            model::Path {
                 relative_path: model::RelativePath::from("A"),
                 absolute_path: String::from("zero"),
             },
-            model::File {
+            model::Path {
                 relative_path: model::RelativePath::from("a"),
                 absolute_path: String::from("two"),
             },
-            model::File {
+            model::Path {
                 relative_path: model::RelativePath::from("a/b"),
                 absolute_path: String::from("four"),
             },
-            model::File {
+            model::Path {
                 relative_path: model::RelativePath::from("a.c"),
                 absolute_path: String::from("three"),
             },
         ]);
 
         let expected = vec![
-            model::File {
+            model::Path {
                 relative_path: model::RelativePath::from("A"),
                 absolute_path: String::from("zero"),
             },
-            model::File {
+            model::Path {
                 relative_path: model::RelativePath::from("B"),
                 absolute_path: String::from("one"),
             },
-            model::File {
+            model::Path {
                 relative_path: model::RelativePath::from("a"),
                 absolute_path: String::from("two"),
             },
-            model::File {
+            model::Path {
                 relative_path: model::RelativePath::from("a.c"),
                 absolute_path: String::from("three"),
             },
-            model::File {
+            model::Path {
                 relative_path: model::RelativePath::from("a/b"),
                 absolute_path: String::from("four"),
             },
