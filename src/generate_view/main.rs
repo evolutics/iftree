@@ -37,8 +37,8 @@ mod tests {
                 ..model::stubs::type_()
             },
             vec![model::Path {
-                relative_path: model::RelativePath::from("b"),
-                absolute_path: String::from("/a/b"),
+                relative: model::RelativePath::from("b"),
+                absolute: String::from("/a/b"),
             }],
         );
 
@@ -47,8 +47,8 @@ mod tests {
             type_: quote::format_ident!("Asset"),
             initializer: model::Initializer::Macro(String::from("abc")),
             array: vec![model::Path {
-                relative_path: model::RelativePath::from("b"),
-                absolute_path: String::from("/a/b"),
+                relative: model::RelativePath::from("b"),
+                absolute: String::from("/a/b"),
             }],
             forest: vec![(
                 String::from("base"),

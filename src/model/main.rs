@@ -31,8 +31,8 @@ pub enum TypeStructure<T> {
 
 #[derive(Clone, cmp::PartialEq, Debug)]
 pub struct Path {
-    pub relative_path: RelativePath,
-    pub absolute_path: String,
+    pub relative: RelativePath,
+    pub absolute: String,
 }
 
 #[derive(Clone, cmp::Eq, cmp::Ord, cmp::PartialEq, cmp::PartialOrd, Debug)]
@@ -127,8 +127,8 @@ pub mod stubs {
 
     pub fn path() -> Path {
         Path {
-            relative_path: RelativePath::from("bar"),
-            absolute_path: String::from("/foo/bar"),
+            relative: RelativePath::from("bar"),
+            absolute: String::from("/foo/bar"),
         }
     }
 

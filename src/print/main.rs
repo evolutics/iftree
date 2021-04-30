@@ -40,7 +40,7 @@ mod tests {
                     model::Populator::ContentsStr,
                 )),
                 array: vec![model::Path {
-                    absolute_path: String::from("/a.b"),
+                    absolute: String::from("/a.b"),
                     ..model::stubs::path()
                 }],
                 forest: vec![(

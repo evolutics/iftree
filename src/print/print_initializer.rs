@@ -14,8 +14,8 @@ fn print_default(
     path: &model::Path,
 ) -> proc_macro2::TokenStream {
     let context = print_populator::Context {
-        relative_path: &path.relative_path.0,
-        absolute_path: &path.absolute_path,
+        relative_path: &path.relative.0,
+        absolute_path: &path.absolute,
     };
 
     match populators {
@@ -52,8 +52,8 @@ fn print_default(
 
 fn print_macro(macro_: &str, path: &model::Path) -> proc_macro2::TokenStream {
     let macro_name = quote::format_ident!("{}", macro_);
-    let relative_path = &path.relative_path.0;
-    let absolute_path = &path.absolute_path;
+    let relative_path = &path.relative.0;
+    let absolute_path = &path.absolute;
 
     quote::quote! { #macro_name!(#relative_path, #absolute_path) }
 }
@@ -80,8 +80,8 @@ mod tests {
                     ..model::stubs::view()
                 },
                 &model::Path {
-                    relative_path: model::RelativePath::from("b"),
-                    absolute_path: String::from("/a/b"),
+                    relative: model::RelativePath::from("b"),
+                    absolute: String::from("/a/b"),
                 },
             );
 
@@ -126,7 +126,7 @@ mod tests {
                         ..model::stubs::view()
                     },
                     &model::Path {
-                        absolute_path: String::from("/a/b"),
+                        absolute: String::from("/a/b"),
                         ..model::stubs::path()
                     },
                 );
@@ -150,7 +150,7 @@ mod tests {
                         ..model::stubs::view()
                     },
                     &model::Path {
-                        absolute_path: String::from("/a/b"),
+                        absolute: String::from("/a/b"),
                         ..model::stubs::path()
                     },
                 );
@@ -176,7 +176,7 @@ mod tests {
                         ..model::stubs::view()
                     },
                     &model::Path {
-                        relative_path: model::RelativePath::from("b"),
+                        relative: model::RelativePath::from("b"),
                         ..model::stubs::path()
                     },
                 );
@@ -201,8 +201,8 @@ mod tests {
                 ..model::stubs::view()
             },
             &model::Path {
-                relative_path: model::RelativePath::from("b"),
-                absolute_path: String::from("/a/b"),
+                relative: model::RelativePath::from("b"),
+                absolute: String::from("/a/b"),
             },
         );
 

@@ -38,7 +38,7 @@ fn get_forest(paths: &[model::Path]) -> model::Result<model::FileForest> {
                 name,
                 competitors: competitors
                     .into_iter()
-                    .map(|index| paths[index].relative_path.clone())
+                    .map(|index| paths[index].relative.clone())
                     .collect(),
             }),
         }?
@@ -64,7 +64,7 @@ struct Collision {
 }
 
 fn get_reverse_file_path(path: &model::Path) -> vec::Vec<String> {
-    path::Path::new(&path.relative_path.0)
+    path::Path::new(&path.relative.0)
         .iter()
         .rev()
         .enumerate()
@@ -190,11 +190,11 @@ mod tests {
             },
             &[
                 model::Path {
-                    relative_path: model::RelativePath::from("a"),
+                    relative: model::RelativePath::from("a"),
                     ..model::stubs::path()
                 },
                 model::Path {
-                    relative_path: model::RelativePath::from("b"),
+                    relative: model::RelativePath::from("b"),
                     ..model::stubs::path()
                 },
             ],
@@ -226,15 +226,15 @@ mod tests {
             },
             &[
                 model::Path {
-                    relative_path: model::RelativePath::from("a"),
+                    relative: model::RelativePath::from("a"),
                     ..model::stubs::path()
                 },
                 model::Path {
-                    relative_path: model::RelativePath::from("b/a/b"),
+                    relative: model::RelativePath::from("b/a/b"),
                     ..model::stubs::path()
                 },
                 model::Path {
-                    relative_path: model::RelativePath::from("b/c"),
+                    relative: model::RelativePath::from("b/c"),
                     ..model::stubs::path()
                 },
             ],
@@ -290,11 +290,11 @@ mod tests {
                 },
                 &[
                     model::Path {
-                        relative_path: model::RelativePath::from("a/B"),
+                        relative: model::RelativePath::from("a/B"),
                         ..model::stubs::path()
                     },
                     model::Path {
-                        relative_path: model::RelativePath::from("a/b"),
+                        relative: model::RelativePath::from("a/b"),
                         ..model::stubs::path()
                     },
                 ],
@@ -320,11 +320,11 @@ mod tests {
                 },
                 &[
                     model::Path {
-                        relative_path: model::RelativePath::from("a/-/b"),
+                        relative: model::RelativePath::from("a/-/b"),
                         ..model::stubs::path()
                     },
                     model::Path {
-                        relative_path: model::RelativePath::from("a/~"),
+                        relative: model::RelativePath::from("a/~"),
                         ..model::stubs::path()
                     },
                 ],
@@ -350,11 +350,11 @@ mod tests {
                 },
                 &[
                     model::Path {
-                        relative_path: model::RelativePath::from("a/-"),
+                        relative: model::RelativePath::from("a/-"),
                         ..model::stubs::path()
                     },
                     model::Path {
-                        relative_path: model::RelativePath::from("a/~/b"),
+                        relative: model::RelativePath::from("a/~/b"),
                         ..model::stubs::path()
                     },
                 ],
@@ -380,11 +380,11 @@ mod tests {
                 },
                 &[
                     model::Path {
-                        relative_path: model::RelativePath::from("A/b"),
+                        relative: model::RelativePath::from("A/b"),
                         ..model::stubs::path()
                     },
                     model::Path {
-                        relative_path: model::RelativePath::from("a/c"),
+                        relative: model::RelativePath::from("a/c"),
                         ..model::stubs::path()
                     },
                 ],

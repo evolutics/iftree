@@ -37,11 +37,11 @@ mod tests {
             )),
             array: vec![
                 model::Path {
-                    relative_path: model::RelativePath::from("a"),
+                    relative: model::RelativePath::from("a"),
                     ..model::stubs::path()
                 },
                 model::Path {
-                    relative_path: model::RelativePath::from("b/c"),
+                    relative: model::RelativePath::from("b/c"),
                     ..model::stubs::path()
                 },
             ],

@@ -28,8 +28,8 @@ mod tests {
 
         let actual = actual.unwrap();
         let expected = vec![model::Path {
-            relative_path: model::RelativePath::from("assets/credits.md"),
-            absolute_path: String::from(
+            relative: model::RelativePath::from("assets/credits.md"),
+            absolute: String::from(
                 fs::canonicalize("examples/assets/credits.md")
                     .unwrap()
                     .to_str()
