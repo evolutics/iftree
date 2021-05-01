@@ -5,144 +5,103 @@ use std::iter;
 use std::path;
 use std::vec;
 
-pub fn main(
-    configuration: &model::Configuration,
-    paths: &[model::Path],
-) -> model::Result<model::FileForest> {
-    Ok(if configuration.identifiers {
-        let forest = get_forest(paths)?;
+pub fn main(configuration: &model::Configuration, paths: &[model::Path]) -> model::FileForest {
+    if configuration.identifiers {
+        let identifier = quote::format_ident!("{}", data::BASE_MODULE_NAME);
+        let forest = get_forest(paths);
         vec![(
             String::from(data::BASE_MODULE_NAME),
-            model::FileTree::Folder(model::Folder { forest }),
+            model::FileTree::Folder(model::Folder { identifier, forest }),
         )]
         .into_iter()
         .collect()
     } else {
         model::FileForest::new()
-    })
+    }
 }
 
-fn get_forest(paths: &[model::Path]) -> model::Result<model::FileForest> {
+fn get_forest(paths: &[model::Path]) -> model::FileForest {
     let mut forest = model::FileForest::new();
 
     for (index, path) in paths.iter().enumerate() {
-        let context = Context {
-            index,
-            path,
-            name: String::new(),
-        };
-
-        match add_file(&mut forest, context) {
-            None => Ok(()),
-            Some(Collision { name, competitors }) => Err(model::Error::NameCollision {
-                name,
-                competitors: competitors
-                    .into_iter()
-                    .map(|index| paths[index].relative.clone())
-                    .collect(),
-            }),
-        }?
+        let reverse_path = get_reverse_path(&path.relative);
+        if let Some(filename) = reverse_path.first() {
+            let file = get_file(filename, index);
+            add_file(&mut forest, reverse_path, file);
+        }
     }
 
-    Ok(forest)
+    forest
 }
 
-struct Context<'a> {
-    index: usize,
-    path: &'a model::Path,
-    name: String,
-}
-
-fn add_file(forest: &mut model::FileForest, context: Context) -> Option<Collision> {
-    let mut reverse_file_path = get_reverse_file_path(context.path);
-    add_file_recursively(forest, &mut reverse_file_path, context)
-}
-
-struct Collision {
-    name: String,
-    competitors: vec::Vec<usize>,
-}
-
-fn get_reverse_file_path(path: &model::Path) -> vec::Vec<String> {
-    path::Path::new(&path.relative.0)
+fn get_reverse_path(path: &model::RelativePath) -> vec::Vec<String> {
+    path::Path::new(&path.0)
         .iter()
         .rev()
-        .enumerate()
-        .map(|(index, name)| {
-            let name = name.to_string_lossy();
-            let convention = if index == 0 {
-                sanitize_name::Convention::ScreamingSnakeCase
-            } else {
-                sanitize_name::Convention::SnakeCase
-            };
-            sanitize_name::main(&name, convention)
-        })
+        .map(|name| name.to_string_lossy().to_string())
         .collect()
 }
 
-fn add_file_recursively(
-    parent: &mut model::FileForest,
-    reverse_file_path: &mut vec::Vec<String>,
-    context: Context,
-) -> Option<Collision> {
-    match reverse_file_path.pop() {
-        None => {
-            let competitors = get_simple_sample_index(parent)
-                .into_iter()
-                .chain(iter::once(context.index))
-                .collect();
-            Some(Collision {
-                name: context.name,
-                competitors,
-            })
-        }
+fn get_file(name: &str, index: usize) -> model::File {
+    let identifier = sanitize_name::main(name, sanitize_name::Convention::ScreamingSnakeCase);
+    let identifier = quote::format_ident!("{}", identifier);
+    model::File { identifier, index }
+}
+
+fn add_file(parent: &mut model::FileForest, mut reverse_path: vec::Vec<String>, file: model::File) {
+    match reverse_path.pop() {
+        None => {}
 
         Some(name) => match parent.get_mut(&name) {
             None => {
-                let child = get_singleton_tree(reverse_file_path.to_vec(), context.index);
+                let child = get_singleton_tree(reverse_path, file, &name);
                 parent.insert(name, child);
-                None
             }
 
-            Some(model::FileTree::File(model::File { index })) => Some(Collision {
-                name,
-                competitors: vec![*index, context.index],
-            }),
+            Some(model::FileTree::File(_)) => {}
 
-            Some(model::FileTree::Folder(model::Folder { forest })) => {
-                add_file_recursively(forest, reverse_file_path, Context { name, ..context })
+            Some(model::FileTree::Folder(model::Folder { forest, .. })) => {
+                add_file(forest, reverse_path, file)
             }
         },
     }
 }
 
-fn get_simple_sample_index(forest: &model::FileForest) -> Option<usize> {
-    for tree in forest.values() {
-        match tree {
-            model::FileTree::File(model::File { index }) => return Some(*index),
-            model::FileTree::Folder(_) => (),
-        }
+fn get_singleton_tree(
+    reverse_path: vec::Vec<String>,
+    file: model::File,
+    root: &str,
+) -> model::FileTree {
+    let parents = get_folder_identifiers(
+        &reverse_path
+            .iter()
+            .skip(1)
+            .map(|name| name.as_ref())
+            .chain(iter::once(root))
+            .collect::<vec::Vec<_>>(),
+    );
+
+    let mut tree = model::FileTree::File(file);
+
+    for (child, parent) in reverse_path.into_iter().zip(parents.into_iter()) {
+        let forest = vec![(child, tree)].into_iter().collect();
+        tree = model::FileTree::Folder(model::Folder {
+            identifier: parent,
+            forest,
+        });
     }
-    for tree in forest.values() {
-        match tree {
-            model::FileTree::File(_) => (),
-            model::FileTree::Folder(model::Folder { forest }) => {
-                return get_simple_sample_index(forest)
-            }
-        }
-    }
-    None
+
+    tree
 }
 
-fn get_singleton_tree(reverse_file_path: vec::Vec<String>, index: usize) -> model::FileTree {
-    let mut child = model::FileTree::File(model::File { index });
-
-    for name in reverse_file_path.into_iter() {
-        let forest = vec![(name, child)].into_iter().collect();
-        child = model::FileTree::Folder(model::Folder { forest });
-    }
-
-    child
+fn get_folder_identifiers(names: &[&str]) -> vec::Vec<syn::Ident> {
+    names
+        .iter()
+        .map(|name| {
+            let identifier = sanitize_name::main(name, sanitize_name::Convention::SnakeCase);
+            quote::format_ident!("{}", identifier)
+        })
+        .collect()
 }
 
 #[cfg(test)]
@@ -159,7 +118,6 @@ mod tests {
             &[model::stubs::path()],
         );
 
-        let actual = actual.unwrap();
         let expected = model::FileForest::new();
         assert_eq!(actual, expected);
     }
@@ -174,10 +132,10 @@ mod tests {
             &[],
         );
 
-        let actual = actual.unwrap();
         let expected = vec![(
             String::from("base"),
             model::FileTree::Folder(model::Folder {
+                identifier: quote::format_ident!("base"),
                 forest: model::FileForest::new(),
             }),
         )]
@@ -195,7 +153,7 @@ mod tests {
             },
             &[
                 model::Path {
-                    relative: model::RelativePath::from("a"),
+                    relative: model::RelativePath::from("A"),
                     ..model::stubs::path()
                 },
                 model::Path {
@@ -205,18 +163,24 @@ mod tests {
             ],
         );
 
-        let actual = actual.unwrap();
         let expected = vec![(
             String::from("base"),
             model::FileTree::Folder(model::Folder {
+                identifier: quote::format_ident!("base"),
                 forest: vec![
                     (
-                        String::from("r#A"),
-                        model::FileTree::File(model::File { index: 0 }),
+                        String::from('A'),
+                        model::FileTree::File(model::File {
+                            identifier: quote::format_ident!("r#A"),
+                            index: 0,
+                        }),
                     ),
                     (
-                        String::from("r#B"),
-                        model::FileTree::File(model::File { index: 1 }),
+                        String::from('b'),
+                        model::FileTree::File(model::File {
+                            identifier: quote::format_ident!("r#B"),
+                            index: 1,
+                        }),
                     ),
                 ]
                 .into_iter()
@@ -251,33 +215,44 @@ mod tests {
             ],
         );
 
-        let actual = actual.unwrap();
         let expected = vec![(
             String::from("base"),
             model::FileTree::Folder(model::Folder {
+                identifier: quote::format_ident!("base"),
                 forest: vec![
                     (
-                        String::from("r#A"),
-                        model::FileTree::File(model::File { index: 0 }),
+                        String::from('a'),
+                        model::FileTree::File(model::File {
+                            identifier: quote::format_ident!("r#A"),
+                            index: 0,
+                        }),
                     ),
                     (
-                        String::from("r#b"),
+                        String::from('b'),
                         model::FileTree::Folder(model::Folder {
+                            identifier: quote::format_ident!("r#b"),
                             forest: vec![
                                 (
-                                    String::from("r#a"),
+                                    String::from('a'),
                                     model::FileTree::Folder(model::Folder {
+                                        identifier: quote::format_ident!("r#a"),
                                         forest: vec![(
-                                            String::from("r#B"),
-                                            model::FileTree::File(model::File { index: 1 }),
+                                            String::from('b'),
+                                            model::FileTree::File(model::File {
+                                                identifier: quote::format_ident!("r#B"),
+                                                index: 1,
+                                            }),
                                         )]
                                         .into_iter()
                                         .collect(),
                                     }),
                                 ),
                                 (
-                                    String::from("r#C"),
-                                    model::FileTree::File(model::File { index: 2 }),
+                                    String::from('c'),
+                                    model::FileTree::File(model::File {
+                                        identifier: quote::format_ident!("r#C"),
+                                        index: 2,
+                                    }),
                                 ),
                             ]
                             .into_iter()
@@ -292,149 +267,5 @@ mod tests {
         .into_iter()
         .collect();
         assert_eq!(actual, expected);
-    }
-
-    #[cfg(test)]
-    mod name_collision {
-        use super::*;
-
-        #[test]
-        fn given_file_collides_with_file_it_errs() {
-            let actual = main(
-                &model::Configuration {
-                    identifiers: true,
-                    ..model::stubs::configuration()
-                },
-                &[
-                    model::Path {
-                        relative: model::RelativePath::from("a/B"),
-                        ..model::stubs::path()
-                    },
-                    model::Path {
-                        relative: model::RelativePath::from("a/b"),
-                        ..model::stubs::path()
-                    },
-                ],
-            );
-
-            let actual = actual.unwrap_err();
-            let expected = model::Error::NameCollision {
-                name: String::from("r#B"),
-                competitors: vec![
-                    model::RelativePath::from("a/B"),
-                    model::RelativePath::from("a/b"),
-                ],
-            };
-            assert_eq!(actual, expected);
-        }
-
-        #[test]
-        fn given_file_collides_with_folder_it_errs() {
-            let actual = main(
-                &model::Configuration {
-                    identifiers: true,
-                    ..model::stubs::configuration()
-                },
-                &[
-                    model::Path {
-                        relative: model::RelativePath::from("a/-/b"),
-                        ..model::stubs::path()
-                    },
-                    model::Path {
-                        relative: model::RelativePath::from("a/~"),
-                        ..model::stubs::path()
-                    },
-                ],
-            );
-
-            let actual = actual.unwrap_err();
-            let expected = model::Error::NameCollision {
-                name: String::from("r#__"),
-                competitors: vec![
-                    model::RelativePath::from("a/-/b"),
-                    model::RelativePath::from("a/~"),
-                ],
-            };
-            assert_eq!(actual, expected);
-        }
-
-        #[test]
-        fn given_folder_collides_with_file_it_errs() {
-            let actual = main(
-                &model::Configuration {
-                    identifiers: true,
-                    ..model::stubs::configuration()
-                },
-                &[
-                    model::Path {
-                        relative: model::RelativePath::from("a/-"),
-                        ..model::stubs::path()
-                    },
-                    model::Path {
-                        relative: model::RelativePath::from("a/~/b"),
-                        ..model::stubs::path()
-                    },
-                ],
-            );
-
-            let actual = actual.unwrap_err();
-            let expected = model::Error::NameCollision {
-                name: String::from("r#__"),
-                competitors: vec![
-                    model::RelativePath::from("a/-"),
-                    model::RelativePath::from("a/~/b"),
-                ],
-            };
-            assert_eq!(actual, expected);
-        }
-
-        #[test]
-        fn given_folder_collides_with_folder_it_merges() {
-            let actual = main(
-                &model::Configuration {
-                    identifiers: true,
-                    ..model::stubs::configuration()
-                },
-                &[
-                    model::Path {
-                        relative: model::RelativePath::from("A/b"),
-                        ..model::stubs::path()
-                    },
-                    model::Path {
-                        relative: model::RelativePath::from("a/c"),
-                        ..model::stubs::path()
-                    },
-                ],
-            );
-
-            let actual = actual.unwrap();
-            let expected = vec![(
-                String::from("base"),
-                model::FileTree::Folder(model::Folder {
-                    forest: vec![(
-                        String::from("r#a"),
-                        model::FileTree::Folder(model::Folder {
-                            forest: vec![
-                                (
-                                    String::from("r#B"),
-                                    model::FileTree::File(model::File { index: 0 }),
-                                ),
-                                (
-                                    String::from("r#C"),
-                                    model::FileTree::File(model::File { index: 1 }),
-                                ),
-                            ]
-                            .into_iter()
-                            .collect(),
-                        }),
-                    )]
-                    .into_iter()
-                    .collect(),
-                }),
-            )]
-            .into_iter()
-            .collect();
-            assert_eq!(actual, expected);
-        }
     }
 }

@@ -44,11 +44,15 @@ mod tests {
                     ..model::stubs::path()
                 }],
                 forest: vec![(
-                    String::from("base"),
+                    String::new(),
                     model::FileTree::Folder(model::Folder {
+                        identifier: quote::format_ident!("base"),
                         forest: vec![(
-                            String::from("A_B"),
-                            model::FileTree::File(model::File { index: 0 }),
+                            String::new(),
+                            model::FileTree::File(model::File {
+                                identifier: quote::format_ident!("A_B"),
+                                index: 0,
+                            }),
                         )]
                         .into_iter()
                         .collect(),

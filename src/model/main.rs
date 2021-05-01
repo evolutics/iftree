@@ -71,11 +71,13 @@ pub enum FileTree {
 
 #[derive(Clone, cmp::PartialEq, Debug)]
 pub struct File {
+    pub identifier: syn::Ident,
     pub index: usize,
 }
 
 #[derive(Clone, cmp::PartialEq, Debug)]
 pub struct Folder {
+    pub identifier: syn::Ident,
     pub forest: FileForest,
 }
 
@@ -83,26 +85,11 @@ pub type Result<T> = result::Result<T, Error>;
 
 #[derive(Clone, cmp::PartialEq, Debug)]
 pub enum Error {
-    EnvironmentVariable {
-        name: String,
-        source: env::VarError,
-    },
-
+    EnvironmentVariable { name: String, source: env::VarError },
     Ignore(IgnoreError),
-
-    NameCollision {
-        name: String,
-        competitors: vec::Vec<RelativePath>,
-    },
-
     NoInitializer,
-
-    NonstandardField {
-        field: String,
-    },
-
+    NonstandardField { field: String },
     PathInvalidUnicode(path::PathBuf),
-
     PathStripPrefix(path::StripPrefixError),
 }
 

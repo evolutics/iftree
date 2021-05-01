@@ -11,7 +11,7 @@ pub fn main(
 ) -> model::Result<model::View> {
     let initializer = get_initializer::main(configuration, type_.structure)?;
     let array = get_array::main(paths);
-    let forest = get_forest::main(configuration, &array)?;
+    let forest = get_forest::main(configuration, &array);
     Ok(model::View {
         type_: type_.name,
         initializer,
@@ -53,9 +53,13 @@ mod tests {
             forest: vec![(
                 String::from("base"),
                 model::FileTree::Folder(model::Folder {
+                    identifier: quote::format_ident!("base"),
                     forest: vec![(
-                        String::from("r#B"),
-                        model::FileTree::File(model::File { index: 0 }),
+                        String::from('b'),
+                        model::FileTree::File(model::File {
+                            identifier: quote::format_ident!("r#B"),
+                            index: 0,
+                        }),
                     )]
                     .into_iter()
                     .collect(),

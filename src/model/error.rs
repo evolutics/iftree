@@ -22,17 +22,6 @@ impl fmt::Display for main::Error {
 
             main::Error::Ignore(main::IgnoreError(error)) => write!(formatter, "{}", error),
 
-            main::Error::NameCollision { name, competitors } => {
-                writeln!(formatter, "Files collide on generated name {:?}:", name)?;
-                for competitor in competitors {
-                    writeln!(formatter, "- {:?}", competitor.0)?;
-                }
-                write!(
-                    formatter,
-                    "Rename one of the files or configure \"identifiers = false\".",
-                )
-            }
-
             main::Error::NoInitializer => {
                 write!(
                     formatter,
@@ -76,7 +65,6 @@ impl error::Error for main::Error {
         match self {
             main::Error::EnvironmentVariable { source, .. } => Some(source),
             main::Error::Ignore(main::IgnoreError(error)) => Some(error),
-            main::Error::NameCollision { .. } => None,
             main::Error::NoInitializer => None,
             main::Error::NonstandardField { .. } => None,
             main::Error::PathInvalidUnicode(_) => None,
@@ -128,24 +116,6 @@ mod tests {
             .to_string();
 
             let expected = "error parsing glob '[': abc";
-            assert_eq!(actual, expected);
-        }
-
-        #[test]
-        fn handles_name_collision() {
-            let actual = main::Error::NameCollision {
-                name: String::from("b_c"),
-                competitors: vec![
-                    main::RelativePath::from("a/B-c"),
-                    main::RelativePath::from("a/b.c"),
-                ],
-            }
-            .to_string();
-
-            let expected = "Files collide on generated name \"b_c\":
-- \"a/B-c\"
-- \"a/b.c\"
-Rename one of the files or configure \"identifiers = false\".";
             assert_eq!(actual, expected);
         }
 
