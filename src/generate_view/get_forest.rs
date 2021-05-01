@@ -13,7 +13,7 @@ pub fn main(
         let forest = get_forest(paths)?;
         vec![(
             String::from(data::BASE_MODULE_NAME),
-            model::FileTree::Folder(forest),
+            model::FileTree::Folder(model::Folder { forest }),
         )]
         .into_iter()
         .collect()
@@ -109,8 +109,8 @@ fn add_file_recursively(
                 competitors: vec![*index, context.index],
             }),
 
-            Some(model::FileTree::Folder(child)) => {
-                add_file_recursively(child, reverse_file_path, Context { name, ..context })
+            Some(model::FileTree::Folder(model::Folder { forest })) => {
+                add_file_recursively(forest, reverse_file_path, Context { name, ..context })
             }
         },
     }
@@ -126,7 +126,9 @@ fn get_simple_sample_index(forest: &model::FileForest) -> Option<usize> {
     for tree in forest.values() {
         match tree {
             model::FileTree::File(_) => (),
-            model::FileTree::Folder(forest) => return get_simple_sample_index(forest),
+            model::FileTree::Folder(model::Folder { forest }) => {
+                return get_simple_sample_index(forest)
+            }
         }
     }
     None
@@ -136,7 +138,8 @@ fn get_singleton_tree(reverse_file_path: vec::Vec<String>, index: usize) -> mode
     let mut child = model::FileTree::File(model::File { index });
 
     for name in reverse_file_path.into_iter() {
-        child = model::FileTree::Folder(vec![(name, child)].into_iter().collect())
+        let forest = vec![(name, child)].into_iter().collect();
+        child = model::FileTree::Folder(model::Folder { forest });
     }
 
     child
@@ -174,7 +177,9 @@ mod tests {
         let actual = actual.unwrap();
         let expected = vec![(
             String::from("base"),
-            model::FileTree::Folder(model::FileForest::new()),
+            model::FileTree::Folder(model::Folder {
+                forest: model::FileForest::new(),
+            }),
         )]
         .into_iter()
         .collect();
@@ -203,8 +208,8 @@ mod tests {
         let actual = actual.unwrap();
         let expected = vec![(
             String::from("base"),
-            model::FileTree::Folder(
-                vec![
+            model::FileTree::Folder(model::Folder {
+                forest: vec![
                     (
                         String::from("r#A"),
                         model::FileTree::File(model::File { index: 0 }),
@@ -216,7 +221,7 @@ mod tests {
                 ]
                 .into_iter()
                 .collect(),
-            ),
+            }),
         )]
         .into_iter()
         .collect();
@@ -249,26 +254,26 @@ mod tests {
         let actual = actual.unwrap();
         let expected = vec![(
             String::from("base"),
-            model::FileTree::Folder(
-                vec![
+            model::FileTree::Folder(model::Folder {
+                forest: vec![
                     (
                         String::from("r#A"),
                         model::FileTree::File(model::File { index: 0 }),
                     ),
                     (
                         String::from("r#b"),
-                        model::FileTree::Folder(
-                            vec![
+                        model::FileTree::Folder(model::Folder {
+                            forest: vec![
                                 (
                                     String::from("r#a"),
-                                    model::FileTree::Folder(
-                                        vec![(
+                                    model::FileTree::Folder(model::Folder {
+                                        forest: vec![(
                                             String::from("r#B"),
                                             model::FileTree::File(model::File { index: 1 }),
                                         )]
                                         .into_iter()
                                         .collect(),
-                                    ),
+                                    }),
                                 ),
                                 (
                                     String::from("r#C"),
@@ -277,12 +282,12 @@ mod tests {
                             ]
                             .into_iter()
                             .collect(),
-                        ),
+                        }),
                     ),
                 ]
                 .into_iter()
                 .collect(),
-            ),
+            }),
         )]
         .into_iter()
         .collect();
@@ -405,11 +410,11 @@ mod tests {
             let actual = actual.unwrap();
             let expected = vec![(
                 String::from("base"),
-                model::FileTree::Folder(
-                    vec![(
+                model::FileTree::Folder(model::Folder {
+                    forest: vec![(
                         String::from("r#a"),
-                        model::FileTree::Folder(
-                            vec![
+                        model::FileTree::Folder(model::Folder {
+                            forest: vec![
                                 (
                                     String::from("r#B"),
                                     model::FileTree::File(model::File { index: 0 }),
@@ -421,11 +426,11 @@ mod tests {
                             ]
                             .into_iter()
                             .collect(),
-                        ),
+                        }),
                     )]
                     .into_iter()
                     .collect(),
-                ),
+                }),
             )]
             .into_iter()
             .collect();

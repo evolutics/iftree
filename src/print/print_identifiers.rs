@@ -23,21 +23,7 @@ fn print_forest(context: Context, forest: &model::FileForest) -> proc_macro2::To
 
             match tree {
                 model::FileTree::File(file) => print_file(&context, name, file),
-
-                model::FileTree::Folder(forest) => {
-                    let contents = print_forest(
-                        Context {
-                            depth: context.depth + 1,
-                            ..context
-                        },
-                        forest,
-                    );
-                    quote::quote! {
-                        pub mod #name {
-                            #contents
-                        }
-                    }
-                }
+                model::FileTree::Folder(folder) => print_folder(&context, name, folder),
             }
         })
         .collect()
@@ -52,6 +38,25 @@ fn print_file(context: &Context, name: syn::Ident, file: &model::File) -> proc_m
     let index = file.index;
 
     quote::quote! { pub static #name: &#root_path#type_ = &#root_path#array[#index]; }
+}
+
+fn print_folder(
+    context: &Context,
+    name: syn::Ident,
+    folder: &model::Folder,
+) -> proc_macro2::TokenStream {
+    let context = Context {
+        depth: context.depth + 1,
+        ..*context
+    };
+    let forest = &folder.forest;
+    let contents = print_forest(context, forest);
+
+    quote::quote! {
+        pub mod #name {
+            #contents
+        }
+    }
 }
 
 #[cfg(test)]
@@ -110,18 +115,18 @@ mod tests {
                 ),
                 (
                     String::from('b'),
-                    model::FileTree::Folder(
-                        vec![
+                    model::FileTree::Folder(model::Folder {
+                        forest: vec![
                             (
                                 String::from('a'),
-                                model::FileTree::Folder(
-                                    vec![(
+                                model::FileTree::Folder(model::Folder {
+                                    forest: vec![(
                                         String::from('B'),
                                         model::FileTree::File(model::File { index: 1 }),
                                     )]
                                     .into_iter()
                                     .collect(),
-                                ),
+                                }),
                             ),
                             (
                                 String::from('C'),
@@ -130,7 +135,7 @@ mod tests {
                         ]
                         .into_iter()
                         .collect(),
-                    ),
+                    }),
                 ),
             ]
             .into_iter()
