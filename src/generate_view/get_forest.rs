@@ -104,7 +104,7 @@ fn add_file_recursively(
                 None
             }
 
-            Some(model::FileTree::File { index }) => Some(Collision {
+            Some(model::FileTree::File(model::File { index })) => Some(Collision {
                 name,
                 competitors: vec![*index, context.index],
             }),
@@ -119,13 +119,13 @@ fn add_file_recursively(
 fn get_simple_sample_index(forest: &model::FileForest) -> Option<usize> {
     for tree in forest.values() {
         match tree {
-            model::FileTree::File { index } => return Some(*index),
+            model::FileTree::File(model::File { index }) => return Some(*index),
             model::FileTree::Folder(_) => (),
         }
     }
     for tree in forest.values() {
         match tree {
-            model::FileTree::File { .. } => (),
+            model::FileTree::File(_) => (),
             model::FileTree::Folder(forest) => return get_simple_sample_index(forest),
         }
     }
@@ -133,7 +133,7 @@ fn get_simple_sample_index(forest: &model::FileForest) -> Option<usize> {
 }
 
 fn get_singleton_tree(reverse_file_path: vec::Vec<String>, index: usize) -> model::FileTree {
-    let mut child = model::FileTree::File { index };
+    let mut child = model::FileTree::File(model::File { index });
 
     for name in reverse_file_path.into_iter() {
         child = model::FileTree::Folder(vec![(name, child)].into_iter().collect())
@@ -205,8 +205,14 @@ mod tests {
             String::from("base"),
             model::FileTree::Folder(
                 vec![
-                    (String::from("r#A"), model::FileTree::File { index: 0 }),
-                    (String::from("r#B"), model::FileTree::File { index: 1 }),
+                    (
+                        String::from("r#A"),
+                        model::FileTree::File(model::File { index: 0 }),
+                    ),
+                    (
+                        String::from("r#B"),
+                        model::FileTree::File(model::File { index: 1 }),
+                    ),
                 ]
                 .into_iter()
                 .collect(),
@@ -245,7 +251,10 @@ mod tests {
             String::from("base"),
             model::FileTree::Folder(
                 vec![
-                    (String::from("r#A"), model::FileTree::File { index: 0 }),
+                    (
+                        String::from("r#A"),
+                        model::FileTree::File(model::File { index: 0 }),
+                    ),
                     (
                         String::from("r#b"),
                         model::FileTree::Folder(
@@ -255,13 +264,16 @@ mod tests {
                                     model::FileTree::Folder(
                                         vec![(
                                             String::from("r#B"),
-                                            model::FileTree::File { index: 1 },
+                                            model::FileTree::File(model::File { index: 1 }),
                                         )]
                                         .into_iter()
                                         .collect(),
                                     ),
                                 ),
-                                (String::from("r#C"), model::FileTree::File { index: 2 }),
+                                (
+                                    String::from("r#C"),
+                                    model::FileTree::File(model::File { index: 2 }),
+                                ),
                             ]
                             .into_iter()
                             .collect(),
@@ -398,8 +410,14 @@ mod tests {
                         String::from("r#a"),
                         model::FileTree::Folder(
                             vec![
-                                (String::from("r#B"), model::FileTree::File { index: 0 }),
-                                (String::from("r#C"), model::FileTree::File { index: 1 }),
+                                (
+                                    String::from("r#B"),
+                                    model::FileTree::File(model::File { index: 0 }),
+                                ),
+                                (
+                                    String::from("r#C"),
+                                    model::FileTree::File(model::File { index: 1 }),
+                                ),
                             ]
                             .into_iter()
                             .collect(),

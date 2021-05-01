@@ -46,9 +46,12 @@ mod tests {
                 forest: vec![(
                     String::from("base"),
                     model::FileTree::Folder(
-                        vec![(String::from("A_B"), model::FileTree::File { index: 0 })]
-                            .into_iter()
-                            .collect(),
+                        vec![(
+                            String::from("A_B"),
+                            model::FileTree::File(model::File { index: 0 }),
+                        )]
+                        .into_iter()
+                        .collect(),
                     ),
                 )]
                 .into_iter()

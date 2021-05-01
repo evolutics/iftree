@@ -65,8 +65,13 @@ pub type FileForest = collections::BTreeMap<String, FileTree>;
 
 #[derive(Clone, cmp::PartialEq, Debug)]
 pub enum FileTree {
-    File { index: usize },
+    File(File),
     Folder(FileForest),
+}
+
+#[derive(Clone, cmp::PartialEq, Debug)]
+pub struct File {
+    pub index: usize,
 }
 
 pub type Result<T> = result::Result<T, Error>;

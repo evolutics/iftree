@@ -22,7 +22,7 @@ fn print_forest(context: Context, forest: &model::FileForest) -> proc_macro2::To
             let name = quote::format_ident!("{}", name);
 
             match tree {
-                model::FileTree::File { index } => print_file(&context, name, *index),
+                model::FileTree::File(file) => print_file(&context, name, file),
 
                 model::FileTree::Folder(forest) => {
                     let contents = print_forest(
@@ -43,12 +43,13 @@ fn print_forest(context: Context, forest: &model::FileForest) -> proc_macro2::To
         .collect()
 }
 
-fn print_file(context: &Context, name: syn::Ident, index: usize) -> proc_macro2::TokenStream {
+fn print_file(context: &Context, name: syn::Ident, file: &model::File) -> proc_macro2::TokenStream {
     let root_path = iter::repeat(quote::quote! { super:: })
         .take(context.depth)
         .collect::<proc_macro2::TokenStream>();
     let type_ = context.type_;
     let array = quote::format_ident!("{}", data::ASSET_ARRAY_NAME);
+    let index = file.index;
 
     quote::quote! { pub static #name: &#root_path#type_ = &#root_path#array[#index]; }
 }
@@ -74,8 +75,14 @@ mod tests {
         let actual = main(&model::View {
             type_: quote::format_ident!("Asset"),
             forest: vec![
-                (String::from('A'), model::FileTree::File { index: 1 }),
-                (String::from("BC"), model::FileTree::File { index: 0 }),
+                (
+                    String::from('A'),
+                    model::FileTree::File(model::File { index: 1 }),
+                ),
+                (
+                    String::from("BC"),
+                    model::FileTree::File(model::File { index: 0 }),
+                ),
             ]
             .into_iter()
             .collect(),
@@ -97,7 +104,10 @@ mod tests {
         let actual = main(&model::View {
             type_: quote::format_ident!("Asset"),
             forest: vec![
-                (String::from('A'), model::FileTree::File { index: 0 }),
+                (
+                    String::from('A'),
+                    model::FileTree::File(model::File { index: 0 }),
+                ),
                 (
                     String::from('b'),
                     model::FileTree::Folder(
@@ -105,12 +115,18 @@ mod tests {
                             (
                                 String::from('a'),
                                 model::FileTree::Folder(
-                                    vec![(String::from('B'), model::FileTree::File { index: 1 })]
-                                        .into_iter()
-                                        .collect(),
+                                    vec![(
+                                        String::from('B'),
+                                        model::FileTree::File(model::File { index: 1 }),
+                                    )]
+                                    .into_iter()
+                                    .collect(),
                                 ),
                             ),
-                            (String::from('C'), model::FileTree::File { index: 2 }),
+                            (
+                                String::from('C'),
+                                model::FileTree::File(model::File { index: 2 }),
+                            ),
                         ]
                         .into_iter()
                         .collect(),
