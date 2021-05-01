@@ -22,8 +22,8 @@ async fn main() -> io::Result<()> {
 
 async fn get_asset(path: web::Path<String>) -> impl actix_web::Responder {
     let path = path.into_inner();
-    match ASSETS.binary_search_by(|asset| asset.relative_path.cmp(&path)) {
-        Err(_) => actix_web::HttpResponse::NotFound().finish(),
-        Ok(index) => actix_web::HttpResponse::Ok().body(ASSETS[index].contents_str),
+    match ASSETS.iter().position(|asset| asset.relative_path == path) {
+        None => actix_web::HttpResponse::NotFound().finish(),
+        Some(index) => actix_web::HttpResponse::Ok().body(ASSETS[index].contents_str),
     }
 }

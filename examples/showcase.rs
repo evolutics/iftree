@@ -70,10 +70,9 @@ fn print_index(socket_address: &str) {
 async fn get_asset(path: web::Path<String>) -> impl actix_web::Responder {
     let path = path.into_inner();
     // Use the URL path directly as file path.
-    // `ASSETS` is generated in order of relative paths, hence a binary search.
-    match ASSETS.binary_search_by(|asset| asset.path.cmp(&path)) {
-        Err(_) => actix_web::HttpResponse::NotFound().finish(),
-        Ok(index) => {
+    match ASSETS.iter().position(|asset| asset.path == path) {
+        None => actix_web::HttpResponse::NotFound().finish(),
+        Some(index) => {
             let asset = &ASSETS[index];
             actix_web::HttpResponse::Ok()
                 .content_type(&*asset.media_type)

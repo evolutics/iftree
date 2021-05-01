@@ -144,17 +144,6 @@ field names with a [custom `initializer`](#initializer).
 See
 [example](https://github.com/evolutics/iftree/blob/main/examples/basics_standard_fields.rs).
 
-### Asset lookup
-
-The generated `ASSETS` array is ordered by the relative path strings, in their
-Unicode code point order. This means you can do a binary search for dynamic
-lookup (see
-[example](https://github.com/evolutics/iftree/blob/main/examples/scenario_binary_search.rs)).
-
-If you know the path at compile time, a static lookup is possible via identifier
-`base::path::to::MY_FILE` in constant time. For more, see the
-[`identifiers` configuration](#identifiers).
-
 ### Troubleshooting
 
 To inspect the generated code, there is a [`debug` configuration](#debug).
