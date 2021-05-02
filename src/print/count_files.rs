@@ -1,11 +1,11 @@
 use crate::model;
 
-pub fn main(forest: &model::FileForest) -> usize {
+pub fn main(forest: &model::Forest) -> usize {
     forest
         .values()
         .map(|tree| match tree {
-            model::FileTree::File(_) => 1,
-            model::FileTree::Folder(model::Folder { forest, .. }) => main(forest),
+            model::Tree::File(_) => 1,
+            model::Tree::Folder(model::Folder { forest, .. }) => main(forest),
         })
         .sum()
 }
@@ -18,30 +18,24 @@ mod tests {
     fn handles() {
         let actual = main(
             &vec![
-                (
-                    String::from('0'),
-                    model::FileTree::File(model::stubs::file()),
-                ),
+                (String::from('0'), model::Tree::File(model::stubs::file())),
                 (
                     String::from('1'),
-                    model::FileTree::Folder(model::Folder {
+                    model::Tree::Folder(model::Folder {
                         forest: vec![
                             (
                                 String::from('2'),
-                                model::FileTree::Folder(model::Folder {
+                                model::Tree::Folder(model::Folder {
                                     forest: vec![(
                                         String::from('3'),
-                                        model::FileTree::File(model::stubs::file()),
+                                        model::Tree::File(model::stubs::file()),
                                     )]
                                     .into_iter()
                                     .collect(),
                                     ..model::stubs::folder()
                                 }),
                             ),
-                            (
-                                String::from('4'),
-                                model::FileTree::File(model::stubs::file()),
-                            ),
+                            (String::from('4'), model::Tree::File(model::stubs::file())),
                         ]
                         .into_iter()
                         .collect(),

@@ -42,7 +42,7 @@ pub struct RelativePath(pub String);
 pub struct View {
     pub type_: syn::Ident,
     pub visitors: vec::Vec<Visitor>,
-    pub forest: FileForest,
+    pub forest: Forest,
 }
 
 #[derive(Clone, cmp::PartialEq, Debug)]
@@ -66,10 +66,10 @@ pub enum Populator {
     RelativePath,
 }
 
-pub type FileForest = collections::BTreeMap<String, FileTree>;
+pub type Forest = collections::BTreeMap<String, Tree>;
 
 #[derive(Clone, cmp::PartialEq, Debug)]
-pub enum FileTree {
+pub enum Tree {
     File(File),
     Folder(Folder),
 }
@@ -85,7 +85,7 @@ pub struct File {
 #[derive(Clone, cmp::PartialEq, Debug)]
 pub struct Folder {
     pub identifier: syn::Ident,
-    pub forest: FileForest,
+    pub forest: Forest,
 }
 
 pub type Result<T> = result::Result<T, Error>;
@@ -133,7 +133,7 @@ pub mod stubs {
         View {
             type_: quote::format_ident!("Foo"),
             visitors: vec![],
-            forest: FileForest::new(),
+            forest: Forest::new(),
         }
     }
 
@@ -149,7 +149,7 @@ pub mod stubs {
     pub fn folder() -> Folder {
         Folder {
             identifier: quote::format_ident!("foo"),
-            forest: FileForest::new(),
+            forest: Forest::new(),
         }
     }
 }

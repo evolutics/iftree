@@ -4,8 +4,8 @@ use std::iter;
 use std::path;
 use std::vec;
 
-pub fn main(paths: vec::Vec<model::Path>) -> model::FileForest {
-    let mut forest = model::FileForest::new();
+pub fn main(paths: vec::Vec<model::Path>) -> model::Forest {
+    let mut forest = model::Forest::new();
 
     for path in paths.into_iter() {
         let reverse_path = get_reverse_path(&path.relative);
@@ -42,7 +42,7 @@ fn get_file(name: &str, path: model::Path) -> model::File {
     }
 }
 
-fn add_file(parent: &mut model::FileForest, mut reverse_path: vec::Vec<String>, file: model::File) {
+fn add_file(parent: &mut model::Forest, mut reverse_path: vec::Vec<String>, file: model::File) {
     match reverse_path.pop() {
         None => {}
 
@@ -52,9 +52,9 @@ fn add_file(parent: &mut model::FileForest, mut reverse_path: vec::Vec<String>, 
                 parent.insert(name, child);
             }
 
-            Some(model::FileTree::File(_)) => {}
+            Some(model::Tree::File(_)) => {}
 
-            Some(model::FileTree::Folder(model::Folder { forest, .. })) => {
+            Some(model::Tree::Folder(model::Folder { forest, .. })) => {
                 add_file(forest, reverse_path, file)
             }
         },
@@ -65,7 +65,7 @@ fn get_singleton_tree(
     reverse_path: vec::Vec<String>,
     file: model::File,
     root: &str,
-) -> model::FileTree {
+) -> model::Tree {
     let parents = get_folder_identifiers(
         &reverse_path
             .iter()
@@ -75,11 +75,11 @@ fn get_singleton_tree(
             .collect::<vec::Vec<_>>(),
     );
 
-    let mut tree = model::FileTree::File(file);
+    let mut tree = model::Tree::File(file);
 
     for (child, parent) in reverse_path.into_iter().zip(parents.into_iter()) {
         let forest = vec![(child, tree)].into_iter().collect();
-        tree = model::FileTree::Folder(model::Folder {
+        tree = model::Tree::Folder(model::Folder {
             identifier: parent,
             forest,
         });
@@ -98,15 +98,15 @@ fn get_folder_identifiers(names: &[&str]) -> vec::Vec<syn::Ident> {
         .collect()
 }
 
-fn overwrite_indices_in_order(forest: &mut model::FileForest, index: &mut usize) {
+fn overwrite_indices_in_order(forest: &mut model::Forest, index: &mut usize) {
     for tree in forest.values_mut() {
         match tree {
-            model::FileTree::File(file) => {
+            model::Tree::File(file) => {
                 file.index = *index;
                 *index += 1;
             }
 
-            model::FileTree::Folder(model::Folder { forest, .. }) => {
+            model::Tree::Folder(model::Folder { forest, .. }) => {
                 overwrite_indices_in_order(forest, index)
             }
         }
@@ -121,7 +121,7 @@ mod tests {
     fn handles_empty_set() {
         let actual = main(vec![]);
 
-        let expected = model::FileForest::new();
+        let expected = model::Forest::new();
         assert_eq!(actual, expected);
     }
 
@@ -141,7 +141,7 @@ mod tests {
         let expected = vec![
             (
                 String::from('B'),
-                model::FileTree::File(model::File {
+                model::Tree::File(model::File {
                     identifier: quote::format_ident!("r#B"),
                     index: 0,
                     relative_path: model::RelativePath::from("B"),
@@ -150,7 +150,7 @@ mod tests {
             ),
             (
                 String::from('c'),
-                model::FileTree::File(model::File {
+                model::Tree::File(model::File {
                     identifier: quote::format_ident!("r#C"),
                     index: 1,
                     relative_path: model::RelativePath::from("c"),
@@ -183,7 +183,7 @@ mod tests {
         let expected = vec![
             (
                 String::from('a'),
-                model::FileTree::File(model::File {
+                model::Tree::File(model::File {
                     identifier: quote::format_ident!("r#A"),
                     index: 0,
                     relative_path: model::RelativePath::from("a"),
@@ -192,16 +192,16 @@ mod tests {
             ),
             (
                 String::from('b'),
-                model::FileTree::Folder(model::Folder {
+                model::Tree::Folder(model::Folder {
                     identifier: quote::format_ident!("r#b"),
                     forest: vec![
                         (
                             String::from('a'),
-                            model::FileTree::Folder(model::Folder {
+                            model::Tree::Folder(model::Folder {
                                 identifier: quote::format_ident!("r#a"),
                                 forest: vec![(
                                     String::from('b'),
-                                    model::FileTree::File(model::File {
+                                    model::Tree::File(model::File {
                                         identifier: quote::format_ident!("r#B"),
                                         index: 1,
                                         relative_path: model::RelativePath::from("b/a/b"),
@@ -214,7 +214,7 @@ mod tests {
                         ),
                         (
                             String::from('c'),
-                            model::FileTree::File(model::File {
+                            model::Tree::File(model::File {
                                 identifier: quote::format_ident!("r#C"),
                                 index: 2,
                                 relative_path: model::RelativePath::from("b/c"),

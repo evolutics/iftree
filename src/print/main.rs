@@ -44,7 +44,7 @@ mod tests {
                 ],
                 forest: vec![(
                     String::new(),
-                    model::FileTree::File(model::File {
+                    model::Tree::File(model::File {
                         identifier: quote::format_ident!("A_B"),
                         index: 0,
                         absolute_path: String::from("/a.b"),
