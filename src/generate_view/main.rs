@@ -25,7 +25,7 @@ mod tests {
     fn handles() {
         let actual = main(
             &model::Configuration {
-                initializer: Some(String::from("abc")),
+                initializer: Some(quote::format_ident!("abc")),
                 identifiers: true,
                 ..model::stubs::configuration()
             },
@@ -43,7 +43,7 @@ mod tests {
         let expected = model::View {
             type_: quote::format_ident!("Asset"),
             visitors: vec![
-                model::Visitor::Array(model::Initializer::Macro(String::from("abc"))),
+                model::Visitor::Array(model::Initializer::Macro(quote::format_ident!("abc"))),
                 model::Visitor::Identifiers,
             ],
             forest: vec![(

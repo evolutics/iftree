@@ -54,12 +54,11 @@ fn print_default(
     }
 }
 
-fn print_macro(macro_: &str, file: &model::File) -> proc_macro2::TokenStream {
-    let macro_name = quote::format_ident!("{}", macro_);
+fn print_macro(macro_: &syn::Ident, file: &model::File) -> proc_macro2::TokenStream {
     let relative_path = &file.relative_path.0;
     let absolute_path = &file.absolute_path;
 
-    quote::quote! { #macro_name!(#relative_path, #absolute_path) }
+    quote::quote! { #macro_!(#relative_path, #absolute_path) }
 }
 
 #[cfg(test)]
@@ -184,7 +183,7 @@ mod tests {
     fn macro_() {
         let actual = main(
             &quote::format_ident!("Foo"),
-            &model::Initializer::Macro(String::from("abc")),
+            &model::Initializer::Macro(quote::format_ident!("abc")),
             &model::File {
                 relative_path: model::RelativePath::from("b"),
                 absolute_path: String::from("/a/b"),
