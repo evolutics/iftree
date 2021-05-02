@@ -1,3 +1,4 @@
+mod count_files;
 mod main;
 mod print_forest;
 mod print_initializer;

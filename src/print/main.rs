@@ -42,7 +42,6 @@ mod tests {
                     )),
                     model::Visitor::Identifiers,
                 ],
-                count: 1,
                 forest: vec![(
                     String::new(),
                     model::FileTree::File(model::File {

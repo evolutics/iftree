@@ -1,3 +1,4 @@
+use super::count_files;
 use super::print_initializer;
 use crate::data;
 use crate::model;
@@ -17,7 +18,7 @@ pub fn main(view: &model::View, visitor: &model::Visitor) -> proc_macro2::TokenS
         model::Visitor::Array(_) => {
             let name = quote::format_ident!("{}", data::ASSET_ARRAY_NAME);
             let type_ = &view.type_;
-            let length = view.count;
+            let length = count_files::main(&view.forest);
             quote::quote! { pub static #name: [#type_; #length] = [#contents]; }
         }
 
@@ -91,7 +92,6 @@ mod tests {
         let actual = main(
             &model::View {
                 type_: quote::format_ident!("Asset"),
-                count: 2,
                 forest: vec![
                     (
                         String::from('0'),

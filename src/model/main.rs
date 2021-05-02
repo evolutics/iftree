@@ -42,7 +42,6 @@ pub struct RelativePath(pub String);
 pub struct View {
     pub type_: syn::Ident,
     pub visitors: vec::Vec<Visitor>,
-    pub count: usize,
     pub forest: FileForest,
 }
 
@@ -134,7 +133,6 @@ pub mod stubs {
         View {
             type_: quote::format_ident!("Foo"),
             visitors: vec![],
-            count: 0,
             forest: FileForest::new(),
         }
     }
