@@ -1,5 +1,4 @@
-use super::print_array;
-use super::print_identifiers;
+use super::print_forest;
 use super::print_with_debug;
 use crate::model;
 
@@ -8,15 +7,16 @@ pub fn main(
     item: proc_macro2::TokenStream,
     view: model::View,
 ) -> proc_macro2::TokenStream {
-    let array = print_array::main(&view);
-    let identifiers = print_identifiers::main(&view);
+    let visits = view
+        .visitors
+        .iter()
+        .map(|visitor| print_forest::main(&view, visitor))
+        .collect::<proc_macro2::TokenStream>();
 
     let code = quote::quote! {
         #item
 
-        #array
-
-        #identifiers
+        #visits
     };
 
     print_with_debug::main(configuration, code)
@@ -36,26 +36,20 @@ mod tests {
             quote::quote! { pub type Asset = &'static str; },
             model::View {
                 type_: quote::format_ident!("Asset"),
-                initializer: model::Initializer::Default(model::TypeStructure::TypeAlias(
-                    model::Populator::ContentsStr,
-                )),
-                array: vec![model::Path {
-                    absolute: String::from("/a.b"),
-                    ..model::stubs::path()
-                }],
+                visitors: vec![
+                    model::Visitor::Array(model::Initializer::Default(
+                        model::TypeStructure::TypeAlias(model::Populator::ContentsStr),
+                    )),
+                    model::Visitor::Identifiers,
+                ],
+                count: 1,
                 forest: vec![(
                     String::new(),
-                    model::FileTree::Folder(model::Folder {
-                        identifier: quote::format_ident!("base"),
-                        forest: vec![(
-                            String::new(),
-                            model::FileTree::File(model::File {
-                                identifier: quote::format_ident!("A_B"),
-                                index: 0,
-                            }),
-                        )]
-                        .into_iter()
-                        .collect(),
+                    model::FileTree::File(model::File {
+                        identifier: quote::format_ident!("A_B"),
+                        index: 0,
+                        absolute_path: String::from("/a.b"),
+                        ..model::stubs::file()
                     }),
                 )]
                 .into_iter()

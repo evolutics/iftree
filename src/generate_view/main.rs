@@ -1,6 +1,5 @@
-use super::get_array;
 use super::get_forest;
-use super::get_initializer;
+use super::get_visitors;
 use crate::model;
 use std::vec;
 
@@ -9,13 +8,13 @@ pub fn main(
     type_: model::Type<()>,
     paths: vec::Vec<model::Path>,
 ) -> model::Result<model::View> {
-    let initializer = get_initializer::main(configuration, type_.structure)?;
-    let array = get_array::main(paths);
-    let forest = get_forest::main(configuration, &array);
+    let visitors = get_visitors::main(configuration, type_.structure)?;
+    let count = paths.len();
+    let forest = get_forest::main(paths);
     Ok(model::View {
         type_: type_.name,
-        initializer,
-        array,
+        visitors,
+        count,
         forest,
     })
 }
@@ -45,24 +44,18 @@ mod tests {
         let actual = actual.unwrap();
         let expected = model::View {
             type_: quote::format_ident!("Asset"),
-            initializer: model::Initializer::Macro(String::from("abc")),
-            array: vec![model::Path {
-                relative: model::RelativePath::from("b"),
-                absolute: String::from("/a/b"),
-            }],
+            visitors: vec![
+                model::Visitor::Array(model::Initializer::Macro(String::from("abc"))),
+                model::Visitor::Identifiers,
+            ],
+            count: 1,
             forest: vec![(
-                String::from("base"),
-                model::FileTree::Folder(model::Folder {
-                    identifier: quote::format_ident!("base"),
-                    forest: vec![(
-                        String::from('b'),
-                        model::FileTree::File(model::File {
-                            identifier: quote::format_ident!("r#B"),
-                            index: 0,
-                        }),
-                    )]
-                    .into_iter()
-                    .collect(),
+                String::from('b'),
+                model::FileTree::File(model::File {
+                    identifier: quote::format_ident!("r#B"),
+                    index: 0,
+                    relative_path: model::RelativePath::from("b"),
+                    absolute_path: String::from("/a/b"),
                 }),
             )]
             .into_iter()

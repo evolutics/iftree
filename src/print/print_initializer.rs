@@ -1,21 +1,25 @@
 use super::print_populator;
 use crate::model;
 
-pub fn main(view: &model::View, path: &model::Path) -> proc_macro2::TokenStream {
-    match &view.initializer {
-        model::Initializer::Default(populators) => print_default(&view.type_, populators, path),
-        model::Initializer::Macro(name) => print_macro(name, path),
+pub fn main(
+    type_: &syn::Ident,
+    initializer: &model::Initializer,
+    file: &model::File,
+) -> proc_macro2::TokenStream {
+    match initializer {
+        model::Initializer::Default(populators) => print_default(type_, populators, file),
+        model::Initializer::Macro(name) => print_macro(name, file),
     }
 }
 
 fn print_default(
     type_: &syn::Ident,
     populators: &model::TypeStructure<model::Populator>,
-    path: &model::Path,
+    file: &model::File,
 ) -> proc_macro2::TokenStream {
     let context = print_populator::Context {
-        relative_path: &path.relative.0,
-        absolute_path: &path.absolute,
+        relative_path: &file.relative_path.0,
+        absolute_path: &file.absolute_path,
     };
 
     match populators {
@@ -50,10 +54,10 @@ fn print_default(
     }
 }
 
-fn print_macro(macro_: &str, path: &model::Path) -> proc_macro2::TokenStream {
+fn print_macro(macro_: &str, file: &model::File) -> proc_macro2::TokenStream {
     let macro_name = quote::format_ident!("{}", macro_);
-    let relative_path = &path.relative.0;
-    let absolute_path = &path.absolute;
+    let relative_path = &file.relative_path.0;
+    let absolute_path = &file.absolute_path;
 
     quote::quote! { #macro_name!(#relative_path, #absolute_path) }
 }
@@ -69,19 +73,15 @@ mod tests {
         #[test]
         fn handles_populator_context() {
             let actual = main(
-                &model::View {
-                    type_: quote::format_ident!("Asset"),
-                    initializer: model::Initializer::Default(model::TypeStructure::TupleFields(
-                        vec![
-                            model::Populator::RelativePath,
-                            model::Populator::ContentsStr,
-                        ],
-                    )),
-                    ..model::stubs::view()
-                },
-                &model::Path {
-                    relative: model::RelativePath::from("b"),
-                    absolute: String::from("/a/b"),
+                &quote::format_ident!("Asset"),
+                &model::Initializer::Default(model::TypeStructure::TupleFields(vec![
+                    model::Populator::RelativePath,
+                    model::Populator::ContentsStr,
+                ])),
+                &model::File {
+                    relative_path: model::RelativePath::from("b"),
+                    absolute_path: String::from("/a/b"),
+                    ..model::stubs::file()
                 },
             );
 
@@ -103,12 +103,9 @@ mod tests {
             #[test]
             fn handles_unit() {
                 let actual = main(
-                    &model::View {
-                        type_: quote::format_ident!("MyUnit"),
-                        initializer: model::Initializer::Default(model::TypeStructure::Unit),
-                        ..model::stubs::view()
-                    },
-                    &model::stubs::path(),
+                    &quote::format_ident!("MyUnit"),
+                    &model::Initializer::Default(model::TypeStructure::Unit),
+                    &model::stubs::file(),
                 );
 
                 let actual = actual.to_string();
@@ -119,15 +116,13 @@ mod tests {
             #[test]
             fn handles_type_alias() {
                 let actual = main(
-                    &model::View {
-                        initializer: model::Initializer::Default(model::TypeStructure::TypeAlias(
-                            model::Populator::ContentsBytes,
-                        )),
-                        ..model::stubs::view()
-                    },
-                    &model::Path {
-                        absolute: String::from("/a/b"),
-                        ..model::stubs::path()
+                    &quote::format_ident!("Foo"),
+                    &model::Initializer::Default(model::TypeStructure::TypeAlias(
+                        model::Populator::ContentsBytes,
+                    )),
+                    &model::File {
+                        absolute_path: String::from("/a/b"),
+                        ..model::stubs::file()
                     },
                 );
 
@@ -139,19 +134,14 @@ mod tests {
             #[test]
             fn handles_named_fields() {
                 let actual = main(
-                    &model::View {
-                        type_: quote::format_ident!("MyNamedFields"),
-                        initializer: model::Initializer::Default(
-                            model::TypeStructure::NamedFields(vec![(
-                                String::from("abc"),
-                                model::Populator::ContentsStr,
-                            )]),
-                        ),
-                        ..model::stubs::view()
-                    },
-                    &model::Path {
-                        absolute: String::from("/a/b"),
-                        ..model::stubs::path()
+                    &quote::format_ident!("MyNamedFields"),
+                    &model::Initializer::Default(model::TypeStructure::NamedFields(vec![(
+                        String::from("abc"),
+                        model::Populator::ContentsStr,
+                    )])),
+                    &model::File {
+                        absolute_path: String::from("/a/b"),
+                        ..model::stubs::file()
                     },
                 );
 
@@ -168,16 +158,13 @@ mod tests {
             #[test]
             fn handles_tuple_fields() {
                 let actual = main(
-                    &model::View {
-                        type_: quote::format_ident!("MyTupleFields"),
-                        initializer: model::Initializer::Default(
-                            model::TypeStructure::TupleFields(vec![model::Populator::RelativePath]),
-                        ),
-                        ..model::stubs::view()
-                    },
-                    &model::Path {
-                        relative: model::RelativePath::from("b"),
-                        ..model::stubs::path()
+                    &quote::format_ident!("MyTupleFields"),
+                    &model::Initializer::Default(model::TypeStructure::TupleFields(vec![
+                        model::Populator::RelativePath,
+                    ])),
+                    &model::File {
+                        relative_path: model::RelativePath::from("b"),
+                        ..model::stubs::file()
                     },
                 );
 
@@ -196,13 +183,12 @@ mod tests {
     #[test]
     fn macro_() {
         let actual = main(
-            &model::View {
-                initializer: model::Initializer::Macro(String::from("abc")),
-                ..model::stubs::view()
-            },
-            &model::Path {
-                relative: model::RelativePath::from("b"),
-                absolute: String::from("/a/b"),
+            &quote::format_ident!("Foo"),
+            &model::Initializer::Macro(String::from("abc")),
+            &model::File {
+                relative_path: model::RelativePath::from("b"),
+                absolute_path: String::from("/a/b"),
+                ..model::stubs::file()
             },
         );
 

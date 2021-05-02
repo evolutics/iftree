@@ -41,9 +41,15 @@ pub struct RelativePath(pub String);
 #[derive(Clone, cmp::PartialEq, Debug)]
 pub struct View {
     pub type_: syn::Ident,
-    pub initializer: Initializer,
-    pub array: vec::Vec<Path>,
+    pub visitors: vec::Vec<Visitor>,
+    pub count: usize,
     pub forest: FileForest,
+}
+
+#[derive(Clone, cmp::PartialEq, Debug)]
+pub enum Visitor {
+    Array(Initializer),
+    Identifiers,
 }
 
 #[derive(Clone, cmp::PartialEq, Debug)]
@@ -73,6 +79,8 @@ pub enum FileTree {
 pub struct File {
     pub identifier: syn::Ident,
     pub index: usize,
+    pub relative_path: RelativePath,
+    pub absolute_path: String,
 }
 
 #[derive(Clone, cmp::PartialEq, Debug)]
@@ -122,23 +130,21 @@ pub mod stubs {
         TypeStructure::Unit
     }
 
-    pub fn path() -> Path {
-        Path {
-            relative: RelativePath::from("bar"),
-            absolute: String::from("/foo/bar"),
-        }
-    }
-
     pub fn view() -> View {
         View {
             type_: quote::format_ident!("Foo"),
-            initializer: initializer(),
-            array: vec![],
+            visitors: vec![],
+            count: 0,
             forest: FileForest::new(),
         }
     }
 
-    pub fn initializer() -> Initializer {
-        Initializer::Default(type_structure())
+    pub fn file() -> File {
+        File {
+            identifier: quote::format_ident!("BAR"),
+            index: 123,
+            relative_path: RelativePath::from("bar"),
+            absolute_path: String::from("/foo/bar"),
+        }
     }
 }
