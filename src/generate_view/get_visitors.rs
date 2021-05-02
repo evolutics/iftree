@@ -21,7 +21,7 @@ mod tests {
     fn handles_without_identifiers() {
         let actual = main(
             &model::Configuration {
-                initializer: Some(quote::format_ident!("abc")),
+                initializer: Some(syn::parse_str("abc").unwrap()),
                 identifiers: false,
                 ..model::stubs::configuration()
             },
@@ -30,7 +30,7 @@ mod tests {
 
         let actual = actual.unwrap();
         let expected = vec![model::Visitor::Array(model::Initializer::Macro(
-            quote::format_ident!("abc"),
+            syn::parse_str("abc").unwrap(),
         ))];
         assert_eq!(actual, expected);
     }
@@ -39,7 +39,7 @@ mod tests {
     fn handles_with_identifiers() {
         let actual = main(
             &model::Configuration {
-                initializer: Some(quote::format_ident!("abc")),
+                initializer: Some(syn::parse_str("abc").unwrap()),
                 identifiers: true,
                 ..model::stubs::configuration()
             },
@@ -48,7 +48,7 @@ mod tests {
 
         let actual = actual.unwrap();
         let expected = vec![
-            model::Visitor::Array(model::Initializer::Macro(quote::format_ident!("abc"))),
+            model::Visitor::Array(model::Initializer::Macro(syn::parse_str("abc").unwrap())),
             model::Visitor::Identifiers,
         ];
         assert_eq!(actual, expected);

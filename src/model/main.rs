@@ -10,7 +10,7 @@ pub struct Configuration {
     pub paths: String,
     pub base_folder: path::PathBuf,
     pub root_folder_variable: String,
-    pub initializer: Option<syn::Ident>,
+    pub initializer: Option<syn::Path>,
     pub identifiers: bool,
     pub debug: bool,
 }
@@ -54,7 +54,7 @@ pub enum Visitor {
 #[derive(Clone, cmp::PartialEq, Debug)]
 pub enum Initializer {
     Default(TypeStructure<Populator>),
-    Macro(syn::Ident),
+    Macro(syn::Path),
 }
 
 #[derive(Clone, cmp::PartialEq, Debug)]

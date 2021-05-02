@@ -1,4 +1,3 @@
-use super::identifier;
 use crate::model;
 use std::path;
 use toml::de;
@@ -14,7 +13,7 @@ struct UserConfiguration {
     paths: String,
     base_folder: Option<path::PathBuf>,
     root_folder_variable: Option<String>,
-    initializer: Option<identifier::Identifier>,
+    initializer: Option<super::path::Path>,
     identifiers: Option<bool>,
     debug: Option<bool>,
 }
@@ -27,7 +26,7 @@ impl From<UserConfiguration> for model::Configuration {
             root_folder_variable: configuration
                 .root_folder_variable
                 .unwrap_or_else(|| String::from("CARGO_MANIFEST_DIR")),
-            initializer: configuration.initializer.map(|identifier| identifier.0),
+            initializer: configuration.initializer.map(|value| value.0),
             identifiers: configuration.identifiers.unwrap_or(true),
             debug: configuration.debug.unwrap_or(false),
         }
@@ -72,7 +71,7 @@ debug = true
             paths: String::from("/my/assets/**"),
             base_folder: path::PathBuf::from("my_base"),
             root_folder_variable: String::from("MY_ROOT_FOLDER"),
-            initializer: Some(quote::format_ident!("my_macro")),
+            initializer: Some(syn::parse_str("my_macro").unwrap()),
             identifiers: false,
             debug: true,
         };

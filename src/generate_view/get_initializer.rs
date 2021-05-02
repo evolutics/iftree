@@ -202,14 +202,14 @@ mod tests {
     fn given_initializer_it_handles() {
         let actual = main(
             &model::Configuration {
-                initializer: Some(quote::format_ident!("abc")),
+                initializer: Some(syn::parse_str("abc").unwrap()),
                 ..model::stubs::configuration()
             },
             model::stubs::type_structure(),
         );
 
         let actual = actual.unwrap();
-        let expected = model::Initializer::Macro(quote::format_ident!("abc"));
+        let expected = model::Initializer::Macro(syn::parse_str("abc").unwrap());
         assert_eq!(actual, expected);
     }
 }
