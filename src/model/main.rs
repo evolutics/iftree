@@ -147,4 +147,11 @@ pub mod stubs {
             absolute_path: String::from("/foo/bar"),
         }
     }
+
+    pub fn folder() -> Folder {
+        Folder {
+            identifier: quote::format_ident!("foo"),
+            forest: FileForest::new(),
+        }
+    }
 }

@@ -103,7 +103,6 @@ mod tests {
                     (
                         String::from('1'),
                         model::FileTree::Folder(model::Folder {
-                            identifier: quote::format_ident!("foo"),
                             forest: vec![(
                                 String::from('2'),
                                 model::FileTree::File(model::File {
@@ -113,6 +112,7 @@ mod tests {
                             )]
                             .into_iter()
                             .collect(),
+                            ..model::stubs::folder()
                         }),
                     ),
                 ]
