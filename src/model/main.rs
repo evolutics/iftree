@@ -43,6 +43,7 @@ pub struct View {
     pub type_: syn::Ident,
     pub visitors: vec::Vec<Visitor>,
     pub forest: Forest,
+    pub debug: bool,
 }
 
 #[derive(Clone, cmp::PartialEq, Debug)]
@@ -157,6 +158,7 @@ pub mod stubs {
             type_: quote::format_ident!("Foo"),
             visitors: vec![],
             forest: Forest::new(),
+            debug: false,
         }
     }
 

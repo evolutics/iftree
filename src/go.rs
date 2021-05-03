@@ -14,7 +14,7 @@ pub fn main(
     // 2. Construct a view model.
     let view = generate_view::main(&configuration, type_, paths)?;
     // 3. Generate code ("view").
-    Ok(print::main(&configuration, item, view))
+    Ok(print::main(item, view))
 }
 
 #[cfg(test)]

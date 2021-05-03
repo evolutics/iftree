@@ -1,11 +1,8 @@
 use crate::data;
 use crate::model;
 
-pub fn main(
-    configuration: &model::Configuration,
-    code: proc_macro2::TokenStream,
-) -> proc_macro2::TokenStream {
-    if configuration.debug {
+pub fn main(view: model::View, code: proc_macro2::TokenStream) -> proc_macro2::TokenStream {
+    if view.debug {
         go(code)
     } else {
         code
@@ -30,9 +27,9 @@ mod tests {
     #[test]
     fn handles_no_debug() {
         let actual = main(
-            &model::Configuration {
+            model::View {
                 debug: false,
-                ..model::stubs::configuration()
+                ..model::stubs::view()
             },
             quote::quote! { mod abc {} },
         );
@@ -45,9 +42,9 @@ mod tests {
     #[test]
     fn handles_debug() {
         let actual = main(
-            &model::Configuration {
+            model::View {
                 debug: true,
-                ..model::stubs::configuration()
+                ..model::stubs::view()
             },
             quote::quote! { mod abc {} },
         );

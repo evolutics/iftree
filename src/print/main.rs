@@ -2,11 +2,7 @@ use super::print_forest;
 use super::print_with_debug;
 use crate::model;
 
-pub fn main(
-    configuration: &model::Configuration,
-    item: proc_macro2::TokenStream,
-    view: model::View,
-) -> proc_macro2::TokenStream {
+pub fn main(item: proc_macro2::TokenStream, view: model::View) -> proc_macro2::TokenStream {
     let visits = view
         .visitors
         .iter()
@@ -19,7 +15,7 @@ pub fn main(
         #visits
     };
 
-    print_with_debug::main(configuration, code)
+    print_with_debug::main(view, code)
 }
 
 #[cfg(test)]
@@ -29,10 +25,6 @@ mod tests {
     #[test]
     fn handles() {
         let actual = main(
-            &model::Configuration {
-                debug: false,
-                ..model::stubs::configuration()
-            },
             quote::quote! { pub type Asset = &'static str; },
             model::View {
                 type_: quote::format_ident!("Asset"),
@@ -53,6 +45,7 @@ mod tests {
                 )]
                 .into_iter()
                 .collect(),
+                debug: false,
             },
         );
 

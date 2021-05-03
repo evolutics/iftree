@@ -14,6 +14,7 @@ pub fn main(
         type_: type_.name,
         visitors,
         forest,
+        debug: configuration.debug,
     })
 }
 
@@ -27,6 +28,7 @@ mod tests {
             &model::Configuration {
                 initializer: Some(syn::parse_str("abc").unwrap()),
                 identifiers: true,
+                debug: true,
                 ..model::stubs::configuration()
             },
             model::Type {
@@ -57,6 +59,7 @@ mod tests {
             )]
             .into_iter()
             .collect(),
+            debug: true,
         };
         assert_eq!(actual, expected);
     }
