@@ -49,6 +49,8 @@ pub struct View {
 pub enum Visitor {
     Array(Initializer),
     Identifiers,
+    #[allow(dead_code)]
+    Custom(CustomVisitor),
 }
 
 #[derive(Clone, cmp::PartialEq, Debug)]
@@ -64,6 +66,27 @@ pub enum Populator {
     GetBytes,
     GetStr,
     RelativePath,
+}
+
+#[derive(Clone, cmp::PartialEq, Debug)]
+pub struct CustomVisitor {
+    pub base: Visit,
+    pub folder: Visit,
+    pub file: Visit,
+}
+
+#[derive(Clone, cmp::PartialEq, Debug)]
+pub struct Visit {
+    pub macro_: syn::Path,
+    pub terminator: Terminator,
+}
+
+#[derive(Clone, cmp::PartialEq, Debug)]
+pub enum Terminator {
+    #[allow(dead_code)]
+    Void,
+    #[allow(dead_code)]
+    Comma,
 }
 
 pub type Forest = collections::BTreeMap<String, Tree>;

@@ -26,6 +26,14 @@ pub fn main(view: &model::View, visitor: &model::Visitor) -> proc_macro2::TokenS
             let name = quote::format_ident!("{}", data::BASE_MODULE_NAME);
             quote::quote! { pub mod #name { #contents } }
         }
+
+        model::Visitor::Custom(model::CustomVisitor {
+            base: model::Visit { macro_, terminator },
+            ..
+        }) => {
+            let length = count_files::main(&view.forest);
+            quote::quote! { #macro_!(#length, #contents) #terminator }
+        }
     }
 }
 
@@ -37,10 +45,10 @@ struct Context<'a> {
 
 fn print_forest(context: &Context, forest: &model::Forest) -> proc_macro2::TokenStream {
     forest
-        .values()
-        .map(|tree| match tree {
+        .iter()
+        .map(|(name, tree)| match tree {
             model::Tree::File(file) => print_file(context, file),
-            model::Tree::Folder(folder) => print_folder(context, folder),
+            model::Tree::Folder(folder) => print_folder(context, name, folder),
         })
         .collect()
 }
@@ -62,10 +70,24 @@ fn print_file(context: &Context, file: &model::File) -> proc_macro2::TokenStream
             let index = file.index;
             quote::quote! { pub static #identifier: &#root_path#type_ = &#root_path#array[#index]; }
         }
+
+        model::Visitor::Custom(model::CustomVisitor {
+            file: model::Visit { macro_, terminator },
+            ..
+        }) => {
+            let identifier = &file.identifier;
+            let index = file.index;
+            let relative_path = &file.relative_path.0;
+            let absolute_path = &file.absolute_path;
+            quote::quote! {
+                #macro_!(#identifier, #index, #relative_path, #absolute_path)
+                #terminator
+            }
+        }
     }
 }
 
-fn print_folder(context: &Context, folder: &model::Folder) -> proc_macro2::TokenStream {
+fn print_folder(context: &Context, name: &str, folder: &model::Folder) -> proc_macro2::TokenStream {
     let contents = print_forest(
         &Context {
             depth: context.depth + 1,
@@ -76,9 +98,18 @@ fn print_folder(context: &Context, folder: &model::Folder) -> proc_macro2::Token
 
     match context.visitor {
         model::Visitor::Array(_) => contents,
+
         model::Visitor::Identifiers => {
             let identifier = &folder.identifier;
             quote::quote! { pub mod #identifier { #contents } }
+        }
+
+        model::Visitor::Custom(model::CustomVisitor {
+            folder: model::Visit { macro_, terminator },
+            ..
+        }) => {
+            let identifier = &folder.identifier;
+            quote::quote! { #macro_!(#identifier, #name, #contents) #terminator }
         }
     }
 }
@@ -271,5 +302,97 @@ mod tests {
             .to_string();
             assert_eq!(actual, expected);
         }
+    }
+
+    #[test]
+    fn handles_custom() {
+        let actual = main(
+            &model::View {
+                forest: vec![
+                    (
+                        String::from('0'),
+                        model::Tree::File(model::File {
+                            identifier: quote::format_ident!("A"),
+                            index: 0,
+                            relative_path: model::RelativePath::from("a"),
+                            absolute_path: String::from("/a"),
+                        }),
+                    ),
+                    (
+                        String::from('1'),
+                        model::Tree::Folder(model::Folder {
+                            identifier: quote::format_ident!("b"),
+                            forest: vec![
+                                (
+                                    String::from('2'),
+                                    model::Tree::Folder(model::Folder {
+                                        identifier: quote::format_ident!("a"),
+                                        forest: vec![(
+                                            String::from('3'),
+                                            model::Tree::File(model::File {
+                                                identifier: quote::format_ident!("B"),
+                                                index: 2,
+                                                relative_path: model::RelativePath::from("b/a/b"),
+                                                absolute_path: String::from("/b/a/b"),
+                                            }),
+                                        )]
+                                        .into_iter()
+                                        .collect(),
+                                    }),
+                                ),
+                                (
+                                    String::from('4'),
+                                    model::Tree::File(model::File {
+                                        identifier: quote::format_ident!("C"),
+                                        index: 1,
+                                        relative_path: model::RelativePath::from("b/c"),
+                                        absolute_path: String::from("/b/c"),
+                                    }),
+                                ),
+                            ]
+                            .into_iter()
+                            .collect(),
+                        }),
+                    ),
+                ]
+                .into_iter()
+                .collect(),
+                ..model::stubs::view()
+            },
+            &model::Visitor::Custom(model::CustomVisitor {
+                base: model::Visit {
+                    macro_: syn::parse_str("visit_base").unwrap(),
+                    terminator: model::Terminator::Comma,
+                },
+                folder: model::Visit {
+                    macro_: syn::parse_str("visit_folder").unwrap(),
+                    terminator: model::Terminator::Comma,
+                },
+                file: model::Visit {
+                    macro_: syn::parse_str("visit_file").unwrap(),
+                    terminator: model::Terminator::Comma,
+                },
+            }),
+        );
+
+        let actual = actual.to_string();
+        let expected = quote::quote! {
+            visit_base!(
+                3usize,
+                visit_file!(A, 0usize, "a", "/a"),
+                visit_folder!(
+                    b,
+                    "1",
+                    visit_folder!(
+                        a,
+                        "2",
+                        visit_file!(B, 2usize, "b/a/b", "/b/a/b"),
+                    ),
+                    visit_file!(C, 1usize, "b/c", "/b/c"),
+                ),
+            ),
+        }
+        .to_string();
+        assert_eq!(actual, expected);
     }
 }
