@@ -12,7 +12,7 @@ pub fn main(
     // 1. I/O only happens here.
     let paths = list_files::main(&configuration)?;
     // 2. Construct a view model.
-    let view = generate_view::main(&configuration, type_, paths)?;
+    let view = generate_view::main(configuration, type_, paths)?;
     // 3. Generate code ("view").
     Ok(print::main(item, view))
 }

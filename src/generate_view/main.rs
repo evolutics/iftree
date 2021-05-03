@@ -4,11 +4,11 @@ use crate::model;
 use std::vec;
 
 pub fn main(
-    configuration: &model::Configuration,
+    configuration: model::Configuration,
     type_: model::Type<()>,
     paths: vec::Vec<model::Path>,
 ) -> model::Result<model::View> {
-    let visitors = get_visitors::main(configuration, type_.structure)?;
+    let visitors = get_visitors::main(&configuration, type_.structure)?;
     let forest = get_forest::main(paths);
     Ok(model::View {
         type_: type_.name,
@@ -25,7 +25,7 @@ mod tests {
     #[test]
     fn handles() {
         let actual = main(
-            &model::Configuration {
+            model::Configuration {
                 initializer: Some(syn::parse_str("abc").unwrap()),
                 identifiers: true,
                 debug: true,
