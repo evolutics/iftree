@@ -4,21 +4,21 @@ use std::iter;
 use std::path;
 use std::vec;
 
-pub fn main(paths: vec::Vec<model::Path>) -> model::Forest {
+pub fn main(paths: vec::Vec<model::Path>) -> model::Result<model::Forest> {
     let mut forest = model::Forest::new();
 
     for path in paths.into_iter() {
         let reverse_path = get_reverse_path(&path.relative);
         if let Some(filename) = reverse_path.first() {
             let file = get_file(filename, path);
-            add_file(&mut forest, reverse_path, file);
+            add_file(&mut forest, reverse_path, file)?;
         }
     }
 
     let mut index = 0;
     overwrite_indices_in_order(&mut forest, &mut index);
 
-    forest
+    Ok(forest)
 }
 
 fn get_reverse_path(path: &str) -> vec::Vec<String> {
@@ -42,17 +42,26 @@ fn get_file(name: &str, path: model::Path) -> model::File {
     }
 }
 
-fn add_file(parent: &mut model::Forest, mut reverse_path: vec::Vec<String>, file: model::File) {
+fn add_file(
+    parent: &mut model::Forest,
+    mut reverse_path: vec::Vec<String>,
+    file: model::File,
+) -> model::Result<()> {
     match reverse_path.pop() {
-        None => {}
+        None => Err(model::Error::UnexpectedPathCollision(path::PathBuf::from(
+            file.relative_path,
+        ))),
 
         Some(name) => match parent.get_mut(&name) {
             None => {
                 let child = get_singleton_tree(reverse_path, file, &name);
                 parent.insert(name, child);
+                Ok(())
             }
 
-            Some(model::Tree::File(_)) => {}
+            Some(model::Tree::File(_)) => Err(model::Error::UnexpectedPathCollision(
+                path::PathBuf::from(file.relative_path),
+            )),
 
             Some(model::Tree::Folder(model::Folder { forest, .. })) => {
                 add_file(forest, reverse_path, file)
@@ -121,6 +130,7 @@ mod tests {
     fn handles_empty_set() {
         let actual = main(vec![]);
 
+        let actual = actual.unwrap();
         let expected = model::Forest::new();
         assert_eq!(actual, expected);
     }
@@ -138,6 +148,7 @@ mod tests {
             },
         ]);
 
+        let actual = actual.unwrap();
         let expected = vec![
             (
                 String::from('B'),
@@ -180,6 +191,7 @@ mod tests {
             },
         ]);
 
+        let actual = actual.unwrap();
         let expected = vec![
             (
                 String::from('a'),
@@ -229,6 +241,24 @@ mod tests {
         ]
         .into_iter()
         .collect();
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn given_path_collision_it_errs() {
+        let actual = main(vec![
+            model::Path {
+                relative: String::from("a/b"),
+                ..model::stubs::path()
+            },
+            model::Path {
+                relative: String::from("a/b"),
+                ..model::stubs::path()
+            },
+        ]);
+
+        let actual = actual.unwrap_err();
+        let expected = model::Error::UnexpectedPathCollision(path::PathBuf::from("a/b"));
         assert_eq!(actual, expected);
     }
 }

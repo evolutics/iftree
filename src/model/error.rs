@@ -56,6 +56,14 @@ impl fmt::Display for main::Error {
             }
 
             main::Error::PathStripPrefix(error) => write!(formatter, "{}", error),
+
+            main::Error::UnexpectedPathCollision(path) => {
+                write!(
+                    formatter,
+                    "Unexpected path collision (consider reporting this): {:?}",
+                    path,
+                )
+            }
         }
     }
 }
@@ -69,6 +77,7 @@ impl error::Error for main::Error {
             main::Error::NonstandardField { .. } => None,
             main::Error::PathInvalidUnicode(_) => None,
             main::Error::PathStripPrefix(error) => Some(error),
+            main::Error::UnexpectedPathCollision(_) => None,
         }
     }
 }
@@ -159,6 +168,15 @@ use standard fields only \
                     .to_string();
 
             let expected = "prefix not found";
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn handles_unexpected_path_collision() {
+            let actual =
+                main::Error::UnexpectedPathCollision(path::PathBuf::from("a/b")).to_string();
+
+            let expected = "Unexpected path collision (consider reporting this): \"a/b\"";
             assert_eq!(actual, expected);
         }
     }

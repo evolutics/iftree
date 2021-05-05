@@ -113,6 +113,7 @@ pub enum Error {
     NonstandardField { field: String },
     PathInvalidUnicode(path::PathBuf),
     PathStripPrefix(path::StripPrefixError),
+    UnexpectedPathCollision(path::PathBuf),
 }
 
 #[derive(Clone, Debug)]
@@ -141,6 +142,13 @@ pub mod stubs {
 
     pub fn type_structure<T>() -> TypeStructure<T> {
         TypeStructure::Unit
+    }
+
+    pub fn path() -> Path {
+        Path {
+            relative: String::from("bar"),
+            absolute: String::from("/foo/bar"),
+        }
     }
 
     pub fn view() -> View {

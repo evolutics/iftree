@@ -9,7 +9,7 @@ pub fn main(
     paths: vec::Vec<model::Path>,
 ) -> model::Result<model::View> {
     let visitors = get_visitors::main(configuration.template, type_.structure)?;
-    let forest = get_forest::main(paths);
+    let forest = get_forest::main(paths)?;
     Ok(model::View {
         type_: type_.name,
         visitors,
