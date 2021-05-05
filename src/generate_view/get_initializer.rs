@@ -2,12 +2,12 @@ use crate::data;
 use crate::model;
 
 pub fn main(
-    configuration: &model::Configuration,
+    initializer: Option<syn::Path>,
     structure: model::TypeStructure<()>,
 ) -> model::Result<model::Initializer> {
-    Ok(match &configuration.initializer {
+    Ok(match initializer {
         None => model::Initializer::Default(get_populators(structure)?),
-        Some(macro_) => model::Initializer::Macro(macro_.clone()),
+        Some(macro_) => model::Initializer::Macro(macro_),
     })
 }
 
@@ -58,13 +58,7 @@ mod tests {
 
         #[test]
         fn handles_unit() {
-            let actual = main(
-                &model::Configuration {
-                    initializer: None,
-                    ..model::stubs::configuration()
-                },
-                model::TypeStructure::Unit,
-            );
+            let actual = main(None, model::TypeStructure::Unit);
 
             let actual = actual.unwrap();
             let expected = model::Initializer::Default(model::TypeStructure::Unit);
@@ -73,13 +67,7 @@ mod tests {
 
         #[test]
         fn handles_type_alias() {
-            let actual = main(
-                &model::Configuration {
-                    initializer: None,
-                    ..model::stubs::configuration()
-                },
-                model::TypeStructure::TypeAlias(()),
-            );
+            let actual = main(None, model::TypeStructure::TypeAlias(()));
 
             let actual = actual.unwrap_err();
             let expected = model::Error::NoInitializer;
@@ -93,10 +81,7 @@ mod tests {
             #[test]
             fn given_standard_fields_only_it_handles() {
                 let actual = main(
-                    &model::Configuration {
-                        initializer: None,
-                        ..model::stubs::configuration()
-                    },
+                    None,
                     model::TypeStructure::NamedFields(vec![
                         (String::from("relative_path"), ()),
                         (String::from("contents_str"), ()),
@@ -118,10 +103,7 @@ mod tests {
             #[test]
             fn given_nonstandard_field_it_errs() {
                 let actual = main(
-                    &model::Configuration {
-                        initializer: None,
-                        ..model::stubs::configuration()
-                    },
+                    None,
                     model::TypeStructure::NamedFields(vec![
                         (String::from("relative_path"), ()),
                         (String::from("abc"), ()),
@@ -138,10 +120,7 @@ mod tests {
             #[test]
             fn handles_each_standard_field() {
                 let actual = main(
-                    &model::Configuration {
-                        initializer: None,
-                        ..model::stubs::configuration()
-                    },
+                    None,
                     model::TypeStructure::NamedFields(
                         data::STANDARD_FIELD_POPULATORS_ORDERED
                             .iter()
@@ -167,13 +146,7 @@ mod tests {
 
             #[test]
             fn given_no_fields_it_handles() {
-                let actual = main(
-                    &model::Configuration {
-                        initializer: None,
-                        ..model::stubs::configuration()
-                    },
-                    model::TypeStructure::TupleFields(vec![]),
-                );
+                let actual = main(None, model::TypeStructure::TupleFields(vec![]));
 
                 let actual = actual.unwrap();
                 let expected =
@@ -183,13 +156,7 @@ mod tests {
 
             #[test]
             fn given_fields_it_errs() {
-                let actual = main(
-                    &model::Configuration {
-                        initializer: None,
-                        ..model::stubs::configuration()
-                    },
-                    model::TypeStructure::TupleFields(vec![()]),
-                );
+                let actual = main(None, model::TypeStructure::TupleFields(vec![()]));
 
                 let actual = actual.unwrap_err();
                 let expected = model::Error::NoInitializer;
@@ -201,10 +168,7 @@ mod tests {
     #[test]
     fn given_initializer_it_handles() {
         let actual = main(
-            &model::Configuration {
-                initializer: Some(syn::parse_str("abc").unwrap()),
-                ..model::stubs::configuration()
-            },
+            Some(syn::parse_str("abc").unwrap()),
             model::stubs::type_structure(),
         );
 

@@ -26,8 +26,10 @@ impl From<UserConfiguration> for model::Configuration {
             root_folder_variable: configuration
                 .root_folder_variable
                 .unwrap_or_else(|| String::from("CARGO_MANIFEST_DIR")),
-            initializer: configuration.initializer.map(|value| value.0),
-            identifiers: configuration.identifiers.unwrap_or(true),
+            template: model::Template::Default {
+                initializer: configuration.initializer.map(|value| value.0),
+                identifiers: configuration.identifiers.unwrap_or(true),
+            },
             debug: configuration.debug.unwrap_or(false),
         }
     }
@@ -46,8 +48,10 @@ mod tests {
             paths: String::from("/a/b/**"),
             base_folder: path::PathBuf::new(),
             root_folder_variable: String::from("CARGO_MANIFEST_DIR"),
-            initializer: None,
-            identifiers: true,
+            template: model::Template::Default {
+                initializer: None,
+                identifiers: true,
+            },
             debug: false,
         };
         assert_eq!(actual, expected);
@@ -71,8 +75,10 @@ debug = true
             paths: String::from("/my/assets/**"),
             base_folder: path::PathBuf::from("my_base"),
             root_folder_variable: String::from("MY_ROOT_FOLDER"),
-            initializer: Some(syn::parse_str("my_macro").unwrap()),
-            identifiers: false,
+            template: model::Template::Default {
+                initializer: Some(syn::parse_str("my_macro").unwrap()),
+                identifiers: false,
+            },
             debug: true,
         };
         assert_eq!(actual, expected);

@@ -10,9 +10,25 @@ pub struct Configuration {
     pub paths: String,
     pub base_folder: path::PathBuf,
     pub root_folder_variable: String,
-    pub initializer: Option<syn::Path>,
-    pub identifiers: bool,
+    pub template: Template,
     pub debug: bool,
+}
+
+#[derive(Clone, cmp::PartialEq, Debug)]
+pub enum Template {
+    Default {
+        initializer: Option<syn::Path>,
+        identifiers: bool,
+    },
+    #[allow(dead_code)]
+    Visitors(vec::Vec<CustomVisitor>),
+}
+
+#[derive(Clone, cmp::PartialEq, Debug)]
+pub struct CustomVisitor {
+    pub visit_base: Option<syn::Path>,
+    pub visit_folder: Option<syn::Path>,
+    pub visit_file: syn::Path,
 }
 
 #[derive(Clone, cmp::PartialEq, Debug)]
@@ -50,7 +66,6 @@ pub struct View {
 pub enum Visitor {
     Array(Initializer),
     Identifiers,
-    #[allow(dead_code)]
     Custom(CustomVisitor),
 }
 
@@ -67,13 +82,6 @@ pub enum Populator {
     GetBytes,
     GetStr,
     RelativePath,
-}
-
-#[derive(Clone, cmp::PartialEq, Debug)]
-pub struct CustomVisitor {
-    pub visit_base: Option<syn::Path>,
-    pub visit_folder: Option<syn::Path>,
-    pub visit_file: syn::Path,
 }
 
 pub type Forest = collections::BTreeMap<String, Tree>;
@@ -122,8 +130,7 @@ pub mod stubs {
             paths: String::from("!*"),
             base_folder: path::PathBuf::from("foo"),
             root_folder_variable: String::from("BAR"),
-            initializer: None,
-            identifiers: false,
+            template: Template::Visitors(vec![]),
             debug: false,
         }
     }

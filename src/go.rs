@@ -29,8 +29,10 @@ mod tests {
                 paths: String::from("/assets/*.md"),
                 base_folder: path::PathBuf::from("examples"),
                 root_folder_variable: String::from("CARGO_MANIFEST_DIR"),
-                initializer: None,
-                identifiers: true,
+                template: model::Template::Default {
+                    initializer: None,
+                    identifiers: true,
+                },
                 debug: false,
             },
             quote::quote! {
