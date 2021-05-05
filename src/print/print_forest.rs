@@ -29,7 +29,7 @@ pub fn main(view: &model::View, visitor: &model::Visitor) -> proc_macro2::TokenS
 
         model::Visitor::Custom(model::CustomVisitor { visit_base, .. }) => {
             let length = count_files::main(&view.forest);
-            quote::quote! { #visit_base!(#length, #contents) }
+            quote::quote! { #visit_base! { #length, #contents } }
         }
     }
 }
@@ -73,7 +73,7 @@ fn print_file(context: &Context, file: &model::File) -> proc_macro2::TokenStream
             let index = file.index;
             let relative_path = &file.relative_path.0;
             let absolute_path = &file.absolute_path;
-            quote::quote! { #visit_file!(#identifier, #index, #relative_path, #absolute_path) }
+            quote::quote! { #visit_file! { #identifier, #index, #relative_path, #absolute_path } }
         }
     }
 }
@@ -97,7 +97,7 @@ fn print_folder(context: &Context, name: &str, folder: &model::Folder) -> proc_m
 
         model::Visitor::Custom(model::CustomVisitor { visit_folder, .. }) => {
             let identifier = &folder.identifier;
-            quote::quote! { #visit_folder!(#identifier, #name, #contents) }
+            quote::quote! { #visit_folder! { #identifier, #name, #contents } }
         }
     }
 }
@@ -356,20 +356,20 @@ mod tests {
 
         let actual = actual.to_string();
         let expected = quote::quote! {
-            visit_base!(
+            visit_base! {
                 3usize,
-                visit_file!(A, 0usize, "a", "/a")
-                visit_folder!(
+                visit_file! { A, 0usize, "a", "/a" }
+                visit_folder! {
                     b,
                     "1",
-                    visit_folder!(
+                    visit_folder! {
                         a,
                         "2",
-                        visit_file!(B, 2usize, "b/a/b", "/b/a/b")
-                    )
-                    visit_file!(C, 1usize, "b/c", "/b/c")
-                )
-            )
+                        visit_file! { B, 2usize, "b/a/b", "/b/a/b" }
+                    }
+                    visit_file! { C, 1usize, "b/c", "/b/c" }
+                }
+            }
         }
         .to_string();
         assert_eq!(actual, expected);
