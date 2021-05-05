@@ -21,8 +21,8 @@ pub fn main(paths: vec::Vec<model::Path>) -> model::Forest {
     forest
 }
 
-fn get_reverse_path(path: &model::RelativePath) -> vec::Vec<String> {
-    path::Path::new(&path.0)
+fn get_reverse_path(path: &str) -> vec::Vec<String> {
+    path::Path::new(path)
         .iter()
         .rev()
         .map(|name| name.to_string_lossy().to_string())
@@ -129,11 +129,11 @@ mod tests {
     fn handles_files() {
         let actual = main(vec![
             model::Path {
-                relative: model::RelativePath::from("B"),
+                relative: String::from('B'),
                 absolute: String::from("/a/B"),
             },
             model::Path {
-                relative: model::RelativePath::from("c"),
+                relative: String::from('c'),
                 absolute: String::from("/a/c"),
             },
         ]);
@@ -144,7 +144,7 @@ mod tests {
                 model::Tree::File(model::File {
                     identifier: quote::format_ident!("r#B"),
                     index: 0,
-                    relative_path: model::RelativePath::from("B"),
+                    relative_path: String::from('B'),
                     absolute_path: String::from("/a/B"),
                 }),
             ),
@@ -153,7 +153,7 @@ mod tests {
                 model::Tree::File(model::File {
                     identifier: quote::format_ident!("r#C"),
                     index: 1,
-                    relative_path: model::RelativePath::from("c"),
+                    relative_path: String::from('c'),
                     absolute_path: String::from("/a/c"),
                 }),
             ),
@@ -167,15 +167,15 @@ mod tests {
     fn handles_folders() {
         let actual = main(vec![
             model::Path {
-                relative: model::RelativePath::from("a"),
+                relative: String::from('a'),
                 absolute: String::from("/a"),
             },
             model::Path {
-                relative: model::RelativePath::from("b/a/b"),
+                relative: String::from("b/a/b"),
                 absolute: String::from("/b/a/b"),
             },
             model::Path {
-                relative: model::RelativePath::from("b/c"),
+                relative: String::from("b/c"),
                 absolute: String::from("/b/c"),
             },
         ]);
@@ -186,7 +186,7 @@ mod tests {
                 model::Tree::File(model::File {
                     identifier: quote::format_ident!("r#A"),
                     index: 0,
-                    relative_path: model::RelativePath::from("a"),
+                    relative_path: String::from('a'),
                     absolute_path: String::from("/a"),
                 }),
             ),
@@ -204,7 +204,7 @@ mod tests {
                                     model::Tree::File(model::File {
                                         identifier: quote::format_ident!("r#B"),
                                         index: 1,
-                                        relative_path: model::RelativePath::from("b/a/b"),
+                                        relative_path: String::from("b/a/b"),
                                         absolute_path: String::from("/b/a/b"),
                                     }),
                                 )]
@@ -217,7 +217,7 @@ mod tests {
                             model::Tree::File(model::File {
                                 identifier: quote::format_ident!("r#C"),
                                 index: 2,
-                                relative_path: model::RelativePath::from("b/c"),
+                                relative_path: String::from("b/c"),
                                 absolute_path: String::from("/b/c"),
                             }),
                         ),

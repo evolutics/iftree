@@ -47,12 +47,9 @@ pub enum TypeStructure<T> {
 
 #[derive(Clone, cmp::PartialEq, Debug)]
 pub struct Path {
-    pub relative: RelativePath,
+    pub relative: String,
     pub absolute: String,
 }
-
-#[derive(Clone, cmp::PartialEq, Debug)]
-pub struct RelativePath(pub String);
 
 #[derive(Clone, cmp::PartialEq, Debug)]
 pub struct View {
@@ -96,7 +93,7 @@ pub enum Tree {
 pub struct File {
     pub identifier: syn::Ident,
     pub index: usize,
-    pub relative_path: RelativePath,
+    pub relative_path: String,
     pub absolute_path: String,
 }
 
@@ -159,7 +156,7 @@ pub mod stubs {
         File {
             identifier: quote::format_ident!("BAR"),
             index: 123,
-            relative_path: RelativePath::from("bar"),
+            relative_path: String::from("bar"),
             absolute_path: String::from("/foo/bar"),
         }
     }

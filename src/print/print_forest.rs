@@ -78,7 +78,7 @@ fn print_file(context: &Context, file: &model::File) -> proc_macro2::TokenStream
         model::Visitor::Custom(model::CustomVisitor { visit_file, .. }) => {
             let identifier = &file.identifier;
             let index = file.index;
-            let relative_path = &file.relative_path.0;
+            let relative_path = &file.relative_path;
             let absolute_path = &file.absolute_path;
             quote::quote! { #visit_file! { #identifier, #index, #relative_path, #absolute_path } }
         }
@@ -129,7 +129,7 @@ mod tests {
                     (
                         String::from('0'),
                         model::Tree::File(model::File {
-                            relative_path: model::RelativePath::from("a"),
+                            relative_path: String::from('a'),
                             ..model::stubs::file()
                         }),
                     ),
@@ -139,7 +139,7 @@ mod tests {
                             forest: vec![(
                                 String::from('2'),
                                 model::Tree::File(model::File {
-                                    relative_path: model::RelativePath::from("b/c"),
+                                    relative_path: String::from("b/c"),
                                     ..model::stubs::file()
                                 }),
                             )]
@@ -320,7 +320,7 @@ mod tests {
                             model::Tree::File(model::File {
                                 identifier: quote::format_ident!("A"),
                                 index: 0,
-                                relative_path: model::RelativePath::from("a"),
+                                relative_path: String::from('a'),
                                 absolute_path: String::from("/a"),
                             }),
                         ),
@@ -338,9 +338,7 @@ mod tests {
                                                 model::Tree::File(model::File {
                                                     identifier: quote::format_ident!("B"),
                                                     index: 2,
-                                                    relative_path: model::RelativePath::from(
-                                                        "b/a/b",
-                                                    ),
+                                                    relative_path: String::from("b/a/b"),
                                                     absolute_path: String::from("/b/a/b"),
                                                 }),
                                             )]
@@ -353,7 +351,7 @@ mod tests {
                                         model::Tree::File(model::File {
                                             identifier: quote::format_ident!("C"),
                                             index: 1,
-                                            relative_path: model::RelativePath::from("b/c"),
+                                            relative_path: String::from("b/c"),
                                             absolute_path: String::from("/b/c"),
                                         }),
                                     ),
@@ -408,7 +406,7 @@ mod tests {
                                 model::Tree::File(model::File {
                                     identifier: quote::format_ident!("B"),
                                     index: 0,
-                                    relative_path: model::RelativePath::from("a/b"),
+                                    relative_path: String::from("a/b"),
                                     absolute_path: String::from("/a/b"),
                                 }),
                             )]
@@ -452,7 +450,7 @@ mod tests {
                                 model::Tree::File(model::File {
                                     identifier: quote::format_ident!("B"),
                                     index: 0,
-                                    relative_path: model::RelativePath::from("a/b"),
+                                    relative_path: String::from("a/b"),
                                     absolute_path: String::from("/a/b"),
                                 }),
                             )]

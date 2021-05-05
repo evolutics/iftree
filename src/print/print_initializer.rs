@@ -18,7 +18,7 @@ fn print_default(
     file: &model::File,
 ) -> proc_macro2::TokenStream {
     let context = print_populator::Context {
-        relative_path: &file.relative_path.0,
+        relative_path: &file.relative_path,
         absolute_path: &file.absolute_path,
     };
 
@@ -55,7 +55,7 @@ fn print_default(
 }
 
 fn print_macro(macro_: &syn::Path, file: &model::File) -> proc_macro2::TokenStream {
-    let relative_path = &file.relative_path.0;
+    let relative_path = &file.relative_path;
     let absolute_path = &file.absolute_path;
 
     quote::quote! { #macro_!(#relative_path, #absolute_path) }
@@ -78,7 +78,7 @@ mod tests {
                     model::Populator::ContentsStr,
                 ])),
                 &model::File {
-                    relative_path: model::RelativePath::from("b"),
+                    relative_path: String::from('b'),
                     absolute_path: String::from("/a/b"),
                     ..model::stubs::file()
                 },
@@ -162,7 +162,7 @@ mod tests {
                         model::Populator::RelativePath,
                     ])),
                     &model::File {
-                        relative_path: model::RelativePath::from("b"),
+                        relative_path: String::from('b'),
                         ..model::stubs::file()
                     },
                 );
@@ -185,7 +185,7 @@ mod tests {
             &quote::format_ident!("Foo"),
             &model::Initializer::Macro(syn::parse_str("abc").unwrap()),
             &model::File {
-                relative_path: model::RelativePath::from("b"),
+                relative_path: String::from('b'),
                 absolute_path: String::from("/a/b"),
                 ..model::stubs::file()
             },

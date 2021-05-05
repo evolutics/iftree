@@ -13,7 +13,7 @@ pub fn main(
 }
 
 fn get_path(base_folder: &path::Path, path: path::PathBuf) -> model::Result<model::Path> {
-    let relative = model::RelativePath(get_path_string(path.strip_prefix(base_folder)?)?);
+    let relative = get_path_string(path.strip_prefix(base_folder)?)?;
     let absolute = get_path_string(&path)?;
 
     Ok(model::Path { relative, absolute })
@@ -43,11 +43,11 @@ mod tests {
         let actual = actual.unwrap();
         let expected = vec![
             model::Path {
-                relative: model::RelativePath::from("c"),
+                relative: String::from('c'),
                 absolute: String::from("/a/b/c"),
             },
             model::Path {
-                relative: model::RelativePath::from("a/b"),
+                relative: String::from("a/b"),
                 absolute: String::from("/a/b/a/b"),
             },
         ];

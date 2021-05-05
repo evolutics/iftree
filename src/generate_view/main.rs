@@ -38,7 +38,7 @@ mod tests {
                 ..model::stubs::type_()
             },
             vec![model::Path {
-                relative: model::RelativePath::from("b"),
+                relative: String::from('b'),
                 absolute: String::from("/a/b"),
             }],
         );
@@ -55,7 +55,7 @@ mod tests {
                 model::Tree::File(model::File {
                     identifier: quote::format_ident!("r#B"),
                     index: 0,
-                    relative_path: model::RelativePath::from("b"),
+                    relative_path: String::from('b'),
                     absolute_path: String::from("/a/b"),
                 }),
             )]
