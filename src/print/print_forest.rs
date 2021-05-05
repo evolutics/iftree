@@ -27,12 +27,9 @@ pub fn main(view: &model::View, visitor: &model::Visitor) -> proc_macro2::TokenS
             quote::quote! { pub mod #name { #contents } }
         }
 
-        model::Visitor::Custom(model::CustomVisitor {
-            base: model::Visit { macro_, terminator },
-            ..
-        }) => {
+        model::Visitor::Custom(model::CustomVisitor { visit_base, .. }) => {
             let length = count_files::main(&view.forest);
-            quote::quote! { #macro_!(#length, #contents) #terminator }
+            quote::quote! { #visit_base!(#length, #contents) }
         }
     }
 }
@@ -71,18 +68,12 @@ fn print_file(context: &Context, file: &model::File) -> proc_macro2::TokenStream
             quote::quote! { pub static #identifier: &#root_path#type_ = &#root_path#array[#index]; }
         }
 
-        model::Visitor::Custom(model::CustomVisitor {
-            file: model::Visit { macro_, terminator },
-            ..
-        }) => {
+        model::Visitor::Custom(model::CustomVisitor { visit_file, .. }) => {
             let identifier = &file.identifier;
             let index = file.index;
             let relative_path = &file.relative_path.0;
             let absolute_path = &file.absolute_path;
-            quote::quote! {
-                #macro_!(#identifier, #index, #relative_path, #absolute_path)
-                #terminator
-            }
+            quote::quote! { #visit_file!(#identifier, #index, #relative_path, #absolute_path) }
         }
     }
 }
@@ -104,12 +95,9 @@ fn print_folder(context: &Context, name: &str, folder: &model::Folder) -> proc_m
             quote::quote! { pub mod #identifier { #contents } }
         }
 
-        model::Visitor::Custom(model::CustomVisitor {
-            folder: model::Visit { macro_, terminator },
-            ..
-        }) => {
+        model::Visitor::Custom(model::CustomVisitor { visit_folder, .. }) => {
             let identifier = &folder.identifier;
-            quote::quote! { #macro_!(#identifier, #name, #contents) #terminator }
+            quote::quote! { #visit_folder!(#identifier, #name, #contents) }
         }
     }
 }
@@ -360,18 +348,9 @@ mod tests {
                 ..model::stubs::view()
             },
             &model::Visitor::Custom(model::CustomVisitor {
-                base: model::Visit {
-                    macro_: syn::parse_str("visit_base").unwrap(),
-                    terminator: model::Terminator::Comma,
-                },
-                folder: model::Visit {
-                    macro_: syn::parse_str("visit_folder").unwrap(),
-                    terminator: model::Terminator::Comma,
-                },
-                file: model::Visit {
-                    macro_: syn::parse_str("visit_file").unwrap(),
-                    terminator: model::Terminator::Comma,
-                },
+                visit_base: syn::parse_str("visit_base").unwrap(),
+                visit_folder: syn::parse_str("visit_folder").unwrap(),
+                visit_file: syn::parse_str("visit_file").unwrap(),
             }),
         );
 
@@ -379,18 +358,18 @@ mod tests {
         let expected = quote::quote! {
             visit_base!(
                 3usize,
-                visit_file!(A, 0usize, "a", "/a"),
+                visit_file!(A, 0usize, "a", "/a")
                 visit_folder!(
                     b,
                     "1",
                     visit_folder!(
                         a,
                         "2",
-                        visit_file!(B, 2usize, "b/a/b", "/b/a/b"),
-                    ),
-                    visit_file!(C, 1usize, "b/c", "/b/c"),
-                ),
-            ),
+                        visit_file!(B, 2usize, "b/a/b", "/b/a/b")
+                    )
+                    visit_file!(C, 1usize, "b/c", "/b/c")
+                )
+            )
         }
         .to_string();
         assert_eq!(actual, expected);

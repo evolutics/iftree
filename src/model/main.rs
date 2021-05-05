@@ -71,23 +71,9 @@ pub enum Populator {
 
 #[derive(Clone, cmp::PartialEq, Debug)]
 pub struct CustomVisitor {
-    pub base: Visit,
-    pub folder: Visit,
-    pub file: Visit,
-}
-
-#[derive(Clone, cmp::PartialEq, Debug)]
-pub struct Visit {
-    pub macro_: syn::Path,
-    pub terminator: Terminator,
-}
-
-#[derive(Clone, cmp::PartialEq, Debug)]
-pub enum Terminator {
-    #[allow(dead_code)]
-    Void,
-    #[allow(dead_code)]
-    Comma,
+    pub visit_base: syn::Path,
+    pub visit_folder: syn::Path,
+    pub visit_file: syn::Path,
 }
 
 pub type Forest = collections::BTreeMap<String, Tree>;
