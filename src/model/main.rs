@@ -71,8 +71,8 @@ pub enum Populator {
 
 #[derive(Clone, cmp::PartialEq, Debug)]
 pub struct CustomVisitor {
-    pub visit_base: syn::Path,
-    pub visit_folder: syn::Path,
+    pub visit_base: Option<syn::Path>,
+    pub visit_folder: Option<syn::Path>,
     pub visit_file: syn::Path,
 }
 

@@ -27,9 +27,16 @@ pub fn main(view: &model::View, visitor: &model::Visitor) -> proc_macro2::TokenS
             quote::quote! { pub mod #name { #contents } }
         }
 
-        model::Visitor::Custom(model::CustomVisitor { visit_base, .. }) => {
+        model::Visitor::Custom(model::CustomVisitor {
+            visit_base: None, ..
+        }) => contents,
+
+        model::Visitor::Custom(model::CustomVisitor {
+            visit_base: Some(macro_),
+            ..
+        }) => {
             let length = count_files::main(&view.forest);
-            quote::quote! { #visit_base! { #length, #contents } }
+            quote::quote! { #macro_! { #length, #contents } }
         }
     }
 }
@@ -95,9 +102,16 @@ fn print_folder(context: &Context, name: &str, folder: &model::Folder) -> proc_m
             quote::quote! { pub mod #identifier { #contents } }
         }
 
-        model::Visitor::Custom(model::CustomVisitor { visit_folder, .. }) => {
+        model::Visitor::Custom(model::CustomVisitor {
+            visit_folder: None, ..
+        }) => contents,
+
+        model::Visitor::Custom(model::CustomVisitor {
+            visit_folder: Some(macro_),
+            ..
+        }) => {
             let identifier = &folder.identifier;
-            quote::quote! { #visit_folder! { #identifier, #name, #contents } }
+            quote::quote! { #macro_! { #identifier, #name, #contents } }
         }
     }
 }
@@ -292,86 +306,180 @@ mod tests {
         }
     }
 
-    #[test]
-    fn handles_custom() {
-        let actual = main(
-            &model::View {
-                forest: vec![
-                    (
+    #[cfg(test)]
+    mod handles_custom {
+        use super::*;
+
+        #[test]
+        fn handles_with_options() {
+            let actual = main(
+                &model::View {
+                    forest: vec![
+                        (
+                            String::from('0'),
+                            model::Tree::File(model::File {
+                                identifier: quote::format_ident!("A"),
+                                index: 0,
+                                relative_path: model::RelativePath::from("a"),
+                                absolute_path: String::from("/a"),
+                            }),
+                        ),
+                        (
+                            String::from('1'),
+                            model::Tree::Folder(model::Folder {
+                                identifier: quote::format_ident!("b"),
+                                forest: vec![
+                                    (
+                                        String::from('2'),
+                                        model::Tree::Folder(model::Folder {
+                                            identifier: quote::format_ident!("a"),
+                                            forest: vec![(
+                                                String::from('3'),
+                                                model::Tree::File(model::File {
+                                                    identifier: quote::format_ident!("B"),
+                                                    index: 2,
+                                                    relative_path: model::RelativePath::from(
+                                                        "b/a/b",
+                                                    ),
+                                                    absolute_path: String::from("/b/a/b"),
+                                                }),
+                                            )]
+                                            .into_iter()
+                                            .collect(),
+                                        }),
+                                    ),
+                                    (
+                                        String::from('4'),
+                                        model::Tree::File(model::File {
+                                            identifier: quote::format_ident!("C"),
+                                            index: 1,
+                                            relative_path: model::RelativePath::from("b/c"),
+                                            absolute_path: String::from("/b/c"),
+                                        }),
+                                    ),
+                                ]
+                                .into_iter()
+                                .collect(),
+                            }),
+                        ),
+                    ]
+                    .into_iter()
+                    .collect(),
+                    ..model::stubs::view()
+                },
+                &model::Visitor::Custom(model::CustomVisitor {
+                    visit_base: Some(syn::parse_str("visit_base").unwrap()),
+                    visit_folder: Some(syn::parse_str("visit_folder").unwrap()),
+                    visit_file: syn::parse_str("visit_file").unwrap(),
+                }),
+            );
+
+            let actual = actual.to_string();
+            let expected = quote::quote! {
+                visit_base! {
+                    3usize,
+                    visit_file! { A, 0usize, "a", "/a" }
+                    visit_folder! {
+                        b,
+                        "1",
+                        visit_folder! {
+                            a,
+                            "2",
+                            visit_file! { B, 2usize, "b/a/b", "/b/a/b" }
+                        }
+                        visit_file! { C, 1usize, "b/c", "/b/c" }
+                    }
+                }
+            }
+            .to_string();
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn handles_without_visit_base() {
+            let actual = main(
+                &model::View {
+                    forest: vec![(
                         String::from('0'),
-                        model::Tree::File(model::File {
-                            identifier: quote::format_ident!("A"),
-                            index: 0,
-                            relative_path: model::RelativePath::from("a"),
-                            absolute_path: String::from("/a"),
-                        }),
-                    ),
-                    (
-                        String::from('1'),
                         model::Tree::Folder(model::Folder {
-                            identifier: quote::format_ident!("b"),
-                            forest: vec![
-                                (
-                                    String::from('2'),
-                                    model::Tree::Folder(model::Folder {
-                                        identifier: quote::format_ident!("a"),
-                                        forest: vec![(
-                                            String::from('3'),
-                                            model::Tree::File(model::File {
-                                                identifier: quote::format_ident!("B"),
-                                                index: 2,
-                                                relative_path: model::RelativePath::from("b/a/b"),
-                                                absolute_path: String::from("/b/a/b"),
-                                            }),
-                                        )]
-                                        .into_iter()
-                                        .collect(),
-                                    }),
-                                ),
-                                (
-                                    String::from('4'),
-                                    model::Tree::File(model::File {
-                                        identifier: quote::format_ident!("C"),
-                                        index: 1,
-                                        relative_path: model::RelativePath::from("b/c"),
-                                        absolute_path: String::from("/b/c"),
-                                    }),
-                                ),
-                            ]
+                            identifier: quote::format_ident!("a"),
+                            forest: vec![(
+                                String::from('1'),
+                                model::Tree::File(model::File {
+                                    identifier: quote::format_ident!("B"),
+                                    index: 0,
+                                    relative_path: model::RelativePath::from("a/b"),
+                                    absolute_path: String::from("/a/b"),
+                                }),
+                            )]
                             .into_iter()
                             .collect(),
                         }),
-                    ),
-                ]
-                .into_iter()
-                .collect(),
-                ..model::stubs::view()
-            },
-            &model::Visitor::Custom(model::CustomVisitor {
-                visit_base: syn::parse_str("visit_base").unwrap(),
-                visit_folder: syn::parse_str("visit_folder").unwrap(),
-                visit_file: syn::parse_str("visit_file").unwrap(),
-            }),
-        );
+                    )]
+                    .into_iter()
+                    .collect(),
+                    ..model::stubs::view()
+                },
+                &model::Visitor::Custom(model::CustomVisitor {
+                    visit_base: None,
+                    visit_folder: Some(syn::parse_str("visit_folder").unwrap()),
+                    visit_file: syn::parse_str("visit_file").unwrap(),
+                }),
+            );
 
-        let actual = actual.to_string();
-        let expected = quote::quote! {
-            visit_base! {
-                3usize,
-                visit_file! { A, 0usize, "a", "/a" }
+            let actual = actual.to_string();
+            let expected = quote::quote! {
                 visit_folder! {
-                    b,
-                    "1",
-                    visit_folder! {
-                        a,
-                        "2",
-                        visit_file! { B, 2usize, "b/a/b", "/b/a/b" }
-                    }
-                    visit_file! { C, 1usize, "b/c", "/b/c" }
+                    a,
+                    "0",
+                    visit_file! { B, 0usize, "a/b", "/a/b" }
                 }
             }
+            .to_string();
+            assert_eq!(actual, expected);
         }
-        .to_string();
-        assert_eq!(actual, expected);
+
+        #[test]
+        fn handles_without_visit_folder() {
+            let actual = main(
+                &model::View {
+                    forest: vec![(
+                        String::from('0'),
+                        model::Tree::Folder(model::Folder {
+                            identifier: quote::format_ident!("a"),
+                            forest: vec![(
+                                String::from('1'),
+                                model::Tree::File(model::File {
+                                    identifier: quote::format_ident!("B"),
+                                    index: 0,
+                                    relative_path: model::RelativePath::from("a/b"),
+                                    absolute_path: String::from("/a/b"),
+                                }),
+                            )]
+                            .into_iter()
+                            .collect(),
+                        }),
+                    )]
+                    .into_iter()
+                    .collect(),
+                    ..model::stubs::view()
+                },
+                &model::Visitor::Custom(model::CustomVisitor {
+                    visit_base: Some(syn::parse_str("visit_base").unwrap()),
+                    visit_folder: None,
+                    visit_file: syn::parse_str("visit_file").unwrap(),
+                }),
+            );
+
+            let actual = actual.to_string();
+            let expected = quote::quote! {
+                visit_base! {
+                    1usize,
+                    visit_file! { B, 0usize, "a/b", "/a/b" }
+                }
+            }
+            .to_string();
+            assert_eq!(actual, expected);
+        }
     }
 }
