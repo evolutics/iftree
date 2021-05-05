@@ -51,7 +51,7 @@ pub struct Path {
     pub absolute: String,
 }
 
-#[derive(Clone, cmp::Eq, cmp::Ord, cmp::PartialEq, cmp::PartialOrd, Debug)]
+#[derive(Clone, cmp::PartialEq, Debug)]
 pub struct RelativePath(pub String);
 
 #[derive(Clone, cmp::PartialEq, Debug)]
