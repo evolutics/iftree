@@ -1,4 +1,4 @@
-use super::get_initializer;
+use super::get_default_initializer;
 use crate::model;
 use std::iter;
 use std::vec;
@@ -12,7 +12,11 @@ pub fn main(
             initializer,
             identifiers,
         } => {
-            let initializer = get_initializer::main(initializer, structure)?;
+            let initializer = match initializer {
+                None => model::Initializer::Default(get_default_initializer::main(structure)?),
+                Some(macro_) => model::Initializer::Macro(macro_),
+            };
+
             iter::once(model::Visitor::Array(initializer))
                 .chain(iter::once(model::Visitor::Identifiers).filter(|_| identifiers))
                 .collect()
@@ -31,6 +35,40 @@ mod tests {
     #[cfg(test)]
     mod handles_default {
         use super::*;
+
+        #[test]
+        fn handles_without_initializer() {
+            let actual = main(
+                model::Template::Default {
+                    initializer: None,
+                    identifiers: false,
+                },
+                model::TypeStructure::Unit,
+            );
+
+            let actual = actual.unwrap();
+            let expected = vec![model::Visitor::Array(model::Initializer::Default(
+                model::TypeStructure::Unit,
+            ))];
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn handles_with_initializer() {
+            let actual = main(
+                model::Template::Default {
+                    initializer: Some(syn::parse_str("abc").unwrap()),
+                    identifiers: false,
+                },
+                model::stubs::type_structure(),
+            );
+
+            let actual = actual.unwrap();
+            let expected = vec![model::Visitor::Array(model::Initializer::Macro(
+                syn::parse_str("abc").unwrap(),
+            ))];
+            assert_eq!(actual, expected);
+        }
 
         #[test]
         fn handles_without_identifiers() {
