@@ -155,11 +155,6 @@ ensure they are
 - If the transformed name is `"_"`, `"crate"`, `"self"`, `"Self"`, or `"super"`,
   then `"_"` is appended.
 
-Furthermore, the name is adjusted to respect these conventions:
-
-- Lowercase for module names (corresponding to folders).
-- Uppercase for static variable names (corresponding to files).
-
 ### Troubleshooting
 
 To inspect the generated code, there is a [`debug` configuration](#debug).
