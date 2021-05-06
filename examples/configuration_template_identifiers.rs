@@ -1,7 +1,7 @@
 #[iftree::include_file_tree(
     "
 paths = '/examples/assets/**'
-identifiers = false
+template.identifiers = false
 "
 )]
 pub struct Asset;

@@ -1,5 +1,6 @@
 use crate::model;
 use std::path;
+use std::vec;
 use toml::de;
 
 pub fn main(string: &str) -> Result<model::Configuration, de::Error> {
@@ -13,9 +14,26 @@ struct Configuration {
     paths: String,
     base_folder: Option<path::PathBuf>,
     root_folder_variable: Option<String>,
-    initializer: Option<super::path::Path>,
-    identifiers: Option<bool>,
+    template: Option<Template>,
     debug: Option<bool>,
+}
+
+#[derive(serde::Deserialize)]
+#[serde(deny_unknown_fields, untagged)]
+enum Template {
+    Default {
+        initializer: Option<super::path::Path>,
+        identifiers: Option<bool>,
+    },
+    Visitors(vec::Vec<CustomVisitor>),
+}
+
+#[derive(serde::Deserialize)]
+#[serde(deny_unknown_fields)]
+struct CustomVisitor {
+    visit_base: Option<super::path::Path>,
+    visit_folder: Option<super::path::Path>,
+    visit_file: super::path::Path,
 }
 
 impl From<Configuration> for model::Configuration {
@@ -26,11 +44,41 @@ impl From<Configuration> for model::Configuration {
             root_folder_variable: configuration
                 .root_folder_variable
                 .unwrap_or_else(|| String::from("CARGO_MANIFEST_DIR")),
-            template: model::Template::Default {
-                initializer: configuration.initializer.map(|value| value.0),
-                identifiers: configuration.identifiers.unwrap_or(true),
+            template: match configuration.template {
+                None => model::Template::Default {
+                    initializer: None,
+                    identifiers: true,
+                },
+                Some(template) => template.into(),
             },
             debug: configuration.debug.unwrap_or(false),
+        }
+    }
+}
+
+impl From<Template> for model::Template {
+    fn from(template: Template) -> Self {
+        match template {
+            Template::Default {
+                initializer,
+                identifiers,
+            } => model::Template::Default {
+                initializer: initializer.map(|value| value.0),
+                identifiers: identifiers.unwrap_or(true),
+            },
+            Template::Visitors(visitors) => model::Template::Visitors(
+                visitors.into_iter().map(|visitor| visitor.into()).collect(),
+            ),
+        }
+    }
+}
+
+impl From<CustomVisitor> for model::CustomVisitor {
+    fn from(visitor: CustomVisitor) -> Self {
+        model::CustomVisitor {
+            visit_base: visitor.visit_base.map(|value| value.0),
+            visit_folder: visitor.visit_folder.map(|value| value.0),
+            visit_file: visitor.visit_file.0,
         }
     }
 }
@@ -64,8 +112,8 @@ mod tests {
 paths = '/my/assets/**'
 base_folder = 'my_base'
 root_folder_variable = 'MY_ROOT_FOLDER'
-initializer = 'my_macro'
-identifiers = false
+template.initializer = 'my_macro'
+template.identifiers = false
 debug = true
 ",
         );
@@ -81,6 +129,34 @@ debug = true
             },
             debug: true,
         };
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn handles_valid_configuration_with_template_visitors() {
+        let actual = main(
+            "
+paths = ''
+template = [
+  { visit_file = 'file' },
+  { visit_base = 'my_base', visit_folder = 'my_folder', visit_file = 'my_file' },
+]
+",
+        );
+
+        let actual = actual.unwrap().template;
+        let expected = model::Template::Visitors(vec![
+            model::CustomVisitor {
+                visit_base: None,
+                visit_folder: None,
+                visit_file: syn::parse_str("file").unwrap(),
+            },
+            model::CustomVisitor {
+                visit_base: Some(syn::parse_str("my_base").unwrap()),
+                visit_folder: Some(syn::parse_str("my_folder").unwrap()),
+                visit_file: syn::parse_str("my_file").unwrap(),
+            },
+        ]);
         assert_eq!(actual, expected);
     }
 

@@ -16,7 +16,7 @@ macro_rules! initialize {
 #[iftree::include_file_tree(
     "
 paths = '/examples/assets/credits.md'
-initializer = 'initialize'
+template.initializer = 'initialize'
 "
 )]
 pub struct Asset {

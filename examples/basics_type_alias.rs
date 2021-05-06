@@ -7,7 +7,7 @@ macro_rules! initialize {
 #[iftree::include_file_tree(
     "
 paths = '/examples/assets/**'
-initializer = 'initialize'
+template.initializer = 'initialize'
 "
 )]
 pub type Asset = &'static str;

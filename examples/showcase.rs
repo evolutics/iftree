@@ -39,7 +39,7 @@ paths = '''
 '''
 
 # For each selected file, call the macro above.
-initializer = 'initialize'
+template.initializer = 'initialize'
 "
 )]
 pub struct Asset {

@@ -92,7 +92,9 @@
 //!    `include_str!`, a field `contents_bytes` is populated with `include_bytes!`,
 //!    and a couple of other [standard fields](#standard-fields) are recognized.
 //!    However, you can plug in your own macro to fully customize the initialization
-//!    by [configuring an `initializer`](#initializer).
+//!    by [configuring an `initializer`](#templateinitializer). For even more
+//!    control over code generation, there is the concept of
+//!    [visitors](#template-visitors).
 //!
 //! The
 //! [showcase example](https://github.com/evolutics/iftree/blob/main/examples/showcase.rs)
@@ -102,7 +104,7 @@
 //!
 //! When you use fields from the following list only, an initializer for your asset
 //! type is generated without further configuration. You can still override these
-//! field names with a [custom `initializer`](#initializer).
+//! field names with a [custom `initializer`](#templateinitializer).
 //!
 //! - **`contents_bytes:`** `&'static [u8]`
 //!
@@ -214,7 +216,7 @@
 //!
 //! **Default:** `"CARGO_MANIFEST_DIR"`
 //!
-//! ## `initializer`
+//! ## `template.initializer`
 //!
 //! A macro name used to instantiate the asset type per file.
 //!
@@ -230,9 +232,9 @@
 //! [standard fields](#standard-fields).
 //!
 //! See
-//! [example](https://github.com/evolutics/iftree/blob/main/examples/configuration_initializer.rs).
+//! [example](https://github.com/evolutics/iftree/blob/main/examples/configuration_template_initializer.rs).
 //!
-//! ## `identifiers`
+//! ## `template.identifiers`
 //!
 //! Whether to generate an identifier per file.
 //!
@@ -245,7 +247,12 @@
 //! **Default:** `true`
 //!
 //! See
-//! [example](https://github.com/evolutics/iftree/blob/main/examples/configuration_identifiers.rs).
+//! [example](https://github.com/evolutics/iftree/blob/main/examples/configuration_template_identifiers.rs).
+//!
+//! ## `template` visitors
+//!
+//! See
+//! [example](https://github.com/evolutics/iftree/blob/main/examples/configuration_template_visitors.rs).
 //!
 //! ## `debug`
 //!

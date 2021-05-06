@@ -20,7 +20,6 @@ pub enum Template {
         initializer: Option<syn::Path>,
         identifiers: bool,
     },
-    #[allow(dead_code)]
     Visitors(vec::Vec<CustomVisitor>),
 }
 

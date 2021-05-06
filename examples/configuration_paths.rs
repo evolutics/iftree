@@ -13,7 +13,7 @@ paths = '''
 !.*
 '''
 
-initializer = 'initialize'
+template.initializer = 'initialize'
 "
 )]
 pub type Asset = &'static str;
