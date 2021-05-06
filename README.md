@@ -144,6 +144,22 @@ field names with a [custom `initializer`](#initializer).
 See
 [example](https://github.com/evolutics/iftree/blob/main/examples/basics_standard_fields.rs).
 
+### Name sanitization
+
+When generating identifiers based on paths, names are sanitized as follows to
+ensure they are
+[valid identifiers](https://doc.rust-lang.org/reference/identifiers.html):
+
+- Characters other than ASCII alphanumericals are replaced by `"_"`.
+- If the first character is numeric, then `"_"` is prepended.
+- If the transformed name is `"_"`, `"crate"`, `"self"`, `"Self"`, or `"super"`,
+  then `"_"` is appended.
+
+Furthermore, the name is adjusted to respect these conventions:
+
+- Lowercase for module names (corresponding to folders).
+- Uppercase for static variable names (corresponding to files).
+
 ### Troubleshooting
 
 To inspect the generated code, there is a [`debug` configuration](#debug).
@@ -232,19 +248,6 @@ generated, nested in modules for folders. Their root module is `base`, which
 represents the base folder.
 
 Each variable is a reference to the corresponding element in the `ASSETS` array.
-
-Path names are sanitized as follows to ensure they are
-[valid identifiers](https://doc.rust-lang.org/reference/identifiers.html):
-
-- Characters other than ASCII alphanumericals are replaced by `"_"`.
-- If the first character is numeric, then `"_"` is prepended.
-- If the transformed name is `"_"`, `"crate"`, `"self"`, `"Self"`, or `"super"`,
-  then `"_"` is appended.
-
-Furthermore, the name is adjusted to respect these conventions:
-
-- Lowercase for module names (corresponding to folders).
-- Uppercase for static variable names (corresponding to files).
 
 **Default:** `true`
 
