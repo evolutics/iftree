@@ -51,13 +51,13 @@ fn print_forest(context: &Context, forest: &model::Forest) -> proc_macro2::Token
     forest
         .iter()
         .map(|(name, tree)| match tree {
-            model::Tree::File(file) => print_file(context, file),
+            model::Tree::File(file) => print_file(context, name, file),
             model::Tree::Folder(folder) => print_folder(context, name, folder),
         })
         .collect()
 }
 
-fn print_file(context: &Context, file: &model::File) -> proc_macro2::TokenStream {
+fn print_file(context: &Context, name: &str, file: &model::File) -> proc_macro2::TokenStream {
     match context.visitor {
         model::Visitor::Array(initializer) => {
             let element = print_initializer::main(context.type_, &initializer, file);
@@ -72,7 +72,10 @@ fn print_file(context: &Context, file: &model::File) -> proc_macro2::TokenStream
             let type_ = context.type_;
             let array = quote::format_ident!("{}", data::ASSET_ARRAY_NAME);
             let index = file.index;
-            quote::quote! { pub static #identifier: &#root_path#type_ = &#root_path#array[#index]; }
+            quote::quote! {
+                #[doc = #name]
+                pub static #identifier: &#root_path#type_ = &#root_path#array[#index];
+            }
         }
 
         model::Visitor::Custom(model::CustomVisitor { visit_file, .. }) => {
@@ -99,7 +102,10 @@ fn print_folder(context: &Context, name: &str, folder: &model::Folder) -> proc_m
 
         model::Visitor::Identifiers => {
             let identifier = &folder.identifier;
-            quote::quote! { pub mod #identifier { #contents } }
+            quote::quote! {
+                #[doc = #name]
+                pub mod #identifier { #contents }
+            }
         }
 
         model::Visitor::Custom(model::CustomVisitor {
@@ -221,8 +227,10 @@ mod tests {
             let actual = actual.to_string();
             let expected = quote::quote! {
                 pub mod base {
+                    #[doc = "0"]
                     pub static A: &super::Asset = &super::ASSETS[1usize];
 
+                    #[doc = "1"]
                     pub static BC: &super::Asset = &super::ASSETS[0usize];
                 }
             }
@@ -289,14 +297,19 @@ mod tests {
             let actual = actual.to_string();
             let expected = quote::quote! {
                 pub mod base {
+                    #[doc = "0"]
                     pub static A: &super::Asset = &super::ASSETS[0usize];
 
+                    #[doc = "1"]
                     pub mod b {
+                        #[doc = "2"]
                         pub mod a {
+                            #[doc = "3"]
                             pub static B: &super::super::super::Asset =
                                 &super::super::super::ASSETS[2usize];
                         }
 
+                        #[doc = "4"]
                         pub static C: &super::super::Asset = &super::super::ASSETS[1usize];
                     }
                 }

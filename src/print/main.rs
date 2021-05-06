@@ -35,7 +35,7 @@ mod tests {
                     model::Visitor::Identifiers,
                 ],
                 forest: vec![(
-                    String::new(),
+                    String::from("a.b"),
                     model::Tree::File(model::File {
                         identifier: quote::format_ident!("A_B"),
                         index: 0,
@@ -58,6 +58,7 @@ mod tests {
             ];
 
             pub mod base {
+                #[doc = "a.b"]
                 pub static A_B: &super::Asset = &super::ASSETS[0usize];
             }
         }

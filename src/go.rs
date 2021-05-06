@@ -62,7 +62,9 @@ mod tests {
             ];
 
             pub mod base {
+                #[doc = "assets"]
                 pub mod r#assets {
+                    #[doc = "credits.md"]
                     pub static r#CREDITS_MD: &super::super::Asset = &super::super::ASSETS[0usize];
                 }
             }
