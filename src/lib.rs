@@ -172,10 +172,10 @@
 //! - If the last matching pattern is not negated, the file is included.
 //! - If no pattern matches, the file is excluded.
 //!
-//! Note that to you must use `a/b/*` instead of `a/b/` to include files in a folder
-//! `a/b/`. To also include subfolders (recursively), use `a/b/**`.
-//!
-//! See the [`.gitignore` reference](https://git-scm.com/docs/gitignore) for more.
+//! The pattern language is as documented in the
+//! [`.gitignore` reference](https://git-scm.com/docs/gitignore), with this
+//! difference: you must use `a/b/*` instead of `a/b/` to include files in a folder
+//! `a/b/`; to also include subfolders (recursively), use `a/b/**`.
 //!
 //! By default, path patterns are relative to the environment variable
 //! `CARGO_MANIFEST_DIR`, which is the folder with your manifest (`Cargo.toml`). See
