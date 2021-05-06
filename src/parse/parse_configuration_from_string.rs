@@ -3,13 +3,13 @@ use std::path;
 use toml::de;
 
 pub fn main(string: &str) -> Result<model::Configuration, de::Error> {
-    let configuration: UserConfiguration = toml::from_str(string)?;
+    let configuration: Configuration = toml::from_str(string)?;
     Ok(configuration.into())
 }
 
 #[derive(serde::Deserialize)]
 #[serde(deny_unknown_fields)]
-struct UserConfiguration {
+struct Configuration {
     paths: String,
     base_folder: Option<path::PathBuf>,
     root_folder_variable: Option<String>,
@@ -18,8 +18,8 @@ struct UserConfiguration {
     debug: Option<bool>,
 }
 
-impl From<UserConfiguration> for model::Configuration {
-    fn from(configuration: UserConfiguration) -> Self {
+impl From<Configuration> for model::Configuration {
+    fn from(configuration: Configuration) -> Self {
         model::Configuration {
             paths: configuration.paths,
             base_folder: configuration.base_folder.unwrap_or_else(path::PathBuf::new),
