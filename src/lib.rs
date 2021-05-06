@@ -210,7 +210,7 @@
 //! As an input, the macro is passed the following arguments, separated by comma:
 //!
 //! 1. Relative file path as a string literal.
-//! 2. Absolute file path as a string literal.
+//! 1. Absolute file path as a string literal.
 //!
 //! As an output, the macro must return a
 //! [constant expression](https://doc.rust-lang.org/reference/const_eval.html#constant-expressions).
