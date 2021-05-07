@@ -295,6 +295,7 @@
 //! ## Custom constructions
 //!
 //! - [Hash map](https://github.com/evolutics/iftree/blob/main/examples/scenario_hash_map.rs)
+//! - [Nested hash map](https://github.com/evolutics/iftree/blob/main/examples/scenario_nested_hash_map.rs)
 
 mod data;
 mod generate_view;
