@@ -6,7 +6,7 @@ macro_rules! visit_base {
 }
 
 macro_rules! visit_file {
-    ($identifier:ident, $index:literal, $relative_path:literal, $absolute_path:literal) => {
+    ($name:literal, $id:ident, $index:literal, $relative_path:literal, $absolute_path:literal) => {
         (
             $relative_path,
             Asset {

@@ -79,11 +79,11 @@ fn print_file(context: &Context, name: &str, file: &model::File) -> proc_macro2:
         }
 
         model::Visitor::Custom(model::CustomVisitor { visit_file, .. }) => {
-            let identifier = &file.identifier;
+            let id = &file.identifier;
             let index = file.index;
             let relative_path = &file.relative_path;
             let absolute_path = &file.absolute_path;
-            quote::quote! { #visit_file! { #identifier, #index, #relative_path, #absolute_path } }
+            quote::quote! { #visit_file! { #name, #id, #index, #relative_path, #absolute_path } }
         }
     }
 }
@@ -116,8 +116,8 @@ fn print_folder(context: &Context, name: &str, folder: &model::Folder) -> proc_m
             visit_folder: Some(macro_),
             ..
         }) => {
-            let identifier = &folder.identifier;
-            quote::quote! { #macro_! { #name, #identifier, #contents } }
+            let id = &folder.identifier;
+            quote::quote! { #macro_! { #name, #id, #contents } }
         }
     }
 }
@@ -389,16 +389,16 @@ mod tests {
             let expected = quote::quote! {
                 visit_base! {
                     3usize,
-                    visit_file! { A, 0usize, "a", "/a" }
+                    visit_file! { "0", A, 0usize, "a", "/a" }
                     visit_folder! {
                         "1",
                         b,
                         visit_folder! {
                             "2",
                             a,
-                            visit_file! { B, 2usize, "b/a/b", "/b/a/b" }
+                            visit_file! { "3", B, 2usize, "b/a/b", "/b/a/b" }
                         }
-                        visit_file! { C, 1usize, "b/c", "/b/c" }
+                        visit_file! { "4", C, 1usize, "b/c", "/b/c" }
                     }
                 }
             }
@@ -443,7 +443,7 @@ mod tests {
                 visit_folder! {
                     "0",
                     a,
-                    visit_file! { B, 0usize, "a/b", "/a/b" }
+                    visit_file! { "1", B, 0usize, "a/b", "/a/b" }
                 }
             }
             .to_string();
@@ -486,7 +486,7 @@ mod tests {
             let expected = quote::quote! {
                 visit_base! {
                     1usize,
-                    visit_file! { B, 0usize, "a/b", "/a/b" }
+                    visit_file! { "1", B, 0usize, "a/b", "/a/b" }
                 }
             }
             .to_string();

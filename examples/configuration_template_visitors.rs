@@ -5,7 +5,7 @@ macro_rules! visit_array_base {
 }
 
 macro_rules! visit_array_file {
-    ($identifier:ident, $index:literal, $relative_path:literal, $absolute_path:literal) => {
+    ($name:literal, $id:ident, $index:literal, $relative_path:literal, $absolute_path:literal) => {
         Asset {
             contents: include_str!($absolute_path),
         }
@@ -19,8 +19,8 @@ macro_rules! visit_identifiers_base {
 }
 
 macro_rules! visit_identifiers_folder {
-    ($name:literal, $identifier:ident, $($contents:item)*) => {
-        pub mod $identifier {
+    ($name:literal, $id:ident, $($contents:item)*) => {
+        pub mod $id {
             use super::Asset;
             use super::ASSETS;
 
@@ -30,8 +30,8 @@ macro_rules! visit_identifiers_folder {
 }
 
 macro_rules! visit_identifiers_file {
-    ($identifier:ident, $index:literal, $relative_path:literal, $absolute_path:literal) => {
-        pub static $identifier: &Asset = &ASSETS[$index];
+    ($name:literal, $id:ident, $index:literal, $relative_path:literal, $absolute_path:literal) => {
+        pub static $id: &Asset = &ASSETS[$index];
     };
 }
 
