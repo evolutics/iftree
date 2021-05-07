@@ -14,12 +14,12 @@ macro_rules! visit_array_file {
 
 macro_rules! visit_identifiers_base {
     ($length:literal, $($contents:item)*) => {
-        visit_identifiers_folder! { base, "base", $($contents)* }
+        visit_identifiers_folder! { "base", base, $($contents)* }
     };
 }
 
 macro_rules! visit_identifiers_folder {
-    ($identifier:ident, $name:literal, $($contents:item)*) => {
+    ($name:literal, $identifier:ident, $($contents:item)*) => {
         pub mod $identifier {
             use super::Asset;
             use super::ASSETS;

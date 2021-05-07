@@ -117,7 +117,7 @@ fn print_folder(context: &Context, name: &str, folder: &model::Folder) -> proc_m
             ..
         }) => {
             let identifier = &folder.identifier;
-            quote::quote! { #macro_! { #identifier, #name, #contents } }
+            quote::quote! { #macro_! { #name, #identifier, #contents } }
         }
     }
 }
@@ -391,11 +391,11 @@ mod tests {
                     3usize,
                     visit_file! { A, 0usize, "a", "/a" }
                     visit_folder! {
-                        b,
                         "1",
+                        b,
                         visit_folder! {
-                            a,
                             "2",
+                            a,
                             visit_file! { B, 2usize, "b/a/b", "/b/a/b" }
                         }
                         visit_file! { C, 1usize, "b/c", "/b/c" }
@@ -441,8 +441,8 @@ mod tests {
             let actual = actual.to_string();
             let expected = quote::quote! {
                 visit_folder! {
-                    a,
                     "0",
+                    a,
                     visit_file! { B, 0usize, "a/b", "/a/b" }
                 }
             }
