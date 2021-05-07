@@ -14,7 +14,7 @@ macro_rules! visit_array_file {
 
 macro_rules! visit_identifiers_base {
     ($length:literal, $($contents:item)*) => {
-        visit_identifiers_folder! { "base", base, $($contents)* }
+        visit_identifiers_folder! { "", base, $($contents)* }
     };
 }
 
