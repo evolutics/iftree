@@ -1,43 +1,15 @@
+use super::configuration;
 use crate::model;
 use std::path;
-use std::vec;
 use toml::de;
 
 pub fn main(string: &str) -> Result<model::Configuration, de::Error> {
-    let configuration: Configuration = toml::from_str(string)?;
+    let configuration: configuration::Configuration = toml::from_str(string)?;
     Ok(configuration.into())
 }
 
-#[derive(serde::Deserialize)]
-#[serde(deny_unknown_fields)]
-struct Configuration {
-    paths: String,
-    base_folder: Option<path::PathBuf>,
-    root_folder_variable: Option<String>,
-    template: Option<Template>,
-    debug: Option<bool>,
-}
-
-#[derive(serde::Deserialize)]
-#[serde(deny_unknown_fields, untagged)]
-enum Template {
-    Default {
-        initializer: Option<super::path::Path>,
-        identifiers: Option<bool>,
-    },
-    Visitors(vec::Vec<CustomVisitor>),
-}
-
-#[derive(serde::Deserialize)]
-#[serde(deny_unknown_fields)]
-struct CustomVisitor {
-    visit_base: Option<super::path::Path>,
-    visit_folder: Option<super::path::Path>,
-    visit_file: super::path::Path,
-}
-
-impl From<Configuration> for model::Configuration {
-    fn from(configuration: Configuration) -> Self {
+impl From<configuration::Configuration> for model::Configuration {
+    fn from(configuration: configuration::Configuration) -> Self {
         model::Configuration {
             paths: configuration.paths,
             base_folder: configuration.base_folder.unwrap_or_else(path::PathBuf::new),
@@ -56,25 +28,25 @@ impl From<Configuration> for model::Configuration {
     }
 }
 
-impl From<Template> for model::Template {
-    fn from(template: Template) -> Self {
+impl From<configuration::Template> for model::Template {
+    fn from(template: configuration::Template) -> Self {
         match template {
-            Template::Default {
+            configuration::Template::Default {
                 initializer,
                 identifiers,
             } => model::Template::Default {
                 initializer: initializer.map(|value| value.0),
                 identifiers: identifiers.unwrap_or(true),
             },
-            Template::Visitors(visitors) => model::Template::Visitors(
+            configuration::Template::Visitors(visitors) => model::Template::Visitors(
                 visitors.into_iter().map(|visitor| visitor.into()).collect(),
             ),
         }
     }
 }
 
-impl From<CustomVisitor> for model::CustomVisitor {
-    fn from(visitor: CustomVisitor) -> Self {
+impl From<configuration::CustomVisitor> for model::CustomVisitor {
+    fn from(visitor: configuration::CustomVisitor) -> Self {
         model::CustomVisitor {
             visit_base: visitor.visit_base.map(|value| value.0),
             visit_folder: visitor.visit_folder.map(|value| value.0),

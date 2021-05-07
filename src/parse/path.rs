@@ -1,12 +1,9 @@
+use super::configuration;
 use serde::de;
-use std::cmp;
 use std::fmt;
 
-#[derive(cmp::PartialEq, Debug)]
-pub struct Path(pub syn::Path);
-
-impl<'a> serde::Deserialize<'a> for Path {
-    fn deserialize<T>(deserializer: T) -> Result<Path, T::Error>
+impl<'a> serde::Deserialize<'a> for configuration::Path {
+    fn deserialize<T>(deserializer: T) -> Result<configuration::Path, T::Error>
     where
         T: serde::Deserializer<'a>,
     {
@@ -17,7 +14,7 @@ impl<'a> serde::Deserialize<'a> for Path {
 struct Visitor;
 
 impl<'a> de::Visitor<'a> for Visitor {
-    type Value = Path;
+    type Value = configuration::Path;
 
     fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
         write!(formatter, "a path (like `x` or `x::y::z`)")
@@ -29,7 +26,7 @@ impl<'a> de::Visitor<'a> for Visitor {
     {
         match syn::parse_str(string) {
             Err(_) => Err(de::Error::invalid_value(de::Unexpected::Str(string), &self)),
-            Ok(value) => Ok(Path(value)),
+            Ok(value) => Ok(configuration::Path(value)),
         }
     }
 }
@@ -41,10 +38,11 @@ mod tests {
     #[cfg(test)]
     mod deserialize {
         use super::*;
+        use std::cmp;
 
         #[derive(cmp::PartialEq, Debug, serde::Deserialize)]
         struct Binding {
-            name: Path,
+            name: configuration::Path,
         }
 
         #[test]
@@ -53,7 +51,7 @@ mod tests {
 
             let actual = actual.unwrap();
             let expected = Binding {
-                name: Path(syn::parse_str("my_value").unwrap()),
+                name: configuration::Path(syn::parse_str("my_value").unwrap()),
             };
             assert_eq!(actual, expected);
         }
@@ -64,7 +62,7 @@ mod tests {
 
             let actual = actual.unwrap();
             let expected = Binding {
-                name: Path(syn::parse_str("a::b::c").unwrap()),
+                name: configuration::Path(syn::parse_str("a::b::c").unwrap()),
             };
             assert_eq!(actual, expected);
         }
