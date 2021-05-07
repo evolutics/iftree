@@ -7,7 +7,7 @@ macro_rules! visit_array_base {
 macro_rules! visit_array_file {
     ($identifier:ident, $index:literal, $relative_path:literal, $absolute_path:literal) => {
         Asset {
-            contents_str: include_str!($absolute_path),
+            contents: include_str!($absolute_path),
         }
     };
 }
@@ -50,25 +50,19 @@ visit_file = 'visit_identifiers_file'
 "
 )]
 pub struct Asset {
-    contents_str: &'static str,
+    contents: &'static str,
 }
 
 pub fn main() {
     assert_eq!(ASSETS.len(), 3);
-    assert_eq!(ASSETS[0].contents_str, "… contents `file_a`\n");
-    assert_eq!(ASSETS[1].contents_str, "… contents `file_b`\n");
-    assert_eq!(ASSETS[2].contents_str, "… and `file_c`\n");
+    assert_eq!(ASSETS[0].contents, "… contents `file_a`\n");
+    assert_eq!(ASSETS[1].contents, "… contents `file_b`\n");
+    assert_eq!(ASSETS[2].contents, "… and `file_c`\n");
 
+    assert_eq!(base::my_assets::FILE_A.contents, "… contents `file_a`\n");
+    assert_eq!(base::my_assets::FILE_B.contents, "… contents `file_b`\n");
     assert_eq!(
-        base::my_assets::FILE_A.contents_str,
-        "… contents `file_a`\n",
-    );
-    assert_eq!(
-        base::my_assets::FILE_B.contents_str,
-        "… contents `file_b`\n",
-    );
-    assert_eq!(
-        base::my_assets::subfolder::FILE_C.contents_str,
+        base::my_assets::subfolder::FILE_C.contents,
         "… and `file_c`\n",
     );
 }
