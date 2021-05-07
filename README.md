@@ -293,3 +293,7 @@ Here are example solutions for given problems.
 - [Filename extension](https://github.com/evolutics/iftree/blob/main/examples/scenario_filename_extension.rs)
 - [Media type](https://github.com/evolutics/iftree/blob/main/examples/scenario_media_type.rs)
   (formerly MIME type)
+
+### Custom constructions
+
+- [Hash map](https://github.com/evolutics/iftree/blob/main/examples/scenario_hash_map.rs)
