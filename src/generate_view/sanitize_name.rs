@@ -1,9 +1,9 @@
-pub fn main(original: &str, convention: Convention) -> String {
+pub fn main(original: &str, convention: Convention) -> syn::Ident {
     let name = sanitize_by_convention(original, convention);
     let name = sanitize_special_characters(&name);
     let name = sanitize_first_character(name);
     let name = sanitize_special_cases(name);
-    return format!("r#{}", name);
+    quote::format_ident!("r#{}", name)
 }
 
 pub enum Convention {
@@ -62,7 +62,7 @@ mod tests {
     fn handles_convention_of_screaming_snake_case() {
         let actual = main("README.md", Convention::ScreamingSnakeCase);
 
-        let expected = "r#README_MD";
+        let expected = quote::format_ident!("r#README_MD");
         assert_eq!(actual, expected);
     }
 
@@ -70,7 +70,7 @@ mod tests {
     fn handles_convention_of_snake_case() {
         let actual = main("README.md", Convention::SnakeCase);
 
-        let expected = "r#readme_md";
+        let expected = quote::format_ident!("r#readme_md");
         assert_eq!(actual, expected);
     }
 
@@ -78,7 +78,7 @@ mod tests {
     fn handles_special_characters() {
         let actual = main("A B##C_D±EÅF𝟙G.H", Convention::ScreamingSnakeCase);
 
-        let expected = "r#A_B__C_D_E_F_G_H";
+        let expected = quote::format_ident!("r#A_B__C_D_E_F_G_H");
         assert_eq!(actual, expected);
     }
 
@@ -86,7 +86,7 @@ mod tests {
     fn handles_first_character() {
         let actual = main("2a", Convention::SnakeCase);
 
-        let expected = "r#_2a";
+        let expected = quote::format_ident!("r#_2a");
         assert_eq!(actual, expected);
     }
 
@@ -94,7 +94,7 @@ mod tests {
     fn handles_empty_string() {
         let actual = main("", stubs::convention());
 
-        let expected = "r#__";
+        let expected = quote::format_ident!("r#__");
         assert_eq!(actual, expected);
     }
 
@@ -102,7 +102,7 @@ mod tests {
     fn handles_wildcard_pattern() {
         let actual = main("_", stubs::convention());
 
-        let expected = "r#__";
+        let expected = quote::format_ident!("r#__");
         assert_eq!(actual, expected);
     }
 
@@ -110,7 +110,7 @@ mod tests {
     fn handles_special_keywords() {
         let actual = main("self", Convention::SnakeCase);
 
-        let expected = "r#self_";
+        let expected = quote::format_ident!("r#self_");
         assert_eq!(actual, expected);
     }
 
@@ -118,7 +118,7 @@ mod tests {
     fn handles_other_keywords() {
         let actual = main("match", Convention::SnakeCase);
 
-        let expected = "r#match";
+        let expected = quote::format_ident!("r#match");
         assert_eq!(actual, expected);
     }
 }

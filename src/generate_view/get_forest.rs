@@ -31,7 +31,6 @@ fn get_reverse_path(path: &str) -> vec::Vec<String> {
 
 fn get_file(name: &str, path: model::Path) -> model::File {
     let identifier = sanitize_name::main(name, sanitize_name::Convention::ScreamingSnakeCase);
-    let identifier = quote::format_ident!("{}", identifier);
     let relative_path = path.relative;
     let absolute_path = path.absolute;
     model::File {
@@ -100,10 +99,7 @@ fn get_singleton_tree(
 fn get_folder_identifiers(names: &[&str]) -> vec::Vec<syn::Ident> {
     names
         .iter()
-        .map(|name| {
-            let identifier = sanitize_name::main(name, sanitize_name::Convention::SnakeCase);
-            quote::format_ident!("{}", identifier)
-        })
+        .map(|name| sanitize_name::main(name, sanitize_name::Convention::SnakeCase))
         .collect()
 }
 
