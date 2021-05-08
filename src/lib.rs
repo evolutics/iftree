@@ -78,8 +78,8 @@
 //!    file (`MyAsset` in the [introduction](#introduction)). Alternatively, it can
 //!    be a type alias, which may be convenient if you have a exactly one field.
 //! 1. Next, **filter files** to be included by annotating your asset type with
-//!    `#[iftree::include_file_tree("paths = '…'")]`. The macro argument is a
-//!    [TOML](https://toml.io) string literal. Its `paths` option here supports
+//!    `#[iftree::include_file_tree("paths = '/my/assets/**'")]`. The macro argument
+//!    is a [TOML](https://toml.io) string literal. Its `paths` option here supports
 //!    `.gitignore`-like path patterns, with one pattern per line. These paths are
 //!    relative to the folder with your manifest by default. Patterns are flexible:
 //!    you can skip hidden files, filter by filename extension, select a fixed list
