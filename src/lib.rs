@@ -256,7 +256,7 @@
 //!
 //! A macro name used to instantiate the asset type per file.
 //!
-//! As an input, the macro is passed the following arguments, separated by comma:
+//! As inputs, the macro is passed the following arguments, separated by comma:
 //!
 //! 1. Relative file path as a string literal.
 //! 1. Absolute file path as a string literal.
@@ -293,6 +293,52 @@
 //! [example](https://github.com/evolutics/iftree/blob/main/examples/configuration_template_identifiers.rs).
 //!
 //! ## `template` visitors
+//!
+//! This is the most flexible customization of the code generation process.
+//!
+//! Essentially, a visitor transforms the tree of selected files into code. It does
+//! so by calling custom macros at these levels:
+//!
+//! - For the base folder, a `visit_base` macro is called to wrap everything (top
+//!   level).
+//! - For each folder, a `visit_folder` macro is called, wrapping the code generated
+//!   from its files and subfolders (recursively).
+//! - For each file, a `visit_file` macro is called (bottom level).
+//!
+//! These macros are passed the following inputs, separated by comma:
+//!
+//! - `visit_base`:
+//!   1. Total number of selected files as a `usize` literal.
+//!   1. Outputs of the visitor applied to the base folder entries.
+//! - `visit_folder`:
+//!   1. Folder name as a string literal.
+//!   1. [Sanitized](#name-sanitization) folder name as an identifier.
+//!   1. Outputs of the visitor applied to the folder entries.
+//! - `visit_file`:
+//!   1. Filename as a string literal.
+//!   1. [Sanitized](#name-sanitization) filename as an identifier.
+//!   1. Zero-based index of the file among the selected files as a `usize` literal.
+//!   1. Relative file path as a string literal.
+//!   1. Absolute file path as a string literal.
+//!
+//! The `visit_folder` macro is optional. If missing, the outputs of the
+//! `visit_file` calls are directly passed as an input to the `visit_base` call.
+//! This is useful to generate flat structures such as arrays. Similarly, the
+//! `visit_folder` macro is optional.
+//!
+//! You can configure multiple visitors. They are applied in order.
+//!
+//! To plug in visitors, add this to your configuration for each visitor:
+//!
+//! ```toml
+//! [[template]]
+//! visit_base = 'visit_my_base'
+//! visit_folder = 'visit_my_folder'
+//! visit_file = 'visit_my_file'
+//!
+//! ```
+//!
+//! `visit_my_…` are the names of your corresponding macros.
 //!
 //! See
 //! [example](https://github.com/evolutics/iftree/blob/main/examples/configuration_template_visitors.rs).
