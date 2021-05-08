@@ -268,7 +268,7 @@
 //!
 //! ## `debug`
 //!
-//! Whether to generate an identifier `DEBUG` with debug information such as the
+//! Whether to generate a string variable `DEBUG` with debug information such as the
 //! generated code.
 //!
 //! **Default:** `false`
