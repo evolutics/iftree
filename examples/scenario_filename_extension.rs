@@ -1,10 +1,11 @@
 use once_cell::sync;
+use std::path;
 
 macro_rules! initialize {
     ($relative_path:literal, $absolute_path:literal) => {
         Asset {
-            extension: once_cell::sync::Lazy::new(|| {
-                std::path::Path::new($relative_path)
+            extension: sync::Lazy::new(|| {
+                path::Path::new($relative_path)
                     .extension()
                     .and_then(|extension| extension.to_str())
             }),

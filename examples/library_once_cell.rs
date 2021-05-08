@@ -1,10 +1,11 @@
 use once_cell::sync;
+use std::path;
 
 macro_rules! initialize {
     ($relative_path:literal, $absolute_path:literal) => {
         Asset {
-            is_read_only: once_cell::sync::Lazy::new(|| {
-                std::path::Path::new($absolute_path)
+            is_read_only: sync::Lazy::new(|| {
+                path::Path::new($absolute_path)
                     .metadata()
                     .map(|metadata| metadata.permissions().readonly())
                     .ok()

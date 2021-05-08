@@ -1,3 +1,4 @@
+use once_cell::sync;
 use std::collections;
 
 pub enum Tree {
@@ -7,8 +8,8 @@ pub enum Tree {
 
 macro_rules! visit_base {
     ($length:literal, $($contents:expr)*) => {
-        pub static ASSETS: once_cell::sync::Lazy<Tree> =
-            once_cell::sync::Lazy::new(|| Tree::Folder(vec![$($contents,)*].into_iter().collect()));
+        pub static ASSETS: sync::Lazy<Tree> =
+            sync::Lazy::new(|| Tree::Folder(vec![$($contents,)*].into_iter().collect()));
     };
 }
 

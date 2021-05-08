@@ -15,7 +15,7 @@ macro_rules! initialize {
             // As this must be a constant expression,
             // we use `once_cell` to compute non-constant data (lazily).
             // Here we guess the media (MIME) type based on the file path.
-            media_type: once_cell::sync::Lazy::new(|| {
+            media_type: sync::Lazy::new(|| {
                 let media_type = mime_guess::from_path($relative_path).first_or_octet_stream();
                 String::from(media_type.essence_str())
             }),

@@ -3,7 +3,7 @@ use once_cell::sync;
 macro_rules! initialize {
     ($relative_path:literal, $absolute_path:literal) => {
         Asset {
-            media_type: once_cell::sync::Lazy::new(|| {
+            media_type: sync::Lazy::new(|| {
                 let media_type = mime_guess::from_path($relative_path).first_or_octet_stream();
                 String::from(media_type.essence_str())
             }),

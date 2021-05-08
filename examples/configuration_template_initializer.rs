@@ -1,3 +1,5 @@
+use std::fs;
+
 macro_rules! my_initialize {
     ($relative_path:literal, $absolute_path:literal) => {
         Asset {
@@ -7,7 +9,7 @@ macro_rules! my_initialize {
 
             load_text_contents: {
                 fn get() -> Option<String> {
-                    std::fs::read_to_string($absolute_path).ok()
+                    fs::read_to_string($absolute_path).ok()
                 }
                 get
             },
