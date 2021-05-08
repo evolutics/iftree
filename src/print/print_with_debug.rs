@@ -1,4 +1,3 @@
-use crate::data;
 use crate::model;
 
 pub fn main(view: model::View, code: proc_macro2::TokenStream) -> proc_macro2::TokenStream {
@@ -10,13 +9,12 @@ pub fn main(view: model::View, code: proc_macro2::TokenStream) -> proc_macro2::T
 }
 
 fn go(code: proc_macro2::TokenStream) -> proc_macro2::TokenStream {
-    let name = quote::format_ident!("{}", data::DEBUG_NAME);
     let value = code.to_string();
 
     quote::quote! {
         #code
 
-        pub const #name: &str = #value;
+        pub const DEBUG: &str = #value;
     }
 }
 

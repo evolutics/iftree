@@ -1,6 +1,5 @@
 use super::count_files;
 use super::print_initializer;
-use crate::data;
 use crate::model;
 use std::iter;
 
@@ -16,16 +15,12 @@ pub fn main(view: &model::View, visitor: &model::Visitor) -> proc_macro2::TokenS
 
     match visitor {
         model::Visitor::Array(_) => {
-            let name = quote::format_ident!("{}", data::ASSET_ARRAY_NAME);
             let type_ = &view.type_;
             let length = count_files::main(&view.forest);
-            quote::quote! { pub static #name: [#type_; #length] = [#contents]; }
+            quote::quote! { pub static ASSETS: [#type_; #length] = [#contents]; }
         }
 
-        model::Visitor::Identifiers => {
-            let name = quote::format_ident!("{}", data::BASE_MODULE_NAME);
-            quote::quote! { pub mod #name { #contents } }
-        }
+        model::Visitor::Identifiers => quote::quote! { pub mod base { #contents } },
 
         model::Visitor::Custom(model::CustomVisitor {
             visit_base: None, ..
@@ -70,11 +65,10 @@ fn print_file(context: &Context, name: &str, file: &model::File) -> proc_macro2:
                 .take(context.depth + 1)
                 .collect::<proc_macro2::TokenStream>();
             let type_ = context.type_;
-            let array = quote::format_ident!("{}", data::ASSET_ARRAY_NAME);
             let index = file.index;
             quote::quote! {
                 #[doc = #name]
-                pub static #identifier: &#root_path#type_ = &#root_path#array[#index];
+                pub static #identifier: &#root_path#type_ = &#root_path ASSETS[#index];
             }
         }
 
