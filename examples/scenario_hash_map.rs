@@ -1,16 +1,18 @@
+use once_cell::sync;
+use std::collections;
+
 #[iftree::include_file_tree("paths = '/examples/assets/**'")]
 pub struct Asset {
     relative_path: &'static str,
     contents_str: &'static str,
 }
 
-pub static ASSET_MAP: once_cell::sync::Lazy<std::collections::HashMap<&str, &Asset>> =
-    once_cell::sync::Lazy::new(|| {
-        ASSETS
-            .iter()
-            .map(|asset| (asset.relative_path, asset))
-            .collect()
-    });
+pub static ASSET_MAP: sync::Lazy<collections::HashMap<&str, &Asset>> = sync::Lazy::new(|| {
+    ASSETS
+        .iter()
+        .map(|asset| (asset.relative_path, asset))
+        .collect()
+});
 
 pub fn main() {
     assert_eq!(ASSET_MAP.len(), 6);
