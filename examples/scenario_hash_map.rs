@@ -1,38 +1,21 @@
-macro_rules! visit_base {
-    ($length:literal, $($contents:expr)*) => {
-        pub static ASSETS: once_cell::sync::Lazy<std::collections::HashMap<&str, Asset>> =
-            once_cell::sync::Lazy::new(|| vec![$($contents,)*].into_iter().collect());
-    };
-}
-
-macro_rules! visit_file {
-    ($name:literal, $id:ident, $index:literal, $relative_path:literal, $absolute_path:literal) => {
-        (
-            $relative_path,
-            Asset {
-                contents: include_str!($absolute_path),
-            },
-        )
-    };
-}
-
-#[iftree::include_file_tree(
-    "
-paths = '/examples/assets/**'
-
-[[template]]
-visit_base = 'visit_base'
-visit_file = 'visit_file'
-"
-)]
+#[iftree::include_file_tree("paths = '/examples/assets/**'")]
 pub struct Asset {
-    contents: &'static str,
+    relative_path: &'static str,
+    contents_str: &'static str,
 }
+
+pub static ASSET_MAP: once_cell::sync::Lazy<std::collections::HashMap<&str, &Asset>> =
+    once_cell::sync::Lazy::new(|| {
+        ASSETS
+            .iter()
+            .map(|asset| (asset.relative_path, asset))
+            .collect()
+    });
 
 pub fn main() {
-    assert_eq!(ASSETS.len(), 6);
+    assert_eq!(ASSET_MAP.len(), 6);
 
-    let mut keys = ASSETS.keys().collect::<Vec<_>>();
+    let mut keys = ASSET_MAP.keys().collect::<Vec<_>>();
     keys.sort_unstable();
     assert_eq!(
         keys,
@@ -47,9 +30,12 @@ pub fn main() {
     );
 
     assert_eq!(
-        ASSETS.get("examples/assets/credits.md").unwrap().contents,
+        ASSET_MAP
+            .get("examples/assets/credits.md")
+            .unwrap()
+            .contents_str,
         "Boo Far\n",
     );
 
-    assert!(ASSETS.get("examples/assets/seed.json").is_none());
+    assert!(ASSET_MAP.get("examples/assets/seed.json").is_none());
 }
