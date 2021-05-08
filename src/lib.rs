@@ -244,6 +244,9 @@
 //!
 //! Each variable is a reference to the corresponding element in the `ASSETS` array.
 //!
+//! To generate valid identifiers only, the names are subject to
+//! [sanitization](#name-sanitization).
+//!
 //! **Default:** `true`
 //!
 //! See
