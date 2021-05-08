@@ -32,7 +32,7 @@ fn parse_structure(item: parse::ParseStream) -> syn::Result<model::Type<()>> {
             named_fields
                 .named
                 .into_iter()
-                .filter_map(|named_field| named_field.ident.map(|field| (field.to_string(), ())))
+                .filter_map(|named_field| named_field.ident.map(|field| (field, ())))
                 .collect(),
         ),
 
@@ -101,8 +101,8 @@ mod tests {
         let expected = model::Type {
             name: quote::format_ident!("MyNamedFields"),
             structure: model::TypeStructure::NamedFields(vec![
-                (String::from("ab"), ()),
-                (String::from("bc"), ()),
+                (quote::format_ident!("ab"), ()),
+                (quote::format_ident!("bc"), ()),
             ]),
         };
         assert_eq!(actual, expected);

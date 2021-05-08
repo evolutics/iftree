@@ -38,7 +38,7 @@ impl fmt::Display for main::Error {
                     as field {:?} is not standard. \
                     Configure an initializer with \"initializer = 'a_macro'\" or \
                     use standard fields only ({}).",
-                    field,
+                    field.to_string(),
                     data::STANDARD_FIELD_POPULATORS_ORDERED
                         .iter()
                         .map(|(field, _)| format!("{:?}", field))
@@ -141,7 +141,7 @@ use standard fields to generate a default initializer.";
         #[test]
         fn handles_nonstandard_field() {
             let actual = main::Error::NonstandardField {
-                field: String::from("abc"),
+                field: quote::format_ident!("abc"),
             }
             .to_string();
 

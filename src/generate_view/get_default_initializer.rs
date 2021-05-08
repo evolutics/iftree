@@ -29,10 +29,11 @@ pub fn main(
     }
 }
 
-fn get_populator(field: &str) -> model::Result<model::Populator> {
-    match data::STANDARD_FIELD_POPULATORS_ORDERED.binary_search_by_key(&field, |entry| entry.0) {
+fn get_populator(field: &syn::Ident) -> model::Result<model::Populator> {
+    let name = field.to_string();
+    match data::STANDARD_FIELD_POPULATORS_ORDERED.binary_search_by(|entry| entry.0.cmp(&name)) {
         Err(_) => Err(model::Error::NonstandardField {
-            field: String::from(field),
+            field: field.clone(),
         }),
         Ok(index) => Ok(data::STANDARD_FIELD_POPULATORS_ORDERED[index].1.clone()),
     }
@@ -67,17 +68,20 @@ mod tests {
         #[test]
         fn given_standard_fields_only_it_handles() {
             let actual = main(model::TypeStructure::NamedFields(vec![
-                (String::from("relative_path"), ()),
-                (String::from("contents_str"), ()),
+                (quote::format_ident!("relative_path"), ()),
+                (quote::format_ident!("contents_str"), ()),
             ]));
 
             let actual = actual.unwrap();
             let expected = model::TypeStructure::NamedFields(vec![
                 (
-                    String::from("relative_path"),
+                    quote::format_ident!("relative_path"),
                     model::Populator::RelativePath,
                 ),
-                (String::from("contents_str"), model::Populator::ContentsStr),
+                (
+                    quote::format_ident!("contents_str"),
+                    model::Populator::ContentsStr,
+                ),
             ]);
             assert_eq!(actual, expected);
         }
@@ -85,13 +89,13 @@ mod tests {
         #[test]
         fn given_nonstandard_field_it_errs() {
             let actual = main(model::TypeStructure::NamedFields(vec![
-                (String::from("relative_path"), ()),
-                (String::from("abc"), ()),
+                (quote::format_ident!("relative_path"), ()),
+                (quote::format_ident!("abc"), ()),
             ]));
 
             let actual = actual.unwrap_err();
             let expected = model::Error::NonstandardField {
-                field: String::from("abc"),
+                field: quote::format_ident!("abc"),
             };
             assert_eq!(actual, expected);
         }
@@ -101,7 +105,7 @@ mod tests {
             let actual = main(model::TypeStructure::NamedFields(
                 data::STANDARD_FIELD_POPULATORS_ORDERED
                     .iter()
-                    .map(|(field, _)| (String::from(*field), ()))
+                    .map(|(field, _)| (quote::format_ident!("{}", field), ()))
                     .collect(),
             ));
 
@@ -109,7 +113,9 @@ mod tests {
             let expected = model::TypeStructure::NamedFields(
                 data::STANDARD_FIELD_POPULATORS_ORDERED
                     .iter()
-                    .map(|(field, populator)| (String::from(*field), populator.clone()))
+                    .map(|(field, populator)| {
+                        (quote::format_ident!("{}", field), populator.clone())
+                    })
                     .collect(),
             );
             assert_eq!(actual, expected);

@@ -31,7 +31,6 @@ fn print_default(
             let contents: proc_macro2::TokenStream = field_populators
                 .iter()
                 .map(|(field, populator)| {
-                    let field = quote::format_ident!("{}", field);
                     let term = print_populator::main(populator, &context);
                     quote::quote! { #field: #term, }
                 })
@@ -135,7 +134,7 @@ mod tests {
                 let actual = main(
                     &quote::format_ident!("MyNamedFields"),
                     &model::Initializer::Default(model::TypeStructure::NamedFields(vec![(
-                        String::from("abc"),
+                        quote::format_ident!("abc"),
                         model::Populator::ContentsStr,
                     )])),
                     &model::File {

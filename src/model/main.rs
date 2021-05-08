@@ -40,7 +40,7 @@ pub struct Type<T> {
 pub enum TypeStructure<T> {
     Unit,
     TypeAlias(T),
-    NamedFields(vec::Vec<(String, T)>),
+    NamedFields(vec::Vec<(syn::Ident, T)>),
     TupleFields(vec::Vec<T>),
 }
 
@@ -109,7 +109,7 @@ pub enum Error {
     EnvironmentVariable { name: String, source: env::VarError },
     Ignore(IgnoreError),
     NoInitializer,
-    NonstandardField { field: String },
+    NonstandardField { field: syn::Ident },
     PathInvalidUnicode(path::PathBuf),
     PathStripPrefix(path::StripPrefixError),
     UnexpectedPathCollision(path::PathBuf),

@@ -43,7 +43,7 @@ mod tests {
             model::Type {
                 name: quote::format_ident!("Asset"),
                 structure: model::TypeStructure::NamedFields(vec![(
-                    String::from("relative_path"),
+                    quote::format_ident!("relative_path"),
                     (),
                 )]),
             },
