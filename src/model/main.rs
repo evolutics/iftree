@@ -106,10 +106,16 @@ pub type Result<T> = result::Result<T, Error>;
 
 #[derive(Clone, cmp::PartialEq, Debug)]
 pub enum Error {
-    EnvironmentVariable { name: String, source: env::VarError },
+    EnvironmentVariable {
+        name: String,
+        source: env::VarError,
+    },
     Ignore(IgnoreError),
     NoInitializer,
-    NonstandardField { field: syn::Ident },
+    NonstandardField {
+        field: syn::Ident,
+        standard_fields: vec::Vec<syn::Ident>,
+    },
     PathInvalidUnicode(path::PathBuf),
     PathStripPrefix(path::StripPrefixError),
     UnexpectedPathCollision(path::PathBuf),

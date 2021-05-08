@@ -1,5 +1,4 @@
 use super::main;
-use crate::data;
 use std::error;
 use std::fmt;
 use std::path;
@@ -31,7 +30,10 @@ impl fmt::Display for main::Error {
                 )
             }
 
-            main::Error::NonstandardField { field } => {
+            main::Error::NonstandardField {
+                field,
+                standard_fields,
+            } => {
                 write!(
                     formatter,
                     "Default initializer cannot be generated \
@@ -39,9 +41,9 @@ impl fmt::Display for main::Error {
                     Configure an initializer with \"initializer = 'a_macro'\" or \
                     use standard fields only ({}).",
                     field.to_string(),
-                    data::STANDARD_FIELD_POPULATORS_ORDERED
+                    standard_fields
                         .iter()
-                        .map(|(field, _)| format!("{:?}", field))
+                        .map(|field| format!("{:?}", field.to_string()))
                         .collect::<vec::Vec<_>>()
                         .join(", "),
                 )
@@ -142,14 +144,14 @@ use standard fields to generate a default initializer.";
         fn handles_nonstandard_field() {
             let actual = main::Error::NonstandardField {
                 field: quote::format_ident!("abc"),
+                standard_fields: vec![quote::format_ident!("xy"), quote::format_ident!("z")],
             }
             .to_string();
 
             let expected = "Default initializer cannot be generated \
 as field \"abc\" is not standard. \
 Configure an initializer with \"initializer = 'a_macro'\" or \
-use standard fields only \
-(\"contents_bytes\", \"contents_str\", \"get_bytes\", \"get_str\", \"relative_path\").";
+use standard fields only (\"xy\", \"z\").";
             assert_eq!(actual, expected);
         }
 

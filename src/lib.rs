@@ -307,7 +307,6 @@
 //! See
 //! [example](https://github.com/evolutics/iftree/blob/main/examples/configuration_debug.rs).
 
-mod data;
 mod generate_view;
 mod go;
 mod list_files;

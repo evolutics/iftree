@@ -1,5 +1,5 @@
-use crate::data;
 use crate::model;
+use std::collections;
 
 pub fn main(
     structure: model::TypeStructure<()>,
@@ -9,15 +9,21 @@ pub fn main(
 
         model::TypeStructure::TypeAlias(_) => Err(model::Error::NoInitializer),
 
-        model::TypeStructure::NamedFields(fields) => Ok(model::TypeStructure::NamedFields(
-            fields
-                .into_iter()
-                .map(|(field, _)| {
-                    let populator = get_populator(&field)?;
-                    Ok((field, populator))
-                })
-                .collect::<model::Result<_>>()?,
-        )),
+        model::TypeStructure::NamedFields(fields) => {
+            let standard_field_populators = get_standard_field_populators();
+            Ok(model::TypeStructure::NamedFields(
+                fields
+                    .into_iter()
+                    .map(|(field, _)| match standard_field_populators.get(&field) {
+                        None => Err(model::Error::NonstandardField {
+                            field: field.clone(),
+                            standard_fields: standard_field_populators.keys().cloned().collect(),
+                        }),
+                        Some(populator) => Ok((field, populator.clone())),
+                    })
+                    .collect::<model::Result<_>>()?,
+            ))
+        }
 
         model::TypeStructure::TupleFields(unary_length) => {
             if unary_length.is_empty() {
@@ -29,14 +35,28 @@ pub fn main(
     }
 }
 
-fn get_populator(field: &syn::Ident) -> model::Result<model::Populator> {
-    let name = field.to_string();
-    match data::STANDARD_FIELD_POPULATORS_ORDERED.binary_search_by(|entry| entry.0.cmp(&name)) {
-        Err(_) => Err(model::Error::NonstandardField {
-            field: field.clone(),
-        }),
-        Ok(index) => Ok(data::STANDARD_FIELD_POPULATORS_ORDERED[index].1.clone()),
-    }
+fn get_standard_field_populators() -> collections::BTreeMap<syn::Ident, model::Populator> {
+    vec![
+        (
+            quote::format_ident!("contents_bytes"),
+            model::Populator::ContentsBytes,
+        ),
+        (
+            quote::format_ident!("contents_str"),
+            model::Populator::ContentsStr,
+        ),
+        (
+            quote::format_ident!("get_bytes"),
+            model::Populator::GetBytes,
+        ),
+        (quote::format_ident!("get_str"), model::Populator::GetStr),
+        (
+            quote::format_ident!("relative_path"),
+            model::Populator::RelativePath,
+        ),
+    ]
+    .into_iter()
+    .collect()
 }
 
 #[cfg(test)]
@@ -96,28 +116,47 @@ mod tests {
             let actual = actual.unwrap_err();
             let expected = model::Error::NonstandardField {
                 field: quote::format_ident!("abc"),
+                standard_fields: vec![
+                    quote::format_ident!("contents_bytes"),
+                    quote::format_ident!("contents_str"),
+                    quote::format_ident!("get_bytes"),
+                    quote::format_ident!("get_str"),
+                    quote::format_ident!("relative_path"),
+                ],
             };
             assert_eq!(actual, expected);
         }
 
         #[test]
         fn handles_each_standard_field() {
-            let actual = main(model::TypeStructure::NamedFields(
-                data::STANDARD_FIELD_POPULATORS_ORDERED
-                    .iter()
-                    .map(|(field, _)| (quote::format_ident!("{}", field), ()))
-                    .collect(),
-            ));
+            let actual = main(model::TypeStructure::NamedFields(vec![
+                (quote::format_ident!("contents_bytes"), ()),
+                (quote::format_ident!("contents_str"), ()),
+                (quote::format_ident!("get_bytes"), ()),
+                (quote::format_ident!("get_str"), ()),
+                (quote::format_ident!("relative_path"), ()),
+            ]));
 
             let actual = actual.unwrap();
-            let expected = model::TypeStructure::NamedFields(
-                data::STANDARD_FIELD_POPULATORS_ORDERED
-                    .iter()
-                    .map(|(field, populator)| {
-                        (quote::format_ident!("{}", field), populator.clone())
-                    })
-                    .collect(),
-            );
+            let expected = model::TypeStructure::NamedFields(vec![
+                (
+                    quote::format_ident!("contents_bytes"),
+                    model::Populator::ContentsBytes,
+                ),
+                (
+                    quote::format_ident!("contents_str"),
+                    model::Populator::ContentsStr,
+                ),
+                (
+                    quote::format_ident!("get_bytes"),
+                    model::Populator::GetBytes,
+                ),
+                (quote::format_ident!("get_str"), model::Populator::GetStr),
+                (
+                    quote::format_ident!("relative_path"),
+                    model::Populator::RelativePath,
+                ),
+            ]);
             assert_eq!(actual, expected);
         }
     }
