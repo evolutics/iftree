@@ -197,7 +197,7 @@ Here are example solutions for given problems.
 - [Hash map](https://github.com/evolutics/iftree/blob/main/examples/scenario_hash_map.rs)
 - [Nested hash map](https://github.com/evolutics/iftree/blob/main/examples/scenario_nested_hash_map.rs)
 
-## Configuration
+## Configuration reference
 
 The `iftree::include_file_tree` macro is configured via a
 [TOML](https://toml.io) string with the following fields.
