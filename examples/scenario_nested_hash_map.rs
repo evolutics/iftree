@@ -1,5 +1,4 @@
 use std::collections;
-use std::ops;
 
 pub enum Tree {
     File(Asset),
@@ -9,7 +8,7 @@ pub enum Tree {
 macro_rules! visit_base {
     ($length:literal, $($contents:expr)*) => {
         pub static ASSETS: once_cell::sync::Lazy<Tree> =
-            once_cell::sync::Lazy::new(|| visit_folder!("", a, $($contents)*).1);
+            once_cell::sync::Lazy::new(|| Tree::Folder(vec![$($contents,)*].into_iter().collect()));
     };
 }
 
@@ -49,27 +48,21 @@ pub struct Asset {
 
 pub fn main() {
     assert_eq!(
-        ASSETS["examples"]["assets"]["credits.md"].unwrap().contents,
+        get_asset(&ASSETS, &["examples", "assets", "credits.md"])
+            .unwrap()
+            .contents,
         "Boo Far\n",
     );
+
+    assert!(get_asset(&ASSETS, &["examples", "assets", "seed.json"]).is_none());
 }
 
-impl ops::Index<&str> for Tree {
-    type Output = Tree;
-
-    fn index(&self, name: &str) -> &Self::Output {
-        match self {
-            Tree::File(_) => panic!(),
-            Tree::Folder(assets) => &assets[name],
-        }
-    }
-}
-
-impl Tree {
-    fn unwrap(&self) -> &Asset {
-        match self {
-            Tree::File(asset) => asset,
-            Tree::Folder(_) => panic!(),
-        }
+fn get_asset<'a>(tree: &'a Tree, path: &[&'a str]) -> Option<&'a Asset> {
+    match (tree, path.split_first()) {
+        (Tree::File(asset), None) => Some(asset),
+        (Tree::Folder(forest), Some((name, subpath))) => forest
+            .get(name)
+            .and_then(|subtree| get_asset(subtree, subpath)),
+        _ => None,
     }
 }
