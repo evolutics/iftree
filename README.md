@@ -86,9 +86,8 @@ if you like to explore by example.
    `#[iftree::include_file_tree("paths = '…'")]`. Path patterns in a
    `.gitignore`-like format are supported, with one pattern per line. The paths
    are relative to the folder with your manifest by default. Patterns are
-   flexible: you can skip hidden files, filter by filename extension, add
-   multiple folders, select a fixed list of files, etc. See the
-   [`paths` configuration](#paths) for more.
+   flexible: you can skip hidden files, filter by filename extension, select a
+   fixed list of files, etc. See the [`paths` configuration](#paths) for more.
 1. The generated code then uses an **initializer** to instantiate the asset type
    once per file. By default, a field `contents_str` (if any) is populated with
    `include_str!`, a field `contents_bytes` is populated with `include_bytes!`,
