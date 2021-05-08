@@ -163,6 +163,39 @@ Names are further adjusted to respect naming conventions in the default case:
 
 To inspect the generated code, there is a [`debug` configuration](#debug).
 
+## Recipes
+
+Here are example solutions for given problems.
+
+### Kinds of asset types
+
+- [Type alias](https://github.com/evolutics/iftree/blob/main/examples/basics_type_alias.rs)
+  (`type X = …`)
+- [Struct](https://github.com/evolutics/iftree/blob/main/examples/basics_type_named_fields.rs)
+  (`struct` with named fields)
+- [Tuple struct](https://github.com/evolutics/iftree/blob/main/examples/basics_type_tuple_fields.rs)
+  (`struct` with unnamed fields)
+- [Unit-like struct](https://github.com/evolutics/iftree/blob/main/examples/basics_type_unit.rs)
+  (`struct` without field list)
+
+### Integration with other libraries
+
+- [Actix Web](https://github.com/evolutics/iftree/blob/main/examples/library_actix_web.rs)
+- [`mime_guess`](https://github.com/evolutics/iftree/blob/main/examples/library_mime_guess.rs)
+- [`once_cell`](https://github.com/evolutics/iftree/blob/main/examples/library_once_cell.rs)
+
+### Including file metadata
+
+- [Filename](https://github.com/evolutics/iftree/blob/main/examples/scenario_filename.rs)
+- [Filename extension](https://github.com/evolutics/iftree/blob/main/examples/scenario_filename_extension.rs)
+- [Media type](https://github.com/evolutics/iftree/blob/main/examples/scenario_media_type.rs)
+  (formerly MIME type)
+
+### Custom constructions
+
+- [Hash map](https://github.com/evolutics/iftree/blob/main/examples/scenario_hash_map.rs)
+- [Nested hash map](https://github.com/evolutics/iftree/blob/main/examples/scenario_nested_hash_map.rs)
+
 ## Configuration
 
 The `iftree::include_file_tree` macro is configured via a
@@ -274,36 +307,3 @@ generated code.
 
 See
 [example](https://github.com/evolutics/iftree/blob/main/examples/configuration_debug.rs).
-
-## Recipes
-
-Here are example solutions for given problems.
-
-### Kinds of asset types
-
-- [Type alias](https://github.com/evolutics/iftree/blob/main/examples/basics_type_alias.rs)
-  (`type X = …`)
-- [Struct](https://github.com/evolutics/iftree/blob/main/examples/basics_type_named_fields.rs)
-  (`struct` with named fields)
-- [Tuple struct](https://github.com/evolutics/iftree/blob/main/examples/basics_type_tuple_fields.rs)
-  (`struct` with unnamed fields)
-- [Unit-like struct](https://github.com/evolutics/iftree/blob/main/examples/basics_type_unit.rs)
-  (`struct` without field list)
-
-### Integration with other libraries
-
-- [Actix Web](https://github.com/evolutics/iftree/blob/main/examples/library_actix_web.rs)
-- [`mime_guess`](https://github.com/evolutics/iftree/blob/main/examples/library_mime_guess.rs)
-- [`once_cell`](https://github.com/evolutics/iftree/blob/main/examples/library_once_cell.rs)
-
-### Including file metadata
-
-- [Filename](https://github.com/evolutics/iftree/blob/main/examples/scenario_filename.rs)
-- [Filename extension](https://github.com/evolutics/iftree/blob/main/examples/scenario_filename_extension.rs)
-- [Media type](https://github.com/evolutics/iftree/blob/main/examples/scenario_media_type.rs)
-  (formerly MIME type)
-
-### Custom constructions
-
-- [Hash map](https://github.com/evolutics/iftree/blob/main/examples/scenario_hash_map.rs)
-- [Nested hash map](https://github.com/evolutics/iftree/blob/main/examples/scenario_nested_hash_map.rs)
