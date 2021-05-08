@@ -2,6 +2,7 @@
 
 use actix_web::web;
 use once_cell::sync;
+use std::collections;
 use std::io;
 
 // This macro is used as an initializer below.
@@ -48,6 +49,10 @@ pub struct Asset {
     contents: &'static str,
 }
 
+// For efficient lookup, construct a map based on the generated `ASSETS` array.
+static ASSET_MAP: sync::Lazy<collections::HashMap<&str, &Asset>> =
+    sync::Lazy::new(|| ASSETS.iter().map(|asset| (asset.path, asset)).collect());
+
 #[actix_web::main]
 async fn main() -> io::Result<()> {
     let socket_address = "127.0.0.1:8080";
@@ -61,22 +66,18 @@ async fn main() -> io::Result<()> {
 }
 
 fn print_index(socket_address: &str) {
-    // `ASSETS` is the generated array.
-    for asset in &ASSETS {
-        eprintln!("See: http://{}/{}", socket_address, asset.path);
+    for path in ASSET_MAP.keys() {
+        eprintln!("See: http://{}/{}", socket_address, path);
     }
 }
 
 async fn get_asset(path: web::Path<String>) -> impl actix_web::Responder {
     let path = path.into_inner();
     // Use the URL path directly as file path.
-    match ASSETS.iter().position(|asset| asset.path == path) {
+    match ASSET_MAP.get(&*path) {
         None => actix_web::HttpResponse::NotFound().finish(),
-        Some(index) => {
-            let asset = &ASSETS[index];
-            actix_web::HttpResponse::Ok()
-                .content_type(&*asset.media_type)
-                .body(asset.contents)
-        }
+        Some(asset) => actix_web::HttpResponse::Ok()
+            .content_type(&*asset.media_type)
+            .body(asset.contents),
     }
 }
