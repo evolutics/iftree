@@ -154,8 +154,13 @@ ensure they are
 
 - Characters other than ASCII alphanumericals are replaced by `"_"`.
 - If the first character is numeric, then `"_"` is prepended.
-- If the transformed name is `"_"`, `"crate"`, `"self"`, `"Self"`, or `"super"`,
-  then `"_"` is appended.
+- If the name is `"_"`, `"crate"`, `"self"`, `"Self"`, or `"super"`, then `"_"`
+  is appended.
+
+Names are further adjusted to respect naming conventions in the default case:
+
+- Lowercase for folders (because they map to module names).
+- Uppercase for filenames (because they map to static variables).
 
 ### Troubleshooting
 
@@ -246,8 +251,7 @@ represents the base folder.
 
 Each variable is a reference to the corresponding element in the `ASSETS` array.
 
-To generate valid identifiers only, the names are subject to
-[sanitization](#name-sanitization).
+Generated identifiers are subject to [name sanitization](#name-sanitization).
 
 **Default:** `true`
 
