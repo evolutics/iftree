@@ -70,11 +70,8 @@ assert_eq!(base::my_assets::subfolder::FILE_C.contents_str, "… and `file_c`\n"
 ## Usage
 
 Now that you have a general idea of the library, learn how to integrate it with
-your project.
-
-By the way, there is an
-[**`examples` folder**](https://github.com/evolutics/iftree/tree/main/examples)
-if you like to explore by example.
+your project. See also the
+[**`examples` folder**](https://github.com/evolutics/iftree/tree/main/examples).
 
 ### Getting started
 
@@ -97,9 +94,10 @@ if you like to explore by example.
    control over code generation, there is the concept of
    [visitors](#template-visitors).
 
-The
-[showcase example](https://github.com/evolutics/iftree/blob/main/examples/showcase.rs)
-combines these things.
+There is a
+[minimal example](https://github.com/evolutics/iftree/blob/main/examples/basic.rs)
+that combines these things. For a more complex case, see the
+[showcase example](https://github.com/evolutics/iftree/blob/main/examples/showcase.rs).
 
 ### Standard fields
 
