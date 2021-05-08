@@ -250,6 +250,11 @@
 //! Each variable is a reference to the corresponding element in the `ASSETS` array.
 //!
 //! Generated identifiers are subject to [name sanitization](#name-sanitization).
+//! Because of this, there may be collisions in the generated code, causing an error
+//! about a name being defined multiple times. The code generation does not try to
+//! resolve such collisions automatically, as this would likely cause confusion
+//! about which identifier refers to which file. Instead, you need to manually
+//! rename any affected paths.
 //!
 //! **Default:** `true`
 //!
