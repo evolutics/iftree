@@ -75,7 +75,7 @@ your project. See also the
 
 ### Getting started
 
-1. Add the dependency `iftree = "0.1"` to your manifest (`Cargo.toml`).
+1. Add the **dependency** `iftree = "0.1"` to your manifest (`Cargo.toml`).
 1. Define your **asset type.** This is a `struct` with the fields you need per
    file (`MyAsset` in the [introduction](#introduction)). Alternatively, it can
    be a type alias, which may be convenient if you have a exactly one field.
