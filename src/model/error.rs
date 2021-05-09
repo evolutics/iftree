@@ -25,7 +25,7 @@ impl fmt::Display for main::Error {
                 write!(
                     formatter,
                     "No initializer. \
-                    Configure one with \"initializer = 'a_macro'\" or \
+                    Configure one with \"template.initializer = 'a_macro'\" or \
                     use standard fields to generate a default initializer.",
                 )
             }
@@ -38,7 +38,7 @@ impl fmt::Display for main::Error {
                     formatter,
                     "Default initializer cannot be generated \
                     as field {:?} is not standard. \
-                    Configure an initializer with \"initializer = 'a_macro'\" or \
+                    Configure an initializer with \"template.initializer = 'a_macro'\" or \
                     use standard fields only ({}).",
                     field.to_string(),
                     standard_fields
@@ -135,7 +135,7 @@ mod tests {
             let actual = main::Error::NoInitializer.to_string();
 
             let expected = "No initializer. \
-Configure one with \"initializer = 'a_macro'\" or \
+Configure one with \"template.initializer = 'a_macro'\" or \
 use standard fields to generate a default initializer.";
             assert_eq!(actual, expected);
         }
@@ -150,7 +150,7 @@ use standard fields to generate a default initializer.";
 
             let expected = "Default initializer cannot be generated \
 as field \"abc\" is not standard. \
-Configure an initializer with \"initializer = 'a_macro'\" or \
+Configure an initializer with \"template.initializer = 'a_macro'\" or \
 use standard fields only (\"xy\", \"z\").";
             assert_eq!(actual, expected);
         }
