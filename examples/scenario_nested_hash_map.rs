@@ -1,14 +1,14 @@
 use once_cell::sync;
 use std::collections;
 
-pub enum Tree {
+enum Tree {
     File(Asset),
     Folder(collections::HashMap<&'static str, Tree>),
 }
 
 macro_rules! visit_base {
     ($length:literal, $($contents:expr)*) => {
-        pub static ASSETS: sync::Lazy<Tree> =
+        static ASSETS: sync::Lazy<Tree> =
             sync::Lazy::new(|| Tree::Folder(vec![$($contents,)*].into_iter().collect()));
     };
 }

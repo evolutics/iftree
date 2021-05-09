@@ -1,6 +1,6 @@
 macro_rules! visit_array_base {
     ($length:literal, $($contents:expr)*) => {
-        pub static ASSETS: [Asset; $length] = [$($contents,)*];
+        static ASSETS: [Asset; $length] = [$($contents,)*];
     };
 }
 

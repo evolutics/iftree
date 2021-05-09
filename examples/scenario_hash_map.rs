@@ -7,7 +7,7 @@ pub struct Asset {
     contents_str: &'static str,
 }
 
-pub static ASSET_MAP: sync::Lazy<collections::HashMap<&str, &Asset>> = sync::Lazy::new(|| {
+static ASSET_MAP: sync::Lazy<collections::HashMap<&str, &Asset>> = sync::Lazy::new(|| {
     ASSETS
         .iter()
         .map(|asset| (asset.relative_path, asset))
