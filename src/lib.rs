@@ -92,6 +92,8 @@
 //!    by [configuring an `initializer`](#templateinitializer). For even more
 //!    control over code generation, there is the concept of
 //!    [visitors](#template-visitors).
+//! 1. Now you can **access** your included file data via `ASSETS` array or via
+//!    `base::my::assets::MY_FILE` variables.
 //!
 //! There is a
 //! [minimal example](https://github.com/evolutics/iftree/blob/main/examples/basic.rs)
