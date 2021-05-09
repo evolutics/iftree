@@ -125,7 +125,7 @@ mod tests {
     }
 
     #[test]
-    fn handles_include_and_exclude_paths() {
+    fn handles_negated_patterns() {
         let actual = main(
             &model::Configuration {
                 paths: String::from(
