@@ -162,6 +162,14 @@ Names are further adjusted to respect naming conventions in the default case:
 - Lowercase for folders (because they map to module names).
 - Uppercase for filenames (because they map to static variables).
 
+### Portable file paths
+
+To avoid path issues when developing on different platforms, follow these
+recommendations:
+
+- Always use a slash `/` as a folder separator (even on Windows).
+- Never use backslashes `\` in filenames (even on Linux).
+
 ### Troubleshooting
 
 To inspect the generated code, there is a [`debug` configuration](#debug).
@@ -224,12 +232,6 @@ difference: you must use `a/b/*` instead of `a/b/` to include files in a folder
 By default, path patterns are relative to the environment variable
 `CARGO_MANIFEST_DIR`, which is the folder with your manifest (`Cargo.toml`). See
 the [`base_folder` configuration](#base_folder) to customize this.
-
-To avoid path issues when developing on different platforms, follow these
-recommendations:
-
-- Always use a slash `/` as a folder separator (even on Windows).
-- Never use backslashes `\` in filenames (even on Linux).
 
 This is a **required** option without default.
 
