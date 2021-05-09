@@ -77,11 +77,10 @@ your project. See also the
 
 1. Add the **dependency** `iftree = "0.1"` to your manifest (`Cargo.toml`).
 
-1. Define your **asset type.**
+1. Define your **asset type** (`MyAsset` in the [introduction](#introduction)).
 
-   This is a `struct` with the fields you need per file (`MyAsset` in the
-   [introduction](#introduction)). Alternatively, it can be a type alias, which
-   may be convenient if you have a exactly one field.
+   This is a `struct` with the fields you need per file. Alternatively, it can
+   be a type alias, which may be convenient if you have a exactly one field.
 
 1. Next, **filter files** to be included by annotating your asset type with
    `#[iftree::include_file_tree("paths = '/my/assets/**'")]`.
@@ -93,8 +92,8 @@ your project. See also the
    extension, select a fixed list of files, etc. See the
    [`paths` configuration](#paths) for more.
 
-1. The generated code then uses an **initializer** to instantiate the asset type
-   once per file.
+1. When building your project, code is then generated that uses an
+   **initializer** to instantiate the asset type once per file.
 
    By default, a field `contents_str` (if any) is populated with `include_str!`,
    a field `contents_bytes` is populated with `include_bytes!`, and a couple of
