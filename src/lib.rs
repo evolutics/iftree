@@ -74,24 +74,33 @@
 //! ## Getting started
 //!
 //! 1. Add the **dependency** `iftree = "0.1"` to your manifest (`Cargo.toml`).
-//! 1. Define your **asset type.** This is a `struct` with the fields you need per
-//!    file (`MyAsset` in the [introduction](#introduction)). Alternatively, it can
-//!    be a type alias, which may be convenient if you have a exactly one field.
+//!
+//! 1. Define your **asset type.**
+//!
+//!    This is a `struct` with the fields you need per file (`MyAsset` in the
+//!    [introduction](#introduction)). Alternatively, it can be a type alias, which
+//!    may be convenient if you have a exactly one field.
+//!
 //! 1. Next, **filter files** to be included by annotating your asset type with
-//!    `#[iftree::include_file_tree("paths = '/my/assets/**'")]`. The macro argument
-//!    is a [TOML](https://toml.io) string literal. Its `paths` option here supports
-//!    `.gitignore`-like path patterns, with one pattern per line. These paths are
-//!    relative to the folder with your manifest by default. Patterns are flexible:
-//!    you can skip hidden files, filter by filename extension, select a fixed list
-//!    of files, etc. See the [`paths` configuration](#paths) for more.
+//!    `#[iftree::include_file_tree("paths = '/my/assets/**'")]`.
+//!
+//!    The macro argument is a [TOML](https://toml.io) string literal. Its `paths`
+//!    option here supports `.gitignore`-like path patterns, with one pattern per
+//!    line. These paths are relative to the folder with your manifest by default.
+//!    Patterns are flexible: you can skip hidden files, filter by filename
+//!    extension, select a fixed list of files, etc. See the
+//!    [`paths` configuration](#paths) for more.
+//!
 //! 1. The generated code then uses an **initializer** to instantiate the asset type
-//!    once per file. By default, a field `contents_str` (if any) is populated with
-//!    `include_str!`, a field `contents_bytes` is populated with `include_bytes!`,
-//!    and a couple of other [standard fields](#standard-fields) are recognized.
-//!    However, you can plug in your own macro to fully customize the initialization
-//!    by [configuring an `initializer`](#templateinitializer). For even more
-//!    control over code generation, there is the concept of
-//!    [visitors](#template-visitors).
+//!    once per file.
+//!
+//!    By default, a field `contents_str` (if any) is populated with `include_str!`,
+//!    a field `contents_bytes` is populated with `include_bytes!`, and a couple of
+//!    other [standard fields](#standard-fields) are recognized. However, you can
+//!    plug in your own macro to fully customize the initialization by
+//!    [configuring an `initializer`](#templateinitializer). For even more control
+//!    over code generation, there is the concept of [visitors](#template-visitors).
+//!
 //! 1. Now you can **access** your included file data via `ASSETS` array or via
 //!    `base::my::assets::MY_FILE` variables.
 //!
