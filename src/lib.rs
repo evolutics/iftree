@@ -220,6 +220,29 @@
 //! The `iftree::include_file_tree` macro is configured via a
 //! [TOML](https://toml.io) string with the following fields.
 //!
+//! ## `base_folder`
+//!
+//! Path patterns are interpreted as relative to this folder.
+//!
+//! If this path itself is relative, then it is joined to the folder given by the
+//! environment variable `CARGO_MANIFEST_DIR`. That is, a relative path `a/b/c` has
+//! a full path `[CARGO_MANIFEST_DIR]/[base_folder]/a/b/c`.
+//!
+//! **Default:** `""`
+//!
+//! See
+//! [example](https://github.com/evolutics/iftree/blob/main/examples/configuration_base_folder.rs).
+//!
+//! ## `debug`
+//!
+//! Whether to generate a string variable `DEBUG` with debug information such as the
+//! generated code.
+//!
+//! **Default:** `false`
+//!
+//! See
+//! [example](https://github.com/evolutics/iftree/blob/main/examples/configuration_debug.rs).
+//!
 //! ## `paths`
 //!
 //! A string with a path pattern per line to filter files.
@@ -244,19 +267,6 @@
 //! See
 //! [example](https://github.com/evolutics/iftree/blob/main/examples/configuration_paths.rs).
 //!
-//! ## `base_folder`
-//!
-//! Path patterns are interpreted as relative to this folder.
-//!
-//! If this path itself is relative, then it is joined to the folder given by the
-//! environment variable `CARGO_MANIFEST_DIR`. That is, a relative path `a/b/c` has
-//! a full path `[CARGO_MANIFEST_DIR]/[base_folder]/a/b/c`.
-//!
-//! **Default:** `""`
-//!
-//! See
-//! [example](https://github.com/evolutics/iftree/blob/main/examples/configuration_base_folder.rs).
-//!
 //! ## `root_folder_variable`
 //!
 //! The name of the environment variable to use as the root folder for the
@@ -265,24 +275,6 @@
 //! This should be an absolute path.
 //!
 //! **Default:** `"CARGO_MANIFEST_DIR"`
-//!
-//! ## `template.initializer`
-//!
-//! A macro name used to instantiate the asset type per file.
-//!
-//! As inputs, the macro is passed the following arguments, separated by comma:
-//!
-//! 1. Relative file path as a string literal.
-//! 1. Absolute file path as a string literal.
-//!
-//! As an output, the macro must return a
-//! [constant expression](https://doc.rust-lang.org/reference/const_eval.html#constant-expressions).
-//!
-//! **Default:** A default initializer is constructed by recognizing
-//! [standard fields](#standard-fields).
-//!
-//! See
-//! [example](https://github.com/evolutics/iftree/blob/main/examples/configuration_template_initializer.rs).
 //!
 //! ## `template.identifiers`
 //!
@@ -305,6 +297,24 @@
 //!
 //! See
 //! [example](https://github.com/evolutics/iftree/blob/main/examples/configuration_template_identifiers.rs).
+//!
+//! ## `template.initializer`
+//!
+//! A macro name used to instantiate the asset type per file.
+//!
+//! As inputs, the macro is passed the following arguments, separated by comma:
+//!
+//! 1. Relative file path as a string literal.
+//! 1. Absolute file path as a string literal.
+//!
+//! As an output, the macro must return a
+//! [constant expression](https://doc.rust-lang.org/reference/const_eval.html#constant-expressions).
+//!
+//! **Default:** A default initializer is constructed by recognizing
+//! [standard fields](#standard-fields).
+//!
+//! See
+//! [example](https://github.com/evolutics/iftree/blob/main/examples/configuration_template_initializer.rs).
 //!
 //! ## `template` visitors
 //!
@@ -356,16 +366,6 @@
 //!
 //! See
 //! [example](https://github.com/evolutics/iftree/blob/main/examples/configuration_template_visitors.rs).
-//!
-//! ## `debug`
-//!
-//! Whether to generate a string variable `DEBUG` with debug information such as the
-//! generated code.
-//!
-//! **Default:** `false`
-//!
-//! See
-//! [example](https://github.com/evolutics/iftree/blob/main/examples/configuration_debug.rs).
 
 mod generate_view;
 mod go;
