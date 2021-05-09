@@ -44,12 +44,38 @@ fn get_filter(
     for pattern in configuration.paths.lines() {
         builder.add(pattern)?;
     }
-    Ok(builder.build()?)
+    let filter = builder.build()?;
+
+    if filter.is_empty() {
+        ignore_everything(base_folder)
+    } else {
+        Ok(filter)
+    }
+}
+
+fn ignore_everything(base_folder: &path::Path) -> model::Result<overrides::Override> {
+    Ok(overrides::OverrideBuilder::new(base_folder)
+        .add("!*")?
+        .build()?)
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn handles_empty_paths() {
+        let actual = main(
+            &model::Configuration {
+                paths: String::new(),
+                ..model::stubs::configuration()
+            },
+            path::Path::new("."),
+        );
+
+        let actual = actual.unwrap();
+        assert!(actual.is_empty());
+    }
 
     #[test]
     fn handles_single_path() {
