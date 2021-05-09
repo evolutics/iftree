@@ -22,6 +22,7 @@ async fn main() {
 
 async fn get_asset(path: path::Tail) -> Result<&'static str, reject::Rejection> {
     let path = path.as_str();
+    // For a more efficient lookup, see the `scenario_hash_map` example.
     match ASSETS.iter().position(|asset| asset.relative_path == path) {
         None => Err(reject::not_found()),
         Some(index) => Ok(ASSETS[index].contents_str),

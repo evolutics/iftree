@@ -22,6 +22,7 @@ async fn main() -> io::Result<()> {
 
 async fn get_asset(path: web::Path<String>) -> impl actix_web::Responder {
     let path = path.into_inner();
+    // For a more efficient lookup, see the `scenario_hash_map` example.
     match ASSETS.iter().position(|asset| asset.relative_path == path) {
         None => actix_web::HttpResponse::NotFound().finish(),
         Some(index) => actix_web::HttpResponse::Ok().body(ASSETS[index].contents_str),
