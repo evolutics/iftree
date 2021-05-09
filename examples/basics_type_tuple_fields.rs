@@ -28,7 +28,7 @@ pub fn main() {
         assets::configuration::TRANSLATIONS_CSV.0,
         "examples/assets/configuration/translations.csv",
     );
-    assert_eq!(assets::configuration::TRANSLATIONS_CSV.1, "Back\n");
+    assert_eq!(assets::configuration::TRANSLATIONS_CSV.1, "Hi {{name}}\n");
 
     assert_eq!(assets::CREDITS_MD.0, "examples/assets/credits.md");
     assert_eq!(assets::CREDITS_MD.1, "Boo Far\n");

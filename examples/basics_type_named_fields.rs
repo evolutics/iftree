@@ -22,7 +22,7 @@ pub fn main() {
     );
     assert_eq!(
         assets::configuration::TRANSLATIONS_CSV.contents_str,
-        "Back\n",
+        "Hi {{name}}\n",
     );
 
     assert_eq!(
