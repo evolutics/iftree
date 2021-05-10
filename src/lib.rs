@@ -11,7 +11,7 @@
 //! 1. Not just one, but many files can be included at once with **path patterns**
 //!    in a `.gitignore`-like format.
 //! 1. Instead of including the file contents only, files can be associated with
-//!    **any data** such as their media type, a compiled template, etc.
+//!    **any data** fields.
 //!
 //! Conceptually:
 //!
