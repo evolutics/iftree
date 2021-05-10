@@ -1,14 +1,13 @@
 use once_cell::sync;
-use std::path;
 
 macro_rules! initialize {
     ($relative_path:literal, $absolute_path:literal) => {
         Asset {
-            is_read_only: sync::Lazy::new(|| {
-                path::Path::new($absolute_path)
-                    .metadata()
-                    .map(|metadata| metadata.permissions().readonly())
-                    .ok()
+            first_word: sync::Lazy::new(|| {
+                include_str!($absolute_path)
+                    .split_whitespace()
+                    .next()
+                    .map(String::from)
             }),
         }
     };
@@ -21,11 +20,11 @@ template.initializer = 'initialize'
 "
 )]
 pub struct Asset {
-    is_read_only: sync::Lazy<Option<bool>>,
+    first_word: sync::Lazy<Option<String>>,
 }
 
 pub fn main() {
     use base::examples::assets;
 
-    assert_eq!(*assets::CREDITS_MD.is_read_only, Some(false));
+    assert_eq!(*assets::CREDITS_MD.first_word, Some(String::from("Boo")));
 }

@@ -1,5 +1,3 @@
-use std::fs;
-
 macro_rules! my_initialize {
     ($relative_path:literal, $absolute_path:literal) => {
         Asset {
@@ -7,9 +5,9 @@ macro_rules! my_initialize {
 
             relative_path: $relative_path,
 
-            load_text_contents: {
-                fn get() -> Option<String> {
-                    fs::read_to_string($absolute_path).ok()
+            get_first_word: {
+                fn get() -> Option<&'static str> {
+                    include_str!($absolute_path).split_whitespace().next()
                 }
                 get
             },
@@ -32,7 +30,7 @@ template.initializer = 'my_initialize'
 pub struct Asset {
     path_length: usize,
     relative_path: &'static str,
-    load_text_contents: fn() -> Option<String>,
+    get_first_word: fn() -> Option<&'static str>,
     version: &'static str,
 }
 
@@ -46,10 +44,7 @@ pub fn main() {
         "examples/assets/credits.md",
     );
 
-    assert_eq!(
-        (assets::CREDITS_MD.load_text_contents)(),
-        Some(String::from("Boo Far\n")),
-    );
+    assert_eq!((assets::CREDITS_MD.get_first_word)(), Some("Boo"));
 
     if cfg!(debug_assertions) {
         assert_eq!(assets::CREDITS_MD.version, "debug");
