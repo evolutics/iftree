@@ -5,6 +5,8 @@ macro_rules! my_initialize {
 
             relative_path: $relative_path,
 
+            contents: include_str!($absolute_path),
+
             get_first_word: {
                 fn get() -> Option<&'static str> {
                     include_str!($absolute_path).split_whitespace().next()
@@ -30,6 +32,7 @@ template.initializer = 'my_initialize'
 pub struct Asset {
     path_length: usize,
     relative_path: &'static str,
+    contents: &'static str,
     get_first_word: fn() -> Option<&'static str>,
     version: &'static str,
 }
@@ -43,6 +46,8 @@ pub fn main() {
         assets::CREDITS_MD.relative_path,
         "examples/assets/credits.md",
     );
+
+    assert_eq!(assets::CREDITS_MD.contents, "Boo Far\n");
 
     assert_eq!((assets::CREDITS_MD.get_first_word)(), Some("Boo"));
 
