@@ -172,11 +172,11 @@ Names are further adjusted to respect naming conventions in the default case:
 
 ### Portable file paths
 
-To avoid path issues when developing on different platforms, follow these
-recommendations:
+To prevent issues when developing on different platforms, any paths in your
+configuration should follow these recommendations:
 
-- Always use a slash `/` as a folder separator (even on Windows).
-- Never use backslashes `\` in filenames (even on Linux).
+- Path components are separated by a slash `/` (even on Windows).
+- Filenames do not contain backslashes `\` (even on Unix-like systems).
 
 ### Troubleshooting
 
