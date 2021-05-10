@@ -92,8 +92,8 @@ your project. See also the
    extension, select a fixed list of files, etc. See the
    [`paths` configuration](#paths) for more.
 
-1. When building your project, code is then generated that uses an
-   **initializer** to instantiate the asset type once per file.
+1. When building your project, code is generated that uses an **initializer** to
+   instantiate the asset type once per file.
 
    By default, a field `contents_str` (if any) is populated with `include_str!`,
    a field `contents_bytes` is populated with `include_bytes!`, and a couple of
