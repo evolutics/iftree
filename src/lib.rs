@@ -407,6 +407,27 @@ mod tests {
     }
 
     #[test]
+    fn readme_includes_basic_example() {
+        let example = format!("```rust\n{}```\n", include_str!("../examples/basic.rs"));
+
+        let actual = get_readme().contains(&example);
+
+        assert!(actual);
+    }
+
+    #[test]
+    fn readme_refers_to_current_manifest_version() {
+        let manifest = get_manifest();
+        let version = manifest["package"]["version"].as_str().unwrap();
+        let major_minor_version = version.rsplitn(2, '.').nth(1).unwrap();
+        let dependency = format!("`iftree = \"{}\"`", major_minor_version);
+
+        let actual = get_readme().contains(&dependency);
+
+        assert!(actual);
+    }
+
+    #[test]
     fn module_documentation_corresponds_to_readme() {
         let mut actual = String::from("# Iftree: Include File Tree 🌳\n\n");
         let mut is_empty = true;
@@ -431,26 +452,5 @@ mod tests {
 
         let expected = get_readme();
         assert_eq!(actual, expected);
-    }
-
-    #[test]
-    fn readme_includes_basic_example() {
-        let example = format!("```rust\n{}```\n", include_str!("../examples/basic.rs"));
-
-        let actual = get_readme().contains(&example);
-
-        assert!(actual);
-    }
-
-    #[test]
-    fn readme_refers_to_current_manifest_version() {
-        let manifest = get_manifest();
-        let version = manifest["package"]["version"].as_str().unwrap();
-        let major_minor_version = version.rsplitn(2, '.').nth(1).unwrap();
-        let dependency = format!("`iftree = \"{}\"`", major_minor_version);
-
-        let actual = get_readme().contains(&dependency);
-
-        assert!(actual);
     }
 }
