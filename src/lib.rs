@@ -1,5 +1,7 @@
 //! Include file data from many files in your Rust code for self-contained binaries.
 //!
+//! ![test](https://github.com/evolutics/iftree/actions/workflows/test.yml/badge.svg)
+//!
 //! # Motivation
 //!
 //! Self-contained binaries are easy to ship, as they come with any required file
