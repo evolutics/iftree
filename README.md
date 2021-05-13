@@ -104,6 +104,9 @@ If you like to explore by example, there is an
 [**`examples` folder**](https://github.com/evolutics/iftree/tree/main/examples).
 The documentation links to individual examples where helpful.
 
+Note that some examples need extra dependencies from the `dev-dependencies` of
+the [manifest](https://github.com/evolutics/iftree/tree/main/Cargo.toml).
+
 ### Standard fields
 
 When you use fields from the following list only, an initializer for your asset
