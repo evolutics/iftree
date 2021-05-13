@@ -7,7 +7,7 @@ license = "MIT"
 homepage = "https://github.com/evolutics/iftree"
 repository = "https://github.com/evolutics/iftree"
 readme = true
-keywords = ["include", "file", "tree", "static", "embed"]
+keywords = ["include", "directory", "folder", "file", "embed"]
 categories = ["filesystem", "web-programming"]
 description = """
 Include file data from many files in your Rust code for self-contained binaries."""
