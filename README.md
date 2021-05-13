@@ -24,7 +24,7 @@ Iftree:    any_macro!("my_files/**")
 
 ## Introduction
 
-The basic functionality is simple:
+Here is a minimal example that shows the basic functionality.
 
 ```rust
 // Say you have the following files:
@@ -64,8 +64,7 @@ pub fn main() {
 ## Usage
 
 Now that you have a general idea of the library, learn how to integrate it with
-your project. See also the
-[**`examples` folder**](https://github.com/evolutics/iftree/tree/main/examples).
+your project.
 
 ### Getting started
 
@@ -99,10 +98,11 @@ your project. See also the
 1. Now you can **access** your included file data via `ASSETS` array or via
    `base::my::assets::MY_FILE` variables.
 
-There is a
-[minimal example](https://github.com/evolutics/iftree/blob/main/examples/basic.rs)
-that combines these things. For a more complex case, see the
-[showcase example](https://github.com/evolutics/iftree/blob/main/examples/showcase.rs).
+### Examples
+
+If you like to explore by example, there is an
+[**`examples` folder**](https://github.com/evolutics/iftree/tree/main/examples).
+The documentation links to individual examples where helpful.
 
 ### Standard fields
 
