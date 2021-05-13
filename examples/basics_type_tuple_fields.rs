@@ -37,7 +37,7 @@ pub fn main() {
         assets::world::levels::TUTORIAL_JSON.0,
         "examples/assets/world/levels/tutorial.json",
     );
-    assert_eq!(assets::world::levels::TUTORIAL_JSON.1, "\"Hi\"\n");
+    assert_eq!(assets::world::levels::TUTORIAL_JSON.1, "\"Welcome\"\n");
 
     assert_eq!(
         assets::world::PHYSICAL_CONSTANTS_JSON.0,

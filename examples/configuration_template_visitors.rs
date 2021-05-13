@@ -61,7 +61,7 @@ pub fn main() {
     assert_eq!(ASSETS[1].contents, "\"Start\"\n");
     assert_eq!(ASSETS[2].contents, "Hi {{name}}\n");
     assert_eq!(ASSETS[3].contents, "Boo Far\n");
-    assert_eq!(ASSETS[4].contents, "\"Hi\"\n");
+    assert_eq!(ASSETS[4].contents, "\"Welcome\"\n");
     assert_eq!(ASSETS[5].contents, "7e-3\n");
 
     assert_eq!(assets::_ENV.contents, "BASE=https://example.com\n");
@@ -71,6 +71,9 @@ pub fn main() {
         "Hi {{name}}\n",
     );
     assert_eq!(assets::CREDITS_MD.contents, "Boo Far\n");
-    assert_eq!(assets::world::levels::TUTORIAL_JSON.contents, "\"Hi\"\n");
+    assert_eq!(
+        assets::world::levels::TUTORIAL_JSON.contents,
+        "\"Welcome\"\n",
+    );
     assert_eq!(assets::world::PHYSICAL_CONSTANTS_JSON.contents, "7e-3\n");
 }

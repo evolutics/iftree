@@ -37,7 +37,7 @@ pub fn main() {
     );
     assert_eq!(
         assets::world::levels::TUTORIAL_JSON.contents_str,
-        "\"Hi\"\n",
+        "\"Welcome\"\n",
     );
 
     assert_eq!(

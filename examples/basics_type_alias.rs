@@ -19,6 +19,6 @@ pub fn main() {
     assert_eq!(assets::configuration::MENU_JSON, &"\"Start\"\n");
     assert_eq!(assets::configuration::TRANSLATIONS_CSV, &"Hi {{name}}\n");
     assert_eq!(assets::CREDITS_MD, &"Boo Far\n");
-    assert_eq!(assets::world::levels::TUTORIAL_JSON, &"\"Hi\"\n");
+    assert_eq!(assets::world::levels::TUTORIAL_JSON, &"\"Welcome\"\n");
     assert_eq!(assets::world::PHYSICAL_CONSTANTS_JSON, &"7e-3\n");
 }
