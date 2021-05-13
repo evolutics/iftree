@@ -24,8 +24,8 @@ std:       include_str!("my_file")
 Iftree:    any_macro!("my_files/**")
 ```
 
-See also [**related work**](#related-work) to learn how Iftree is related to,
-but different from other projects.
+Refer to [**related work**](#related-work) to see Iftree in the context of
+other, similar projects.
 
 ## Introduction
 
