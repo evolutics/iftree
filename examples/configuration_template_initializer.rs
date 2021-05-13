@@ -25,7 +25,7 @@ macro_rules! my_initialize {
 
 #[iftree::include_file_tree(
     "
-paths = '/examples/assets/credits.md'
+paths = '/examples/assets/**'
 template.initializer = 'my_initialize'
 "
 )]

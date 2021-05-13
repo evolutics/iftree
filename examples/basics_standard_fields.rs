@@ -1,6 +1,6 @@
 use std::borrow;
 
-#[iftree::include_file_tree("paths = '/examples/assets/credits.md'")]
+#[iftree::include_file_tree("paths = '/examples/assets/**'")]
 pub struct Asset {
     contents_bytes: &'static [u8],
     contents_str: &'static str,
