@@ -198,6 +198,7 @@ Here are example solutions for given problems.
 
 - [Actix Web](https://github.com/evolutics/iftree/blob/main/examples/library_actix_web.rs)
 - [Handlebars](https://github.com/evolutics/iftree/blob/main/examples/library_handlebars.rs)
+- [`include_flate`](https://github.com/evolutics/iftree/blob/main/examples/library_include_flate.rs)
 - [`mime_guess`](https://github.com/evolutics/iftree/blob/main/examples/library_mime_guess.rs)
 - [`once_cell`](https://github.com/evolutics/iftree/blob/main/examples/library_once_cell.rs)
 - [Tide](https://github.com/evolutics/iftree/blob/main/examples/library_tide.rs)
