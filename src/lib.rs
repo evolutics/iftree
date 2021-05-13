@@ -20,6 +20,9 @@
 //! Iftree:    any_macro!("my_files/**")
 //! ```
 //!
+//! See also [**related work**](#related-work) to learn how Iftree is related to,
+//! but different from other projects.
+//!
 //! # Introduction
 //!
 //! Here is a minimal example that shows the basic functionality.
@@ -213,6 +216,23 @@
 //!
 //! - [Hash map](https://github.com/evolutics/iftree/blob/main/examples/scenario_hash_map.rs)
 //! - [Nested hash map](https://github.com/evolutics/iftree/blob/main/examples/scenario_nested_hash_map.rs)
+//!
+//! # Related work
+//!
+//! Originally, I've worked on Iftree because I couldn't find a library for this use
+//! case: including files from a folder filtered by filename extension. The project
+//! has since developed into something more flexible.
+//!
+//! Here is how I think Iftree compares to related projects for the given criteria.
+//!
+//! | Project                                                                        | File selection                                      | Included file data     | Data access via                                                         |
+//! | ------------------------------------------------------------------------------ | --------------------------------------------------- | ---------------------- | ----------------------------------------------------------------------- |
+//! | [`include_dir`](https://github.com/Michael-F-Bryan/include_dir) 0.6            | Single folder                                       | Path, contents         | File path, nested iterators, glob patterns                              |
+//! | [`includedir`](https://github.com/tilpner/includedir) 0.6                      | Multiple files, multiple folders                    | Path, contents         | File path, iterator                                                     |
+//! | [Rust Embed](https://github.com/pyros2097/rust-embed) 5.9                      | Single folder                                       | Path, contents         | File path, iterator                                                     |
+//! | [`std::include_bytes`](https://doc.rust-lang.org/std/macro.include_bytes.html) | Single file                                         | Byte contents          | Literal file path                                                       |
+//! | [`std::include_str`](https://doc.rust-lang.org/std/macro.include_str.html)     | Single file                                         | String contents        | Literal file path                                                       |
+//! | Iftree                                                                         | Multiple files by inclusion-exclusion path patterns | Path, contents, custom | `base::a::b::MY_FILE` variables (constant time), `ASSETS` array, custom |
 //!
 //! # Configuration reference
 //!
