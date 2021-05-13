@@ -37,7 +37,7 @@ macro_rules! visit_identifiers_file {
 
 #[iftree::include_file_tree(
     "
-paths = '/my_assets/**'
+paths = '/examples/assets/**'
 
 [[template]]
 visit_base = 'visit_array_base'
@@ -54,15 +54,23 @@ pub struct Asset {
 }
 
 pub fn main() {
-    assert_eq!(ASSETS.len(), 3);
-    assert_eq!(ASSETS[0].contents, "… contents `file_a`\n");
-    assert_eq!(ASSETS[1].contents, "… contents `file_b`\n");
-    assert_eq!(ASSETS[2].contents, "… and `file_c`\n");
+    use base::examples::assets;
 
-    assert_eq!(base::my_assets::FILE_A.contents, "… contents `file_a`\n");
-    assert_eq!(base::my_assets::FILE_B.contents, "… contents `file_b`\n");
+    assert_eq!(ASSETS.len(), 6);
+    assert_eq!(ASSETS[0].contents, "BASE=https://example.com\n");
+    assert_eq!(ASSETS[1].contents, "\"Start\"\n");
+    assert_eq!(ASSETS[2].contents, "Hi {{name}}\n");
+    assert_eq!(ASSETS[3].contents, "Boo Far\n");
+    assert_eq!(ASSETS[4].contents, "\"Hi\"\n");
+    assert_eq!(ASSETS[5].contents, "7e-3\n");
+
+    assert_eq!(assets::_ENV.contents, "BASE=https://example.com\n");
+    assert_eq!(assets::configuration::MENU_JSON.contents, "\"Start\"\n");
     assert_eq!(
-        base::my_assets::subfolder::FILE_C.contents,
-        "… and `file_c`\n",
+        assets::configuration::TRANSLATIONS_CSV.contents,
+        "Hi {{name}}\n",
     );
+    assert_eq!(assets::CREDITS_MD.contents, "Boo Far\n");
+    assert_eq!(assets::world::levels::TUTORIAL_JSON.contents, "\"Hi\"\n");
+    assert_eq!(assets::world::PHYSICAL_CONSTANTS_JSON.contents, "7e-3\n");
 }
