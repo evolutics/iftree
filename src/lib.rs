@@ -94,7 +94,7 @@
 //!    a field `contents_bytes` is populated with `include_bytes!`, and a couple of
 //!    other [standard fields](#standard-fields) are recognized. However, you can
 //!    plug in your own macro to fully customize the initialization by
-//!    [configuring an `initializer`](#templateinitializer). For even more control
+//!    [configuring an initializer](#templateinitializer). For even more control
 //!    over code generation, there is the concept of [visitors](#template-visitors).
 //!
 //! 1. Now you can **access** your included file data via `ASSETS` array or via
@@ -113,7 +113,7 @@
 //!
 //! When you use fields from the following list only, an initializer for your asset
 //! type is generated without further configuration. You can still override these
-//! field names with a [custom `initializer`](#templateinitializer).
+//! field names with a [custom initializer](#templateinitializer).
 //!
 //! - **`contents_bytes:`** `&'static [u8]`
 //!
