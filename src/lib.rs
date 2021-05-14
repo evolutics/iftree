@@ -198,13 +198,13 @@
 //!
 //! ## Integration with other libraries
 //!
-//! - [Compression with `include_flate`](https://github.com/evolutics/iftree/blob/main/examples/library_include_flate.rs)
-//! - [File server with Actix Web](https://github.com/evolutics/iftree/blob/main/examples/library_actix_web.rs)
-//! - [File server with Tide](https://github.com/evolutics/iftree/blob/main/examples/library_tide.rs)
-//! - [File server with warp](https://github.com/evolutics/iftree/blob/main/examples/library_warp.rs)
-//! - [Lazy initialization with `once_cell`](https://github.com/evolutics/iftree/blob/main/examples/library_once_cell.rs)
-//! - [Media types with `mime_guess`](https://github.com/evolutics/iftree/blob/main/examples/library_mime_guess.rs)
-//! - [Templates with Handlebars](https://github.com/evolutics/iftree/blob/main/examples/library_handlebars.rs)
+//! - Compression with [`include_flate`](https://github.com/evolutics/iftree/blob/main/examples/library_include_flate.rs)
+//! - File server with [Actix Web](https://github.com/evolutics/iftree/blob/main/examples/library_actix_web.rs)
+//! - File server with [Tide](https://github.com/evolutics/iftree/blob/main/examples/library_tide.rs)
+//! - File server with [warp](https://github.com/evolutics/iftree/blob/main/examples/library_warp.rs)
+//! - Lazy initialization with [`once_cell`](https://github.com/evolutics/iftree/blob/main/examples/library_once_cell.rs)
+//! - Media types with [`mime_guess`](https://github.com/evolutics/iftree/blob/main/examples/library_mime_guess.rs)
+//! - Templates with [Handlebars](https://github.com/evolutics/iftree/blob/main/examples/library_handlebars.rs)
 //!
 //! ## Including file metadata
 //!
