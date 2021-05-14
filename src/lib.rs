@@ -14,7 +14,7 @@
 //!    in a `.gitignore`-like format. Patterns are flexible: you can skip hidden
 //!    files, filter by filename extension, select a fixed list of files, etc.
 //! 1. Instead of including the file contents only, files can be associated with
-//!    **any data** fields.
+//!    **any data** fields such as additional file metadata.
 //!
 //! Conceptually:
 //!
