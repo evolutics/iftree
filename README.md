@@ -13,7 +13,8 @@ The standard library's `std::include_str!` includes the contents of a given
 file. Iftree generalizes this in two ways:
 
 1. Not just one, but many files can be included at once with **path patterns**
-   in a `.gitignore`-like format.
+   in a `.gitignore`-like format. Patterns are flexible: you can skip hidden
+   files, filter by filename extension, select a fixed list of files, etc.
 1. Instead of including the file contents only, files can be associated with
    **any data** fields.
 
@@ -86,9 +87,7 @@ your project.
    The macro argument is a [TOML](https://toml.io) string literal. Its `paths`
    option here supports `.gitignore`-like path patterns, with one pattern per
    line. These paths are relative to the folder with your manifest by default.
-   Patterns are flexible: you can skip hidden files, filter by filename
-   extension, select a fixed list of files, etc. See the
-   [`paths` configuration](#paths) for more.
+   See the [`paths` configuration](#paths) for more.
 
 1. When building your project, code is generated that uses an **initializer** to
    instantiate the asset type once per file.
