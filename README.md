@@ -294,7 +294,7 @@ See
 The name of the environment variable to use as the root folder for the
 [`base_folder` configuration](#base_folder).
 
-This should be an absolute path.
+The value of the environment variable should be an absolute path.
 
 **Default:** `"CARGO_MANIFEST_DIR"`
 
