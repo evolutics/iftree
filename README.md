@@ -313,7 +313,8 @@ Because of this, there may be collisions in the generated code, causing an error
 about a name being defined multiple times. The code generation does not try to
 resolve such collisions automatically, as this would likely cause confusion
 about which identifier refers to which file. Instead, you need to manually
-rename any affected paths.
+rename any affected paths (assuming you need the generated identifiers at all –
+otherwise, you can just disable this with `template.identifiers = false`).
 
 **Default:** `true`
 
