@@ -47,7 +47,7 @@ pub struct Asset {
     contents: &'static str,
 }
 
-pub fn main() {
+fn main() {
     assert_eq!(
         get_asset(&ASSETS, &["examples", "assets", "credits.md"])
             .unwrap()

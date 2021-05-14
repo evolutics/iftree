@@ -4,7 +4,7 @@ pub struct Asset {
     contents_str: &'static str,
 }
 
-pub fn main() {
+fn main() {
     use base::examples::assets;
 
     assert_eq!(assets::_ENV.relative_path, "examples/assets/.env");

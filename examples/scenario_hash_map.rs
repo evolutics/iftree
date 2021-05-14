@@ -14,7 +14,7 @@ static ASSET_MAP: sync::Lazy<collections::HashMap<&str, &Asset>> = sync::Lazy::n
         .collect()
 });
 
-pub fn main() {
+fn main() {
     assert_eq!(ASSET_MAP.len(), 6);
 
     let mut keys = ASSET_MAP.keys().collect::<Vec<_>>();

@@ -53,7 +53,7 @@ pub struct MyAsset {
 // The standard field `contents_str` is automatically populated with a call to
 // `include_str!`, but you can plug in your own initializer.
 
-pub fn main() {
+fn main() {
     // Based on this, Iftree generates an array `ASSETS` with the desired file
     // data. You can use it like so:
     assert_eq!(ASSETS.len(), 3);

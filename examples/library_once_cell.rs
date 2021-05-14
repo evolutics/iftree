@@ -23,7 +23,7 @@ pub struct Asset {
     first_word: sync::Lazy<Option<String>>,
 }
 
-pub fn main() {
+fn main() {
     use base::examples::assets;
 
     assert_eq!(*assets::CREDITS_MD.first_word, Some(String::from("Boo")));

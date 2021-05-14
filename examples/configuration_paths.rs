@@ -18,7 +18,7 @@ template.initializer = 'initialize'
 )]
 pub type Asset = &'static str;
 
-pub fn main() {
+fn main() {
     assert_eq!(
         ASSETS,
         [

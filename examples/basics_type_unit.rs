@@ -4,7 +4,7 @@ use std::cmp;
 #[derive(cmp::PartialEq, Debug)]
 pub struct Asset;
 
-pub fn main() {
+fn main() {
     use base::examples::assets;
 
     assert_eq!(assets::_ENV, &Asset);

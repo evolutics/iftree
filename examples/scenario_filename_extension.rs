@@ -23,7 +23,7 @@ pub struct Asset<'a> {
     extension: sync::Lazy<Option<&'a str>>,
 }
 
-pub fn main() {
+fn main() {
     use base::examples::assets;
 
     assert_eq!(*assets::CREDITS_MD.extension, Some("md"));

@@ -53,7 +53,7 @@ pub struct Asset {
     contents: &'static str,
 }
 
-pub fn main() {
+fn main() {
     use base::examples::assets;
 
     assert_eq!(ASSETS.len(), 6);

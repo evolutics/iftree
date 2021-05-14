@@ -12,7 +12,7 @@ template.initializer = 'initialize'
 )]
 pub type Asset = &'static str;
 
-pub fn main() {
+fn main() {
     use base::examples::assets;
 
     assert_eq!(assets::_ENV, &"BASE=https://example.com\n");

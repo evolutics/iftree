@@ -6,7 +6,7 @@ pub struct Asset {
     contents_str: &'static str,
 }
 
-pub fn main() {
+fn main() {
     use base::examples::assets;
 
     let template_processor = get_template_processor();

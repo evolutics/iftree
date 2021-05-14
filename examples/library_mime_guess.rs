@@ -21,7 +21,7 @@ pub struct Asset {
     guess_media_type: fn() -> mime_guess::MimeGuess,
 }
 
-pub fn main() {
+fn main() {
     use base::examples::assets;
 
     assert_eq!(

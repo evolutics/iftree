@@ -21,7 +21,7 @@ pub struct Asset {
     media_type: sync::Lazy<String>,
 }
 
-pub fn main() {
+fn main() {
     use base::examples::assets;
 
     assert_eq!(*assets::CREDITS_MD.media_type, "text/markdown");

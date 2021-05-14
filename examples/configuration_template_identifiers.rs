@@ -6,7 +6,7 @@ template.identifiers = false
 )]
 pub struct Asset;
 
-pub fn main() {
+fn main() {
     assert_eq!(ASSETS.len(), 6);
 
     // No module `base` is generated.

@@ -13,6 +13,6 @@ debug = true
 )]
 pub type Asset = &'static str;
 
-pub fn main() {
+fn main() {
     eprintln!("Debug information:\n{}", DEBUG);
 }

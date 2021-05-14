@@ -32,7 +32,7 @@ visit_file = 'visit_file'
 )]
 pub struct Asset;
 
-pub fn main() {
+fn main() {
     use base::examples::assets;
 
     assert_eq!(*assets::CREDITS_MD, "Boo Far\n");
