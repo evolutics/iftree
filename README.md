@@ -235,7 +235,7 @@ Here is how I think Iftree compares to related projects for the given criteria.
 | [**Rust Embed**](https://github.com/pyros2097/rust-embed) 5.9                      | Single folder                                       | Path, contents         | File path, iterator                                                     |
 | [**`std::include_bytes`**](https://doc.rust-lang.org/std/macro.include_bytes.html) | Single file                                         | Byte contents          | Literal file path                                                       |
 | [**`std::include_str`**](https://doc.rust-lang.org/std/macro.include_str.html)     | Single file                                         | String contents        | Literal file path                                                       |
-| **Iftree**                                                                         | Multiple files by inclusion-exclusion path patterns | Path, contents, custom | `base::a::b::MY_FILE` variables (constant time), `ASSETS` array, custom |
+| **Iftree**                                                                         | Multiple files by inclusion-exclusion path patterns | Path, contents, custom | `base::x::y::MY_FILE` variables (constant time), `ASSETS` array, custom |
 
 ## Configuration reference
 
@@ -247,8 +247,8 @@ The `iftree::include_file_tree` macro is configured via a
 Path patterns are interpreted as relative to this folder.
 
 If this path itself is relative, then it is joined to the folder given by the
-environment variable `CARGO_MANIFEST_DIR`. That is, a relative path `a/b/c` has
-a full path `[CARGO_MANIFEST_DIR]/[base_folder]/a/b/c`.
+environment variable `CARGO_MANIFEST_DIR`. That is, a relative path `x/y/z` has
+a full path `[CARGO_MANIFEST_DIR]/[base_folder]/x/y/z`.
 
 **Default:** `""`
 
@@ -277,8 +277,8 @@ It works like a `.gitignore` file with inverted meaning:
 
 The pattern language is as documented in the
 [`.gitignore` reference](https://git-scm.com/docs/gitignore), with this
-difference: you must use `a/b/*` instead of `a/b/` to include files in a folder
-`a/b/`; to also include subfolders (recursively), use `a/b/**`.
+difference: you must use `x/y/*` instead of `x/y/` to include files in a folder
+`x/y/`; to also include subfolders (recursively), use `x/y/**`.
 
 By default, path patterns are relative to the environment variable
 `CARGO_MANIFEST_DIR`, which is the folder with your manifest (`Cargo.toml`). See
@@ -302,7 +302,7 @@ This should be an absolute path.
 
 Whether to generate an identifier per file.
 
-Given a file `a/b/my_file`, a `static` variable `base::a::b::MY_FILE` is
+Given a file `x/y/my_file`, a `static` variable `base::x::y::MY_FILE` is
 generated, nested in modules for folders. Their root module is `base`, which
 represents the base folder.
 
