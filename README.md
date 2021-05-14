@@ -79,7 +79,7 @@ your project.
 1. Define your **asset type** (`MyAsset` in the [introduction](#introduction)).
 
    This is a `struct` with the fields you need per file. Alternatively, it can
-   be a type alias, which may be convenient if you have a exactly one field.
+   be a type alias, which may be convenient if you have exactly one field.
 
 1. Next, **filter files** to be included by annotating your asset type with
    `#[iftree::include_file_tree("paths = '/my/assets/**'")]`.
