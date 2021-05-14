@@ -283,6 +283,9 @@
 //! difference: you must use `x/y/*` instead of `x/y/` to include files in a folder
 //! `x/y/`; to also include subfolders (recursively), use `x/y/**`.
 //!
+//! Exclude hidden files with `!.*` as a pattern. Another common pattern is of the
+//! form `*.xyz` to include files with filename extension `xyz` only.
+//!
 //! By default, path patterns are relative to the environment variable
 //! `CARGO_MANIFEST_DIR`, which is the folder with your manifest (`Cargo.toml`). See
 //! the [`base_folder` configuration](#base_folder) to customize this.
