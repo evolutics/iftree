@@ -418,6 +418,8 @@ pub fn include_file_tree(
 
 #[cfg(test)]
 mod tests {
+    use ignore::overrides;
+
     #[test]
     fn readme_includes_manifest_description() {
         let manifest = get_manifest();
@@ -456,6 +458,36 @@ mod tests {
         let actual = get_readme().contains(&dependency);
 
         assert!(actual);
+    }
+
+    #[test]
+    fn readme_links_to_each_example_exactly_once() {
+        let mut actual =
+            regex::Regex::new(r"https://github.com/evolutics/iftree/blob/main/(examples/[^)]+)")
+                .unwrap()
+                .captures_iter(get_readme())
+                .map(|captures| captures.get(1).unwrap().as_str())
+                .collect::<Vec<_>>();
+
+        actual.sort_unstable();
+        let actual = actual;
+        let examples_folder = "examples";
+        let expected = ignore::WalkBuilder::new(examples_folder)
+            .standard_filters(false)
+            .overrides(
+                overrides::OverrideBuilder::new(examples_folder)
+                    .add("*.rs")
+                    .unwrap()
+                    .build()
+                    .unwrap(),
+            )
+            .sort_by_file_name(|first, second| first.cmp(second))
+            .build()
+            .map(|entry| entry.unwrap())
+            .filter(|entry| entry.metadata().unwrap().is_file())
+            .map(|entry| String::from(entry.path().to_str().unwrap()))
+            .collect::<Vec<_>>();
+        assert_eq!(actual, expected);
     }
 
     #[test]
