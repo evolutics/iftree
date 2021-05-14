@@ -369,7 +369,7 @@
 //! The `visit_folder` macro is optional. If missing, the outputs of the
 //! `visit_file` calls are directly passed as an input to the `visit_base` call.
 //! This is useful to generate flat structures such as arrays. Similarly, the
-//! `visit_folder` macro is optional.
+//! `visit_base` macro is optional.
 //!
 //! You can configure multiple visitors. They are applied in order.
 //!
