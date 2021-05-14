@@ -108,6 +108,11 @@ If you like to explore by example, there is an
 [**`examples` folder**](https://github.com/evolutics/iftree/tree/main/examples).
 The documentation links to individual examples where helpful.
 
+You could get started with the
+[introductory example](https://github.com/evolutics/iftree/blob/main/examples/basic.rs).
+For a more complex case, see the
+[showcase example](https://github.com/evolutics/iftree/blob/main/examples/showcase.rs).
+
 Note that some examples need extra dependencies from the `dev-dependencies` of
 the [manifest](https://github.com/evolutics/iftree/tree/main/Cargo.toml).
 
