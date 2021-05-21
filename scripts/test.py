@@ -23,7 +23,7 @@ def _check_general_cleanliness():
             "--rm",
             "--volume",
             f"{working_folder}:/workdir",
-            "evolutics/travel-kit:0.6.0",
+            "evolutics/travel-kit:0.7.0",
             "-c",
             "git ls-files -z | xargs -0 travel-kit check --",
         ],
