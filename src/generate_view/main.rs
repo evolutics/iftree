@@ -20,6 +20,7 @@ pub fn main(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::array;
 
     #[test]
     fn handles() {
@@ -49,7 +50,7 @@ mod tests {
                 model::Visitor::Array(model::Initializer::Macro(syn::parse_str("abc").unwrap())),
                 model::Visitor::Identifiers,
             ],
-            forest: vec![(
+            forest: array::IntoIter::new([(
                 String::from('b'),
                 model::Tree::File(model::File {
                     identifier: quote::format_ident!("r#B"),
@@ -57,8 +58,7 @@ mod tests {
                     relative_path: String::from('b'),
                     absolute_path: String::from("/a/b"),
                 }),
-            )]
-            .into_iter()
+            )])
             .collect(),
             debug: true,
         };
