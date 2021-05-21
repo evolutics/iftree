@@ -2,9 +2,8 @@ use super::sanitize_name;
 use crate::model;
 use std::iter;
 use std::path;
-use std::vec;
 
-pub fn main(paths: vec::Vec<model::Path>) -> model::Result<model::Forest> {
+pub fn main(paths: Vec<model::Path>) -> model::Result<model::Forest> {
     let mut forest = model::Forest::new();
 
     for path in paths.into_iter() {
@@ -21,7 +20,7 @@ pub fn main(paths: vec::Vec<model::Path>) -> model::Result<model::Forest> {
     Ok(forest)
 }
 
-fn get_reverse_path(path: &str) -> vec::Vec<String> {
+fn get_reverse_path(path: &str) -> Vec<String> {
     path::Path::new(path)
         .iter()
         .rev()
@@ -43,7 +42,7 @@ fn get_file(name: &str, path: model::Path) -> model::File {
 
 fn add_file(
     parent: &mut model::Forest,
-    mut reverse_path: vec::Vec<String>,
+    mut reverse_path: Vec<String>,
     file: model::File,
 ) -> model::Result<()> {
     match reverse_path.pop() {
@@ -69,18 +68,14 @@ fn add_file(
     }
 }
 
-fn get_singleton_tree(
-    reverse_path: vec::Vec<String>,
-    file: model::File,
-    root: &str,
-) -> model::Tree {
+fn get_singleton_tree(reverse_path: Vec<String>, file: model::File, root: &str) -> model::Tree {
     let parents = get_folder_identifiers(
         &reverse_path
             .iter()
             .skip(1)
             .map(|name| name.as_ref())
             .chain(iter::once(root))
-            .collect::<vec::Vec<_>>(),
+            .collect::<Vec<_>>(),
     );
 
     let mut tree = model::Tree::File(file);
@@ -96,7 +91,7 @@ fn get_singleton_tree(
     tree
 }
 
-fn get_folder_identifiers(names: &[&str]) -> vec::Vec<syn::Ident> {
+fn get_folder_identifiers(names: &[&str]) -> Vec<syn::Ident> {
     names
         .iter()
         .map(|name| sanitize_name::main(name, sanitize_name::Convention::SnakeCase))

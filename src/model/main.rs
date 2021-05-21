@@ -3,7 +3,6 @@ use std::collections;
 use std::env;
 use std::path;
 use std::result;
-use std::vec;
 
 #[derive(Clone, cmp::PartialEq, Debug)]
 pub struct Configuration {
@@ -20,7 +19,7 @@ pub enum Template {
         initializer: Option<syn::Path>,
         identifiers: bool,
     },
-    Visitors(vec::Vec<CustomVisitor>),
+    Visitors(Vec<CustomVisitor>),
 }
 
 #[derive(Clone, cmp::PartialEq, Debug)]
@@ -40,8 +39,8 @@ pub struct Type<T> {
 pub enum TypeStructure<T> {
     Unit,
     TypeAlias(T),
-    NamedFields(vec::Vec<(syn::Ident, T)>),
-    TupleFields(vec::Vec<T>),
+    NamedFields(Vec<(syn::Ident, T)>),
+    TupleFields(Vec<T>),
 }
 
 #[derive(Clone, cmp::PartialEq, Debug)]
@@ -53,7 +52,7 @@ pub struct Path {
 #[derive(Clone, cmp::PartialEq, Debug)]
 pub struct View {
     pub type_: syn::Ident,
-    pub visitors: vec::Vec<Visitor>,
+    pub visitors: Vec<Visitor>,
     pub forest: Forest,
     pub debug: bool,
 }
@@ -114,7 +113,7 @@ pub enum Error {
     NoInitializer,
     NonstandardField {
         field: syn::Ident,
-        standard_fields: vec::Vec<syn::Ident>,
+        standard_fields: Vec<syn::Ident>,
     },
     PathInvalidUnicode(path::PathBuf),
     PathStripPrefix(path::StripPrefixError),

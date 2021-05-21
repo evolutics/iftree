@@ -1,12 +1,11 @@
 use crate::model;
 use ignore::overrides;
 use std::path;
-use std::vec;
 
 pub fn main(
     configuration: &model::Configuration,
     base_folder: &path::Path,
-) -> model::Result<vec::Vec<path::PathBuf>> {
+) -> model::Result<Vec<path::PathBuf>> {
     iterate_entries(configuration, base_folder)?
         .into_iter()
         .filter_map(|entry| match entry {

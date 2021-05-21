@@ -2,7 +2,6 @@ use super::main;
 use std::error;
 use std::fmt;
 use std::path;
-use std::vec;
 
 impl PartialEq for main::IgnoreError {
     fn eq(&self, other: &Self) -> bool {
@@ -44,7 +43,7 @@ impl fmt::Display for main::Error {
                     standard_fields
                         .iter()
                         .map(|field| format!("{:?}", field.to_string()))
-                        .collect::<vec::Vec<_>>()
+                        .collect::<Vec<_>>()
                         .join(", "),
                 )
             }

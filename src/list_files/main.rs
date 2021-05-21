@@ -3,9 +3,8 @@ use super::get_paths;
 use super::get_raw_paths;
 use crate::model;
 use std::env;
-use std::vec;
 
-pub fn main(configuration: &model::Configuration) -> model::Result<vec::Vec<model::Path>> {
+pub fn main(configuration: &model::Configuration) -> model::Result<Vec<model::Path>> {
     let base_folder = get_base_folder::main(configuration, &|name| env::var(name))?;
     let paths = get_raw_paths::main(configuration, &base_folder)?;
     get_paths::main(base_folder, paths)

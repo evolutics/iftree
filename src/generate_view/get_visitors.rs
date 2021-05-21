@@ -1,12 +1,11 @@
 use super::get_default_initializer;
 use crate::model;
 use std::iter;
-use std::vec;
 
 pub fn main(
     template: model::Template,
     structure: model::TypeStructure<()>,
-) -> model::Result<vec::Vec<model::Visitor>> {
+) -> model::Result<Vec<model::Visitor>> {
     Ok(match template {
         model::Template::Default {
             initializer,

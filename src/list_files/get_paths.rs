@@ -1,11 +1,10 @@
 use crate::model;
 use std::path;
-use std::vec;
 
 pub fn main(
     base_folder: path::PathBuf,
-    paths: vec::Vec<path::PathBuf>,
-) -> model::Result<vec::Vec<model::Path>> {
+    paths: Vec<path::PathBuf>,
+) -> model::Result<Vec<model::Path>> {
     paths
         .into_iter()
         .map(|path| get_path(&base_folder, path))

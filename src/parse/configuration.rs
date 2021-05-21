@@ -1,6 +1,5 @@
 use std::cmp;
 use std::path;
-use std::vec;
 
 #[derive(serde::Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -19,7 +18,7 @@ pub enum Template {
         initializer: Option<Path>,
         identifiers: Option<bool>,
     },
-    Visitors(vec::Vec<CustomVisitor>),
+    Visitors(Vec<CustomVisitor>),
 }
 
 #[derive(cmp::PartialEq, Debug)]

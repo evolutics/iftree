@@ -1,12 +1,11 @@
 use super::get_forest;
 use super::get_visitors;
 use crate::model;
-use std::vec;
 
 pub fn main(
     configuration: model::Configuration,
     type_: model::Type<()>,
-    paths: vec::Vec<model::Path>,
+    paths: Vec<model::Path>,
 ) -> model::Result<model::View> {
     let visitors = get_visitors::main(configuration.template, type_.structure)?;
     let forest = get_forest::main(paths)?;
