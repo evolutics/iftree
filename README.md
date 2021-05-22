@@ -400,4 +400,5 @@ visit_file = 'visit_my_file'
 See examples:
 
 - [Basic](https://github.com/evolutics/iftree/blob/main/examples/configuration_template_visitors.rs)
+- [Nesting](https://github.com/evolutics/iftree/blob/main/examples/configuration_template_visitors_nesting.rs)
 - [Emulation of default code generation](https://github.com/evolutics/iftree/blob/main/examples/configuration_template_visitors_emulation.rs)
