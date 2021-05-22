@@ -397,5 +397,7 @@ visit_file = 'visit_my_file'
 
 `visit_my_…` are the names of your corresponding macros.
 
-See
-[example](https://github.com/evolutics/iftree/blob/main/examples/configuration_template_visitors.rs).
+See examples:
+
+- [Basic](https://github.com/evolutics/iftree/blob/main/examples/configuration_template_visitors.rs)
+- [Emulation of default code generation](https://github.com/evolutics/iftree/blob/main/examples/configuration_template_visitors_emulation.rs)
