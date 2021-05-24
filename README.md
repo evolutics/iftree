@@ -163,19 +163,30 @@ See
 
 ### Name sanitization
 
-When generating identifiers based on paths, names are sanitized as follows to
-ensure they are
-[valid identifiers](https://doc.rust-lang.org/reference/identifiers.html):
+When generating identifiers based on paths, names are sanitized. For example, a
+folder name `.my-assets` is sanitized to an identifier `_my_assets`.
 
-- Characters other than ASCII alphanumericals are replaced by `"_"`.
-- If the first character is numeric, then `"_"` is prepended.
-- If the name is `"_"`, `"crate"`, `"self"`, `"Self"`, or `"super"`, then `"_"`
-  is appended.
+The sanitization process is designed to generate valid
+[Unicode identifiers](https://doc.rust-lang.org/nightly/reference/identifiers.html).
+Essentially, it replaces invalid identifier characters by underscores `"_"`.
+More precisely:
+
+1. Characters without the property `XID_Continue` are replaced by `"_"`. The set
+   of `XID_Continue` characters in ASCII is `[0-9A-Z_a-z]`.
+1. Next, if the first character does not have the property `XID_Start`, then
+   `"_"` is prepended unless the first character is already `"_"`. The set of
+   `XID_Start` characters in ASCII is `[A-Za-z]`.
+1. Finally, if the name is `"_"`, `"crate"`, `"self"`, `"Self"`, or `"super"`,
+   then `"_"` is appended.
 
 Names are further adjusted to respect naming conventions in the default case:
 
 - Lowercase for folders (because they map to module names).
 - Uppercase for filenames (because they map to static variables).
+
+Note that non-ASCII identifiers are only supported from Rust 1.53.0. For earlier
+versions, the sanitization here may generate invalid identifiers if you use
+non-ASCII paths, in which case you need to manually rename the affected files.
 
 ### Portable file paths
 
