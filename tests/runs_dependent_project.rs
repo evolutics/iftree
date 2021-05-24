@@ -3,7 +3,7 @@ use std::fs;
 use std::process;
 
 #[test]
-fn handles() {
+fn main() {
     let dependent = arrange().unwrap();
 
     let status = process::Command::new("cargo")
