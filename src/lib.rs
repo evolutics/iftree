@@ -482,7 +482,7 @@ mod tests {
     #[test]
     fn readme_links_to_each_example_exactly_once() {
         let mut actual =
-            regex::Regex::new(r"https://github.com/evolutics/iftree/blob/main/(examples/[^)]+)")
+            regex::Regex::new(r"https://github.com/evolutics/iftree/blob/main/examples/([^)]+)")
                 .unwrap()
                 .captures_iter(get_readme())
                 .map(|captures| captures.get(1).unwrap().as_str())
@@ -504,7 +504,7 @@ mod tests {
             .build()
             .map(|entry| entry.unwrap())
             .filter(|entry| entry.metadata().unwrap().is_file())
-            .map(|entry| String::from(entry.path().to_str().unwrap()))
+            .map(|entry| String::from(entry.file_name().to_str().unwrap()))
             .collect::<Vec<_>>();
         assert_eq!(actual, expected);
     }
