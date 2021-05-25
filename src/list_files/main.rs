@@ -13,7 +13,7 @@ pub fn main(configuration: &model::Configuration) -> model::Result<Vec<model::Pa
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::fs;
+    use std::env;
     use std::path;
 
     #[test]
@@ -28,12 +28,13 @@ mod tests {
         let actual = actual.unwrap();
         let expected = vec![model::Path {
             relative: String::from("assets/credits.md"),
-            absolute: String::from(
-                fs::canonicalize("examples/assets/credits.md")
-                    .unwrap()
-                    .to_str()
-                    .unwrap(),
-            ),
+            absolute: path::PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap())
+                .join("examples")
+                .join("assets")
+                .join("credits.md")
+                .into_os_string()
+                .into_string()
+                .unwrap(),
         }];
         assert_eq!(actual, expected);
     }
