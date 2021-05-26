@@ -45,7 +45,7 @@ pub enum TypeStructure<T> {
 
 #[derive(Clone, cmp::PartialEq, Debug)]
 pub struct Path {
-    pub relative: String,
+    pub relative: Vec<String>,
     pub absolute: String,
 }
 
@@ -150,7 +150,7 @@ pub mod stubs {
 
     pub fn path() -> Path {
         Path {
-            relative: String::from("bar"),
+            relative: vec![String::from("bar")],
             absolute: String::from("/foo/bar"),
         }
     }

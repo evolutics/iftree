@@ -14,6 +14,11 @@ Notable library changes are documented here in a format based on
   non-ASCII characters that are valid in identifiers (from Rust 1.53.0) are
   preserved instead of replaced by an underscore `"_"`.
 
+### Fixed
+
+- Fix portability of generated relative paths by always separating components
+  with a slash `/`, even on platforms that natively use a backslash `\` instead.
+
 ## 0.1.1 – 2021-05-14
 
 ### Fixed

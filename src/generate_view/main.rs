@@ -38,7 +38,7 @@ mod tests {
                 ..model::stubs::type_()
             },
             vec![model::Path {
-                relative: String::from('b'),
+                relative: vec![String::from('b')],
                 absolute: String::from("/a/b"),
             }],
         );

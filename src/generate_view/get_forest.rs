@@ -21,17 +21,13 @@ pub fn main(paths: Vec<model::Path>) -> model::Result<model::Forest> {
     Ok(forest)
 }
 
-fn get_reverse_path(path: &str) -> Vec<String> {
-    path::Path::new(path)
-        .iter()
-        .rev()
-        .map(|name| name.to_string_lossy().to_string())
-        .collect()
+fn get_reverse_path(components: &[String]) -> Vec<String> {
+    components.iter().rev().map(String::from).collect()
 }
 
 fn get_file(name: &str, path: model::Path) -> model::File {
     let identifier = sanitize_name::main(name, sanitize_name::Convention::ScreamingSnakeCase);
-    let relative_path = path.relative;
+    let relative_path = path.relative.join("/");
     let absolute_path = path.absolute;
     model::File {
         identifier,
@@ -131,11 +127,11 @@ mod tests {
     fn handles_files() {
         let actual = main(vec![
             model::Path {
-                relative: String::from('B'),
+                relative: vec![String::from('B')],
                 absolute: String::from("/a/B"),
             },
             model::Path {
-                relative: String::from('c'),
+                relative: vec![String::from('c')],
                 absolute: String::from("/a/c"),
             },
         ]);
@@ -169,15 +165,15 @@ mod tests {
     fn handles_folders() {
         let actual = main(vec![
             model::Path {
-                relative: String::from('a'),
+                relative: vec![String::from('a')],
                 absolute: String::from("/a"),
             },
             model::Path {
-                relative: String::from("b/a/b"),
+                relative: vec![String::from('b'), String::from('a'), String::from('b')],
                 absolute: String::from("/b/a/b"),
             },
             model::Path {
-                relative: String::from("b/c"),
+                relative: vec![String::from('b'), String::from('c')],
                 absolute: String::from("/b/c"),
             },
         ]);
@@ -236,11 +232,11 @@ mod tests {
     fn given_path_collision_it_errs() {
         let actual = main(vec![
             model::Path {
-                relative: String::from("a/b"),
+                relative: vec![String::from('a'), String::from('b')],
                 ..model::stubs::path()
             },
             model::Path {
-                relative: String::from("a/b"),
+                relative: vec![String::from('a'), String::from('b')],
                 ..model::stubs::path()
             },
         ]);

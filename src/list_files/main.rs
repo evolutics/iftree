@@ -27,7 +27,7 @@ mod tests {
 
         let actual = actual.unwrap();
         let expected = vec![model::Path {
-            relative: String::from("assets/credits.md"),
+            relative: vec![String::from("assets"), String::from("credits.md")],
             absolute: path::PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap())
                 .join("examples")
                 .join("assets")

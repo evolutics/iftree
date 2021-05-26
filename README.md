@@ -156,7 +156,8 @@ field names with a [custom initializer](#templateinitializer).
 - **`relative_path:`** `&'static str`
 
   File path relative to the base folder, which is the folder with your manifest
-  (`Cargo.toml`) by default.
+  (`Cargo.toml`) by default. Path components are separated by a slash `/`,
+  independent of your platform.
 
 See
 [example](https://github.com/evolutics/iftree/blob/main/examples/basics_standard_fields.rs).
