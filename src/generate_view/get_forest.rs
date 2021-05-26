@@ -8,11 +8,7 @@ pub fn main(paths: Vec<model::Path>) -> model::Result<model::Forest> {
     let mut forest = model::Forest::new();
 
     for path in paths.into_iter() {
-        let reverse_path = get_reverse_path(&path.relative);
-        if let Some(filename) = reverse_path.first() {
-            let file = get_file(filename, path);
-            add_file(&mut forest, reverse_path, file)?;
-        }
+        add_path(&mut forest, path)?;
     }
 
     let mut index = 0;
@@ -21,19 +17,26 @@ pub fn main(paths: Vec<model::Path>) -> model::Result<model::Forest> {
     Ok(forest)
 }
 
-fn get_reverse_path(components: &[String]) -> Vec<String> {
-    components.iter().rev().map(String::from).collect()
-}
+fn add_path(forest: &mut model::Forest, path: model::Path) -> model::Result<()> {
+    match path.relative.last() {
+        None => Ok(()),
 
-fn get_file(name: &str, path: model::Path) -> model::File {
-    let identifier = sanitize_name::main(name, sanitize_name::Convention::ScreamingSnakeCase);
-    let relative_path = path.relative.join("/");
-    let absolute_path = path.absolute;
-    model::File {
-        identifier,
-        index: 0,
-        relative_path,
-        absolute_path,
+        Some(filename) => {
+            let file = model::File {
+                identifier: sanitize_name::main(
+                    filename,
+                    sanitize_name::Convention::ScreamingSnakeCase,
+                ),
+                index: 0,
+                relative_path: path.relative.join("/"),
+                absolute_path: path.absolute,
+            };
+
+            let mut reverse_path = path.relative;
+            reverse_path.reverse();
+
+            add_file(forest, reverse_path, file)
+        }
     }
 }
 
