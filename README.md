@@ -414,3 +414,8 @@ See examples:
 - [Basic](https://github.com/evolutics/iftree/blob/main/examples/configuration_template_visitors.rs)
 - [Nesting](https://github.com/evolutics/iftree/blob/main/examples/configuration_template_visitors_nesting.rs)
 - [Emulation of default code generation](https://github.com/evolutics/iftree/blob/main/examples/configuration_template_visitors_emulation.rs)
+
+## Further resources
+
+- [Changelog](https://github.com/evolutics/iftree/blob/main/CHANGELOG.md)
+- [crates.io](https://crates.io/crates/iftree)
