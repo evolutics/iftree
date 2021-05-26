@@ -6,7 +6,6 @@ edition = "2018"
 license = "MIT"
 homepage = "https://github.com/evolutics/iftree"
 repository = "https://github.com/evolutics/iftree"
-readme = true
 keywords = ["include", "directory", "folder", "file", "embed"]
 categories = ["filesystem", "web-programming"]
 description = """
