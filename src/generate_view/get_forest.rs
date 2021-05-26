@@ -28,7 +28,7 @@ fn add_path(forest: &mut model::Forest, path: model::Path) -> model::Result<()> 
                     sanitize_name::Convention::ScreamingSnakeCase,
                 ),
                 index: 0,
-                relative_path: path.relative.join("/"),
+                relative_path: path.relative.join(NORMALIZED_FOLDER_SEPARATOR),
                 absolute_path: path.absolute,
             };
 
@@ -39,6 +39,8 @@ fn add_path(forest: &mut model::Forest, path: model::Path) -> model::Result<()> 
         }
     }
 }
+
+const NORMALIZED_FOLDER_SEPARATOR: &str = "/";
 
 fn add_file(
     parent: &mut model::Forest,
