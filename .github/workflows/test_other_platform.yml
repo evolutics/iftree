@@ -1,0 +1,22 @@
+name: Test other platform
+
+on:
+  workflow_dispatch:
+    inputs:
+      platform:
+        required: true
+        default: windows-latest
+
+jobs:
+  test:
+    runs-on: ${{ github.event.inputs.platform }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+      - uses: actions-rs/cargo@v1
+        with:
+          command: test
