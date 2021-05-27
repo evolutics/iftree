@@ -441,7 +441,7 @@ pub fn include_file_tree(
 
 #[cfg(test)]
 mod tests {
-    use ignore::overrides;
+    use std::fs;
 
     #[test]
     fn readme_includes_manifest_description() {
@@ -494,22 +494,12 @@ mod tests {
 
         actual.sort_unstable();
         let actual = actual;
-        let examples_folder = "examples";
-        let expected = ignore::WalkBuilder::new(examples_folder)
-            .standard_filters(false)
-            .overrides(
-                overrides::OverrideBuilder::new(examples_folder)
-                    .add("*.rs")
-                    .unwrap()
-                    .build()
-                    .unwrap(),
-            )
-            .sort_by_file_name(|first, second| first.cmp(second))
-            .build()
-            .map(|entry| entry.unwrap())
-            .filter(|entry| entry.metadata().unwrap().is_file())
-            .map(|entry| String::from(entry.file_name().to_str().unwrap()))
+        let mut expected = fs::read_dir("examples")
+            .unwrap()
+            .map(|entry| entry.unwrap().file_name().into_string().unwrap())
+            .filter(|filename| filename.ends_with(".rs"))
             .collect::<Vec<_>>();
+        expected.sort_unstable();
         assert_eq!(actual, expected);
     }
 
