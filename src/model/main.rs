@@ -117,6 +117,9 @@ pub enum Error {
     },
     PathInvalidUnicode(path::PathBuf),
     PathStripPrefix(path::StripPrefixError),
+    UnexpectedEmptyRelativePath {
+        absolute_path: path::PathBuf,
+    },
     UnexpectedPathCollision(path::PathBuf),
 }
 

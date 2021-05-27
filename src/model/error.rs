@@ -58,6 +58,15 @@ impl fmt::Display for main::Error {
 
             main::Error::PathStripPrefix(error) => write!(formatter, "{}", error),
 
+            main::Error::UnexpectedEmptyRelativePath { absolute_path } => {
+                write!(
+                    formatter,
+                    "Unexpected empty relative path for absolute path \
+                    (consider reporting this): {:?}",
+                    absolute_path,
+                )
+            }
+
             main::Error::UnexpectedPathCollision(path) => {
                 write!(
                     formatter,
@@ -78,6 +87,7 @@ impl error::Error for main::Error {
             main::Error::NonstandardField { .. } => None,
             main::Error::PathInvalidUnicode(_) => None,
             main::Error::PathStripPrefix(error) => Some(error),
+            main::Error::UnexpectedEmptyRelativePath { .. } => None,
             main::Error::UnexpectedPathCollision(_) => None,
         }
     }
@@ -169,6 +179,18 @@ use standard fields only (\"xy\", \"z\").";
                     .to_string();
 
             let expected = "prefix not found";
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn handles_unexpected_empty_relative_path() {
+            let actual = main::Error::UnexpectedEmptyRelativePath {
+                absolute_path: path::PathBuf::from("/a"),
+            }
+            .to_string();
+
+            let expected = "Unexpected empty relative path for absolute path \
+(consider reporting this): \"/a\"";
             assert_eq!(actual, expected);
         }
 

@@ -19,7 +19,9 @@ pub fn main(paths: Vec<model::Path>) -> model::Result<model::Forest> {
 
 fn add_path(forest: &mut model::Forest, path: model::Path) -> model::Result<()> {
     match path.relative.last() {
-        None => Ok(()),
+        None => Err(model::Error::UnexpectedEmptyRelativePath {
+            absolute_path: path::PathBuf::from(path.absolute),
+        }),
 
         Some(filename) => {
             let file = model::File {
@@ -230,6 +232,20 @@ mod tests {
             ),
         ])
         .collect();
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn given_empty_relative_path_it_errs() {
+        let actual = main(vec![model::Path {
+            relative: vec![],
+            absolute: String::from("/a/b"),
+        }]);
+
+        let actual = actual.unwrap_err();
+        let expected = model::Error::UnexpectedEmptyRelativePath {
+            absolute_path: path::PathBuf::from("/a/b"),
+        };
         assert_eq!(actual, expected);
     }
 
