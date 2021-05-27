@@ -165,25 +165,23 @@ See
 ### Name sanitization
 
 When generating identifiers based on paths, names are sanitized. For example, a
-folder name `.my-assets` is sanitized to an identifier `_my_assets`.
+filename `.my-env` is sanitized to an identifier `_MY_ENV`.
 
 The sanitization process is designed to generate valid
 [Unicode identifiers](https://doc.rust-lang.org/nightly/reference/identifiers.html).
 Essentially, it replaces invalid identifier characters by underscores `"_"`.
-More precisely:
 
+More precisely, these transformations are applied in order:
+
+1. The case of letters is adjusted to respect naming conventions:
+   - All lowercase for folders (because they map to module names).
+   - All uppercase for filenames (because they map to static variables).
 1. Characters without the property `XID_Continue` are replaced by `"_"`. The set
    of `XID_Continue` characters in ASCII is `[0-9A-Z_a-z]`.
-1. Next, if the first character does not have the property `XID_Start`, then
-   `"_"` is prepended unless the first character is already `"_"`. The set of
-   `XID_Start` characters in ASCII is `[A-Za-z]`.
-1. Finally, if the name is `"_"`, `"crate"`, `"self"`, `"Self"`, or `"super"`,
-   then `"_"` is appended.
-
-Names are further adjusted to respect naming conventions in the default case:
-
-- Lowercase for folders (because they map to module names).
-- Uppercase for filenames (because they map to static variables).
+1. If the first character does not belong to `XID_Start` and is not `"_"`, then
+   `"_"` is prepended. The set of `XID_Start` characters in ASCII is `[A-Za-z]`.
+1. If the name is `"_"`, `"crate"`, `"self"`, `"Self"`, or `"super"`, then `"_"`
+   is appended.
 
 Note that non-ASCII identifiers are only supported from Rust 1.53.0. For earlier
 versions, the sanitization here may generate invalid identifiers if you use
