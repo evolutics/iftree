@@ -26,7 +26,7 @@ unicode-xid = "0.2"
 [dev-dependencies]
 actix-web = "3.3"
 async-std = { version = "1.9", features = ["attributes"] }
-handlebars = "3.5"
+handlebars = "4.0"
 include-flate = { version = "0.1", features = ["stable"] }
 lazy_static = "1.4"
 mime_guess = "2.0"
