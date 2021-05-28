@@ -1,6 +1,6 @@
 # Iftree: Include File Tree 🌳
 
-Include file data from many files in your Rust code for self-contained binaries.
+Include many files in your Rust code for self-contained binaries.
 
 ![Test](https://github.com/evolutics/iftree/actions/workflows/test.yml/badge.svg)
 [![crates.io](https://img.shields.io/crates/v/iftree.svg)](https://crates.io/crates/iftree)
