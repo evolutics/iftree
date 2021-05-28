@@ -12,8 +12,9 @@
 //! file. Iftree generalizes this in two ways:
 //!
 //! - Not just one, but many files can be included at once with **path patterns** in
-//!   a `.gitignore`-like format. Patterns are flexible: you can skip hidden files,
-//!   filter by filename extension, select a fixed list of files, etc.
+//!   a `.gitignore`-like format. Patterns are flexible: you can include multiple
+//!   folders, skip hidden files, filter by filename extension, select a fixed list
+//!   of files, etc.
 //! - Instead of including the file contents only, files can be associated with
 //!   **any data** fields such as additional file metadata.
 //!
