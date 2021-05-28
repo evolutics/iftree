@@ -245,14 +245,14 @@ has since developed into something more flexible.
 
 Here is how I think Iftree compares to related projects for the given criteria.
 
-| Project                                                                            | File selection                                      | Included file data     | Data access via                                                                               |
-| ---------------------------------------------------------------------------------- | --------------------------------------------------- | ---------------------- | --------------------------------------------------------------------------------------------- |
-| [**`include_dir`**](https://github.com/Michael-F-Bryan/include_dir) 0.6            | Single folder                                       | Path, contents         | File path, nested iterators, glob patterns                                                    |
-| [**`includedir`**](https://github.com/tilpner/includedir) 0.6                      | Multiple files, multiple folders                    | Path, contents         | File path, iterator                                                                           |
-| [**Rust Embed**](https://github.com/pyros2097/rust-embed) 5.9                      | Single folder                                       | Path, contents         | File path, iterator                                                                           |
-| [**`std::include_bytes`**](https://doc.rust-lang.org/std/macro.include_bytes.html) | Single file                                         | Contents               | File path                                                                                     |
-| [**`std::include_str`**](https://doc.rust-lang.org/std/macro.include_str.html)     | Single file                                         | Contents               | File path                                                                                     |
-| **Iftree**                                                                         | Multiple files by inclusion-exclusion path patterns | Path, contents, custom | File path (`base::x::y::MY_FILE` variables, constant time), iterator (`ASSETS` array), custom |
+| Project                                                                            | File selection                                      | Included file data     | Data access via                                                                                     |
+| ---------------------------------------------------------------------------------- | --------------------------------------------------- | ---------------------- | --------------------------------------------------------------------------------------------------- |
+| [**`include_dir`**](https://github.com/Michael-F-Bryan/include_dir) 0.6            | Single folder                                       | Path, contents         | File path, nested iterators, glob patterns                                                          |
+| [**`includedir`**](https://github.com/tilpner/includedir) 0.6                      | Multiple files, multiple folders                    | Path, contents         | File path, iterator                                                                                 |
+| [**Rust Embed**](https://github.com/pyros2097/rust-embed) 5.9                      | Single folder                                       | Path, contents         | File path, iterator                                                                                 |
+| [**`std::include_bytes`**](https://doc.rust-lang.org/std/macro.include_bytes.html) | Single file                                         | Contents               | File path                                                                                           |
+| [**`std::include_str`**](https://doc.rust-lang.org/std/macro.include_str.html)     | Single file                                         | Contents               | File path                                                                                           |
+| **Iftree**                                                                         | Multiple files by inclusion-exclusion path patterns | Path, contents, custom | File path (via `base::x::y::MY_FILE` variables in constant time), iterator (`ASSETS` array), custom |
 
 ## Configuration reference
 
