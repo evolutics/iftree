@@ -183,12 +183,12 @@
 //!
 //! Note that non-ASCII identifiers are only supported from Rust 1.53.0. For earlier
 //! versions, the sanitization here may generate invalid identifiers if you use
-//! non-ASCII paths, in which case you need to manually rename the affected files.
+//! non-ASCII paths, in which case you need to manually rename any affected files.
 //!
 //! ## Portable file paths
 //!
-//! To prevent issues when developing on different platforms, any paths in your
-//! configuration should follow these recommendations:
+//! To prevent issues when developing on different platforms, your file paths should
+//! follow these recommendations:
 //!
 //! - Path components are separated by a slash `/` (even on Windows).
 //! - Filenames do not contain backslashes `\` (even on Unix-like systems).
