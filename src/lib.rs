@@ -474,14 +474,17 @@ mod tests {
 
     #[test]
     fn readme_refers_to_current_manifest_version() {
-        let manifest = get_manifest();
-        let version = manifest["package"]["version"].as_str().unwrap();
+        let version = get_manifest_version();
         let major_minor_version = version.rsplitn(2, '.').nth(1).unwrap();
         let dependency = format!("`iftree = \"{}\"`", major_minor_version);
 
         let actual = get_readme().contains(&dependency);
 
         assert!(actual);
+    }
+
+    fn get_manifest_version() -> String {
+        String::from(get_manifest()["package"]["version"].as_str().unwrap())
     }
 
     #[test]
@@ -502,6 +505,19 @@ mod tests {
             .collect::<Vec<_>>();
         expected.sort_unstable();
         assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn changelog_contains_current_manifest_version() {
+        let version_section = format!("\n\n## {} – ", get_manifest_version());
+
+        let actual = get_changelog().contains(&version_section);
+
+        assert!(actual);
+    }
+
+    fn get_changelog() -> &'static str {
+        include_str!("../CHANGELOG.md")
     }
 
     #[test]
