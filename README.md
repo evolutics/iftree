@@ -166,7 +166,7 @@ See
 ### Name sanitization
 
 When generating identifiers based on paths, names are sanitized. For example, a
-filename `.my-env` is sanitized to an identifier `_MY_ENV`.
+filename `404_not_found.md` is sanitized to an identifier `_404_NOT_FOUND_MD`.
 
 The sanitization process is designed to generate valid
 [Unicode identifiers](https://doc.rust-lang.org/nightly/reference/identifiers.html).
