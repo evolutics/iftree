@@ -350,7 +350,7 @@
 //!
 //! As inputs, the macro is passed the following arguments, separated by comma:
 //!
-//! 1. Relative file path as a string literal.
+//! 1. Relative file path as a string literal. Path components are separated by `/`.
 //! 1. Absolute file path as a string literal.
 //!
 //! As an output, the macro must return a
@@ -388,7 +388,8 @@
 //!   1. Filename as a string literal.
 //!   1. [Sanitized](#name-sanitization) filename as an identifier.
 //!   1. Zero-based index of the file among the selected files as a `usize` literal.
-//!   1. Relative file path as a string literal.
+//!   1. Relative file path as a string literal. Path components are separated by
+//!      `/`.
 //!   1. Absolute file path as a string literal.
 //!
 //! The `visit_folder` macro is optional. If missing, the outputs of the
