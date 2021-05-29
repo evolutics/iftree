@@ -6,6 +6,10 @@ Notable library changes are documented here in a format based on
 
 ## Unreleased
 
+–
+
+## 1.0.0 – 2021-05-29
+
 ### Changed
 
 - Respect Unicode identifiers in

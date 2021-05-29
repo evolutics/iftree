@@ -76,7 +76,7 @@ your project.
 
 ### Getting started
 
-1. Add the **dependency** `iftree = "0.1"` to your manifest (`Cargo.toml`).
+1. Add the **dependency** `iftree = "1.0"` to your manifest (`Cargo.toml`).
 
 1. Define your **asset type** (`MyAsset` in the [introduction](#introduction)).
 
