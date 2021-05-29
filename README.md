@@ -120,9 +120,9 @@ the [manifest](https://github.com/evolutics/iftree/tree/main/Cargo.toml).
 
 ### Standard fields
 
-When you use fields from the following list only, an initializer for your asset
-type is generated without further configuration. You can still override these
-field names with a [custom initializer](#templateinitializer).
+When you use a subset of the following fields only, an initializer for your
+asset type is generated without further configuration. You can still override
+these field names with a [custom initializer](#templateinitializer).
 
 - **`contents_bytes:`** `&'static [u8]`
 
