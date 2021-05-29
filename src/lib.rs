@@ -379,11 +379,13 @@
 //!
 //! - `visit_base`:
 //!   1. Total number of selected files as a `usize` literal.
-//!   1. Outputs of the visitor applied to the base folder entries.
+//!   1. Outputs of the visitor applied to the base folder entries, ordered by
+//!      filename in Unicode code point order.
 //! - `visit_folder`:
 //!   1. Folder name as a string literal.
 //!   1. [Sanitized](#name-sanitization) folder name as an identifier.
-//!   1. Outputs of the visitor applied to the folder entries.
+//!   1. Outputs of the visitor applied to the folder entries, ordered by filename
+//!      in Unicode code point order.
 //! - `visit_file`:
 //!   1. Filename as a string literal.
 //!   1. [Sanitized](#name-sanitization) filename as an identifier.
