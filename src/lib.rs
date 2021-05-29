@@ -253,6 +253,10 @@
 //! | [**`std::include_str`**](https://doc.rust-lang.org/std/macro.include_str.html)     | Single file                                         | Contents               | File path                                                                                           |
 //! | **Iftree**                                                                         | Multiple files by inclusion-exclusion path patterns | Path, contents, custom | File path (via `base::x::y::MY_FILE` variables in constant time), iterator (`ASSETS` array), custom |
 //!
+//! Generally, while Iftree has defaults to address common use cases, it can be
+//! customized to support more specific use cases, too (see [recipes](#recipes) for
+//! examples).
+//!
 //! # Configuration reference
 //!
 //! The `iftree::include_file_tree` macro is configured via a
