@@ -166,9 +166,10 @@
 //! When generating identifiers based on paths, names are sanitized. For example, a
 //! filename `404_not_found.md` is sanitized to an identifier `_404_NOT_FOUND_MD`.
 //!
-//! The sanitization process is designed to generate valid
+//! The sanitization process is designed to generate valid, conventional
 //! [Unicode identifiers](https://doc.rust-lang.org/reference/identifiers.html).
-//! Essentially, it replaces invalid identifier characters by underscores `"_"`.
+//! Essentially, it replaces invalid identifier characters by underscores `"_"` and
+//! adjusts the letter case to the context.
 //!
 //! More precisely, these transformations are applied in order:
 //!
