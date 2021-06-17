@@ -167,7 +167,7 @@
 //! filename `404_not_found.md` is sanitized to an identifier `_404_NOT_FOUND_MD`.
 //!
 //! The sanitization process is designed to generate valid
-//! [Unicode identifiers](https://doc.rust-lang.org/nightly/reference/identifiers.html).
+//! [Unicode identifiers](https://doc.rust-lang.org/reference/identifiers.html).
 //! Essentially, it replaces invalid identifier characters by underscores `"_"`.
 //!
 //! More precisely, these transformations are applied in order:
