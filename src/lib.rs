@@ -82,20 +82,36 @@
 //!
 //! 1. Add the **dependency** `iftree = "1.0"` to your manifest (`Cargo.toml`).
 //!
-//! 1. Define your **asset type** (`MyAsset` in the [introduction](#introduction)).
+//! 1. Define your **asset type,** which is just a custom `struct` or type alias.
+//!    Example:
 //!
-//!    This is a `struct` with the fields you need per file. Alternatively, it can
-//!    be a type alias, which may be convenient if you have exactly one field.
+//!    ```rust
+//!    pub struct Asset;
+//!    ```
 //!
-//! 1. Next, **filter files** to be included by annotating your asset type with
-//!    `#[iftree::include_file_tree("paths = '/my/assets/**'")]`.
+//! 1. Next, **filter files** to be included by annotating your asset type. Example:
+//!
+//!    ```ignore
+//!    #[iftree::include_file_tree("paths = '/my_assets/**'")]
+//!    pub struct Asset;
+//!    ```
 //!
 //!    The macro argument is a [TOML](https://toml.io) string literal. Its `paths`
 //!    option here supports `.gitignore`-like path patterns, with one pattern per
 //!    line. These paths are relative to the folder with your manifest by default.
 //!    See the [`paths` configuration](#paths) for more.
 //!
-//! 1. When building your project, code is generated that uses an **initializer** to
+//! 1. Define the **data fields** of your asset type. Example:
+//!
+//!    ```ignore
+//!    #[iftree::include_file_tree("paths = '/my_assets/**'")]
+//!    pub struct Asset {
+//!      relative_path: &'static str,
+//!      contents_bytes: &'static [u8],
+//!    }
+//!    ```
+//!
+//!    When building your project, code is generated that uses an initializer to
 //!    instantiate the asset type once per file.
 //!
 //!    By default, a field `contents_str` (if any) is populated with `include_str!`,
@@ -545,10 +561,8 @@ mod tests {
                     let line = line.strip_prefix(' ').unwrap_or(line);
                     let line = if is_empty && line.starts_with('#') {
                         format!("#{}", line)
-                    } else if line == "```ignore" {
-                        String::from("```rust")
                     } else {
-                        String::from(line)
+                        line.replace("```ignore", "```rust")
                     };
                     actual.push_str(&format!("{}\n", line));
                     is_empty = line.is_empty();
