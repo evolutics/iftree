@@ -106,8 +106,8 @@
 //!    ```ignore
 //!    #[iftree::include_file_tree("paths = '/my_assets/**'")]
 //!    pub struct Asset {
-//!      relative_path: &'static str,
-//!      contents_bytes: &'static [u8],
+//!        relative_path: &'static str,
+//!        contents_bytes: &'static [u8],
 //!    }
 //!    ```
 //!
