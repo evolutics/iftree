@@ -2,6 +2,15 @@
 
 Include many files in your Rust code for self-contained binaries.
 
+**Highlights:**
+
+- Include or exclude files with **path patterns.**
+- File lookups **checked** at compile time are **fast** at runtime (constant
+  time).
+- **Customizable:** associate any data with files.
+- Many [**examples.**](https://github.com/evolutics/iftree/tree/main/examples)
+- See also [**related projects.**](#related-work)
+
 ![Test](https://github.com/evolutics/iftree/actions/workflows/test.yml/badge.svg)
 [![crates.io](https://img.shields.io/crates/v/iftree.svg)](https://crates.io/crates/iftree)
 
@@ -26,9 +35,6 @@ Conceptually:
 std:       include_str!("my_file")
 Iftree:    any_macro!("my_files/**")
 ```
-
-Refer to [**related work**](#related-work) to see Iftree in the context of
-other, similar projects.
 
 ## Introduction
 
