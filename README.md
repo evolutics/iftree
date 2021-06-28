@@ -114,10 +114,12 @@ your project.
    When building your project, code is generated that uses an initializer to
    instantiate the asset type once per file.
 
-   By default, a field `contents_str` (if any) is populated with `include_str!`,
-   a field `contents_bytes` is populated with `include_bytes!`, and a couple of
-   other [standard fields](#standard-fields) are recognized. However, you can
-   plug in your own macro to fully customize the initialization by
+   By default, a field `contents_bytes` (if any) is populated with the file
+   contents as a byte array, a field `contents_str` is populated with the file
+   contents as a string, and a couple of other
+   [standard fields](#standard-fields) are recognized.
+
+   However, you can fully customize the initialization by
    [configuring an initializer](#templateinitializer). For even more control
    over code generation, there is the concept of [visitors](#template-visitors).
 
