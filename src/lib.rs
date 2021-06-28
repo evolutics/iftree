@@ -122,7 +122,7 @@
 //!    over code generation, there is the concept of [visitors](#template-visitors).
 //!
 //! 1. Now you can **access** your included file data via `ASSETS` array or via
-//!    `base::my::assets::MY_FILE` variables.
+//!    `base::my_assets::MY_FILE` variables.
 //!
 //! ## Examples
 //!
