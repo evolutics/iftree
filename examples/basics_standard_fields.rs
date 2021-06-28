@@ -12,11 +12,11 @@ pub struct Asset {
 fn main() {
     use base::examples::assets;
 
-    assert_eq!(assets::CREDITS_MD.contents_bytes, "Boo Far\n".as_bytes());
+    assert_eq!(assets::CREDITS_MD.contents_bytes, b"Boo Far\n");
 
     assert_eq!(assets::CREDITS_MD.contents_str, "Boo Far\n");
 
-    assert_eq!((assets::CREDITS_MD.get_bytes)(), "Boo Far\n".as_bytes());
+    assert_eq!((assets::CREDITS_MD.get_bytes)(), &b"Boo Far\n"[..]);
 
     assert_eq!((assets::CREDITS_MD.get_str)(), "Boo Far\n");
 
