@@ -122,7 +122,13 @@
 //!    over code generation, there is the concept of [visitors](#template-visitors).
 //!
 //! 1. Now you can **access** your included file data via `ASSETS` array or via
-//!    `base::my_assets::MY_FILE` variables.
+//!    `base::x::y::MY_FILE` variables. Example:
+//!
+//!    ```ignore
+//!    println!("Number of assets: {}", ASSETS.len());
+//!    assert_eq!(base::my_assets::MY_FILE.relative_path, "my_assets/my_file");
+//!    assert_eq!(base::my_assets::MY_FILE.contents_bytes, b"file contents");
+//!    ```
 //!
 //! ## Examples
 //!
