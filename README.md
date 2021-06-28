@@ -41,7 +41,7 @@ Iftree:    any_macro!("my_files/**")
 Here is a minimal example that shows the basic functionality.
 
 ```rust
-// Say you have the following files:
+// Say you have these files:
 //
 //     my_assets/
 //     ├── file_a
@@ -49,8 +49,7 @@ Here is a minimal example that shows the basic functionality.
 //     └── folder/
 //         └── file_c
 
-// To include these files in your code, the macro `iftree::include_file_tree` is
-// attached to a custom type like this:
+// To include this file tree in your code, define a custom type like so:
 #[iftree::include_file_tree("paths = '/my_assets/**'")]
 pub struct MyAsset {
     contents_str: &'static str,
@@ -61,8 +60,7 @@ pub struct MyAsset {
 // `include_str!`, but you can plug in your own initializer.
 
 fn main() {
-    // Based on this, Iftree generates an array `ASSETS` with the desired file
-    // data. You can use it like so:
+    // Based on this, an array `ASSETS` with the desired file data is generated:
     assert_eq!(ASSETS.len(), 3);
     assert_eq!(ASSETS[0].contents_str, "… contents file_a\n");
     assert_eq!(ASSETS[1].contents_str, "… contents file_b\n");
