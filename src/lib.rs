@@ -1,11 +1,11 @@
 //! Include many files in your Rust code for self-contained binaries.
 //!
-//! **Highlights:**
+//! **Highlights**:
 //!
-//! - Include or exclude files with **path patterns.**
+//! - Include or exclude files with **path patterns**.
 //! - File lookups **checked** at compile time are **fast** at runtime (constant
 //!   time).
-//! - **Customizable:** associate any data with files.
+//! - **Customizable**: associate any data with files.
 //! - Many [**examples**](https://github.com/evolutics/iftree/tree/main/examples).
 //! - See also [**related projects**](#related-work).
 //!
@@ -80,7 +80,7 @@
 //!
 //! 1. Add the **dependency** `iftree = "1.0"` to your manifest (`Cargo.toml`).
 //!
-//! 1. Define your **asset type,** which is just a custom `struct` or type alias.
+//! 1. Define your **asset type**, which is just a custom `struct` or type alias.
 //!    Example:
 //!
 //!    ```rust
@@ -150,17 +150,17 @@
 //! asset type is generated without further configuration. You can still override
 //! these field names with a [custom initializer](#templateinitializer).
 //!
-//! - **`contents_bytes:`** `&'static [u8]`
+//! - **`contents_bytes`**: `&'static [u8]`
 //!
 //!   File contents as a byte array, using
 //!   [`std::include_bytes`](https://doc.rust-lang.org/std/macro.include_bytes.html).
 //!
-//! - **`contents_str:`** `&'static str`
+//! - **`contents_str`**: `&'static str`
 //!
 //!   File contents interpreted as a UTF-8 string, using
 //!   [`std::include_str`](https://doc.rust-lang.org/std/macro.include_str.html).
 //!
-//! - **`get_bytes:`** `fn() -> std::borrow::Cow<'static, [u8]>`
+//! - **`get_bytes`**: `fn() -> std::borrow::Cow<'static, [u8]>`
 //!
 //!   In debug builds (that is, when
 //!   [`debug_assertions`](https://doc.rust-lang.org/reference/conditional-compilation.html#debug_assertions)
@@ -174,13 +174,13 @@
 //!   using
 //!   [`std::include_bytes`](https://doc.rust-lang.org/std/macro.include_bytes.html).
 //!
-//! - **`get_str:`** `fn() -> std::borrow::Cow<'static, str>`
+//! - **`get_str`**: `fn() -> std::borrow::Cow<'static, str>`
 //!
 //!   Same as `get_bytes` but for the file contents interpreted as a UTF-8 string,
 //!   using
 //!   [`std::include_str`](https://doc.rust-lang.org/std/macro.include_str.html).
 //!
-//! - **`relative_path:`** `&'static str`
+//! - **`relative_path`**: `&'static str`
 //!
 //!   File path relative to the base folder, which is the folder with your manifest
 //!   (`Cargo.toml`) by default. Path components are separated by a slash `/`,
@@ -299,7 +299,7 @@
 //! environment variable `CARGO_MANIFEST_DIR`. That is, a relative path `x/y/z` has
 //! a full path `[CARGO_MANIFEST_DIR]/[base_folder]/x/y/z`.
 //!
-//! **Default:** `""`
+//! **Default**: `""`
 //!
 //! See
 //! [example](https://github.com/evolutics/iftree/blob/main/examples/configuration_base_folder.rs).
@@ -309,7 +309,7 @@
 //! Whether to generate a string variable `DEBUG` with debug information such as the
 //! generated code.
 //!
-//! **Default:** `false`
+//! **Default**: `false`
 //!
 //! See
 //! [example](https://github.com/evolutics/iftree/blob/main/examples/configuration_debug.rs).
@@ -348,7 +348,7 @@
 //!
 //! The value of the environment variable should be an absolute path.
 //!
-//! **Default:** `"CARGO_MANIFEST_DIR"`
+//! **Default**: `"CARGO_MANIFEST_DIR"`
 //!
 //! ## `template.identifiers`
 //!
@@ -368,7 +368,7 @@
 //! rename any affected paths (assuming you need the generated identifiers at all –
 //! otherwise, you can just disable this with `template.identifiers = false`).
 //!
-//! **Default:** `true`
+//! **Default**: `true`
 //!
 //! See
 //! [example](https://github.com/evolutics/iftree/blob/main/examples/configuration_template_identifiers.rs).
@@ -385,7 +385,7 @@
 //! As an output, the macro must return a
 //! [constant expression](https://doc.rust-lang.org/reference/const_eval.html#constant-expressions).
 //!
-//! **Default:** A default initializer is constructed by recognizing
+//! **Default**: A default initializer is constructed by recognizing
 //! [standard fields](#standard-fields).
 //!
 //! See
