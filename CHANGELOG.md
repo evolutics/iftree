@@ -8,6 +8,10 @@ Notable library changes are documented here in a format based on
 
 –
 
+## 1.0.1 – 2021-07-05
+
+This release only updates documentation.
+
 ## 1.0.0 – 2021-05-29
 
 ### Changed
