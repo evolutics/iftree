@@ -510,17 +510,15 @@ mod tests {
 
     #[test]
     fn readme_refers_to_current_manifest_version() {
-        let version = get_manifest_version();
-        let major_minor_version = version.rsplitn(2, '.').nth(1).unwrap();
-        let dependency = format!("`iftree = \"{}\"`", major_minor_version);
+        let dependency = format!(
+            "`iftree = \"{}.{}\"`",
+            env!("CARGO_PKG_VERSION_MAJOR"),
+            env!("CARGO_PKG_VERSION_MINOR"),
+        );
 
         let actual = get_readme().contains(&dependency);
 
         assert!(actual);
-    }
-
-    fn get_manifest_version() -> String {
-        String::from(get_manifest()["package"]["version"].as_str().unwrap())
     }
 
     #[test]
@@ -545,7 +543,7 @@ mod tests {
 
     #[test]
     fn changelog_contains_current_manifest_version() {
-        let version_section = format!("\n\n## {} – ", get_manifest_version());
+        let version_section = format!("\n\n## {} – ", env!("CARGO_PKG_VERSION"));
 
         let actual = get_changelog().contains(&version_section);
 
