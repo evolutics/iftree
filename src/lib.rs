@@ -505,7 +505,8 @@ mod tests {
     #[test]
     fn readme_refers_to_current_manifest_version() {
         let dependency = format!(
-            "`iftree = \"{}.{}\"`",
+            "`{} = \"{}.{}\"`",
+            env!("CARGO_PKG_NAME"),
             env!("CARGO_PKG_VERSION_MAJOR"),
             env!("CARGO_PKG_VERSION_MINOR"),
         );
