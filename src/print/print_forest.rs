@@ -55,7 +55,7 @@ fn print_forest(context: &Context, forest: &model::Forest) -> proc_macro2::Token
 fn print_file(context: &Context, name: &str, file: &model::File) -> proc_macro2::TokenStream {
     match context.visitor {
         model::Visitor::Array(initializer) => {
-            let element = print_initializer::main(context.type_, &initializer, file);
+            let element = print_initializer::main(context.type_, initializer, file);
             quote::quote! { #element, }
         }
 
