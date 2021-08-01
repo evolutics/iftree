@@ -482,17 +482,11 @@ mod tests {
 
     #[test]
     fn readme_includes_manifest_description() {
-        let manifest = get_manifest();
-        let description = manifest["package"]["description"].as_str().unwrap();
-        let embedded_description = format!("\n\n{}\n\n", description);
+        let embedded_description = format!("\n\n{}\n\n", env!("CARGO_PKG_DESCRIPTION"));
 
         let actual = get_readme().contains(&embedded_description);
 
         assert!(actual);
-    }
-
-    fn get_manifest() -> toml::Value {
-        include_str!("../Cargo.toml").parse().unwrap()
     }
 
     fn get_readme() -> &'static str {
