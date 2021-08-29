@@ -248,6 +248,7 @@ Here are example solutions for given problems.
 
 - Compression with [`include_flate`](https://github.com/evolutics/iftree/blob/main/examples/library_include_flate.rs)
 - File server with [Actix Web](https://github.com/evolutics/iftree/blob/main/examples/library_actix_web.rs)
+- File server with [Rocket](https://github.com/evolutics/iftree/blob/main/examples/library_rocket.rs)
 - File server with [Tide](https://github.com/evolutics/iftree/blob/main/examples/library_tide.rs)
 - File server with [warp](https://github.com/evolutics/iftree/blob/main/examples/library_warp.rs)
 - Lazy initialization with [`lazy_static`](https://github.com/evolutics/iftree/blob/main/examples/library_lazy_static.rs)

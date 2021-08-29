@@ -76,6 +76,7 @@ def _run_example(name, extra_arguments):
 
 _EXAMPLE_TIMEOUT_IN_SECONDS = {
     "library_actix_web": 2,
+    "library_rocket": 2,
     "library_tide": 2,
     "library_warp": 2,
     "showcase": 2,
