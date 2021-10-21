@@ -68,7 +68,7 @@ fn print_file(context: &Context, name: &str, file: &model::File) -> proc_macro2:
             let index = file.index;
             quote::quote! {
                 #[doc = #name]
-                pub static #identifier: &#root_path#type_ = &#root_path ASSETS[#index];
+                pub static #identifier: &#root_path #type_ = &#root_path ASSETS[#index];
             }
         }
 
