@@ -43,6 +43,8 @@ def _test_rust():
             "--all-features",
             "--all-targets",
             "--",
+            "--allow",
+            "clippy::needless_doctest_main",
             "--deny",
             "warnings",
         ],

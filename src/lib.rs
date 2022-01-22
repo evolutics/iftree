@@ -38,7 +38,7 @@
 //!
 //! Here is a minimal example that shows the basic functionality.
 //!
-//! ```ignore
+//! ```rust
 //! // Say you have these files:
 //! //
 //! //     my_assets/
@@ -193,7 +193,7 @@
 //! To associate custom data with your files, you can plug in a macro that
 //! initializes each asset. It is simpler than you may think. Toy example:
 //!
-//! ```ignore
+//! ```rust
 //! macro_rules! my_initialize {
 //!     ($relative_path:literal, $absolute_path:literal) => {
 //!         MyAsset {
