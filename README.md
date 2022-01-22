@@ -314,6 +314,8 @@ case: including files from a folder filtered by filename extension. The project
 has since developed into something more flexible.
 
 Here is how I think Iftree compares to related projects for the given criteria.
+Generally, while Iftree has defaults to address common use cases, it comes with
+first-class support for arbitrary file data.
 
 | Project                                                                            | File selection                                      | Included file data       | Data access via                                                                                     |
 | ---------------------------------------------------------------------------------- | --------------------------------------------------- | ------------------------ | --------------------------------------------------------------------------------------------------- |
@@ -323,10 +325,6 @@ Here is how I think Iftree compares to related projects for the given criteria.
 | [**`std::include_bytes`**](https://doc.rust-lang.org/std/macro.include_bytes.html) | Single file                                         | Contents                 | File path                                                                                           |
 | [**`std::include_str`**](https://doc.rust-lang.org/std/macro.include_str.html)     | Single file                                         | Contents                 | File path                                                                                           |
 | **Iftree**                                                                         | Multiple files by inclusion-exclusion path patterns | Path, contents, custom   | File path (via `base::x::y::MY_FILE` variables in constant time), iterator (`ASSETS` array), custom |
-
-Generally, while Iftree has defaults to address common use cases, it can be
-customized to support more specific use cases, too (see [recipes](#recipes) for
-examples).
 
 ## Configuration reference
 
