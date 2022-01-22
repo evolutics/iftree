@@ -17,7 +17,7 @@ impl<'a> de::Visitor<'a> for Visitor {
     type Value = configuration::Path;
 
     fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-        write!(formatter, "a path (like `x` or `x::y::z`)")
+        formatter.write_str("a path (like `x` or `x::y::z`)")
     }
 
     fn visit_str<T>(self, string: &str) -> Result<Self::Value, T>

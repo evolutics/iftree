@@ -19,14 +19,11 @@ impl fmt::Display for main::Error {
 
             main::Error::Ignore(main::IgnoreError(error)) => write!(formatter, "{error}"),
 
-            main::Error::NoInitializer => {
-                write!(
-                    formatter,
-                    "No initializer. \
-                    Configure one with \"template.initializer = 'a_macro'\" or \
-                    use standard fields to generate a default initializer.",
-                )
-            }
+            main::Error::NoInitializer => formatter.write_str(
+                "No initializer. \
+                Configure one with \"template.initializer = 'a_macro'\" or \
+                use standard fields to generate a default initializer.",
+            ),
 
             main::Error::NonstandardField {
                 field,
