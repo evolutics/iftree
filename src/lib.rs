@@ -592,20 +592,19 @@ mod tests {
     #[test]
     fn module_documentation_corresponds_to_readme() {
         let mut actual = String::from("# Iftree: Include File Tree 🌳\n\n");
-        let mut is_empty = true;
-        let heading_pattern = regex::Regex::new(r"^#+ ").unwrap();
+        let mut is_code_block = false;
         for line in include_str!("lib.rs").lines() {
             match line.strip_prefix("//!") {
                 None => break,
                 Some(line) => {
                     let line = line.strip_prefix(' ').unwrap_or(line);
-                    let line = if is_empty && heading_pattern.is_match(line) {
+                    let line = if !is_code_block && line.starts_with('#') {
                         format!("#{}", line)
                     } else {
                         line.replace("```ignore", "```rust")
                     };
                     actual.push_str(&format!("{}\n", line));
-                    is_empty = line.is_empty();
+                    is_code_block ^= line.starts_with("```");
                 }
             }
         }
