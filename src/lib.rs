@@ -117,9 +117,8 @@
 //!    contents as a string, and a couple of other
 //!    [standard fields](#standard-fields) are recognized.
 //!
-//!    However, you can fully customize the initialization by
-//!    [configuring an initializer](#templateinitializer). For even more control
-//!    over code generation, there is the concept of [visitors](#template-visitors).
+//!    However, you can [customize](#custom-file-data) this to include arbitrary
+//!    file data.
 //!
 //! 1. Now you can **access** your included file data via `ASSETS` array or via
 //!    `base::x::y::MY_FILE` variables. Example:
@@ -188,6 +187,46 @@
 //!
 //! See
 //! [example](https://github.com/evolutics/iftree/blob/main/examples/basics_standard_fields.rs).
+//!
+//! ## Custom file data
+//!
+//! To associate custom data with your files, you can plug in a macro that
+//! initializes each asset. It is simpler than you may think. Toy example:
+//!
+//! ```ignore
+//! macro_rules! my_initialize {
+//!     ($relative_path:literal, $absolute_path:literal) => {
+//!         MyAsset {
+//!             path: $relative_path,
+//!             size: include_bytes!($absolute_path).len(),
+//!         }
+//!     };
+//! }
+//!
+//! #[iftree::include_file_tree(
+//!     "
+//! paths = '/my_assets/**'
+//! template.initializer = 'my_initialize'
+//! "
+//! )]
+//! pub struct MyAsset {
+//!     path: &'static str,
+//!     size: usize,
+//! }
+//!
+//! fn main() {
+//!     assert_eq!(base::my_assets::FILE_A.path, "my_assets/file_a");
+//!     assert_eq!(base::my_assets::FILE_B.path, "my_assets/file_b");
+//!     assert_eq!(base::my_assets::FILE_A.size, 20);
+//! }
+//! ```
+//!
+//! The initializer macro (`my_initialize` above) must return a constant expression.
+//! Non-constant data can still be computed (lazily) with a library like
+//! [`once_cell`](https://github.com/matklad/once_cell).
+//!
+//! For even more control over code generation, there is the concept of
+//! [visitors](#template-visitors).
 //!
 //! ## Name sanitization
 //!
