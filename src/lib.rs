@@ -124,7 +124,8 @@
 //!    `base::x::y::MY_FILE` variables. Example:
 //!
 //!    ```ignore
-//!    println!("Number of assets: {}", ASSETS.len());
+//!    let asset_count = ASSETS.len();
+//!    println!("Number of assets: {asset_count}");
 //!    assert_eq!(base::my_assets::MY_FILE.relative_path, "my_assets/my_file");
 //!    assert_eq!(base::my_assets::MY_FILE.contents_bytes, b"file contents");
 //!    ```
@@ -509,7 +510,7 @@ pub fn include_file_tree(
     let type_ = syn::parse_macro_input!(item);
 
     match go::main(configuration, item2, type_) {
-        Err(error) => panic!("{}", error),
+        Err(error) => panic!("{error}"),
         Ok(code) => code.into(),
     }
 }
@@ -520,7 +521,8 @@ mod tests {
 
     #[test]
     fn readme_includes_manifest_description() {
-        let embedded_description = format!("\n\n{}\n\n", env!("CARGO_PKG_DESCRIPTION"));
+        let description = env!("CARGO_PKG_DESCRIPTION");
+        let embedded_description = format!("\n\n{description}\n\n");
 
         let actual = get_readme().contains(&embedded_description);
 
@@ -533,21 +535,20 @@ mod tests {
 
     #[test]
     fn readme_includes_basic_example() {
-        let example = format!("```rust\n{}```\n", include_str!("../examples/basic.rs"));
+        let example = include_str!("../examples/basic.rs");
+        let embedded_example = format!("```rust\n{example}```\n");
 
-        let actual = get_readme().contains(&example);
+        let actual = get_readme().contains(&embedded_example);
 
         assert!(actual);
     }
 
     #[test]
     fn readme_refers_to_current_manifest_version() {
-        let dependency = format!(
-            "`{} = \"{}.{}\"`",
-            env!("CARGO_PKG_NAME"),
-            env!("CARGO_PKG_VERSION_MAJOR"),
-            env!("CARGO_PKG_VERSION_MINOR"),
-        );
+        let name = env!("CARGO_PKG_NAME");
+        let version_major = env!("CARGO_PKG_VERSION_MAJOR");
+        let version_minor = env!("CARGO_PKG_VERSION_MINOR");
+        let dependency = format!("`{name} = \"{version_major}.{version_minor}\"`");
 
         let actual = get_readme().contains(&dependency);
 
@@ -576,7 +577,8 @@ mod tests {
 
     #[test]
     fn changelog_contains_current_manifest_version() {
-        let version_section = format!("\n\n## {} – ", env!("CARGO_PKG_VERSION"));
+        let version = env!("CARGO_PKG_VERSION");
+        let version_section = format!("\n\n## {version} – ");
 
         let actual = get_changelog().contains(&version_section);
 
@@ -597,11 +599,11 @@ mod tests {
                 Some(line) => {
                     let line = line.strip_prefix(' ').unwrap_or(line);
                     let line = if !is_code_block && line.starts_with('#') {
-                        format!("#{}", line)
+                        format!("#{line}")
                     } else {
                         line.replace("```ignore", "```rust")
                     };
-                    actual.push_str(&format!("{}\n", line));
+                    actual.push_str(&format!("{line}\n"));
                     is_code_block ^= line.starts_with("```");
                 }
             }

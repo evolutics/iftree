@@ -3,7 +3,7 @@ pub fn main(original: &str, convention: Convention) -> syn::Ident {
     let name = sanitize_special_characters(&name);
     let name = sanitize_first_character(name);
     let name = sanitize_special_cases(name);
-    quote::format_ident!("r#{}", name)
+    quote::format_ident!("r#{name}")
 }
 
 pub enum Convention {
@@ -34,13 +34,13 @@ fn sanitize_first_character(name: String) -> String {
     match name.chars().next() {
         Some(first_character) if unicode_xid::UnicodeXID::is_xid_start(first_character) => name,
         Some('_') => name,
-        _ => format!("_{}", name),
+        _ => format!("_{name}"),
     }
 }
 
 fn sanitize_special_cases(name: String) -> String {
     match name.as_ref() {
-        "_" | "crate" | "self" | "Self" | "super" => format!("{}_", name),
+        "_" | "crate" | "self" | "Self" | "super" => format!("{name}_"),
         _ => name,
     }
 }

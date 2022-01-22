@@ -17,7 +17,8 @@ fn main() {
     assert_eq!(ASSETS[575].contents_str, "g/f/e/d/c/b/a/0\n");
 
     for asset in &ASSETS {
-        assert_eq!(format!("{}\n", asset.relative_path), asset.contents_str);
+        let path = asset.relative_path;
+        assert_eq!(format!("{path}\n"), asset.contents_str);
     }
 
     assert_eq!(base::_127.relative_path, "127");

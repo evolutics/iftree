@@ -126,7 +126,8 @@ your project.
    `base::x::y::MY_FILE` variables. Example:
 
    ```rust
-   println!("Number of assets: {}", ASSETS.len());
+   let asset_count = ASSETS.len();
+   println!("Number of assets: {asset_count}");
    assert_eq!(base::my_assets::MY_FILE.relative_path, "my_assets/my_file");
    assert_eq!(base::my_assets::MY_FILE.contents_bytes, b"file contents");
    ```

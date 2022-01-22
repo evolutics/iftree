@@ -67,7 +67,7 @@ async fn main() -> io::Result<()> {
 
 fn print_index(socket_address: &str) {
     for path in ASSET_MAP.keys() {
-        eprintln!("See: http://{}/{}", socket_address, path);
+        eprintln!("See: http://{socket_address}/{path}");
     }
 }
 

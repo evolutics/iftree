@@ -5,7 +5,7 @@ use std::path;
 
 impl PartialEq for main::IgnoreError {
     fn eq(&self, other: &Self) -> bool {
-        format!("{:?}", self) == format!("{:?}", other)
+        format!("{self:?}") == format!("{other:?}")
     }
 }
 
@@ -14,11 +14,10 @@ impl fmt::Display for main::Error {
         match self {
             main::Error::EnvironmentVariable { name, source } => write!(
                 formatter,
-                "Unable to get environment variable {:?}: {}",
-                name, source,
+                "Unable to get environment variable {name:?}: {source}",
             ),
 
-            main::Error::Ignore(main::IgnoreError(error)) => write!(formatter, "{}", error),
+            main::Error::Ignore(main::IgnoreError(error)) => write!(formatter, "{error}"),
 
             main::Error::NoInitializer => {
                 write!(
@@ -33,45 +32,45 @@ impl fmt::Display for main::Error {
                 field,
                 standard_fields,
             } => {
+                let field = field.to_string();
+                let standard_fields = standard_fields
+                    .iter()
+                    .map(|field| {
+                        let field = field.to_string();
+                        format!("{field:?}")
+                    })
+                    .collect::<Vec<_>>()
+                    .join(", ");
                 write!(
                     formatter,
                     "Default initializer cannot be generated \
-                    as field {:?} is not standard. \
+                    as field {field:?} is not standard. \
                     Configure an initializer with \"template.initializer = 'a_macro'\" or \
-                    use standard fields only ({}).",
-                    field.to_string(),
-                    standard_fields
-                        .iter()
-                        .map(|field| format!("{:?}", field.to_string()))
-                        .collect::<Vec<_>>()
-                        .join(", "),
+                    use standard fields only ({standard_fields}).",
                 )
             }
 
             main::Error::PathInvalidUnicode(path) => {
                 write!(
                     formatter,
-                    "Path is not valid Unicode, consider renaming it: {:?}",
-                    path,
+                    "Path is not valid Unicode, consider renaming it: {path:?}",
                 )
             }
 
-            main::Error::PathStripPrefix(error) => write!(formatter, "{}", error),
+            main::Error::PathStripPrefix(error) => write!(formatter, "{error}"),
 
             main::Error::UnexpectedEmptyRelativePath { absolute_path } => {
                 write!(
                     formatter,
                     "Unexpected empty relative path for absolute path \
-                    (consider reporting this): {:?}",
-                    absolute_path,
+                    (consider reporting this): {absolute_path:?}",
                 )
             }
 
             main::Error::UnexpectedPathCollision(path) => {
                 write!(
                     formatter,
-                    "Unexpected path collision (consider reporting this): {:?}",
-                    path,
+                    "Unexpected path collision (consider reporting this): {path:?}",
                 )
             }
         }

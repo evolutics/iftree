@@ -29,12 +29,13 @@ impl fmt::Display for InStringError {
                 None => String::new(),
                 Some(line) => {
                     let space = " ".repeat(column_index);
-                    format!(" here:\n{}\n{}▲", line, space)
+                    format!(" here:\n{line}\n{space}▲")
                 }
             },
         };
 
-        write!(formatter, "{} (in the string){}", self.error, appendix)
+        let error = &self.error;
+        write!(formatter, "{error} (in the string){appendix}")
     }
 }
 

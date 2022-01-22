@@ -32,8 +32,7 @@ name = 'dependent'
 version = '0.1.0'
 
 [dependencies]
-iftree = {{ path = {} }}",
-        dependency,
+iftree = {{ path = {dependency} }}",
     );
     fs::write(dependent.path().join("Cargo.toml"), contents).unwrap();
 }
