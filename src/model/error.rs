@@ -47,29 +47,23 @@ impl fmt::Display for main::Error {
                 )
             }
 
-            main::Error::PathInvalidUnicode(path) => {
-                write!(
-                    formatter,
-                    "Path is not valid Unicode, consider renaming it: {path:?}",
-                )
-            }
+            main::Error::PathInvalidUnicode(path) => write!(
+                formatter,
+                "Path is not valid Unicode, consider renaming it: {path:?}",
+            ),
 
             main::Error::PathStripPrefix(error) => write!(formatter, "{error}"),
 
-            main::Error::UnexpectedEmptyRelativePath { absolute_path } => {
-                write!(
-                    formatter,
-                    "Unexpected empty relative path for absolute path \
-                    (consider reporting this): {absolute_path:?}",
-                )
-            }
+            main::Error::UnexpectedEmptyRelativePath { absolute_path } => write!(
+                formatter,
+                "Unexpected empty relative path for absolute path \
+                (consider reporting this): {absolute_path:?}",
+            ),
 
-            main::Error::UnexpectedPathCollision(path) => {
-                write!(
-                    formatter,
-                    "Unexpected path collision (consider reporting this): {path:?}",
-                )
-            }
+            main::Error::UnexpectedPathCollision(path) => write!(
+                formatter,
+                "Unexpected path collision (consider reporting this): {path:?}",
+            ),
         }
     }
 }
