@@ -306,6 +306,7 @@
 //!
 //! ## Including file metadata
 //!
+//! - [File permissions](https://github.com/evolutics/iftree/blob/main/examples/scenario_file_permissions.rs)
 //! - [File timestamps](https://github.com/evolutics/iftree/blob/main/examples/scenario_file_timestamps.rs)
 //!   (creation, last access, last modification)
 //! - [Filename](https://github.com/evolutics/iftree/blob/main/examples/scenario_filename.rs)
