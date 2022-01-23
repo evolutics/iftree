@@ -286,19 +286,29 @@ Here are example solutions for given problems.
 
 ### Integration with other libraries
 
-- Compression with [`include_flate`](https://github.com/evolutics/iftree/blob/main/examples/library_include_flate.rs)
-- File server with [Actix Web](https://github.com/evolutics/iftree/blob/main/examples/library_actix_web.rs)
-- File server with [Rocket](https://github.com/evolutics/iftree/blob/main/examples/library_rocket.rs)
-- File server with [Tide](https://github.com/evolutics/iftree/blob/main/examples/library_tide.rs)
-- File server with [warp](https://github.com/evolutics/iftree/blob/main/examples/library_warp.rs)
-- Lazy initialization with [`lazy_static`](https://github.com/evolutics/iftree/blob/main/examples/library_lazy_static.rs)
-- Lazy initialization with [`once_cell`](https://github.com/evolutics/iftree/blob/main/examples/library_once_cell.rs)
-- Media types with [`mime_guess`](https://github.com/evolutics/iftree/blob/main/examples/library_mime_guess.rs)
-- Templates with [Handlebars](https://github.com/evolutics/iftree/blob/main/examples/library_handlebars.rs)
+- Compression with
+  [`include_flate`](https://github.com/evolutics/iftree/blob/main/examples/library_include_flate.rs)
+- File server with
+  [Actix Web](https://github.com/evolutics/iftree/blob/main/examples/library_actix_web.rs)
+- File server with
+  [Rocket](https://github.com/evolutics/iftree/blob/main/examples/library_rocket.rs)
+- File server with
+  [Tide](https://github.com/evolutics/iftree/blob/main/examples/library_tide.rs)
+- File server with
+  [warp](https://github.com/evolutics/iftree/blob/main/examples/library_warp.rs)
+- Lazy initialization with
+  [`lazy_static`](https://github.com/evolutics/iftree/blob/main/examples/library_lazy_static.rs)
+- Lazy initialization with
+  [`once_cell`](https://github.com/evolutics/iftree/blob/main/examples/library_once_cell.rs)
+- Media types with
+  [`mime_guess`](https://github.com/evolutics/iftree/blob/main/examples/library_mime_guess.rs)
+- Templates with
+  [Handlebars](https://github.com/evolutics/iftree/blob/main/examples/library_handlebars.rs)
 
 ### Including file metadata
 
-- [File timestamps](https://github.com/evolutics/iftree/blob/main/examples/scenario_file_timestamps.rs) (creation, last access, last modification)
+- [File timestamps](https://github.com/evolutics/iftree/blob/main/examples/scenario_file_timestamps.rs)
+  (creation, last access, last modification)
 - [Filename](https://github.com/evolutics/iftree/blob/main/examples/scenario_filename.rs)
 - [Filename extension](https://github.com/evolutics/iftree/blob/main/examples/scenario_filename_extension.rs)
 - Hash with [SHA-256](https://github.com/evolutics/iftree/blob/main/examples/scenario_hash_sha_256.rs)
