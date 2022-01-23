@@ -298,6 +298,7 @@ Here are example solutions for given problems.
 
 ### Including file metadata
 
+- [File timestamps](https://github.com/evolutics/iftree/blob/main/examples/scenario_file_timestamps.rs) (creation, last access, last modification)
 - [Filename](https://github.com/evolutics/iftree/blob/main/examples/scenario_filename.rs)
 - [Filename extension](https://github.com/evolutics/iftree/blob/main/examples/scenario_filename_extension.rs)
 - Hash with [SHA-256](https://github.com/evolutics/iftree/blob/main/examples/scenario_hash_sha_256.rs)
