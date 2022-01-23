@@ -300,6 +300,7 @@ Here are example solutions for given problems.
 
 - [Filename](https://github.com/evolutics/iftree/blob/main/examples/scenario_filename.rs)
 - [Filename extension](https://github.com/evolutics/iftree/blob/main/examples/scenario_filename_extension.rs)
+- Hash with [SHA-256](https://github.com/evolutics/iftree/blob/main/examples/scenario_hash_sha_256.rs)
 - [Media type](https://github.com/evolutics/iftree/blob/main/examples/scenario_media_type.rs)
   (formerly MIME type)
 
