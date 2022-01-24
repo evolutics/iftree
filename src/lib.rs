@@ -200,7 +200,7 @@
 //!     ($relative_path:literal, $absolute_path:literal) => {
 //!         MyAsset {
 //!             path: $relative_path,
-//!             size: include_bytes!($absolute_path).len(),
+//!             size_in_bytes: include_bytes!($absolute_path).len(),
 //!         }
 //!     };
 //! }
@@ -213,13 +213,13 @@
 //! )]
 //! pub struct MyAsset {
 //!     path: &'static str,
-//!     size: usize,
+//!     size_in_bytes: usize,
 //! }
 //!
 //! fn main() {
 //!     assert_eq!(base::my_assets::FILE_A.path, "my_assets/file_a");
 //!     assert_eq!(base::my_assets::FILE_B.path, "my_assets/file_b");
-//!     assert_eq!(base::my_assets::FILE_A.size, 20);
+//!     assert_eq!(base::my_assets::FILE_A.size_in_bytes, 20);
 //! }
 //! ```
 //!
