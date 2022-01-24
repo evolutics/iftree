@@ -193,7 +193,7 @@
 //! ## Custom file data
 //!
 //! To associate custom data with your files, you can plug in a macro that
-//! initializes each asset. It is simpler than you may think. Toy example:
+//! initializes each asset. Toy example:
 //!
 //! ```rust
 //! macro_rules! my_initialize {
