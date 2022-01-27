@@ -85,14 +85,14 @@
 //!    Example:
 //!
 //!    ```rust
-//!    pub struct Asset;
+//!    pub struct MyAsset;
 //!    ```
 //!
 //! 1. Next, **filter files** to be included by annotating your asset type. Example:
 //!
 //!    ```ignore
 //!    #[iftree::include_file_tree("paths = '/my_assets/**'")]
-//!    pub struct Asset;
+//!    pub struct MyAsset;
 //!    ```
 //!
 //!    The macro argument is a [TOML](https://toml.io) string literal. Its `paths`
@@ -104,7 +104,7 @@
 //!
 //!    ```ignore
 //!    #[iftree::include_file_tree("paths = '/my_assets/**'")]
-//!    pub struct Asset {
+//!    pub struct MyAsset {
 //!        relative_path: &'static str,
 //!        contents_bytes: &'static [u8],
 //!    }
