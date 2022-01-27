@@ -37,9 +37,11 @@ std:       include_str!("my_file")
 Iftree:    any_macro!("my_files/**")
 ```
 
-## Introduction
+## Usage
 
-Here is a minimal example that shows the basic functionality.
+The following quick start shows the basic usage.
+
+### Quick start
 
 ```rust
 // Say you have these files:
@@ -74,12 +76,7 @@ fn main() {
 }
 ```
 
-## Usage
-
-Now that you have a general idea of the library, learn how to integrate it with
-your project.
-
-### Getting started
+### Detailed guide
 
 1. Add the **dependency** `iftree = "1.0"` to your manifest (`Cargo.toml`).
 
@@ -140,7 +137,7 @@ If you like to explore by example, there is an
 The documentation links to individual examples where helpful.
 
 You could get started with the
-[introductory example](https://github.com/evolutics/iftree/blob/main/examples/basic.rs).
+[basic example](https://github.com/evolutics/iftree/blob/main/examples/basic.rs).
 For a more complex case, see the
 [showcase example](https://github.com/evolutics/iftree/blob/main/examples/showcase.rs).
 
