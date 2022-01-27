@@ -153,17 +153,17 @@ When you use a subset of the following fields only, an initializer for your
 asset type is generated without further configuration. You can still override
 these field names with a [custom initializer](#templateinitializer).
 
-- **`contents_bytes`**: `&'static [u8]`
+- **`contents_bytes`**`: &'static [u8]`
 
   File contents as a byte array, using
   [`std::include_bytes`](https://doc.rust-lang.org/std/macro.include_bytes.html).
 
-- **`contents_str`**: `&'static str`
+- **`contents_str`**`: &'static str`
 
   File contents interpreted as a UTF-8 string, using
   [`std::include_str`](https://doc.rust-lang.org/std/macro.include_str.html).
 
-- **`get_bytes`**: `fn() -> std::borrow::Cow<'static, [u8]>`
+- **`get_bytes`**`: fn() -> std::borrow::Cow<'static, [u8]>`
 
   In debug builds (that is, when
   [`debug_assertions`](https://doc.rust-lang.org/reference/conditional-compilation.html#debug_assertions)
@@ -177,13 +177,13 @@ these field names with a [custom initializer](#templateinitializer).
   using
   [`std::include_bytes`](https://doc.rust-lang.org/std/macro.include_bytes.html).
 
-- **`get_str`**: `fn() -> std::borrow::Cow<'static, str>`
+- **`get_str`**`: fn() -> std::borrow::Cow<'static, str>`
 
   Same as `get_bytes` but for the file contents interpreted as a UTF-8 string,
   using
   [`std::include_str`](https://doc.rust-lang.org/std/macro.include_str.html).
 
-- **`relative_path`**: `&'static str`
+- **`relative_path`**`: &'static str`
 
   File path relative to the base folder, which is the folder with your manifest
   (`Cargo.toml`) by default. Path components are separated by a slash `/`,
