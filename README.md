@@ -108,13 +108,12 @@ fn main() {
    }
    ```
 
-   When building your project, code is generated that uses an initializer to
-   instantiate the asset type once per file.
+   When building your project, code is generated that instantiates the asset
+   type once per file.
 
-   By default, a field `contents_bytes` (if any) is populated with the file
-   contents as a byte array, a field `contents_str` is populated with the file
-   contents as a string, and a couple of other
-   [standard fields](#standard-fields) are recognized.
+   By default, a field `relative_path` (if any) is populated with the file path,
+   a field `contents_bytes` is populated with the raw file contents, and a
+   couple of other [standard fields](#standard-fields) are recognized by name.
 
    However, you can [customize](#custom-file-data) this to include arbitrary
    file data.
