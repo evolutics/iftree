@@ -341,9 +341,12 @@
 //!
 //! Path patterns are interpreted as relative to this folder.
 //!
-//! If this path itself is relative, then it is joined to the folder given by the
-//! environment variable `CARGO_MANIFEST_DIR`. That is, a relative path `x/y/z` has
-//! a full path `[CARGO_MANIFEST_DIR]/[base_folder]/x/y/z`.
+//! Unless this path is absolute, it is interpreted as relative to the folder given
+//! by the environment variable `CARGO_MANIFEST_DIR`. That is, a path pattern
+//! `x/y/z` resolves to `[CARGO_MANIFEST_DIR]/[base_folder]/x/y/z`.
+//!
+//! See the [`root_folder_variable` configuration](#root_folder_variable) to
+//! customize this.
 //!
 //! **Default**: `""`
 //!
@@ -375,12 +378,14 @@
 //! difference: you must use `x/y/*` instead of `x/y/` to include files in a folder
 //! `x/y/`; to also include subfolders (recursively), use `x/y/**`.
 //!
-//! Exclude hidden files with `!.*` as a pattern. Another common pattern is of the
-//! form `*.xyz` to include files with filename extension `xyz` only.
-//!
 //! By default, path patterns are relative to the environment variable
 //! `CARGO_MANIFEST_DIR`, which is the folder with your manifest (`Cargo.toml`). See
 //! the [`base_folder` configuration](#base_folder) to customize this.
+//!
+//! Common patterns:
+//!
+//! - Exclude hidden files: `!.*`
+//! - Include files with filename extension `xyz` only: `*.xyz`
 //!
 //! This is a **required** option without default.
 //!
@@ -389,8 +394,8 @@
 //!
 //! ## `root_folder_variable`
 //!
-//! The name of the environment variable to use as the root folder for the
-//! [`base_folder` configuration](#base_folder).
+//! An environment variable that is used to resolve a relative
+//! [`base_folder`](#base_folder) to an absolute path.
 //!
 //! The value of the environment variable should be an absolute path.
 //!
