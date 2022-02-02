@@ -130,6 +130,9 @@ fn main() {
    assert_eq!(base::my_assets::MY_FILE.contents_bytes, b"file contents");
    ```
 
+   You can disable the generation of `base::x::y::MY_FILE` variables via
+   [`template.identifiers` configuration](#templateidentifiers).
+
 ### Examples
 
 If you like to explore by example, there is an
@@ -232,7 +235,7 @@ When generating identifiers based on paths, names are sanitized. For example, a
 filename `404_not_found.md` is sanitized to an identifier `_404_NOT_FOUND_MD`.
 
 The sanitization process is designed to generate valid, conventional
-[Unicode identifiers](https://doc.rust-lang.org/reference/identifiers.html).
+[identifiers](https://doc.rust-lang.org/reference/identifiers.html).
 Essentially, it replaces invalid identifier characters by underscores `"_"` and
 adjusts the letter case to the context.
 
@@ -247,10 +250,6 @@ More precisely, these transformations are applied in order:
    `"_"` is prepended. The set of `XID_Start` characters in ASCII is `[A-Za-z]`.
 1. If the name is `"_"`, `"crate"`, `"self"`, `"Self"`, or `"super"`, then `"_"`
    is appended.
-
-Note that non-ASCII identifiers are only supported from Rust 1.53.0. For earlier
-versions, the sanitization here may generate invalid identifiers if you use
-non-ASCII paths, in which case you need to manually rename any affected files.
 
 ### Portable file paths
 
@@ -408,19 +407,19 @@ The value of the environment variable should be an absolute path.
 
 Whether to generate an identifier per file.
 
-Given a file `x/y/my_file`, a `static` variable `base::x::y::MY_FILE` is
+Given a file `x/y/my_file`, a static variable `base::x::y::MY_FILE` is
 generated, nested in modules for folders. Their root module is `base`, which
 represents the base folder.
 
 Each variable is a reference to the corresponding element in the `ASSETS` array.
 
 Generated identifiers are subject to [name sanitization](#name-sanitization).
-Because of this, there may be collisions in the generated code, causing an error
+Because of this, two files may map to the same identifier, causing an error
 about a name being defined multiple times. The code generation does not try to
 resolve such collisions automatically, as this would likely cause confusion
-about which identifier refers to which file. Instead, you need to manually
-rename any affected paths (assuming you need the generated identifiers at all –
-otherwise, you can just disable this with `template.identifiers = false`).
+about which identifier refers to which file. Instead, you need to rename any
+affected paths (but if have no use for the generated identifiers, you can just
+disable them with `template.identifiers = false`).
 
 **Default**: `true`
 
