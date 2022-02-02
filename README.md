@@ -40,7 +40,8 @@ Iftree:    any_macro!("my_files/**")
 
 ## Usage
 
-The following quick start shows the basic usage.
+Now that you know the why and the what, learn the how. The following quick start
+shows the basic usage.
 
 ### Quick start
 
