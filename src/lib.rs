@@ -211,8 +211,8 @@
 //!
 //! fn main() {
 //!     assert_eq!(base::my_assets::FILE_A.path, "my_assets/file_a");
-//!     assert_eq!(base::my_assets::FILE_B.path, "my_assets/file_b");
 //!     assert_eq!(base::my_assets::FILE_A.size_in_bytes, 20);
+//!     assert_eq!(base::my_assets::FILE_B.path, "my_assets/file_b");
 //! }
 //! ```
 //!
