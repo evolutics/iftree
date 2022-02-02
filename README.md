@@ -10,7 +10,8 @@ Include many files in your Rust code for self-contained binaries.
 - **Customizable**: associate any data with files.
 - Many [**examples**](https://github.com/evolutics/iftree/tree/main/examples),
   including [recipes](#recipes).
-- See also [**related projects**](#related-work).
+
+See also [**related projects**](#related-work).
 
 ![Test](https://github.com/evolutics/iftree/actions/workflows/test.yml/badge.svg)
 [![crates.io](https://img.shields.io/crates/v/iftree.svg)](https://crates.io/crates/iftree)
