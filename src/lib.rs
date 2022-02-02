@@ -144,8 +144,8 @@
 //! ## Standard fields
 //!
 //! When you use a subset of the following fields only, an initializer for your
-//! asset type is generated without further configuration. You can still override
-//! these field names with a [custom initializer](#templateinitializer).
+//! asset type is generated without further configuration. See
+//! [example](https://github.com/evolutics/iftree/blob/main/examples/basics_standard_fields.rs).
 //!
 //! - **`contents_bytes`**`: &'static [u8]`
 //!
@@ -182,9 +182,6 @@
 //!   File path relative to the base folder, which is the folder with your manifest
 //!   (`Cargo.toml`) by default. Path components are separated by a slash `/`,
 //!   independent of your platform.
-//!
-//! See
-//! [example](https://github.com/evolutics/iftree/blob/main/examples/basics_standard_fields.rs).
 //!
 //! ## Custom file data
 //!
