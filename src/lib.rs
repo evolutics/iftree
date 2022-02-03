@@ -118,18 +118,22 @@
 //!    However, you can [customize](#custom-file-data) this to include arbitrary
 //!    file data.
 //!
-//! 1. Now you can **access** your included file data via `ASSETS` array or via
-//!    `base::x::y::MY_FILE` variables. Example:
+//! 1. Now you can **access** your file data via the generated `ASSETS` array of
+//!    `MyAsset` instances. Example:
 //!
 //!    ```ignore
-//!    let asset_count = ASSETS.len();
-//!    println!("Number of assets: {asset_count}");
+//!    assert_eq!(ASSETS[0].relative_path, "my_assets/my_file");
+//!    assert_eq!(ASSETS[0].contents_bytes, b"file contents");
+//!    ```
+//!
+//!    Additionally, for each file `x/y/my_file`, a variable `base::x::y::MY_FILE`
+//!    of type `&MyAsset` is generated (unless disabled via
+//!    [`template.identifiers` configuration](#templateidentifiers)). Example:
+//!
+//!    ```ignore
 //!    assert_eq!(base::my_assets::MY_FILE.relative_path, "my_assets/my_file");
 //!    assert_eq!(base::my_assets::MY_FILE.contents_bytes, b"file contents");
 //!    ```
-//!
-//!    You can disable the generation of `base::x::y::MY_FILE` variables via
-//!    [`template.identifiers` configuration](#templateidentifiers).
 //!
 //! ## Examples
 //!
