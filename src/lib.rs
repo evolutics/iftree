@@ -416,8 +416,8 @@
 //! about a name being defined multiple times. The code generation does not try to
 //! resolve such collisions automatically, as this would likely cause confusion
 //! about which identifier refers to which file. Instead, you need to rename any
-//! affected paths (but if have no use for the generated identifiers, you can just
-//! disable them with `template.identifiers = false`).
+//! affected paths (but if you have no use for the generated identifiers, you can
+//! just disable them with `template.identifiers = false`).
 //!
 //! **Default**: `true`
 //!
