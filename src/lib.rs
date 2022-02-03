@@ -503,6 +503,7 @@
 //!
 //! - [Changelog](https://github.com/evolutics/iftree/blob/main/CHANGELOG.md)
 //! - [crates.io](https://crates.io/crates/iftree)
+//! - [Latest documentation](https://github.com/evolutics/iftree/blob/main/README.md)
 
 mod generate_view;
 mod go;
