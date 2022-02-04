@@ -508,4 +508,4 @@ See examples:
 ## Further resources
 
 - [Changelog](https://github.com/evolutics/iftree/blob/main/CHANGELOG.md)
-- [Latest documentation](https://github.com/evolutics/iftree/blob/main/README.md)
+- [Latest revision of this documentation](https://github.com/evolutics/iftree/blob/main/README.md)
