@@ -120,8 +120,8 @@ fn main() {
    However, you can [customize](#custom-file-data) this to include arbitrary
    file data.
 
-1. Now you can **access** your file data via the generated `ASSETS` array of
-   `MyAsset` instances. Example:
+1. Now you can **access** your file data via the generated `ASSETS` array.
+   Example:
 
    ```rust
    assert_eq!(ASSETS[0].relative_path, "my_assets/my_file");
@@ -129,8 +129,10 @@ fn main() {
    ```
 
    Additionally, for each file `x/y/my_file`, a variable `base::x::y::MY_FILE`
-   of type `&MyAsset` is generated (unless disabled via
-   [`template.identifiers` configuration](#templateidentifiers)). Example:
+   is generated (unless disabled via
+   [`template.identifiers` configuration](#templateidentifiers)). Such a
+   variable is a reference to the respective element of the `ASSETS` array.
+   Example:
 
    ```rust
    assert_eq!(base::my_assets::MY_FILE.relative_path, "my_assets/my_file");
@@ -415,7 +417,7 @@ Given a file `x/y/my_file`, a static variable `base::x::y::MY_FILE` is
 generated, nested in modules for folders. Their root module is `base`, which
 represents the base folder.
 
-Each variable is a reference to the corresponding element in the `ASSETS` array.
+Each variable is a reference to the corresponding element of the `ASSETS` array.
 
 Generated identifiers are subject to [name sanitization](#name-sanitization).
 Because of this, two files may map to the same identifier, causing an error
