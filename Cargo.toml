@@ -24,7 +24,7 @@ toml = "0.5"
 unicode-xid = "0.2"
 
 [dev-dependencies]
-actix-web = "3.3"
+actix-web = "4.0"
 async-std = { version = "1.10", features = ["attributes"] }
 handlebars = "4.2"
 include-flate = { version = "0.1", features = ["stable"] }
