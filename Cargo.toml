@@ -24,7 +24,7 @@ toml = "0.5"
 unicode-xid = "0.2"
 
 [dev-dependencies]
-actix-web = "3.3"
+actix-web = "4.0"
 async-std = { version = "1.10", features = ["attributes"] }
 handlebars = "4.2"
 include-flate = { version = "0.1", features = ["stable"] }
@@ -36,5 +36,5 @@ rocket = "0.5.0-rc.1"
 sha2 = "0.10"
 tempfile = "3.3"
 tide = "0.16"
-tokio = { version = "1.16", features = ["full"] }
+tokio = { version = "1.17", features = ["full"] }
 warp = "0.3"

@@ -77,7 +77,7 @@ async fn get_asset(path: web::Path<String>) -> impl actix_web::Responder {
     match ASSET_MAP.get(&*path) {
         None => actix_web::HttpResponse::NotFound().finish(),
         Some(asset) => actix_web::HttpResponse::Ok()
-            .content_type(&*asset.media_type)
+            .content_type(&**asset.media_type)
             .body(asset.contents),
     }
 }
