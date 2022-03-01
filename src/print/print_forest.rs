@@ -119,14 +119,13 @@ fn print_folder(context: &Context, name: &str, folder: &model::Folder) -> proc_m
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::array;
 
     #[test]
     fn handles_array() {
         let actual = main(
             &model::View {
                 type_: quote::format_ident!("Asset"),
-                forest: array::IntoIter::new([
+                forest: [
                     (
                         String::from('0'),
                         model::Tree::File(model::File {
@@ -137,18 +136,20 @@ mod tests {
                     (
                         String::from('1'),
                         model::Tree::Folder(model::Folder {
-                            forest: array::IntoIter::new([(
+                            forest: [(
                                 String::from('2'),
                                 model::Tree::File(model::File {
                                     relative_path: String::from("b/c"),
                                     ..model::stubs::file()
                                 }),
-                            )])
+                            )]
+                            .into_iter()
                             .collect(),
                             ..model::stubs::folder()
                         }),
                     ),
-                ])
+                ]
+                .into_iter()
                 .collect(),
                 ..model::stubs::view()
             },
@@ -192,7 +193,7 @@ mod tests {
             let actual = main(
                 &model::View {
                     type_: quote::format_ident!("Asset"),
-                    forest: array::IntoIter::new([
+                    forest: [
                         (
                             String::from('0'),
                             model::Tree::File(model::File {
@@ -209,7 +210,8 @@ mod tests {
                                 ..model::stubs::file()
                             }),
                         ),
-                    ])
+                    ]
+                    .into_iter()
                     .collect(),
                     ..model::stubs::view()
                 },
@@ -235,7 +237,7 @@ mod tests {
             let actual = main(
                 &model::View {
                     type_: quote::format_ident!("Asset"),
-                    forest: array::IntoIter::new([
+                    forest: [
                         (
                             String::from('0'),
                             model::Tree::File(model::File {
@@ -248,19 +250,20 @@ mod tests {
                             String::from('1'),
                             model::Tree::Folder(model::Folder {
                                 identifier: quote::format_ident!("b"),
-                                forest: array::IntoIter::new([
+                                forest: [
                                     (
                                         String::from('2'),
                                         model::Tree::Folder(model::Folder {
                                             identifier: quote::format_ident!("a"),
-                                            forest: array::IntoIter::new([(
+                                            forest: [(
                                                 String::from('3'),
                                                 model::Tree::File(model::File {
                                                     identifier: quote::format_ident!("B"),
                                                     index: 2,
                                                     ..model::stubs::file()
                                                 }),
-                                            )])
+                                            )]
+                                            .into_iter()
                                             .collect(),
                                         }),
                                     ),
@@ -272,11 +275,13 @@ mod tests {
                                             ..model::stubs::file()
                                         }),
                                     ),
-                                ])
+                                ]
+                                .into_iter()
                                 .collect(),
                             }),
                         ),
-                    ])
+                    ]
+                    .into_iter()
                     .collect(),
                     ..model::stubs::view()
                 },
@@ -316,7 +321,7 @@ mod tests {
         fn handles_with_options() {
             let actual = main(
                 &model::View {
-                    forest: array::IntoIter::new([
+                    forest: [
                         (
                             String::from('0'),
                             model::Tree::File(model::File {
@@ -330,12 +335,12 @@ mod tests {
                             String::from('1'),
                             model::Tree::Folder(model::Folder {
                                 identifier: quote::format_ident!("b"),
-                                forest: array::IntoIter::new([
+                                forest: [
                                     (
                                         String::from('2'),
                                         model::Tree::Folder(model::Folder {
                                             identifier: quote::format_ident!("a"),
-                                            forest: array::IntoIter::new([(
+                                            forest: [(
                                                 String::from('3'),
                                                 model::Tree::File(model::File {
                                                     identifier: quote::format_ident!("B"),
@@ -343,7 +348,8 @@ mod tests {
                                                     relative_path: String::from("b/a/b"),
                                                     absolute_path: String::from("/b/a/b"),
                                                 }),
-                                            )])
+                                            )]
+                                            .into_iter()
                                             .collect(),
                                         }),
                                     ),
@@ -356,11 +362,13 @@ mod tests {
                                             absolute_path: String::from("/b/c"),
                                         }),
                                     ),
-                                ])
+                                ]
+                                .into_iter()
                                 .collect(),
                             }),
                         ),
-                    ])
+                    ]
+                    .into_iter()
                     .collect(),
                     ..model::stubs::view()
                 },
@@ -396,11 +404,11 @@ mod tests {
         fn handles_without_visit_base() {
             let actual = main(
                 &model::View {
-                    forest: array::IntoIter::new([(
+                    forest: [(
                         String::from('0'),
                         model::Tree::Folder(model::Folder {
                             identifier: quote::format_ident!("a"),
-                            forest: array::IntoIter::new([(
+                            forest: [(
                                 String::from('1'),
                                 model::Tree::File(model::File {
                                     identifier: quote::format_ident!("B"),
@@ -408,10 +416,12 @@ mod tests {
                                     relative_path: String::from("a/b"),
                                     absolute_path: String::from("/a/b"),
                                 }),
-                            )])
+                            )]
+                            .into_iter()
                             .collect(),
                         }),
-                    )])
+                    )]
+                    .into_iter()
                     .collect(),
                     ..model::stubs::view()
                 },
@@ -438,11 +448,11 @@ mod tests {
         fn handles_without_visit_folder() {
             let actual = main(
                 &model::View {
-                    forest: array::IntoIter::new([(
+                    forest: [(
                         String::from('0'),
                         model::Tree::Folder(model::Folder {
                             identifier: quote::format_ident!("a"),
-                            forest: array::IntoIter::new([(
+                            forest: [(
                                 String::from('1'),
                                 model::Tree::File(model::File {
                                     identifier: quote::format_ident!("B"),
@@ -450,10 +460,12 @@ mod tests {
                                     relative_path: String::from("a/b"),
                                     absolute_path: String::from("/a/b"),
                                 }),
-                            )])
+                            )]
+                            .into_iter()
                             .collect(),
                         }),
-                    )])
+                    )]
+                    .into_iter()
                     .collect(),
                     ..model::stubs::view()
                 },

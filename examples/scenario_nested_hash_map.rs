@@ -1,5 +1,4 @@
 use once_cell::sync;
-use std::array;
 use std::collections;
 
 enum Tree {
@@ -10,7 +9,7 @@ enum Tree {
 macro_rules! visit_base {
     ($length:literal, $($contents:expr)*) => {
         static ASSETS: sync::Lazy<Tree> =
-            sync::Lazy::new(|| Tree::Folder(array::IntoIter::new([$($contents,)*]).collect()));
+            sync::Lazy::new(|| Tree::Folder([$($contents,)*].into_iter().collect()));
     };
 }
 
@@ -18,7 +17,7 @@ macro_rules! visit_folder {
     ($name:literal, $id:ident, $($contents:expr)*) => {
         (
             $name,
-            Tree::Folder(array::IntoIter::new([$($contents,)*]).collect()),
+            Tree::Folder([$($contents,)*].into_iter().collect()),
         )
     };
 }

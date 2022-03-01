@@ -1,5 +1,4 @@
 use crate::model;
-use std::array;
 use std::collections;
 
 pub fn main(
@@ -37,7 +36,7 @@ pub fn main(
 }
 
 fn get_standard_field_populators() -> collections::BTreeMap<syn::Ident, model::Populator> {
-    array::IntoIter::new([
+    [
         (
             quote::format_ident!("contents_bytes"),
             model::Populator::ContentsBytes,
@@ -55,7 +54,8 @@ fn get_standard_field_populators() -> collections::BTreeMap<syn::Ident, model::P
             quote::format_ident!("relative_path"),
             model::Populator::RelativePath,
         ),
-    ])
+    ]
+    .into_iter()
     .collect()
 }
 

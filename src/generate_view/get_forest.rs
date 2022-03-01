@@ -1,6 +1,5 @@
 use super::sanitize_name;
 use crate::model;
-use std::array;
 use std::iter;
 use std::path;
 
@@ -85,7 +84,7 @@ fn get_singleton_tree(reverse_path: Vec<String>, file: model::File, root: &str) 
     let mut tree = model::Tree::File(file);
 
     for (child, parent) in reverse_path.into_iter().zip(parents.into_iter()) {
-        let forest = array::IntoIter::new([(child, tree)]).collect();
+        let forest = [(child, tree)].into_iter().collect();
         tree = model::Tree::Folder(model::Folder {
             identifier: parent,
             forest,
@@ -144,7 +143,7 @@ mod tests {
         ]);
 
         let actual = actual.unwrap();
-        let expected = array::IntoIter::new([
+        let expected = [
             (
                 String::from('B'),
                 model::Tree::File(model::File {
@@ -163,7 +162,8 @@ mod tests {
                     absolute_path: String::from("/a/c"),
                 }),
             ),
-        ])
+        ]
+        .into_iter()
         .collect();
         assert_eq!(actual, expected);
     }
@@ -186,7 +186,7 @@ mod tests {
         ]);
 
         let actual = actual.unwrap();
-        let expected = array::IntoIter::new([
+        let expected = [
             (
                 String::from('a'),
                 model::Tree::File(model::File {
@@ -200,12 +200,12 @@ mod tests {
                 String::from('b'),
                 model::Tree::Folder(model::Folder {
                     identifier: quote::format_ident!("r#b"),
-                    forest: array::IntoIter::new([
+                    forest: [
                         (
                             String::from('a'),
                             model::Tree::Folder(model::Folder {
                                 identifier: quote::format_ident!("r#a"),
-                                forest: array::IntoIter::new([(
+                                forest: [(
                                     String::from('b'),
                                     model::Tree::File(model::File {
                                         identifier: quote::format_ident!("r#B"),
@@ -213,7 +213,8 @@ mod tests {
                                         relative_path: String::from("b/a/b"),
                                         absolute_path: String::from("/b/a/b"),
                                     }),
-                                )])
+                                )]
+                                .into_iter()
                                 .collect(),
                             }),
                         ),
@@ -226,11 +227,13 @@ mod tests {
                                 absolute_path: String::from("/b/c"),
                             }),
                         ),
-                    ])
+                    ]
+                    .into_iter()
                     .collect(),
                 }),
             ),
-        ])
+        ]
+        .into_iter()
         .collect();
         assert_eq!(actual, expected);
     }

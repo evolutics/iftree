@@ -13,35 +13,37 @@ pub fn main(forest: &model::Forest) -> usize {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::array;
 
     #[test]
     fn handles() {
         let actual = main(
-            &array::IntoIter::new([
+            &[
                 (String::from('0'), model::Tree::File(model::stubs::file())),
                 (
                     String::from('1'),
                     model::Tree::Folder(model::Folder {
-                        forest: array::IntoIter::new([
+                        forest: [
                             (
                                 String::from('2'),
                                 model::Tree::Folder(model::Folder {
-                                    forest: array::IntoIter::new([(
+                                    forest: [(
                                         String::from('3'),
                                         model::Tree::File(model::stubs::file()),
-                                    )])
+                                    )]
+                                    .into_iter()
                                     .collect(),
                                     ..model::stubs::folder()
                                 }),
                             ),
                             (String::from('4'), model::Tree::File(model::stubs::file())),
-                        ])
+                        ]
+                        .into_iter()
                         .collect(),
                         ..model::stubs::folder()
                     }),
                 ),
-            ])
+            ]
+            .into_iter()
             .collect(),
         );
 

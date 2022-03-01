@@ -21,7 +21,6 @@ pub fn main(item: proc_macro2::TokenStream, view: model::View) -> proc_macro2::T
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::array;
 
     #[test]
     fn handles() {
@@ -35,7 +34,7 @@ mod tests {
                     )),
                     model::Visitor::Identifiers,
                 ],
-                forest: array::IntoIter::new([(
+                forest: [(
                     String::from("a.b"),
                     model::Tree::File(model::File {
                         identifier: quote::format_ident!("A_B"),
@@ -43,7 +42,8 @@ mod tests {
                         absolute_path: String::from("/a.b"),
                         ..model::stubs::file()
                     }),
-                )])
+                )]
+                .into_iter()
                 .collect(),
                 debug: false,
             },

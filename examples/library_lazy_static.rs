@@ -1,11 +1,10 @@
-use std::array;
 use std::collections;
 
 macro_rules! visit_base {
     ($length:literal, $($contents:expr)*) => {
         lazy_static::lazy_static! {
             static ref ASSETS: collections::HashMap<&'static str, &'static str> =
-                array::IntoIter::new([$($contents,)*]).collect();
+                [$($contents,)*].into_iter().collect();
         }
     };
 }
