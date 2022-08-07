@@ -535,6 +535,7 @@ pub fn include_file_tree(
 
 #[cfg(test)]
 mod tests {
+    use std::fmt::Write;
     use std::fs;
 
     #[test]
@@ -621,7 +622,7 @@ mod tests {
                     } else {
                         line.replace("```ignore", "```rust")
                     };
-                    actual.push_str(&format!("{line}\n"));
+                    writeln!(actual, "{line}").unwrap();
                     is_code_block ^= line.starts_with("```");
                 }
             }
