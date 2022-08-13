@@ -21,7 +21,7 @@ pub enum Template {
     Visitors(Vec<CustomVisitor>),
 }
 
-#[derive(cmp::PartialEq, Debug)]
+#[derive(cmp::PartialEq, Debug, Eq)]
 pub struct Path(pub syn::Path);
 
 #[derive(serde::Deserialize)]

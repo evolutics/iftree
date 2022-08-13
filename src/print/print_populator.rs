@@ -38,7 +38,7 @@ pub fn main(populator: &model::Populator, context: &Context) -> proc_macro2::Tok
     }
 }
 
-#[derive(Clone, cmp::PartialEq, Debug)]
+#[derive(Clone, cmp::PartialEq, Debug, Eq)]
 pub struct Context<'a> {
     pub relative_path: &'a str,
     pub absolute_path: &'a str,

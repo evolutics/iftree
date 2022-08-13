@@ -4,7 +4,7 @@ use std::env;
 use std::path;
 use std::result;
 
-#[derive(Clone, cmp::PartialEq, Debug)]
+#[derive(Clone, cmp::PartialEq, Debug, Eq)]
 pub struct Configuration {
     pub paths: String,
     pub base_folder: path::PathBuf,
@@ -13,7 +13,7 @@ pub struct Configuration {
     pub debug: bool,
 }
 
-#[derive(Clone, cmp::PartialEq, Debug)]
+#[derive(Clone, cmp::PartialEq, Debug, Eq)]
 pub enum Template {
     Default {
         initializer: Option<syn::Path>,
@@ -22,20 +22,20 @@ pub enum Template {
     Visitors(Vec<CustomVisitor>),
 }
 
-#[derive(Clone, cmp::PartialEq, Debug)]
+#[derive(Clone, cmp::PartialEq, Debug, Eq)]
 pub struct CustomVisitor {
     pub visit_base: Option<syn::Path>,
     pub visit_folder: Option<syn::Path>,
     pub visit_file: syn::Path,
 }
 
-#[derive(Clone, cmp::PartialEq, Debug)]
+#[derive(Clone, cmp::PartialEq, Debug, Eq)]
 pub struct Type<T> {
     pub name: syn::Ident,
     pub structure: TypeStructure<T>,
 }
 
-#[derive(Clone, cmp::PartialEq, Debug)]
+#[derive(Clone, cmp::PartialEq, Debug, Eq)]
 pub enum TypeStructure<T> {
     Unit,
     TypeAlias(T),
@@ -43,7 +43,7 @@ pub enum TypeStructure<T> {
     TupleFields(Vec<T>),
 }
 
-#[derive(Clone, cmp::PartialEq, Debug)]
+#[derive(Clone, cmp::PartialEq, Debug, Eq)]
 pub struct Path {
     pub relative: Vec<String>,
     pub absolute: String,
@@ -57,20 +57,20 @@ pub struct View {
     pub debug: bool,
 }
 
-#[derive(Clone, cmp::PartialEq, Debug)]
+#[derive(Clone, cmp::PartialEq, Debug, Eq)]
 pub enum Visitor {
     Array(Initializer),
     Identifiers,
     Custom(CustomVisitor),
 }
 
-#[derive(Clone, cmp::PartialEq, Debug)]
+#[derive(Clone, cmp::PartialEq, Debug, Eq)]
 pub enum Initializer {
     Default(TypeStructure<Populator>),
     Macro(syn::Path),
 }
 
-#[derive(Clone, cmp::PartialEq, Debug)]
+#[derive(Clone, cmp::PartialEq, Debug, Eq)]
 pub enum Populator {
     ContentsBytes,
     ContentsStr,
@@ -87,7 +87,7 @@ pub enum Tree {
     Folder(Folder),
 }
 
-#[derive(Clone, cmp::PartialEq, Debug)]
+#[derive(Clone, cmp::PartialEq, Debug, Eq)]
 pub struct File {
     pub identifier: syn::Ident,
     pub index: usize,

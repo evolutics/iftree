@@ -1,7 +1,7 @@
 use std::cmp;
 
 #[iftree::include_file_tree("paths = '/examples/assets/**'")]
-#[derive(cmp::PartialEq, Debug)]
+#[derive(cmp::PartialEq, Debug, Eq)]
 pub struct Asset;
 
 fn main() {
