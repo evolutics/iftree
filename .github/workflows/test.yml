@@ -15,5 +15,5 @@ jobs:
           toolchain: stable
           override: true
       # See also https://github.com/actions-rs/meta/issues/21.
-      - uses: Swatinem/rust-cache@v1
+      - uses: Swatinem/rust-cache@v2
       - run: python scripts/test.py
