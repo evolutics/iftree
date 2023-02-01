@@ -1,6 +1,6 @@
 [package]
 name = "iftree"
-version = "1.0.3"
+version = "1.0.4"
 authors = ["Benjamin Fischer <benjamin.fischer@evolutics.info>"]
 edition = "2021"
 license = "MIT"
