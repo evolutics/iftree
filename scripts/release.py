@@ -22,7 +22,7 @@ def main():
         print(command)
 
     if arguments.is_real:
-        _check_with_user("Run above comands for real?")
+        _check_with_user("Run above commands for real?")
         for command in commands:
             subprocess.run(command, check=True)
 
