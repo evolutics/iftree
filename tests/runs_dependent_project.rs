@@ -25,14 +25,13 @@ fn arrange() -> tempfile::TempDir {
 
 fn arrange_manifest(dependent: &tempfile::TempDir) {
     let dependency = env::var("CARGO_MANIFEST_DIR").unwrap();
-    let dependency = toml::to_string(&dependency).unwrap();
     let contents = format!(
         "[package]
 name = 'dependent'
 version = '0.1.0'
 
 [dependencies]
-iftree = {{ path = {dependency} }}",
+iftree = {{ path = {dependency:?} }}",
     );
     fs::write(dependent.path().join("Cargo.toml"), contents).unwrap();
 }
