@@ -107,7 +107,7 @@ mod tests {
         #[test]
         fn handles_environment_variable() {
             let actual = main::Error::EnvironmentVariable {
-                name: String::from("ABC"),
+                name: "ABC".into(),
                 source: env::VarError::NotPresent,
             }
             .to_string();
@@ -120,8 +120,8 @@ mod tests {
         #[test]
         fn handles_ignore() {
             let actual = main::Error::Ignore(main::IgnoreError(ignore::Error::Glob {
-                glob: Some(String::from('[')),
-                err: String::from("abc"),
+                glob: Some('['.into()),
+                err: "abc".into(),
             }))
             .to_string();
 
@@ -156,7 +156,7 @@ use standard fields only (\"xy\", \"z\").";
 
         #[test]
         fn handles_path_invalid_unicode() {
-            let actual = main::Error::PathInvalidUnicode(path::PathBuf::from("a/b")).to_string();
+            let actual = main::Error::PathInvalidUnicode("a/b".into()).to_string();
 
             let expected = "Path is not valid Unicode, consider renaming it: \"a/b\"";
             assert_eq!(actual, expected);
@@ -175,7 +175,7 @@ use standard fields only (\"xy\", \"z\").";
         #[test]
         fn handles_unexpected_empty_relative_path() {
             let actual = main::Error::UnexpectedEmptyRelativePath {
-                absolute_path: path::PathBuf::from("/a"),
+                absolute_path: "/a".into(),
             }
             .to_string();
 
@@ -186,8 +186,7 @@ use standard fields only (\"xy\", \"z\").";
 
         #[test]
         fn handles_unexpected_path_collision() {
-            let actual =
-                main::Error::UnexpectedPathCollision(path::PathBuf::from("a/b")).to_string();
+            let actual = main::Error::UnexpectedPathCollision("a/b".into()).to_string();
 
             let expected = "Unexpected path collision (consider reporting this): \"a/b\"";
             assert_eq!(actual, expected);

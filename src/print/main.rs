@@ -35,11 +35,11 @@ mod tests {
                     model::Visitor::Identifiers,
                 ],
                 forest: [(
-                    String::from("a.b"),
+                    "a.b".into(),
                     model::Tree::File(model::File {
                         identifier: quote::format_ident!("A_B"),
                         index: 0,
-                        absolute_path: String::from("/a.b"),
+                        absolute_path: "/a.b".into(),
                         ..model::stubs::file()
                     }),
                 )]

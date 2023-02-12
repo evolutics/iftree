@@ -11,8 +11,8 @@ fn main() {
 
     let template_processor = get_template_processor();
 
-    let mut data = collections::HashMap::new();
-    data.insert(String::from("name"), String::from("Frodo"));
+    let mut data = collections::HashMap::<String, String>::new();
+    data.insert("name".into(), "Frodo".into());
 
     assert_eq!(
         template_processor

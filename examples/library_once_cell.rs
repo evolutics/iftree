@@ -26,5 +26,5 @@ pub struct Asset {
 fn main() {
     use base::examples::assets;
 
-    assert_eq!(*assets::CREDITS_MD.first_word, Some(String::from("Boo")));
+    assert_eq!(*assets::CREDITS_MD.first_word, Some("Boo".into()));
 }

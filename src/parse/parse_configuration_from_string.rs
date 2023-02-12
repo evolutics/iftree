@@ -15,7 +15,7 @@ impl From<configuration::Configuration> for model::Configuration {
             base_folder: configuration.base_folder.unwrap_or_else(path::PathBuf::new),
             root_folder_variable: configuration
                 .root_folder_variable
-                .unwrap_or_else(|| String::from("CARGO_MANIFEST_DIR")),
+                .unwrap_or_else(|| "CARGO_MANIFEST_DIR".into()),
             template: match configuration.template {
                 None => model::Template::Default {
                     initializer: None,
@@ -65,9 +65,9 @@ mod tests {
 
         let actual = actual.unwrap();
         let expected = model::Configuration {
-            paths: String::from("/a/b/**"),
+            paths: "/a/b/**".into(),
             base_folder: path::PathBuf::new(),
-            root_folder_variable: String::from("CARGO_MANIFEST_DIR"),
+            root_folder_variable: "CARGO_MANIFEST_DIR".into(),
             template: model::Template::Default {
                 initializer: None,
                 identifiers: true,
@@ -92,9 +92,9 @@ debug = true
 
         let actual = actual.unwrap();
         let expected = model::Configuration {
-            paths: String::from("/my/assets/**"),
-            base_folder: path::PathBuf::from("my_base"),
-            root_folder_variable: String::from("MY_ROOT_FOLDER"),
+            paths: "/my/assets/**".into(),
+            base_folder: "my_base".into(),
+            root_folder_variable: "MY_ROOT_FOLDER".into(),
             template: model::Template::Default {
                 initializer: Some(syn::parse_str("my_macro").unwrap()),
                 identifiers: false,

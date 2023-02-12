@@ -27,7 +27,7 @@ fn get_root_folder(
             source,
         }),
 
-        Ok(folder) => Ok(path::PathBuf::from(folder)),
+        Ok(folder) => Ok(folder.into()),
     }
 }
 
@@ -65,16 +65,17 @@ mod tests {
         fn given_environment_variable_it_handles_concatenation() {
             let actual = main(
                 &model::Configuration {
-                    base_folder: path::PathBuf::from("b/c"),
-                    root_folder_variable: String::from("ROOT_FOLDER"),
+                    base_folder: "b/c".into(),
+                    root_folder_variable: "ROOT_FOLDER".into(),
                     ..model::stubs::configuration()
                 },
                 &|name| {
-                    Ok(String::from(if name == "ROOT_FOLDER" {
+                    Ok((if name == "ROOT_FOLDER" {
                         "/a"
                     } else {
                         unreachable!()
-                    }))
+                    })
+                    .into())
                 },
             );
 
@@ -87,8 +88,8 @@ mod tests {
         fn given_no_such_environment_variable_it_errs() {
             let actual = main(
                 &model::Configuration {
-                    base_folder: path::PathBuf::from("a/b"),
-                    root_folder_variable: String::from("ROOT_FOLDER"),
+                    base_folder: "a/b".into(),
+                    root_folder_variable: "ROOT_FOLDER".into(),
                     ..model::stubs::configuration()
                 },
                 &|_| Err(env::VarError::NotPresent),
@@ -96,7 +97,7 @@ mod tests {
 
             let actual = actual.unwrap_err();
             let expected = model::Error::EnvironmentVariable {
-                name: String::from("ROOT_FOLDER"),
+                name: "ROOT_FOLDER".into(),
                 source: env::VarError::NotPresent,
             };
             assert_eq!(actual, expected);

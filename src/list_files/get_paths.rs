@@ -22,7 +22,7 @@ fn get_path_components(path: &path::Path) -> model::Result<Vec<String>> {
     path.iter()
         .map(|component| match component.to_str() {
             None => Err(model::Error::PathInvalidUnicode(path.to_path_buf())),
-            Some(string) => Ok(String::from(string)),
+            Some(string) => Ok(string.into()),
         })
         .collect()
 }
@@ -30,7 +30,7 @@ fn get_path_components(path: &path::Path) -> model::Result<Vec<String>> {
 fn get_path_string(path: &path::Path) -> model::Result<String> {
     match path.to_str() {
         None => Err(model::Error::PathInvalidUnicode(path.to_path_buf())),
-        Some(string) => Ok(String::from(string)),
+        Some(string) => Ok(string.into()),
     }
 }
 
@@ -40,23 +40,17 @@ mod tests {
 
     #[test]
     fn handles() {
-        let actual = main(
-            path::PathBuf::from("/a/b"),
-            vec![
-                path::PathBuf::from("/a/b/c"),
-                path::PathBuf::from("/a/b/a/b"),
-            ],
-        );
+        let actual = main("/a/b".into(), vec!["/a/b/c".into(), "/a/b/a/b".into()]);
 
         let actual = actual.unwrap();
         let expected = vec![
             model::Path {
-                relative: vec![String::from('c')],
-                absolute: String::from("/a/b/c"),
+                relative: vec!['c'.into()],
+                absolute: "/a/b/c".into(),
             },
             model::Path {
-                relative: vec![String::from('a'), String::from('b')],
-                absolute: String::from("/a/b/a/b"),
+                relative: vec!['a'.into(), 'b'.into()],
+                absolute: "/a/b/a/b".into(),
             },
         ];
         assert_eq!(actual, expected);

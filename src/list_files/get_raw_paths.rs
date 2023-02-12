@@ -80,7 +80,7 @@ mod tests {
     fn handles_single_path() {
         let actual = main(
             &model::Configuration {
-                paths: String::from("/examples/assets/**"),
+                paths: "/examples/assets/**".into(),
                 ..model::stubs::configuration()
             },
             path::Path::new("."),
@@ -88,14 +88,14 @@ mod tests {
 
         let mut actual = actual.unwrap();
         actual.sort();
-        let expected = vec![
-            path::PathBuf::from("./examples/assets/.env"),
-            path::PathBuf::from("./examples/assets/configuration/menu.json"),
-            path::PathBuf::from("./examples/assets/configuration/translations.csv"),
-            path::PathBuf::from("./examples/assets/credits.md"),
-            path::PathBuf::from("./examples/assets/world/levels/tutorial.json"),
-            path::PathBuf::from("./examples/assets/world/physical_constants.json"),
-        ];
+        let expected = Vec::<path::PathBuf>::from([
+            "./examples/assets/.env".into(),
+            "./examples/assets/configuration/menu.json".into(),
+            "./examples/assets/configuration/translations.csv".into(),
+            "./examples/assets/credits.md".into(),
+            "./examples/assets/world/levels/tutorial.json".into(),
+            "./examples/assets/world/physical_constants.json".into(),
+        ]);
         assert_eq!(actual, expected);
     }
 
@@ -103,10 +103,9 @@ mod tests {
     fn handles_multiple_paths() {
         let actual = main(
             &model::Configuration {
-                paths: String::from(
-                    "/examples/assets/configuration/**
-/examples/assets/world/**",
-                ),
+                paths: "/examples/assets/configuration/**
+/examples/assets/world/**"
+                    .into(),
                 ..model::stubs::configuration()
             },
             path::Path::new("."),
@@ -114,12 +113,12 @@ mod tests {
 
         let mut actual = actual.unwrap();
         actual.sort();
-        let expected = vec![
-            path::PathBuf::from("./examples/assets/configuration/menu.json"),
-            path::PathBuf::from("./examples/assets/configuration/translations.csv"),
-            path::PathBuf::from("./examples/assets/world/levels/tutorial.json"),
-            path::PathBuf::from("./examples/assets/world/physical_constants.json"),
-        ];
+        let expected = Vec::<path::PathBuf>::from([
+            "./examples/assets/configuration/menu.json".into(),
+            "./examples/assets/configuration/translations.csv".into(),
+            "./examples/assets/world/levels/tutorial.json".into(),
+            "./examples/assets/world/physical_constants.json".into(),
+        ]);
         assert_eq!(actual, expected);
     }
 
@@ -127,10 +126,9 @@ mod tests {
     fn handles_negated_patterns() {
         let actual = main(
             &model::Configuration {
-                paths: String::from(
-                    "/examples/assets/**/*.json
-!/examples/assets/world/levels/",
-                ),
+                paths: "/examples/assets/**/*.json
+!/examples/assets/world/levels/"
+                    .into(),
                 ..model::stubs::configuration()
             },
             path::Path::new("."),
@@ -138,10 +136,10 @@ mod tests {
 
         let mut actual = actual.unwrap();
         actual.sort();
-        let expected = vec![
-            path::PathBuf::from("./examples/assets/configuration/menu.json"),
-            path::PathBuf::from("./examples/assets/world/physical_constants.json"),
-        ];
+        let expected = Vec::<path::PathBuf>::from([
+            "./examples/assets/configuration/menu.json".into(),
+            "./examples/assets/world/physical_constants.json".into(),
+        ]);
         assert_eq!(actual, expected);
     }
 
@@ -149,10 +147,9 @@ mod tests {
     fn handles_without_hidden_files() {
         let actual = main(
             &model::Configuration {
-                paths: String::from(
-                    "/examples/assets/*
-!.*",
-                ),
+                paths: "/examples/assets/*
+!.*"
+                .into(),
                 ..model::stubs::configuration()
             },
             path::Path::new("."),
@@ -160,7 +157,7 @@ mod tests {
 
         let mut actual = actual.unwrap();
         actual.sort();
-        let expected = vec![path::PathBuf::from("./examples/assets/credits.md")];
+        let expected = Vec::<path::PathBuf>::from(["./examples/assets/credits.md".into()]);
         assert_eq!(actual, expected);
     }
 }

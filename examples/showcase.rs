@@ -17,7 +17,7 @@ macro_rules! initialize {
             // Here we guess the media (MIME) type based on the file path.
             media_type: sync::Lazy::new(|| {
                 let media_type = mime_guess::from_path($relative_path).first_or_octet_stream();
-                String::from(media_type.essence_str())
+                media_type.essence_str().into()
             }),
 
             contents: include_str!($absolute_path),

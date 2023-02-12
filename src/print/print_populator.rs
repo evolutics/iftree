@@ -13,9 +13,9 @@ pub fn main(populator: &model::Populator, context: &Context) -> proc_macro2::Tok
         model::Populator::GetBytes => quote::quote! {{
             fn get() -> std::borrow::Cow<'static, [u8]> {
                 if cfg!(debug_assertions) {
-                    std::borrow::Cow::from(std::fs::read(#absolute_path).unwrap())
+                    std::fs::read(#absolute_path).unwrap().into()
                 } else {
-                    std::borrow::Cow::from(&include_bytes!(#absolute_path)[..])
+                    (&include_bytes!(#absolute_path)[..]).into()
                 }
             }
 
@@ -25,9 +25,9 @@ pub fn main(populator: &model::Populator, context: &Context) -> proc_macro2::Tok
         model::Populator::GetStr => quote::quote! {{
             fn get() -> std::borrow::Cow<'static, str> {
                 if cfg!(debug_assertions) {
-                    std::borrow::Cow::from(std::fs::read_to_string(#absolute_path).unwrap())
+                    std::fs::read_to_string(#absolute_path).unwrap().into()
                 } else {
-                    std::borrow::Cow::from(include_str!(#absolute_path))
+                    include_str!(#absolute_path).into()
                 }
             }
 
@@ -104,9 +104,9 @@ mod tests {
         let expected = quote::quote! {{
             fn get() -> std::borrow::Cow<'static, [u8]> {
                 if cfg!(debug_assertions) {
-                    std::borrow::Cow::from(std::fs::read("/a/b").unwrap())
+                    std::fs::read("/a/b").unwrap().into()
                 } else {
-                    std::borrow::Cow::from(&include_bytes!("/a/b")[..])
+                    (&include_bytes!("/a/b")[..]).into()
                 }
             }
 
@@ -130,9 +130,9 @@ mod tests {
         let expected = quote::quote! {{
             fn get() -> std::borrow::Cow<'static, str> {
                 if cfg!(debug_assertions) {
-                    std::borrow::Cow::from(std::fs::read_to_string("/a/b").unwrap())
+                    std::fs::read_to_string("/a/b").unwrap().into()
                 } else {
-                    std::borrow::Cow::from(include_str!("/a/b"))
+                    include_str!("/a/b").into()
                 }
             }
 

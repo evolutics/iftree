@@ -1,7 +1,6 @@
 use super::sanitize_name;
 use crate::model;
 use std::iter;
-use std::path;
 
 pub fn main(paths: Vec<model::Path>) -> model::Result<model::Forest> {
     let mut forest = model::Forest::new();
@@ -19,7 +18,7 @@ pub fn main(paths: Vec<model::Path>) -> model::Result<model::Forest> {
 fn add_path(forest: &mut model::Forest, path: model::Path) -> model::Result<()> {
     match path.relative.last() {
         None => Err(model::Error::UnexpectedEmptyRelativePath {
-            absolute_path: path::PathBuf::from(path.absolute),
+            absolute_path: path.absolute.into(),
         }),
 
         Some(filename) => {
@@ -49,9 +48,9 @@ fn add_file(
     file: model::File,
 ) -> model::Result<()> {
     match reverse_path.pop() {
-        None => Err(model::Error::UnexpectedPathCollision(path::PathBuf::from(
-            file.relative_path,
-        ))),
+        None => Err(model::Error::UnexpectedPathCollision(
+            file.relative_path.into(),
+        )),
 
         Some(name) => match parent.get_mut(&name) {
             None => {
@@ -61,7 +60,7 @@ fn add_file(
             }
 
             Some(model::Tree::File(_)) => Err(model::Error::UnexpectedPathCollision(
-                path::PathBuf::from(file.relative_path),
+                file.relative_path.into(),
             )),
 
             Some(model::Tree::Folder(model::Folder { forest, .. })) => {
@@ -133,33 +132,33 @@ mod tests {
     fn handles_files() {
         let actual = main(vec![
             model::Path {
-                relative: vec![String::from('B')],
-                absolute: String::from("/a/B"),
+                relative: vec!['B'.into()],
+                absolute: "/a/B".into(),
             },
             model::Path {
-                relative: vec![String::from('c')],
-                absolute: String::from("/a/c"),
+                relative: vec!['c'.into()],
+                absolute: "/a/c".into(),
             },
         ]);
 
         let actual = actual.unwrap();
         let expected = [
             (
-                String::from('B'),
+                'B'.into(),
                 model::Tree::File(model::File {
                     identifier: quote::format_ident!("r#B"),
                     index: 0,
-                    relative_path: String::from('B'),
-                    absolute_path: String::from("/a/B"),
+                    relative_path: 'B'.into(),
+                    absolute_path: "/a/B".into(),
                 }),
             ),
             (
-                String::from('c'),
+                'c'.into(),
                 model::Tree::File(model::File {
                     identifier: quote::format_ident!("r#C"),
                     index: 1,
-                    relative_path: String::from('c'),
-                    absolute_path: String::from("/a/c"),
+                    relative_path: 'c'.into(),
+                    absolute_path: "/a/c".into(),
                 }),
             ),
         ]
@@ -172,46 +171,46 @@ mod tests {
     fn handles_folders() {
         let actual = main(vec![
             model::Path {
-                relative: vec![String::from('a')],
-                absolute: String::from("/a"),
+                relative: vec!['a'.into()],
+                absolute: "/a".into(),
             },
             model::Path {
-                relative: vec![String::from('b'), String::from('a'), String::from('b')],
-                absolute: String::from("/b/a/b"),
+                relative: vec!['b'.into(), 'a'.into(), 'b'.into()],
+                absolute: "/b/a/b".into(),
             },
             model::Path {
-                relative: vec![String::from('b'), String::from('c')],
-                absolute: String::from("/b/c"),
+                relative: vec!['b'.into(), 'c'.into()],
+                absolute: "/b/c".into(),
             },
         ]);
 
         let actual = actual.unwrap();
         let expected = [
             (
-                String::from('a'),
+                'a'.into(),
                 model::Tree::File(model::File {
                     identifier: quote::format_ident!("r#A"),
                     index: 0,
-                    relative_path: String::from('a'),
-                    absolute_path: String::from("/a"),
+                    relative_path: 'a'.into(),
+                    absolute_path: "/a".into(),
                 }),
             ),
             (
-                String::from('b'),
+                'b'.into(),
                 model::Tree::Folder(model::Folder {
                     identifier: quote::format_ident!("r#b"),
                     forest: [
                         (
-                            String::from('a'),
+                            'a'.into(),
                             model::Tree::Folder(model::Folder {
                                 identifier: quote::format_ident!("r#a"),
                                 forest: [(
-                                    String::from('b'),
+                                    'b'.into(),
                                     model::Tree::File(model::File {
                                         identifier: quote::format_ident!("r#B"),
                                         index: 1,
-                                        relative_path: String::from("b/a/b"),
-                                        absolute_path: String::from("/b/a/b"),
+                                        relative_path: "b/a/b".into(),
+                                        absolute_path: "/b/a/b".into(),
                                     }),
                                 )]
                                 .into_iter()
@@ -219,12 +218,12 @@ mod tests {
                             }),
                         ),
                         (
-                            String::from('c'),
+                            'c'.into(),
                             model::Tree::File(model::File {
                                 identifier: quote::format_ident!("r#C"),
                                 index: 2,
-                                relative_path: String::from("b/c"),
-                                absolute_path: String::from("/b/c"),
+                                relative_path: "b/c".into(),
+                                absolute_path: "/b/c".into(),
                             }),
                         ),
                     ]
@@ -242,12 +241,12 @@ mod tests {
     fn given_empty_relative_path_it_errs() {
         let actual = main(vec![model::Path {
             relative: vec![],
-            absolute: String::from("/a/b"),
+            absolute: "/a/b".into(),
         }]);
 
         let actual = actual.unwrap_err();
         let expected = model::Error::UnexpectedEmptyRelativePath {
-            absolute_path: path::PathBuf::from("/a/b"),
+            absolute_path: "/a/b".into(),
         };
         assert_eq!(actual, expected);
     }
@@ -256,17 +255,17 @@ mod tests {
     fn given_path_collision_it_errs() {
         let actual = main(vec![
             model::Path {
-                relative: vec![String::from('a'), String::from('b')],
+                relative: vec!['a'.into(), 'b'.into()],
                 ..model::stubs::path()
             },
             model::Path {
-                relative: vec![String::from('a'), String::from('b')],
+                relative: vec!['a'.into(), 'b'.into()],
                 ..model::stubs::path()
             },
         ]);
 
         let actual = actual.unwrap_err();
-        let expected = model::Error::UnexpectedPathCollision(path::PathBuf::from("a/b"));
+        let expected = model::Error::UnexpectedPathCollision("a/b".into());
         assert_eq!(actual, expected);
     }
 }

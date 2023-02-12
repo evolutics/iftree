@@ -127,19 +127,19 @@ mod tests {
                 type_: quote::format_ident!("Asset"),
                 forest: [
                     (
-                        String::from('0'),
+                        '0'.into(),
                         model::Tree::File(model::File {
-                            relative_path: String::from('a'),
+                            relative_path: 'a'.into(),
                             ..model::stubs::file()
                         }),
                     ),
                     (
-                        String::from('1'),
+                        '1'.into(),
                         model::Tree::Folder(model::Folder {
                             forest: [(
-                                String::from('2'),
+                                '2'.into(),
                                 model::Tree::File(model::File {
-                                    relative_path: String::from("b/c"),
+                                    relative_path: "b/c".into(),
                                     ..model::stubs::file()
                                 }),
                             )]
@@ -195,7 +195,7 @@ mod tests {
                     type_: quote::format_ident!("Asset"),
                     forest: [
                         (
-                            String::from('0'),
+                            '0'.into(),
                             model::Tree::File(model::File {
                                 identifier: quote::format_ident!("A"),
                                 index: 1,
@@ -203,7 +203,7 @@ mod tests {
                             }),
                         ),
                         (
-                            String::from('1'),
+                            '1'.into(),
                             model::Tree::File(model::File {
                                 identifier: quote::format_ident!("BC"),
                                 index: 0,
@@ -239,7 +239,7 @@ mod tests {
                     type_: quote::format_ident!("Asset"),
                     forest: [
                         (
-                            String::from('0'),
+                            '0'.into(),
                             model::Tree::File(model::File {
                                 identifier: quote::format_ident!("A"),
                                 index: 0,
@@ -247,16 +247,16 @@ mod tests {
                             }),
                         ),
                         (
-                            String::from('1'),
+                            '1'.into(),
                             model::Tree::Folder(model::Folder {
                                 identifier: quote::format_ident!("b"),
                                 forest: [
                                     (
-                                        String::from('2'),
+                                        '2'.into(),
                                         model::Tree::Folder(model::Folder {
                                             identifier: quote::format_ident!("a"),
                                             forest: [(
-                                                String::from('3'),
+                                                '3'.into(),
                                                 model::Tree::File(model::File {
                                                     identifier: quote::format_ident!("B"),
                                                     index: 2,
@@ -268,7 +268,7 @@ mod tests {
                                         }),
                                     ),
                                     (
-                                        String::from('4'),
+                                        '4'.into(),
                                         model::Tree::File(model::File {
                                             identifier: quote::format_ident!("C"),
                                             index: 1,
@@ -323,30 +323,30 @@ mod tests {
                 &model::View {
                     forest: [
                         (
-                            String::from('0'),
+                            '0'.into(),
                             model::Tree::File(model::File {
                                 identifier: quote::format_ident!("A"),
                                 index: 0,
-                                relative_path: String::from('a'),
-                                absolute_path: String::from("/a"),
+                                relative_path: 'a'.into(),
+                                absolute_path: "/a".into(),
                             }),
                         ),
                         (
-                            String::from('1'),
+                            '1'.into(),
                             model::Tree::Folder(model::Folder {
                                 identifier: quote::format_ident!("b"),
                                 forest: [
                                     (
-                                        String::from('2'),
+                                        '2'.into(),
                                         model::Tree::Folder(model::Folder {
                                             identifier: quote::format_ident!("a"),
                                             forest: [(
-                                                String::from('3'),
+                                                '3'.into(),
                                                 model::Tree::File(model::File {
                                                     identifier: quote::format_ident!("B"),
                                                     index: 2,
-                                                    relative_path: String::from("b/a/b"),
-                                                    absolute_path: String::from("/b/a/b"),
+                                                    relative_path: "b/a/b".into(),
+                                                    absolute_path: "/b/a/b".into(),
                                                 }),
                                             )]
                                             .into_iter()
@@ -354,12 +354,12 @@ mod tests {
                                         }),
                                     ),
                                     (
-                                        String::from('4'),
+                                        '4'.into(),
                                         model::Tree::File(model::File {
                                             identifier: quote::format_ident!("C"),
                                             index: 1,
-                                            relative_path: String::from("b/c"),
-                                            absolute_path: String::from("/b/c"),
+                                            relative_path: "b/c".into(),
+                                            absolute_path: "/b/c".into(),
                                         }),
                                     ),
                                 ]
@@ -405,16 +405,16 @@ mod tests {
             let actual = main(
                 &model::View {
                     forest: [(
-                        String::from('0'),
+                        '0'.into(),
                         model::Tree::Folder(model::Folder {
                             identifier: quote::format_ident!("a"),
                             forest: [(
-                                String::from('1'),
+                                '1'.into(),
                                 model::Tree::File(model::File {
                                     identifier: quote::format_ident!("B"),
                                     index: 0,
-                                    relative_path: String::from("a/b"),
-                                    absolute_path: String::from("/a/b"),
+                                    relative_path: "a/b".into(),
+                                    absolute_path: "/a/b".into(),
                                 }),
                             )]
                             .into_iter()
@@ -449,16 +449,16 @@ mod tests {
             let actual = main(
                 &model::View {
                     forest: [(
-                        String::from('0'),
+                        '0'.into(),
                         model::Tree::Folder(model::Folder {
                             identifier: quote::format_ident!("a"),
                             forest: [(
-                                String::from('1'),
+                                '1'.into(),
                                 model::Tree::File(model::File {
                                     identifier: quote::format_ident!("B"),
                                     index: 0,
-                                    relative_path: String::from("a/b"),
-                                    absolute_path: String::from("/a/b"),
+                                    relative_path: "a/b".into(),
+                                    absolute_path: "/a/b".into(),
                                 }),
                             )]
                             .into_iter()

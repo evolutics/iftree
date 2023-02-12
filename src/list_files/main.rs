@@ -19,15 +19,15 @@ mod tests {
     #[test]
     fn handles() {
         let actual = main(&model::Configuration {
-            paths: String::from("/assets/*.md"),
-            base_folder: path::PathBuf::from("examples"),
-            root_folder_variable: String::from("CARGO_MANIFEST_DIR"),
+            paths: "/assets/*.md".into(),
+            base_folder: "examples".into(),
+            root_folder_variable: "CARGO_MANIFEST_DIR".into(),
             ..model::stubs::configuration()
         });
 
         let actual = actual.unwrap();
         let expected = vec![model::Path {
-            relative: vec![String::from("assets"), String::from("credits.md")],
+            relative: vec!["assets".into(), "credits.md".into()],
             absolute: path::PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap())
                 .join("examples")
                 .join("assets")

@@ -132,9 +132,9 @@ pub mod stubs {
 
     pub fn configuration() -> Configuration {
         Configuration {
-            paths: String::from("!*"),
-            base_folder: path::PathBuf::from("foo"),
-            root_folder_variable: String::from("BAR"),
+            paths: "!*".into(),
+            base_folder: "foo".into(),
+            root_folder_variable: "BAR".into(),
             template: Template::Visitors(vec![]),
             debug: false,
         }
@@ -153,8 +153,8 @@ pub mod stubs {
 
     pub fn path() -> Path {
         Path {
-            relative: vec![String::from("bar")],
-            absolute: String::from("/foo/bar"),
+            relative: vec!["bar".into()],
+            absolute: "/foo/bar".into(),
         }
     }
 
@@ -171,8 +171,8 @@ pub mod stubs {
         File {
             identifier: quote::format_ident!("BAR"),
             index: 123,
-            relative_path: String::from("bar"),
-            absolute_path: String::from("/foo/bar"),
+            relative_path: "bar".into(),
+            absolute_path: "/foo/bar".into(),
         }
     }
 

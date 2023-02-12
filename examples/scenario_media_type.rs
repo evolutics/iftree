@@ -5,7 +5,7 @@ macro_rules! initialize {
         Asset {
             media_type: sync::Lazy::new(|| {
                 let media_type = mime_guess::from_path($relative_path).first_or_octet_stream();
-                String::from(media_type.essence_str())
+                media_type.essence_str().into()
             }),
         }
     };
