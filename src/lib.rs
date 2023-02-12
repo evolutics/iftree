@@ -524,7 +524,7 @@ pub fn include_file_tree(
     item: proc_macro::TokenStream,
 ) -> proc_macro::TokenStream {
     let configuration = syn::parse_macro_input!(parameters);
-    let item2 = proc_macro2::TokenStream::from(item.clone());
+    let item2 = item.clone().into();
     let type_ = syn::parse_macro_input!(item);
 
     match go::main(configuration, item2, type_) {

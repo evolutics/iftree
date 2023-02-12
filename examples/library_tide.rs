@@ -23,7 +23,7 @@ async fn get_asset(request: tide::Request<()>) -> tide::Result {
         // For a more efficient lookup, see the `scenario_hash_map` example.
         match ASSETS.iter().position(|asset| asset.relative_path == path) {
             None => tide::Response::new(tide::StatusCode::NotFound),
-            Some(index) => tide::Response::from(ASSETS[index].contents_str),
+            Some(index) => ASSETS[index].contents_str.into(),
         },
     )
 }

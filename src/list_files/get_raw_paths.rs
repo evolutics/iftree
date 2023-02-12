@@ -9,9 +9,9 @@ pub fn main(
     iterate_entries(configuration, base_folder)?
         .into_iter()
         .filter_map(|entry| match entry {
-            Err(error) => Some(Err(model::Error::from(error))),
+            Err(error) => Some(Err(error.into())),
             Ok(entry) => match entry.metadata() {
-                Err(error) => Some(Err(model::Error::from(error))),
+                Err(error) => Some(Err(error.into())),
                 Ok(metadata) => {
                     if metadata.is_dir() {
                         None
