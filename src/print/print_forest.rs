@@ -127,17 +127,17 @@ mod tests {
                 type_: quote::format_ident!("Asset"),
                 forest: [
                     (
-                        '0'.into(),
+                        "0".into(),
                         model::Tree::File(model::File {
-                            relative_path: 'a'.into(),
+                            relative_path: "a".into(),
                             ..model::stubs::file()
                         }),
                     ),
                     (
-                        '1'.into(),
+                        "1".into(),
                         model::Tree::Folder(model::Folder {
                             forest: [(
-                                '2'.into(),
+                                "2".into(),
                                 model::Tree::File(model::File {
                                     relative_path: "b/c".into(),
                                     ..model::stubs::file()
@@ -195,7 +195,7 @@ mod tests {
                     type_: quote::format_ident!("Asset"),
                     forest: [
                         (
-                            '0'.into(),
+                            "0".into(),
                             model::Tree::File(model::File {
                                 identifier: quote::format_ident!("A"),
                                 index: 1,
@@ -203,7 +203,7 @@ mod tests {
                             }),
                         ),
                         (
-                            '1'.into(),
+                            "1".into(),
                             model::Tree::File(model::File {
                                 identifier: quote::format_ident!("BC"),
                                 index: 0,
@@ -239,7 +239,7 @@ mod tests {
                     type_: quote::format_ident!("Asset"),
                     forest: [
                         (
-                            '0'.into(),
+                            "0".into(),
                             model::Tree::File(model::File {
                                 identifier: quote::format_ident!("A"),
                                 index: 0,
@@ -247,16 +247,16 @@ mod tests {
                             }),
                         ),
                         (
-                            '1'.into(),
+                            "1".into(),
                             model::Tree::Folder(model::Folder {
                                 identifier: quote::format_ident!("b"),
                                 forest: [
                                     (
-                                        '2'.into(),
+                                        "2".into(),
                                         model::Tree::Folder(model::Folder {
                                             identifier: quote::format_ident!("a"),
                                             forest: [(
-                                                '3'.into(),
+                                                "3".into(),
                                                 model::Tree::File(model::File {
                                                     identifier: quote::format_ident!("B"),
                                                     index: 2,
@@ -268,7 +268,7 @@ mod tests {
                                         }),
                                     ),
                                     (
-                                        '4'.into(),
+                                        "4".into(),
                                         model::Tree::File(model::File {
                                             identifier: quote::format_ident!("C"),
                                             index: 1,
@@ -323,25 +323,25 @@ mod tests {
                 &model::View {
                     forest: [
                         (
-                            '0'.into(),
+                            "0".into(),
                             model::Tree::File(model::File {
                                 identifier: quote::format_ident!("A"),
                                 index: 0,
-                                relative_path: 'a'.into(),
+                                relative_path: "a".into(),
                                 absolute_path: "/a".into(),
                             }),
                         ),
                         (
-                            '1'.into(),
+                            "1".into(),
                             model::Tree::Folder(model::Folder {
                                 identifier: quote::format_ident!("b"),
                                 forest: [
                                     (
-                                        '2'.into(),
+                                        "2".into(),
                                         model::Tree::Folder(model::Folder {
                                             identifier: quote::format_ident!("a"),
                                             forest: [(
-                                                '3'.into(),
+                                                "3".into(),
                                                 model::Tree::File(model::File {
                                                     identifier: quote::format_ident!("B"),
                                                     index: 2,
@@ -354,7 +354,7 @@ mod tests {
                                         }),
                                     ),
                                     (
-                                        '4'.into(),
+                                        "4".into(),
                                         model::Tree::File(model::File {
                                             identifier: quote::format_ident!("C"),
                                             index: 1,
@@ -405,11 +405,11 @@ mod tests {
             let actual = main(
                 &model::View {
                     forest: [(
-                        '0'.into(),
+                        "0".into(),
                         model::Tree::Folder(model::Folder {
                             identifier: quote::format_ident!("a"),
                             forest: [(
-                                '1'.into(),
+                                "1".into(),
                                 model::Tree::File(model::File {
                                     identifier: quote::format_ident!("B"),
                                     index: 0,
@@ -449,11 +449,11 @@ mod tests {
             let actual = main(
                 &model::View {
                     forest: [(
-                        '0'.into(),
+                        "0".into(),
                         model::Tree::Folder(model::Folder {
                             identifier: quote::format_ident!("a"),
                             forest: [(
-                                '1'.into(),
+                                "1".into(),
                                 model::Tree::File(model::File {
                                     identifier: quote::format_ident!("B"),
                                     index: 0,

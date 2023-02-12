@@ -18,21 +18,21 @@ mod tests {
     fn handles() {
         let actual = main(
             &[
-                ('0'.into(), model::Tree::File(model::stubs::file())),
+                ("0".into(), model::Tree::File(model::stubs::file())),
                 (
-                    '1'.into(),
+                    "1".into(),
                     model::Tree::Folder(model::Folder {
                         forest: [
                             (
-                                '2'.into(),
+                                "2".into(),
                                 model::Tree::Folder(model::Folder {
-                                    forest: [('3'.into(), model::Tree::File(model::stubs::file()))]
+                                    forest: [("3".into(), model::Tree::File(model::stubs::file()))]
                                         .into_iter()
                                         .collect(),
                                     ..model::stubs::folder()
                                 }),
                             ),
-                            ('4'.into(), model::Tree::File(model::stubs::file())),
+                            ("4".into(), model::Tree::File(model::stubs::file())),
                         ]
                         .into_iter()
                         .collect(),

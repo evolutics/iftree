@@ -45,11 +45,11 @@ mod tests {
         let actual = actual.unwrap();
         let expected = vec![
             model::Path {
-                relative: vec!['c'.into()],
+                relative: vec!["c".into()],
                 absolute: "/a/b/c".into(),
             },
             model::Path {
-                relative: vec!['a'.into(), 'b'.into()],
+                relative: vec!["a".into(), "b".into()],
                 absolute: "/a/b/a/b".into(),
             },
         ];

@@ -37,7 +37,7 @@ mod tests {
                 ..model::stubs::type_()
             },
             vec![model::Path {
-                relative: vec!['b'.into()],
+                relative: vec!["b".into()],
                 absolute: "/a/b".into(),
             }],
         );
@@ -50,11 +50,11 @@ mod tests {
                 model::Visitor::Identifiers,
             ],
             forest: [(
-                'b'.into(),
+                "b".into(),
                 model::Tree::File(model::File {
                     identifier: quote::format_ident!("r#B"),
                     index: 0,
-                    relative_path: 'b'.into(),
+                    relative_path: "b".into(),
                     absolute_path: "/a/b".into(),
                 }),
             )]

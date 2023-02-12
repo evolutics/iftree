@@ -120,7 +120,7 @@ mod tests {
         #[test]
         fn handles_ignore() {
             let actual = main::Error::Ignore(main::IgnoreError(ignore::Error::Glob {
-                glob: Some('['.into()),
+                glob: Some("[".into()),
                 err: "abc".into(),
             }))
             .to_string();

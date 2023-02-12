@@ -132,11 +132,11 @@ mod tests {
     fn handles_files() {
         let actual = main(vec![
             model::Path {
-                relative: vec!['B'.into()],
+                relative: vec!["B".into()],
                 absolute: "/a/B".into(),
             },
             model::Path {
-                relative: vec!['c'.into()],
+                relative: vec!["c".into()],
                 absolute: "/a/c".into(),
             },
         ]);
@@ -144,20 +144,20 @@ mod tests {
         let actual = actual.unwrap();
         let expected = [
             (
-                'B'.into(),
+                "B".into(),
                 model::Tree::File(model::File {
                     identifier: quote::format_ident!("r#B"),
                     index: 0,
-                    relative_path: 'B'.into(),
+                    relative_path: "B".into(),
                     absolute_path: "/a/B".into(),
                 }),
             ),
             (
-                'c'.into(),
+                "c".into(),
                 model::Tree::File(model::File {
                     identifier: quote::format_ident!("r#C"),
                     index: 1,
-                    relative_path: 'c'.into(),
+                    relative_path: "c".into(),
                     absolute_path: "/a/c".into(),
                 }),
             ),
@@ -171,15 +171,15 @@ mod tests {
     fn handles_folders() {
         let actual = main(vec![
             model::Path {
-                relative: vec!['a'.into()],
+                relative: vec!["a".into()],
                 absolute: "/a".into(),
             },
             model::Path {
-                relative: vec!['b'.into(), 'a'.into(), 'b'.into()],
+                relative: vec!["b".into(), "a".into(), "b".into()],
                 absolute: "/b/a/b".into(),
             },
             model::Path {
-                relative: vec!['b'.into(), 'c'.into()],
+                relative: vec!["b".into(), "c".into()],
                 absolute: "/b/c".into(),
             },
         ]);
@@ -187,25 +187,25 @@ mod tests {
         let actual = actual.unwrap();
         let expected = [
             (
-                'a'.into(),
+                "a".into(),
                 model::Tree::File(model::File {
                     identifier: quote::format_ident!("r#A"),
                     index: 0,
-                    relative_path: 'a'.into(),
+                    relative_path: "a".into(),
                     absolute_path: "/a".into(),
                 }),
             ),
             (
-                'b'.into(),
+                "b".into(),
                 model::Tree::Folder(model::Folder {
                     identifier: quote::format_ident!("r#b"),
                     forest: [
                         (
-                            'a'.into(),
+                            "a".into(),
                             model::Tree::Folder(model::Folder {
                                 identifier: quote::format_ident!("r#a"),
                                 forest: [(
-                                    'b'.into(),
+                                    "b".into(),
                                     model::Tree::File(model::File {
                                         identifier: quote::format_ident!("r#B"),
                                         index: 1,
@@ -218,7 +218,7 @@ mod tests {
                             }),
                         ),
                         (
-                            'c'.into(),
+                            "c".into(),
                             model::Tree::File(model::File {
                                 identifier: quote::format_ident!("r#C"),
                                 index: 2,
@@ -255,11 +255,11 @@ mod tests {
     fn given_path_collision_it_errs() {
         let actual = main(vec![
             model::Path {
-                relative: vec!['a'.into(), 'b'.into()],
+                relative: vec!["a".into(), "b".into()],
                 ..model::stubs::path()
             },
             model::Path {
-                relative: vec!['a'.into(), 'b'.into()],
+                relative: vec!["a".into(), "b".into()],
                 ..model::stubs::path()
             },
         ]);

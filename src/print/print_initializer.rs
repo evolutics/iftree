@@ -77,7 +77,7 @@ mod tests {
                     model::Populator::ContentsStr,
                 ])),
                 &model::File {
-                    relative_path: 'b'.into(),
+                    relative_path: "b".into(),
                     absolute_path: "/a/b".into(),
                     ..model::stubs::file()
                 },
@@ -161,7 +161,7 @@ mod tests {
                         model::Populator::RelativePath,
                     ])),
                     &model::File {
-                        relative_path: 'b'.into(),
+                        relative_path: "b".into(),
                         ..model::stubs::file()
                     },
                 );
@@ -184,7 +184,7 @@ mod tests {
             &quote::format_ident!("Foo"),
             &model::Initializer::Macro(syn::parse_str("abc").unwrap()),
             &model::File {
-                relative_path: 'b'.into(),
+                relative_path: "b".into(),
                 absolute_path: "/a/b".into(),
                 ..model::stubs::file()
             },
