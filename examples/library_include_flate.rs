@@ -16,7 +16,7 @@ macro_rules! visit_folder {
 
 macro_rules! visit_file {
     ($name:literal, $id:ident, $index:literal, $relative_path:literal, $absolute_path:literal) => {
-        include_flate::flate!(pub static $id: str from $absolute_path);
+        include_flate::flate!(pub static $id: str from $relative_path);
     };
 }
 
