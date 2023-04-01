@@ -16,7 +16,7 @@ def _check_general_cleanliness():
     working_folder = pathlib.Path.cwd()
     subprocess.run(
         [
-            "docker",
+            "podman",
             "run",
             "--entrypoint",
             "sh",
