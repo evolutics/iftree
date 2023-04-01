@@ -7,7 +7,6 @@ pub fn main(
     base_folder: &path::Path,
 ) -> model::Result<Vec<path::PathBuf>> {
     iterate_entries(configuration, base_folder)?
-        .into_iter()
         .filter_map(|entry| match entry {
             Err(error) => Some(Err(error.into())),
             Ok(entry) => match entry.metadata() {
