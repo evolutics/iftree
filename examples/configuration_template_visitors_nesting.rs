@@ -2,7 +2,7 @@ macro_rules! visit_base {
     ($length:literal, $($contents:expr)*) => {
         fn list_assets() -> String {
             let root_depth = 0;
-            vec![$($contents(root_depth),)*].join("")
+            [$($contents(root_depth),)*].join("")
         }
     };
 }
@@ -11,7 +11,7 @@ macro_rules! visit_folder {
     ($name:literal, $id:ident, $($contents:expr)*) => {{
         fn list_folder(depth: usize) -> String {
             let name = $name;
-            vec![
+            [
                 indent_line(depth, &format!("{name}/")),
                 $($contents(depth + 1),)*
             ]

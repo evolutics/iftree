@@ -1,7 +1,7 @@
 macro_rules! visit_base {
     ($length:literal, $($contents:expr)*) => {
         fn list_assets() -> String {
-            vec![$($contents,)*].join("\n")
+            [$($contents,)*].join("\n")
         }
     };
 }
