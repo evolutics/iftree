@@ -8,8 +8,7 @@ homepage = "https://github.com/evolutics/iftree"
 repository = "https://github.com/evolutics/iftree"
 keywords = ["include", "directory", "folder", "file", "embed"]
 categories = ["filesystem", "web-programming"]
-description = """
-Include many files in your Rust code for self-contained binaries."""
+description = "Include many files in your Rust code for self-contained binaries"
 
 [lib]
 proc-macro = true

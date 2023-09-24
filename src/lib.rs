@@ -541,7 +541,7 @@ mod tests {
     #[test]
     fn readme_includes_manifest_description() {
         let description = env!("CARGO_PKG_DESCRIPTION");
-        let embedded_description = format!("\n\n{description}\n\n");
+        let embedded_description = format!("\n\n{description}.\n\n");
 
         let actual = get_readme().contains(&embedded_description);
 
