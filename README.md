@@ -496,7 +496,6 @@ To plug in visitors, add this to your configuration for each visitor:
 visit_base = 'visit_my_base'
 visit_folder = 'visit_my_folder'
 visit_file = 'visit_my_file'
-
 ```
 
 `visit_my_…` are the names of your corresponding macros.
