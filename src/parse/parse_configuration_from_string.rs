@@ -1,6 +1,5 @@
 use super::configuration;
 use crate::model;
-use std::path;
 use toml::de;
 
 pub fn main(string: &str) -> Result<model::Configuration, de::Error> {
@@ -12,7 +11,7 @@ impl From<configuration::Configuration> for model::Configuration {
     fn from(configuration: configuration::Configuration) -> Self {
         model::Configuration {
             paths: configuration.paths,
-            base_folder: configuration.base_folder.unwrap_or_else(path::PathBuf::new),
+            base_folder: configuration.base_folder.unwrap_or_default(),
             root_folder_variable: configuration
                 .root_folder_variable
                 .unwrap_or_else(|| "CARGO_MANIFEST_DIR".into()),
@@ -58,6 +57,7 @@ impl From<configuration::CustomVisitor> for model::CustomVisitor {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::path;
 
     #[test]
     fn handles_valid_configuration_with_required_fields_only_using_defaults() {
