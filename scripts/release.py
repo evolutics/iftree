@@ -43,7 +43,9 @@ def _plan_commands(version):
     return [
         ["git", "tag", "--annotate", version, "--message", version],
         ["git", "push", "origin", version],
+        ["cargo", "login"],
         ["cargo", "publish"],
+        ["cargo", "logout"],
     ]
 
 
