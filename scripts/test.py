@@ -14,7 +14,7 @@ def main():
 
 def _check_general_cleanliness():
     subprocess.run(
-        "git ls-files -z | xargs -0 nix develop . --command travel-kit check --",
+        "git ls-files -z | xargs -0 nix develop . --command travel-kit --",
         check=True,
         shell=True,
     )
