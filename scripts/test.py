@@ -13,11 +13,7 @@ def main():
 
 
 def _check_general_cleanliness():
-    subprocess.run(
-        "git ls-files -z | xargs -0 nix develop . --command travel-kit --",
-        check=True,
-        shell=True,
-    )
+    subprocess.run(["nix", "develop", ".", "--command", "travel-kit"], check=True)
 
 
 def _test_rust():
