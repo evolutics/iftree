@@ -177,7 +177,8 @@ asset type is generated without further configuration. See
   panics if there is any error such as if the file does not exist. This helps
   with faster development, as it avoids rebuilding if asset file contents are
   changed only (note that you still need to rebuild if assets are added,
-  renamed, or removed).
+  renamed, or removed). The asset file is located based on its absolute path in
+  the build environment, likely rendering the binary unfit for distribution.
 
   In release builds, it returns the file contents included at compile time,
   using
