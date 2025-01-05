@@ -1,5 +1,3 @@
-name: Test other platform
-
 on:
   workflow_dispatch:
     inputs:
