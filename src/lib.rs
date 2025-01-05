@@ -11,7 +11,7 @@
 //!
 //! See also [**related projects**](#related-work).
 //!
-//! ![Test](https://github.com/evolutics/iftree/actions/workflows/test.yml/badge.svg)
+//! ![Test](https://github.com/evolutics/iftree/actions/workflows/test.yaml/badge.svg)
 //! [![crates.io](https://img.shields.io/crates/v/iftree.svg)](https://crates.io/crates/iftree)
 //!
 //! # Motivation

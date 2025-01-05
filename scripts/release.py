@@ -31,11 +31,11 @@ def _plan_commands(version):
     _check_with_user(f"Commit to be released is {_get_head_commit()}, right?")
     _check_with_user(
         "Has automatic test passed for it "
-        "(https://github.com/evolutics/iftree/actions/workflows/test.yml)?"
+        "(https://github.com/evolutics/iftree/actions/workflows/test.yaml)?"
     )
     _check_with_user(
         "Have manually triggered cross-platform tests passed "
-        "(https://github.com/evolutics/iftree/actions/workflows/test_other_platform.yml)?"
+        "(https://github.com/evolutics/iftree/actions/workflows/test_other_platform.yaml)?"
     )
     _check_with_user("Is changelog ready?")
     subprocess.run(["cargo", "publish", "--dry-run"], check=True)
