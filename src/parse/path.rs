@@ -13,7 +13,7 @@ impl<'a> serde::Deserialize<'a> for configuration::Path {
 
 struct Visitor;
 
-impl<'a> de::Visitor<'a> for Visitor {
+impl de::Visitor<'_> for Visitor {
     type Value = configuration::Path;
 
     fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
