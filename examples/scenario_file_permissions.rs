@@ -1,10 +1,10 @@
-use once_cell::sync;
 use std::fs;
+use std::sync;
 
 macro_rules! initialize {
     ($relative_path:literal, $absolute_path:literal) => {
         Asset {
-            permissions: sync::Lazy::new(|| {
+            permissions: sync::LazyLock::new(|| {
                 fs::metadata($absolute_path)
                     .map(|metadata| metadata.permissions())
                     .ok()
@@ -20,7 +20,7 @@ template.initializer = 'initialize'
 "
 )]
 pub struct Asset {
-    permissions: sync::Lazy<Option<fs::Permissions>>,
+    permissions: sync::LazyLock<Option<fs::Permissions>>,
 }
 
 fn main() {

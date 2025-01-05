@@ -1,10 +1,10 @@
-use once_cell::sync;
 use std::path;
+use std::sync;
 
 macro_rules! initialize {
     ($relative_path:literal, $absolute_path:literal) => {
         Asset {
-            filename: sync::Lazy::new(|| {
+            filename: sync::LazyLock::new(|| {
                 path::Path::new($relative_path)
                     .file_name()
                     .and_then(|filename| filename.to_str())
@@ -20,7 +20,7 @@ template.initializer = 'initialize'
 "
 )]
 pub struct Asset<'a> {
-    filename: sync::Lazy<Option<&'a str>>,
+    filename: sync::LazyLock<Option<&'a str>>,
 }
 
 fn main() {

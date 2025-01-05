@@ -228,8 +228,8 @@
 //! ```
 //!
 //! The initializer macro (`my_initialize` above) must return a constant expression.
-//! Non-constant data can still be computed (lazily) with a library like
-//! [`once_cell`](https://github.com/matklad/once_cell).
+//! Non-constant data can still be computed (lazily) with
+//! [`std::sync::LazyLock`](https://doc.rust-lang.org/std/sync/struct.LazyLock.html).
 //!
 //! For even more control over code generation, there is the concept of
 //! [visitors](#template-visitors).
@@ -295,10 +295,6 @@
 //!   [Tide](https://github.com/evolutics/iftree/blob/main/examples/library_tide.rs)
 //! - File server with
 //!   [warp](https://github.com/evolutics/iftree/blob/main/examples/library_warp.rs)
-//! - Lazy initialization with
-//!   [`lazy_static`](https://github.com/evolutics/iftree/blob/main/examples/library_lazy_static.rs)
-//! - Lazy initialization with
-//!   [`once_cell`](https://github.com/evolutics/iftree/blob/main/examples/library_once_cell.rs)
 //! - Media types with
 //!   [`mime_guess`](https://github.com/evolutics/iftree/blob/main/examples/library_mime_guess.rs)
 //! - Templates with
@@ -318,6 +314,7 @@
 //! ## Custom constructions
 //!
 //! - [Hash map](https://github.com/evolutics/iftree/blob/main/examples/scenario_hash_map.rs)
+//! - [Lazy initialization](https://github.com/evolutics/iftree/blob/main/examples/scenario_lazy_initialization.rs)
 //! - [Nested hash map](https://github.com/evolutics/iftree/blob/main/examples/scenario_nested_hash_map.rs)
 //!
 //! # Related work

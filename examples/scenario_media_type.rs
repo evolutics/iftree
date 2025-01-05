@@ -1,9 +1,9 @@
-use once_cell::sync;
+use std::sync;
 
 macro_rules! initialize {
     ($relative_path:literal, $absolute_path:literal) => {
         Asset {
-            media_type: sync::Lazy::new(|| {
+            media_type: sync::LazyLock::new(|| {
                 let media_type = mime_guess::from_path($relative_path).first_or_octet_stream();
                 media_type.essence_str().into()
             }),
@@ -18,7 +18,7 @@ template.initializer = 'initialize'
 "
 )]
 pub struct Asset {
-    media_type: sync::Lazy<String>,
+    media_type: sync::LazyLock<String>,
 }
 
 fn main() {

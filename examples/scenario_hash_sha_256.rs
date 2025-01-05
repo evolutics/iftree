@@ -1,10 +1,10 @@
-use once_cell::sync;
 use sha2::Digest;
+use std::sync;
 
 macro_rules! initialize {
     ($relative_path:literal, $absolute_path:literal) => {
         Asset {
-            sha_256_hash: sync::Lazy::new(|| {
+            sha_256_hash: sync::LazyLock::new(|| {
                 sha2::Sha256::new()
                     .chain_update(include_bytes!($absolute_path))
                     .finalize()
@@ -21,7 +21,7 @@ template.initializer = 'initialize'
 "
 )]
 pub struct Asset {
-    sha_256_hash: sync::Lazy<[u8; 32]>,
+    sha_256_hash: sync::LazyLock<[u8; 32]>,
 }
 
 fn main() {

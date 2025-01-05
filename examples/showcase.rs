@@ -1,9 +1,9 @@
 // A simple web server that serves files.
 
 use actix_web::web;
-use once_cell::sync;
 use std::collections;
 use std::io;
+use std::sync;
 
 // This macro is used as an initializer below.
 // Due to macro evaluation, it needs to be defined first.
@@ -13,9 +13,9 @@ macro_rules! initialize {
             path: $relative_path,
 
             // As this must be a constant expression,
-            // we use `once_cell` to compute non-constant data (lazily).
+            // we use `LazyLock` to compute non-constant data (lazily).
             // Here we guess the media (MIME) type based on the file path.
-            media_type: sync::Lazy::new(|| {
+            media_type: sync::LazyLock::new(|| {
                 let media_type = mime_guess::from_path($relative_path).first_or_octet_stream();
                 media_type.essence_str().into()
             }),
@@ -45,13 +45,13 @@ template.initializer = 'initialize'
 )]
 pub struct Asset {
     path: &'static str,
-    media_type: sync::Lazy<String>,
+    media_type: sync::LazyLock<String>,
     contents: &'static str,
 }
 
 // For efficient lookup, construct a map based on the generated `ASSETS` array.
-static ASSET_MAP: sync::Lazy<collections::HashMap<&str, &Asset>> =
-    sync::Lazy::new(|| ASSETS.iter().map(|asset| (asset.path, asset)).collect());
+static ASSET_MAP: sync::LazyLock<collections::HashMap<&str, &Asset>> =
+    sync::LazyLock::new(|| ASSETS.iter().map(|asset| (asset.path, asset)).collect());
 
 #[actix_web::main]
 async fn main() -> io::Result<()> {

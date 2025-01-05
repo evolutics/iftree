@@ -1,5 +1,5 @@
-use once_cell::sync;
 use std::collections;
+use std::sync;
 
 #[iftree::include_file_tree("paths = '/examples/assets/**'")]
 pub struct Asset {
@@ -7,7 +7,7 @@ pub struct Asset {
     contents_str: &'static str,
 }
 
-static ASSET_MAP: sync::Lazy<collections::HashMap<&str, &Asset>> = sync::Lazy::new(|| {
+static ASSET_MAP: sync::LazyLock<collections::HashMap<&str, &Asset>> = sync::LazyLock::new(|| {
     ASSETS
         .iter()
         .map(|asset| (asset.relative_path, asset))

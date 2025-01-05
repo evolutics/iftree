@@ -1,21 +1,21 @@
-use once_cell::sync;
 use std::fs;
+use std::sync;
 use std::time;
 
 macro_rules! initialize {
     ($relative_path:literal, $absolute_path:literal) => {
         Asset {
-            creation_time: sync::Lazy::new(|| {
+            creation_time: sync::LazyLock::new(|| {
                 fs::metadata($absolute_path)
                     .and_then(|metadata| metadata.created())
                     .ok()
             }),
-            last_access_time: sync::Lazy::new(|| {
+            last_access_time: sync::LazyLock::new(|| {
                 fs::metadata($absolute_path)
                     .and_then(|metadata| metadata.accessed())
                     .ok()
             }),
-            last_modification_time: sync::Lazy::new(|| {
+            last_modification_time: sync::LazyLock::new(|| {
                 fs::metadata($absolute_path)
                     .and_then(|metadata| metadata.modified())
                     .ok()
@@ -31,9 +31,9 @@ template.initializer = 'initialize'
 "
 )]
 pub struct Asset {
-    creation_time: sync::Lazy<Option<time::SystemTime>>,
-    last_access_time: sync::Lazy<Option<time::SystemTime>>,
-    last_modification_time: sync::Lazy<Option<time::SystemTime>>,
+    creation_time: sync::LazyLock<Option<time::SystemTime>>,
+    last_access_time: sync::LazyLock<Option<time::SystemTime>>,
+    last_modification_time: sync::LazyLock<Option<time::SystemTime>>,
 }
 
 fn main() {

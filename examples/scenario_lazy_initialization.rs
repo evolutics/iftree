@@ -1,9 +1,9 @@
-use once_cell::sync;
+use std::sync;
 
 macro_rules! initialize {
     ($relative_path:literal, $absolute_path:literal) => {
         Asset {
-            first_word: sync::Lazy::new(|| {
+            first_word: sync::LazyLock::new(|| {
                 include_str!($absolute_path)
                     .split_whitespace()
                     .next()
@@ -20,7 +20,7 @@ template.initializer = 'initialize'
 "
 )]
 pub struct Asset {
-    first_word: sync::Lazy<Option<String>>,
+    first_word: sync::LazyLock<Option<String>>,
 }
 
 fn main() {
