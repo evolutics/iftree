@@ -61,8 +61,7 @@ fn print_file(context: &Context, name: &str, file: &model::File) -> proc_macro2:
 
         model::Visitor::Identifiers => {
             let identifier = &file.identifier;
-            let root_path = iter::repeat(quote::quote! { super:: })
-                .take(context.depth + 1)
+            let root_path = iter::repeat_n(quote::quote! { super:: }, context.depth + 1)
                 .collect::<proc_macro2::TokenStream>();
             let type_ = context.type_;
             let index = file.index;
