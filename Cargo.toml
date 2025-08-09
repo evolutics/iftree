@@ -2,12 +2,12 @@
 name = "iftree"
 version = "1.0.6"
 edition = "2021"
-license = "MIT"
+description = "Include many files in your Rust code for self-contained binaries"
 homepage = "https://github.com/evolutics/iftree"
 repository = "https://github.com/evolutics/iftree"
+license = "MIT"
 keywords = ["directory", "embed", "file", "folder", "include"]
 categories = ["filesystem", "web-programming"]
-description = "Include many files in your Rust code for self-contained binaries"
 
 [lib]
 proc-macro = true
