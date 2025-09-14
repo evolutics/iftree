@@ -10,27 +10,39 @@ All notable changes to this project are documented here in a format based on
 
 ## [1.0.6] - 2025-01-05
 
-This release only updates documentation.
+### Changed
+
+- Update documentation.
 
 ## [1.0.5] - 2024-02-25
 
-This release only updates documentation.
+### Changed
+
+- Update documentation.
 
 ## [1.0.4] - 2023-02-01
 
-This release only updates documentation.
+### Changed
+
+- Update documentation.
 
 ## [1.0.3] - 2022-02-05
 
-This release only updates documentation.
+### Changed
+
+- Update documentation.
 
 ## [1.0.2] - 2021-08-29
 
-This release only updates documentation.
+### Changed
+
+- Update documentation.
 
 ## [1.0.1] - 2021-07-05
 
-This release only updates documentation.
+### Changed
+
+- Update documentation.
 
 ## [1.0.0] - 2021-05-29
 
