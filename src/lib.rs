@@ -594,7 +594,7 @@ mod tests {
     #[test]
     fn changelog_contains_current_manifest_version() {
         let version = env!("CARGO_PKG_VERSION");
-        let version_section = format!("\n\n## {version} – ");
+        let version_section = format!("\n\n## [{version}] - ");
 
         let actual = get_changelog().contains(&version_section);
 
