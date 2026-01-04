@@ -9,7 +9,7 @@ jobs:
   test:
     runs-on: ${{ github.event.inputs.platform }}
     steps:
-      - uses: actions/checkout@v4 # Update-worthy.
+      - uses: actions/checkout@v6 # Update-worthy.
       - uses: actions-rs/toolchain@v1 # Update-worthy.
         with:
           profile: minimal
