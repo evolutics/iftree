@@ -6,6 +6,10 @@ All notable changes to this project are documented here in a format based on
 
 ## [Unreleased]
 
+–
+
+## [1.0.7] - 2026-01-04
+
 - Update Rust edition from 2021 to 2024.
 
 ## [1.0.6] - 2025-01-05
