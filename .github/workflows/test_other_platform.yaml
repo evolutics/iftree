@@ -9,12 +9,12 @@ jobs:
   test:
     runs-on: ${{ github.event.inputs.platform }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions-rs/toolchain@v1
+      - uses: actions/checkout@v4 # Update-worthy.
+      - uses: actions-rs/toolchain@v1 # Update-worthy.
         with:
           profile: minimal
           toolchain: stable
           override: true
-      - uses: actions-rs/cargo@v1
+      - uses: actions-rs/cargo@v1 # Update-worthy.
         with:
           command: test

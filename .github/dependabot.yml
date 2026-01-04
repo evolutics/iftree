@@ -1,4 +1,4 @@
-version: 2
+version: 2 # Update-worthy.
 updates:
   - package-ecosystem: "cargo"
     directory: "/"

@@ -327,6 +327,8 @@
 //! Generally, while Iftree has defaults to address common use cases, it comes with
 //! first-class support for arbitrary file data.
 //!
+//! [//]: # "Update-worthy."
+//!
 //! | Project                                                                            | File selection                                      | Included file data       | Data access via                                                                                     |
 //! | ---------------------------------------------------------------------------------- | --------------------------------------------------- | ------------------------ | --------------------------------------------------------------------------------------------------- |
 //! | [**`include_dir`**](https://github.com/Michael-F-Bryan/include_dir) 0.7            | Single folder                                       | Path, contents, metadata | File path, nested iterators, glob patterns                                                          |

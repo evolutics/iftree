@@ -4,15 +4,15 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4 # Update-worthy.
         with:
           fetch-depth: 2
-      - uses: actions-rs/toolchain@v1
+      - uses: actions-rs/toolchain@v1 # Update-worthy.
         with:
           profile: minimal
           toolchain: stable
           override: true
-      - uses: cachix/install-nix-action@v30
+      - uses: cachix/install-nix-action@v30 # Update-worthy.
       # See also https://github.com/actions-rs/meta/issues/21.
-      - uses: Swatinem/rust-cache@v2
+      - uses: Swatinem/rust-cache@v2 # Update-worthy.
       - run: python scripts/test.py
