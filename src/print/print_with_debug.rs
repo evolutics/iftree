@@ -1,11 +1,7 @@
 use crate::model;
 
 pub fn main(view: model::View, code: proc_macro2::TokenStream) -> proc_macro2::TokenStream {
-    if view.debug {
-        go(code)
-    } else {
-        code
-    }
+    if view.debug { go(code) } else { code }
 }
 
 fn go(code: proc_macro2::TokenStream) -> proc_macro2::TokenStream {
