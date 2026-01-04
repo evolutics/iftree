@@ -32,8 +32,7 @@ mod tests {
   |
 1 | paths = #
   |         ^
-invalid string
-expected `\"`, `'`
+string values must be quoted, expected literal string
 ",
         );
         assert_eq!(actual, expected);

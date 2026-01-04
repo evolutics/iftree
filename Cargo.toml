@@ -19,20 +19,20 @@ proc-macro2 = "1.0"
 quote = "1.0"
 serde = { version = "1.0", features = ["derive"] }
 syn = { version = "2.0", features = ["default", "extra-traits"] }
-toml = "0.8"
+toml = "0.9"
 unicode-xid = "0.2"
 
 # Update-worthy.
 [dev-dependencies]
-actix-web = "4.9"
+actix-web = "4.12"
 async-std = { version = "1.13", features = ["attributes"] }
-handlebars = "6.3"
+handlebars = "6.4"
 include-flate = "0.3"
 mime_guess = "2.0"
-regex = "1.11"
+regex = "1.12"
 rocket = "0.5"
 sha2 = "0.10"
-tempfile = "3.15"
+tempfile = "3.24"
 tide = "0.16"
-tokio = { version = "1.42", features = ["full"] }
-warp = "0.3"
+tokio = { version = "1.49", features = ["full"] }
+warp = { version = "0.4", features = ["server"] }
