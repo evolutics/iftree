@@ -12,7 +12,7 @@ jobs:
           profile: minimal
           toolchain: stable
           override: true
-      - uses: cachix/install-nix-action@v30 # Update-worthy.
+      - uses: cachix/install-nix-action@v31 # Update-worthy.
       # See also https://github.com/actions-rs/meta/issues/21.
       - uses: Swatinem/rust-cache@v2 # Update-worthy.
       - run: python scripts/test.py
