@@ -31,7 +31,7 @@ include-flate = "0.3"
 mime_guess = "2.0"
 regex = "1.12"
 rocket = "0.5"
-sha2 = "0.10"
+sha2 = "0.11"
 tempfile = "3.24"
 tide = "0.16"
 tokio = { version = "1.49", features = ["full"] }
